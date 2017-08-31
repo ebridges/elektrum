@@ -1,11 +1,10 @@
 package cc.roja.photo;
 
+import static cc.roja.photo.util.DateUtil.parseDate;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -18,7 +17,6 @@ import org.apache.log4j.Logger;
 @SuppressWarnings({"unused","WeakerAccess"})
 public class Processor {
   private static final Logger LOG = Logger.getLogger(Processor.class);
-  private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ISO_DATE;
 
   private DBI dbi;
 
@@ -98,30 +96,6 @@ public class Processor {
     );
   }
 
-  private LocalDate parseDate(String date) {
-    String[] yymmddFormats = new String[]{"yyyyMMdd'T'HHmmss", "yyyy-MM-dd'T'HHmmss", "yyyy-MM-dd", "yyyyMMdd"};
-    for (String format : yymmddFormats) {
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-      try {
-        return LocalDate.parse(date, formatter);
-      } catch(DateTimeParseException ignored) {
-        // pass
-      }
-    }
-
-    String[] yymmFormats = new String[]{"yyyyMM", "yyyy-MM"};
-    for (String format : yymmFormats) {
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-      try {
-        YearMonth yyyyMM = YearMonth.parse(date, formatter);
-        return LocalDate.of(yyyyMM.getYear(), yyyyMM.getMonth(), 1);
-      } catch(DateTimeParseException ignored) {
-        LOG.warn("exception: "+ignored.getMessage(), ignored);
-      }
-    }
-
-    return null;
-  }
 
   private String getCollection(PhotoProcessorDAO dao, String path) {
     if(!path.matches("^/[0-9]{4}$")) {
