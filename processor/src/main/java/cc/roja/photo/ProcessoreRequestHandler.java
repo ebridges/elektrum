@@ -75,7 +75,9 @@ public class ProcessoreRequestHandler implements RequestHandler<S3EventNotificat
           throw new IllegalArgumentException("missing imageKey");
         }
 
-        String imageId = processor.processPhoto(imageKey);
+        String imagePath = imageKey.replace("photos/pictures", "");
+
+        String imageId = processor.processPhoto(imagePath);
         result.addImageId(imageId);
       }
 

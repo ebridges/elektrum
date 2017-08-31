@@ -44,11 +44,9 @@ public class ImageLoader {
     String extension = FilenameUtils.getExtension(imageKey);
     Path tempfile = Files.createTempFile(bucket, extension);
 
-    String prefixedKey = "photos/pictures" + imageKey;
-
-    LOG.info("loading key: "+prefixedKey);
+    LOG.info("loading key: "+imageKey);
     AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
-    S3Object object = s3Client.getObject(bucket, prefixedKey);
+    S3Object object = s3Client.getObject(bucket, imageKey);
     try (InputStream in = object.getObjectContent()) {
       Files.copy(in, tempfile, StandardCopyOption.REPLACE_EXISTING);
     }
