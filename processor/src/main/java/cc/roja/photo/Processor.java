@@ -17,10 +17,13 @@ import org.skife.jdbi.v2.DBI;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
 import org.apache.log4j.Logger;
 
 @SuppressWarnings({"unused","WeakerAccess"})
-public class Processor implements RequestHandler<String, String> {
+public class Processor implements RequestHandler<ProcessorInput, ProcessorResult> {
   private static final Logger LOG = Logger.getLogger(Processor.class);
   private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ISO_DATE;
 
@@ -59,10 +62,19 @@ public class Processor implements RequestHandler<String, String> {
   }
 
   @Override
-  public String handleRequest(String imageKey, Context context) {
+  public ProcessorResult handleRequest(ProcessorInput event, Context context) {
     try {
+      String imageKey = event.getImageKey();
+
+      if(imageKey == null || imageKey.isEmpty()) {
+        throw new IllegalArgumentException("missing imageKey");
+      }
+
       String imageId = processPhoto(imageKey);
-      return String.format("{\"image_id\" : \"%s\"}", imageId);
+
+      ProcessorResult result = new ProcessorResult();
+      result.setImageId(imageId);
+      return result;
     } catch (IOException e) {
       throw new IllegalArgumentException(e);
     }
