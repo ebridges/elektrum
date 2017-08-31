@@ -68,6 +68,8 @@ import java.util.Iterator;
  * @version $Id: FilenameUtils.java 490424 2006-12-27 01:20:43Z bayard $
  * @since Commons IO 1.1
  */
+@SuppressWarnings({"WeakerAccess", "unused", "IndexOfReplaceableByContains", "StringBufferMayBeStringBuilder",
+    "unchecked", "PointlessBooleanExpression", "ForLoopReplaceableByForEach"})
 public class FilenameUtils {
 
   /**
