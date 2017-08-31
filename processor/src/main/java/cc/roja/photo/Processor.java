@@ -78,8 +78,7 @@ public class Processor implements RequestHandler<String, String> {
       LOG.info("Processing: " + imageKey);
       MetaDataExtractor metaDataExtractor = new MetaDataExtractor();
 
-      ImageLoader imageLoader = new ImageLoader(imageKey);
-      File imageFile = imageLoader.load();
+      File imageFile = ImageLoader.load(imageKey);
 
       List<String> keyInfo = parseKey(imageKey);
       String collectionId = getCollection(dao, keyInfo.get(0));

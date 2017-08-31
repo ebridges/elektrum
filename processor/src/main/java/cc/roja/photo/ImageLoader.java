@@ -14,30 +14,25 @@ import cc.roja.photo.util.FilenameUtils;
 @SuppressWarnings("WeakerAccess")
 public class ImageLoader {
   private static final Logger LOG = Logger.getLogger(ImageLoader.class);
-  private String imageKey;
 
-  public ImageLoader(String imageKey) {
-    this.imageKey = imageKey;
-  }
-
-  public File load() throws IOException {
+  public static File load(String imageKey) throws IOException {
     if(getenv("BUCKET_NAME") != null) {
-      return loadFromS3();
+      return loadFromS3(imageKey);
     } else if(getenv("IMAGE_ROOT") != null) {
-      return loadFromFilesystem();
+      return loadFromFilesystem(imageKey);
     } else {
       throw new IllegalArgumentException("environment not configured correctly.");
     }
   }
 
-  private File loadFromFilesystem() {
+  private static File loadFromFilesystem(String imageKey) {
     String parentPath = getenv("IMAGE_ROOT");
-    File imagePath = new File(parentPath, this.imageKey);
+    File imagePath = new File(parentPath, imageKey);
     LOG.info("imagePath: "+imagePath);
     return imagePath;
   }
 
-  private File loadFromS3() throws IOException {
+  private static File loadFromS3(String imageKey) throws IOException {
     // download from S3 & store in temp location
     String bucket = getenv("BUCKET_NAME");
     String extension = FilenameUtils.getExtension(imageKey);
