@@ -50,6 +50,7 @@ dependencies {
 }
 
 task buildZip(type: Zip) {
+    destinationDir=new File('../build')
     from compileJava
     from processResources              
     into('lib') {
