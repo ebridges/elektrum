@@ -39,6 +39,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileMetadataDirectory;
 
+import cc.roja.photo.util.ImageDateExtractor;
 import cc.roja.photo.util.MetadataUtil;
 
 @SuppressWarnings("WeakerAccess")
@@ -172,7 +173,7 @@ public class MetaDataExtractor {
       meta.setGpsAlt(altitude.doubleValue());
     }
 
-    OffsetDateTime gpsTime = MetadataUtil.getGpsDate(metadata);
+    OffsetDateTime gpsTime = ImageDateExtractor.getGpsDate(metadata);
     LOG.debug("gpsTime: "+gpsTime);
     meta.setGpsDatetime( gpsTime );
 
