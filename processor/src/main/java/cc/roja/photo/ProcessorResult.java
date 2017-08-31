@@ -1,25 +1,38 @@
 package cc.roja.photo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class ProcessorResult {
 
-  @JsonProperty("image_id")
-  private String imageId;
+  @JsonProperty("image_ids")
+  private List<String> imageIds;
 
-  public String getImageId() {
-    return imageId;
+  public ProcessorResult() {
+    this.imageIds = new ArrayList<>();
   }
 
-  public void setImageId(String imageId) {
-    this.imageId = imageId;
+  public List<String> getImageIds() {
+    return imageIds;
+  }
+
+  public void setImageIds(List<String> imageIds) {
+    this.imageIds = imageIds;
   }
 
   @Override
   public String toString() {
     return "ProcessorResult{" +
-        "imageId='" + imageId + '\'' +
+        "imageId='" + imageIds + '\'' +
         '}';
+  }
+
+  public void addImageId(String imageId) {
+    if(imageId != null && !imageId.isEmpty()) {
+      this.imageIds.add(imageId);
+    }
   }
 }

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,11 +18,12 @@ import org.skife.jdbi.v2.DBI;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.s3.event.S3EventNotification;
 
 import org.apache.log4j.Logger;
 
 @SuppressWarnings({"unused","WeakerAccess"})
-public class Processor implements RequestHandler<ProcessorInput, ProcessorResult> {
+public class Processor implements RequestHandler<S3EventNotification, ProcessorResult> {
   private static final Logger LOG = Logger.getLogger(Processor.class);
   private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ISO_DATE;
 
@@ -59,19 +61,70 @@ public class Processor implements RequestHandler<ProcessorInput, ProcessorResult
     LOG.info("imageId: " + imageId);
   }
 
-  @Override
-  public ProcessorResult handleRequest(ProcessorInput event, Context context) {
-    try {
-      String imageKey = event.getImageKey();
+  /*
+  Example event:
+  ```
+    {
+      "Records":[
+        {
+          "eventVersion":"2.0",
+          "eventSource":"aws:s3",
+          "awsRegion":"us-west-2",
+          "eventTime":"1970-01-01T00:00:00.000Z",
+          "eventName":"ObjectCreated:Put",
+          "userIdentity":{
+             "principalId":"AIDAJDPLRKLG7UEXAMPLE"
+          },
+          "requestParameters":{
+             "sourceIPAddress":"127.0.0.1"
+          },
+          "responseElements":{
+             "x-amz-request-id":"C3D13FE58DE4C810",
+             "x-amz-id-2":"FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"
+          },
+          "s3":{
+             "s3SchemaVersion":"1.0",
+             "configurationId":"testConfigRule",
+             "bucket":{
+                "name":"sourcebucket",
+                "ownerIdentity":{
+                   "principalId":"A3NL1KOZZKExample"
+                },
+                "arn":"arn:aws:s3:::sourcebucket"
+             },
+             "object":{
+                "key":"HappyFace.jpg",
+                "size":1024,
+                "eTag":"d41d8cd98f00b204e9800998ecf8427e",
+                "versionId":"096fKKXTRTtl3on89fVO.nfljtsv6qko"
+              }
+           }
+         }
+      ]
+    }
+    ```
+   */
 
-      if(imageKey == null || imageKey.isEmpty()) {
-        throw new IllegalArgumentException("missing imageKey");
+  @Override
+  public ProcessorResult handleRequest(S3EventNotification event, Context context) {
+    try {
+      ProcessorResult result = new ProcessorResult();
+      List<String> imageKeys = new ArrayList<>();
+
+      for(S3EventNotification.S3EventNotificationRecord record : event.getRecords()) {
+        S3EventNotification.S3Entity s3Entity = record.getS3();
+        imageKeys.add(s3Entity.getObject().getKey());
       }
 
-      String imageId = processPhoto(imageKey);
+      for(String imageKey : imageKeys) {
+        if (imageKey == null || imageKey.isEmpty()) {
+          throw new IllegalArgumentException("missing imageKey");
+        }
 
-      ProcessorResult result = new ProcessorResult();
-      result.setImageId(imageId);
+        String imageId = processPhoto(imageKey);
+        result.addImageId(imageId);
+      }
+
       return result;
     } catch (IOException e) {
       throw new IllegalArgumentException(e);
