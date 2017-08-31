@@ -1,14 +1,11 @@
 package cc.roja.photo;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,14 +13,10 @@ import java.util.regex.Pattern;
 
 import org.skife.jdbi.v2.DBI;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.s3.event.S3EventNotification;
-
 import org.apache.log4j.Logger;
 
 @SuppressWarnings({"unused","WeakerAccess"})
-public class Processor implements RequestHandler<S3EventNotification, ProcessorResult> {
+public class Processor {
   private static final Logger LOG = Logger.getLogger(Processor.class);
   private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ISO_DATE;
 
@@ -31,104 +24,6 @@ public class Processor implements RequestHandler<S3EventNotification, ProcessorR
 
   public Processor() {
     this.dbi = DatabaseManager.getDBI();
-  }
-
-  public static void main(String[] args) throws IOException {
-    String arg = args[0];
-
-    Processor processor = new Processor();
-
-    if("-f".equals(arg)) {
-      processFiles(processor, args[1]);
-    } else {
-      processFile(processor, arg);
-    }
-  }
-
-  private static void processFiles(Processor processor, String fileList) throws IOException {
-    File fl = new File(fileList);
-    FileReader frd = new FileReader(fl);
-    try(BufferedReader brd = new BufferedReader(frd)) {
-      String imageKey;
-      while ((imageKey = brd.readLine()) != null) {
-        String imageId = processor.processPhoto(imageKey);
-      }
-    }
-  }
-
-  private static void processFile(Processor processor, String imageKey) throws IOException {
-    String imageId = processor.processPhoto(imageKey);
-    LOG.info("imageId: " + imageId);
-  }
-
-  /*
-  Example event:
-  ```
-    {
-      "Records":[
-        {
-          "eventVersion":"2.0",
-          "eventSource":"aws:s3",
-          "awsRegion":"us-west-2",
-          "eventTime":"1970-01-01T00:00:00.000Z",
-          "eventName":"ObjectCreated:Put",
-          "userIdentity":{
-             "principalId":"AIDAJDPLRKLG7UEXAMPLE"
-          },
-          "requestParameters":{
-             "sourceIPAddress":"127.0.0.1"
-          },
-          "responseElements":{
-             "x-amz-request-id":"C3D13FE58DE4C810",
-             "x-amz-id-2":"FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"
-          },
-          "s3":{
-             "s3SchemaVersion":"1.0",
-             "configurationId":"testConfigRule",
-             "bucket":{
-                "name":"sourcebucket",
-                "ownerIdentity":{
-                   "principalId":"A3NL1KOZZKExample"
-                },
-                "arn":"arn:aws:s3:::sourcebucket"
-             },
-             "object":{
-                "key":"HappyFace.jpg",
-                "size":1024,
-                "eTag":"d41d8cd98f00b204e9800998ecf8427e",
-                "versionId":"096fKKXTRTtl3on89fVO.nfljtsv6qko"
-              }
-           }
-         }
-      ]
-    }
-    ```
-   */
-
-  @Override
-  public ProcessorResult handleRequest(S3EventNotification event, Context context) {
-    try {
-      ProcessorResult result = new ProcessorResult();
-      List<String> imageKeys = new ArrayList<>();
-
-      for(S3EventNotification.S3EventNotificationRecord record : event.getRecords()) {
-        S3EventNotification.S3Entity s3Entity = record.getS3();
-        imageKeys.add(s3Entity.getObject().getKey());
-      }
-
-      for(String imageKey : imageKeys) {
-        if (imageKey == null || imageKey.isEmpty()) {
-          throw new IllegalArgumentException("missing imageKey");
-        }
-
-        String imageId = processPhoto(imageKey);
-        result.addImageId(imageId);
-      }
-
-      return result;
-    } catch (IOException e) {
-      throw new IllegalArgumentException(e);
-    }
   }
 
   public String processPhoto(String imageKey) throws IOException {
