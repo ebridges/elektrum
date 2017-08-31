@@ -4,10 +4,16 @@ import static java.lang.System.getenv;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import org.apache.log4j.Logger;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.S3Object;
 
 import cc.roja.photo.util.FilenameUtils;
 
@@ -37,7 +43,16 @@ public class ImageLoader {
     String bucket = getenv("BUCKET_NAME");
     String extension = FilenameUtils.getExtension(imageKey);
     Path tempfile = Files.createTempFile(bucket, extension);
-    // @todo write data from S3 to local tempfile.
+
+    String prefixedKey = "photos/pictures" + imageKey;
+
+    LOG.info("loading key: "+prefixedKey);
+    AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
+    S3Object object = s3Client.getObject(bucket, prefixedKey);
+    try (InputStream in = object.getObjectContent()) {
+      Files.copy(in, tempfile, StandardCopyOption.REPLACE_EXISTING);
+    }
+
     return tempfile.toFile();
   }
 }
