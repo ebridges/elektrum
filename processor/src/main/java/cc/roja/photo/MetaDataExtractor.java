@@ -45,7 +45,7 @@ import cc.roja.photo.util.MetadataUtil;
 public class MetaDataExtractor {
   private static final Logger LOG = Logger.getLogger(MetaDataExtractor.class);
 
-  public ImageInfo extract(File image, ImageInfo imageInfo) throws IOException {
+  public void extract(File image, ImageInfo imageInfo) throws IOException {
     Metadata metadataReader;
     try {
       metadataReader = ImageMetadataReader.readMetadata(image);
@@ -61,8 +61,6 @@ public class MetaDataExtractor {
     if(LOG.isInfoEnabled()) {
       LOG.info(imageInfo.toString());
     }
-
-    return imageInfo;
   }
 
   private static void setExifInfo(Metadata metadata, ImageInfo meta) {
@@ -112,13 +110,9 @@ public class MetaDataExtractor {
     meta.setImageWidth(imageWidth);
   }
 
-  /**
+  /*
    * Use [Google TZ service](https://developers.google.com/maps/documentation/timezone/intro) to
    * derive timezone offset instead of relying on GPS date.
-   *
-   * @param metadata
-   * @param imageInfo
-   * @return
    */
   private static OffsetDateTime deduceCreateDate(Metadata metadata, ImageInfo imageInfo) {
     OffsetDateTime createDate = MetadataUtil.resolveDate(metadata, MetadataUtil.createDateTags);

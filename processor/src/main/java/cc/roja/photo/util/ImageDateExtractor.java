@@ -32,6 +32,7 @@ class ImageDateExtractor {
    * @param timeZone TimeZone
    * @return java.util.Date
    */
+  @SuppressWarnings("SameParameterValue")
   private static OffsetDateTime getDate(Directory dir, int tagType, @Nullable String subsecond,
       @Nullable TimeZone timeZone) {
     Object o = dir.getObject(tagType);

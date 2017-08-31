@@ -2,6 +2,7 @@ package cc.roja.photo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ProcessorInput {
 
   @JsonProperty("image_key")

@@ -17,8 +17,6 @@ import org.skife.jdbi.v2.DBI;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import org.apache.log4j.Logger;
 

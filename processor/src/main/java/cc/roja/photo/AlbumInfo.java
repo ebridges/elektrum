@@ -2,6 +2,7 @@ package cc.roja.photo;
 
 import java.time.LocalDate;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class AlbumInfo {
   private String id;
   private String name;
