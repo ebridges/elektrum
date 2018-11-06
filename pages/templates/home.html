@@ -3,13 +3,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% load socialaccount %}
+
+<h1>Django Login Mega-Tutorial</h1>
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p> |
-  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+<p>Welcome {{ user.username }} !!!</p>
+<p><a href="{% url 'account_logout' %}">Log out</a>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a> |
-  <a href="{% url 'signup' %}">signup</a>
+<p><a href="{% url 'account_signup' %}">Sign Up</a></p>
+<p><a href="{% url 'account_login' %}">Log In </a></p>
+<p><a href="{% provider_login_url 'google' %}">Log In with Gmail</a></p>
 {% endif %}
 {% endblock %}
