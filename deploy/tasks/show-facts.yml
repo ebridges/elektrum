@@ -1,0 +1,14 @@
+- hosts: vpc
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+    AWS_REGION: "{{ aws_region }}"
+
+  tasks:
+    - name: define some facts about the VPC!
+      include_tasks: vpc/facts.yml
+  
+    - name: now we can reference the subnet IDs of our subnets by friendly names
+      debug: 
+        msg: "The subnet ID of 'private-a' is: {{ vpc_subnet_ids['private-a'] }}"
+  
