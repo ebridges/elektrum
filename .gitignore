@@ -12,5 +12,10 @@ sent_emails/
 .python-version
 
 # editor
-.vscode/
+**/.vscode/
+**/*.sublime-project
+**/*.sublime-workspace
 
+# ansible
+**/*.retry
+*/vault-password.txt
