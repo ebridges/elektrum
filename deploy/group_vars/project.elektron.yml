@@ -2,7 +2,7 @@
 # ---
 # specify VPC details and AWS credentials
 
-service_name: electron
+service_name: elektron
 vpc_name: elektron-vpc
 vpc_key: elektron-key
 vpc_dns_zone: elektron-dns
