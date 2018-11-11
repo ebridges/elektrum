@@ -13,10 +13,8 @@
 # create the NAT gateway, looking up the subnet ID by the human readable name: "private-a"
 - name: create NAT gateway
   ec2_vpc_nat_gateway:
-    subnet_id: "{{ vpc_subnet_ids['private-a'] }}"
+    subnet_id: "{{ vpc_subnet_ids['private-01'] }}"
     region: "{{ aws_region }}"
-    tags:
-      Service: "{{ service_name }}"
     wait: yes
     if_exist_do_not_create: true
   register: create_nat_gateway
@@ -48,9 +46,9 @@
       Service: "{{ service_name }}"
       Name: "{{ vpc_name }}-private"
     subnets:
-      - "{{ vpc_subnet_ids['private-a'] }}"
-      - "{{ vpc_subnet_ids['private-b'] }}"
-      - "{{ vpc_subnet_ids['private-c'] }}"
+      - "{{ vpc_subnet_ids['private-01'] }}"
+      - "{{ vpc_subnet_ids['private-02'] }}"
+      - "{{ vpc_subnet_ids['private-03'] }}"
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ vpc_nat_gateway_id }}"
@@ -63,9 +61,9 @@
       Service: "{{ service_name }}"
       Name: "{{ vpc_name }}-public"
     subnets:
-      - "{{ vpc_subnet_ids['public-a'] }}"
-      - "{{ vpc_subnet_ids['public-b'] }}"
-      - "{{ vpc_subnet_ids['public-c'] }}"
+      - "{{ vpc_subnet_ids['public-01'] }}"
+      - "{{ vpc_subnet_ids['public-02'] }}"
+      - "{{ vpc_subnet_ids['public-03'] }}"
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ vpc_gateway_id }}"

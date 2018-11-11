@@ -6,19 +6,19 @@ vpc_subnets:
   private-01:
     cidr: 10.0.1.0/24
     az: "{{ aws_region }}a"
-  public-02:
+  public-01:
     cidr: 10.0.2.0/24
     az: "{{ aws_region }}a"
-  private-03:
+  private-02:
     cidr: 10.0.3.0/24
     az: "{{ aws_region }}b"
-  public-04:
+  public-02:
     cidr: 10.0.4.0/24
     az: "{{ aws_region }}b"
-  private-05:
+  private-03:
     cidr: 10.0.5.0/24
     az: "{{ aws_region }}c"
-  public-06:
+  public-03:
     cidr: 10.0.6.0/24
     az: "{{ aws_region }}c"
 
