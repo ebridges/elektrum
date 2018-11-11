@@ -35,8 +35,6 @@
     type: A
     value: "{{ vpc_nat_gateway_ip }}"
     state: present
-    tags:
-      Service: "{{ service_name }}"
 
 # private route table that routes through the NAT -- attach it to our three private subnets
 - name: create route table for private subnets

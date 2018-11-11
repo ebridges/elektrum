@@ -62,6 +62,3 @@
     state: present
     vpc_id: "{{ vpc_id }}"
     vpc_region: "{{ aws_region }}"
-    tags:
-      Service: "{{ service_name }}"
-      Name: "{{ vpc_dns_zone }}"
