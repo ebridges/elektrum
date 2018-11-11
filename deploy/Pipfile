@@ -8,6 +8,7 @@ ansible = "*"
 ansible-vault = "*"
 "boto3" = "*"
 botocore = "*"
+boto = "*"
 
 [dev-packages]
 
