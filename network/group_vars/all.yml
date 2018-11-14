@@ -3,3 +3,6 @@
 
 # specify to run Ansible for hosts locally by default, not over SSH
 ansible_connection: local
+
+# IP Address to allow access for SSH & PostgreSQL from:
+home_ip: 98.116.39.58

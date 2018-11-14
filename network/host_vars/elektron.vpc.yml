@@ -46,10 +46,10 @@ vpc_security_groups:
           - 5432
           - 8080-8099
   - name: allow-public-ssh
-    description: "Allow public SSH"
+    description: "Allow limited public SSH only from specific IP"
     rules:
       - proto: tcp
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "{{ home_ip }}/32"
         ports:
           - 22
   - name: allow-public-http
@@ -60,3 +60,10 @@ vpc_security_groups:
         ports:
           - 80
           - 443
+  - name: allow-public-postgres
+    description: "Allow limited public PostgreSQL traffic only from specific IP"
+    rules:
+      - proto: tcp
+        cidr_ip: {{ home_ip }}/32
+        ports:
+          - 5432
