@@ -1,5 +1,9 @@
 # host_vars/elektron.vpc.yml
 
+vpc_name: elektron-vpc
+vpc_key: elektron-key
+vpc_dns_zone: elektron-dns
+
 vpc_cidr_block: 10.0.0.0/16
 
 vpc_subnets:
