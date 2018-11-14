@@ -3,5 +3,9 @@
 [vpc]
 elektron.vpc ansible_python_interpreter=python3
 
+[rds]
+elektron.rds ansible_python_interpreter=python3
+
 [project.elektron:children]
 vpc
+rds
