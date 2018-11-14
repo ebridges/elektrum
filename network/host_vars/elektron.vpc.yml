@@ -10,21 +10,27 @@ vpc_subnets:
   private-01:
     cidr: 10.0.1.0/24
     az: "{{ aws_region }}a"
+    visibility: private
   public-01:
     cidr: 10.0.2.0/24
     az: "{{ aws_region }}a"
+    visibility: public
   private-02:
     cidr: 10.0.3.0/24
     az: "{{ aws_region }}b"
+    visibility: private
   public-02:
     cidr: 10.0.4.0/24
     az: "{{ aws_region }}b"
+    visibility: public
   private-03:
     cidr: 10.0.5.0/24
     az: "{{ aws_region }}c"
+    visibility: private
   public-03:
     cidr: 10.0.6.0/24
     az: "{{ aws_region }}c"
+    visibility: public
 
 # a list defining the security groups for our VPC
 vpc_security_groups:

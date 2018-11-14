@@ -27,6 +27,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ item.key }}"
+      Visibility: "{{ item.value.visibility }}"
   with_dict: "{{ vpc_subnets }}"
   register: create_vpc_subnets
 
