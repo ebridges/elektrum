@@ -1,0 +1,19 @@
+# RDS / PostgreSQL Facts
+
+rds_instance_name: elektron-db
+
+rds_instance_type: db.m1.small # db.m3.medium
+
+rds_master_username: 'elektron-dba'
+rds_master_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          35356561616438653732626161626437353165323939656431323963303839303736636336636265
+          6539333266653934363933663762623235616431333933350a343565326262363432306261346434
+          63623035666238343463396363616631613835623233353362346365326461376364323765333865
+          3238383463623264370a376237303031396130366239393563386564343532653432383563626536
+          3261
+
+rds_max_connections: 100
+rds_shared_buffers: 55706 # '{DBInstanceClassMemory/32768}'
+rds_effective_cache_size: 167117 # '{DBInstanceClassMemory*75/819200}'
+rds_work_mem: 17826 # '{DBInstanceClassMemory/102400}' # rds_max_connections * 1024 = 102400
