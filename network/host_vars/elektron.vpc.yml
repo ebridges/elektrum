@@ -64,6 +64,6 @@ vpc_security_groups:
     description: "Allow limited public PostgreSQL traffic only from specific IP"
     rules:
       - proto: tcp
-        cidr_ip: {{ home_ip }}/32
+        cidr_ip: "{{ home_ip }}/32"
         ports:
           - 5432
