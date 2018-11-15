@@ -6,3 +6,4 @@
 
   tasks:
     - include_tasks: rds/setup.sg.yml
+    - include_tasks: rds/setup.rds.yml
