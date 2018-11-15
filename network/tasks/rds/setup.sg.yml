@@ -27,7 +27,3 @@
     name: "{{ rds_instance_name }}-sg"
     description: '{{ rds_instance_name }} RDS subnet group'
     subnets: "{{ subnet_ids }}"
-    tags:
-    tags:
-      Service: "{{ service_name }}"
-      Name: "{{ rds_instance_name }}-sg"
