@@ -24,6 +24,6 @@
   rds_subnet_group:
     state: present
     region: "{{ aws_region }}"
-    name: "{{ rds_instance_name }}-sg"
+    name: "{{ rds_subnet_group_name }}"
     description: '{{ rds_instance_name }} RDS subnet group'
     subnets: "{{ subnet_ids }}"
