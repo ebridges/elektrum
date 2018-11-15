@@ -4,5 +4,8 @@
 # specify to run Ansible for hosts locally by default, not over SSH
 ansible_connection: local
 
+# override default, system python in order to use python in venv
+ansible_python_interpreter: python3
+
 # IP Address to allow access for SSH & PostgreSQL from:
 home_ip: 98.116.39.58
