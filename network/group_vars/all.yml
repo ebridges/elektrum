@@ -13,6 +13,7 @@ home_ip: 98.116.39.58
 service_name: elektron
 
 # AWS Facts
+aws_ssh_key: 'roja-llc'
 aws_region: us-east-1
 aws_access_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
