@@ -1,4 +1,4 @@
-ecs_state: "absent" # set to 'absent' to decommission cluster
+ecs_state: "present" # set to 'absent' to decommission cluster
 
 cluster_name: "{{ service_name }}-cluster"
 
