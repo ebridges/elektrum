@@ -6,6 +6,7 @@
     AWS_REGION: "{{ aws_region }}"
 
   roles:
-  - vpc
-  - rds
-  
+  # - vpc
+  # - rds
+  - elb
+  - ecs
