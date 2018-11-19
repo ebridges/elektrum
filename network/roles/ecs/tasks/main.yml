@@ -1,0 +1,59 @@
+- name: lookup vpc id
+  ec2_vpc_net_facts:
+    filters:
+      "tag:Service": "{{ service_name }}"
+  register: vpc_facts
+
+- debug:
+    msg: "{{ vpc_facts }}"
+
+- set_fact:
+    vpc_id: "{{ vpc_facts.vpcs[0].vpc_id }}"
+
+- name: look up security group ids
+  ec2_group_facts:
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:Name": 
+      - "allow-public-http"
+      - "allow-public-ssh"
+  register: sg
+
+- name: output sg info
+  debug:
+    msg: "{{ sg }}"
+
+- set_fact: 
+    security_group_ids: "{{ sg.security_groups|map(attribute='group_id')|list }}"
+
+- name: look up subnet ids
+  ec2_vpc_subnet_facts:
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:Service": "{{ service_name }}"
+      "tag:Visibility": "public"
+  register: subnet_facts
+
+- set_fact:
+   subnet_ids: "{{ subnet_facts.subnets|map(attribute='subnet_id')|list }}"
+
+- set_fact:
+    ecs_tags: 
+      - Service: "{{ service_name }}"
+      - Name: "{{ cluster_name }}"  
+
+- name: setup ecs cluster
+  include_role:
+    name: ecs-cluster
+  vars:
+    ecs_cluster_name: "{{ cluster_name }}"
+    ecs_ssh_key_name: "{{ aws_ssh_key }}"
+    ecs_security_groups: "{{ security_group_ids }}"
+    ecs_vpc_subnets: "{{ subnet_ids }}"
+    ecs_asg_min_size: "{{ asg_min_size }}"
+    ecs_asg_max_size: "{{ asg_max_size }}"
+    ecs_asg_desired_capacity: "{{ asg_desired_capacity }}"
+    ecs_instance_iam_role: "{{ service_name }}_ecs_instance_role"
+    ecs_env: "production"
+    ecs_ec2_tags: "{{ ecs_tags }}"
+    ecs_ec2_region: "{{ aws_region }}"
