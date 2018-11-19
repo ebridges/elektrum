@@ -1,0 +1,4 @@
+- name: ecs-cluster
+  scm: git
+  src: git+https://github.com/mediapeers/ansible-role-ecs-cluster.git
+  version: master  

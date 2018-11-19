@@ -19,3 +19,4 @@ sent_emails/
 # ansible
 **/*.retry
 */vault-password.txt
+**/roles/ecs-cluster/
