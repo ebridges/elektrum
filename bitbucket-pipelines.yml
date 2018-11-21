@@ -11,5 +11,5 @@ pipelines:
         caches:
           - pip
         script: # Modify the commands below to build your repository.
-          - pip install pipenv --upgrade
-          - pipenv install
+          - pip install --no-cache-dir --trusted-host pypi.python.org pipenv
+          - pipenv install  --system --deploy --dev
