@@ -9,6 +9,7 @@ pipelines:
   default:
     - step:
         caches:
-          - pipenv
+          - pip
         script: # Modify the commands below to build your repository.
+          - pip install pipenv --upgrade
           - pipenv install
