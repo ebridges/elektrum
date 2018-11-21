@@ -11,6 +11,8 @@ ansible_python_interpreter: python3
 home_ip: 98.116.39.58
 
 service_name: elektron
+ecs_name: "{{ service_name }}-cluster"
+elb_name: "{{ service_name }}-elb"
 
 # AWS Facts
 aws_ssh_key: 'roja-llc'

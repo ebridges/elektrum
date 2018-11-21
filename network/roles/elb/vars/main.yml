@@ -1,5 +1,3 @@
-elb_name: "{{ service_name }}-elb"
-
 aws_elb_ping_protocol: 'HTTP'
 aws_elb_ping_port: '80'
 aws_elb_ping_path: '/'
