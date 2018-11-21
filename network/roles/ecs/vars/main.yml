@@ -1,0 +1,5 @@
+ecs_state: "present" # set to 'absent' to decommission cluster
+
+asg_min_size: 2
+asg_max_size: 4
+asg_desired_capacity: 2

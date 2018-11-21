@@ -9,3 +9,8 @@ https://wsvincent.com/django-docker-postgresql/
 
 https://docs.djangoproject.com/en/2.1/intro/tutorial01/
 https://wsvincent.com/django-testing-tutorial/
+https://medium.com/@tomwwright/automating-with-ansible-building-a-vpc-c252944d3d2e
+
+
+AMI that has ECS Client & Docker Server pre-installed:
+ami_id: 'ami-07eb698ce660402d2'

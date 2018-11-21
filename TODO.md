@@ -6,3 +6,7 @@
 -[ ] REST API
      - https://wsvincent.com/django-rest-framework-user-authentication-tutorial/
      - 
+-[ ] Deploy to docker
+-[ ] Set up VPC/bastion
+-[ ] create aws cluster to host application
+-[ ] move `rds` and `vpc` folders from tasks to roles

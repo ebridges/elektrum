@@ -1,0 +1,76 @@
+- name: lookup vpc id
+  ec2_vpc_net_facts:
+    filters:
+      "tag:Service": "{{ service_name }}"
+  register: vpc_facts
+
+- set_fact:
+    vpc_id: "{{ vpc_facts.vpcs[0].vpc_id }}"
+
+- name: look up security group ids
+  ec2_group_facts:
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:Name": 
+      - "allow-public-http"
+  register: sg
+
+- set_fact: 
+    security_group_ids: "{{ sg.security_groups|map(attribute='group_id')|list }}"
+
+- name: look up subnet ids
+  ec2_vpc_subnet_facts:
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:Service": "{{ service_name }}"
+      "tag:Visibility": "public"
+  register: subnet_facts
+
+- set_fact:
+   subnet_ids: "{{ subnet_facts.subnets|map(attribute='subnet_id')|list }}"
+
+- set_fact:
+    elb_tags: 
+       Service: "{{ service_name }}"
+       Name: "{{ elb_name }}"  
+
+- set_fact:
+    aws_elb_instance_listeners: 
+      - protocol: 'http'
+        load_balancer_port: '80'
+        instance_protocol: 'http'
+        instance_port: '80'
+    # 
+    #  - protocol: 'https'
+    #    load_balancer_port: '443'
+    #    instance_protocol: 'http'
+    #    instance_port: '80'
+    #    ssl_certificate_id: "{{ ssl_certificate_id }}"
+    # }
+
+- name: create elb
+  ec2_elb_lb:
+    name: "{{ elb_name }}"
+    subnets: "{{ subnet_ids }}"
+    scheme: "internet-facing"
+    state: "present"
+    security_group_ids: "{{ security_group_ids }}"
+    region: "{{ aws_region }}"
+    listeners: "{{ aws_elb_instance_listeners }}"
+    health_check:
+      ping_protocol: "{{ aws_elb_ping_protocol }}"
+      ping_port: "{{ aws_elb_ping_port }}"
+      ping_path: "{{ aws_elb_ping_path | default('/') }}"
+      response_timeout: "{{ aws_elb_healthcheck_response_timeout }}"
+      interval: "{{ aws_elb_healthcheck_interval }}"
+      unhealthy_threshold: "{{ aws_elb_unhealthy_threshold }}"
+      healthy_threshold: "{{ aws_elb_healthy_threshold }}"
+    cross_az_load_balancing: "{{ aws_elb_cross_az_load_balancing }}"
+    connection_draining_timeout: "{{ aws_elb_draining_timeout }}"
+    purge_subnets: yes
+    purge_zones: yes
+    stickiness:
+      type: application
+      enabled: yes
+      cookie: SESSIONID
+    tags: "{{ elb_tags }}"

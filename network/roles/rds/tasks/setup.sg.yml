@@ -1,0 +1,29 @@
+# Creates the rds subnet group
+- ec2_vpc_net_facts:
+    filters:
+      "tag:Service": "{{ service_name }}"
+  register: vpc_facts
+
+- debug:
+    msg: "{{ vpc_facts }}"
+
+- set_fact:
+    vpc_id: "{{ vpc_facts.vpcs[0].vpc_id }}"
+
+- ec2_vpc_subnet_facts:
+    filters:
+        vpc-id: "{{ vpc_id }}"
+        "tag:Service": "{{ service_name }}"
+        "tag:Visibility": "private"
+  register: subnet_facts
+
+- set_fact:
+    subnet_ids: "{{ subnet_facts.subnets|map(attribute='subnet_id')|list }}"
+
+- name: create the rds subnet group
+  rds_subnet_group:
+    state: present
+    region: "{{ aws_region }}"
+    name: "{{ rds_subnet_group_name }}"
+    description: '{{ rds_instance_name }} RDS subnet group'
+    subnets: "{{ subnet_ids }}"
