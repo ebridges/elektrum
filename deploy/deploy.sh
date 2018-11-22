@@ -6,7 +6,7 @@ cmd=$1
 
 if [ -z "${cmd}" ];
 then
-    echo "$0 [build|run|deploy|login]"
+    echo "$0 [build|run|deploy]"
     exit 0
 fi
 
@@ -25,11 +25,7 @@ if [ "${cmd}" == 'deploy' ];
 then
     pipenv lock -r > deploy/temp-requirements.txt
     docker build --file deploy/Dockerfile --tag ${APP_NAME} .
-	docker tag ${APP_NAME} ${DOCKER_REPO}/${APP_NAME}:latest
+    $(aws ecr get-login --no-include-email --region us-east-1)
+    docker tag ${APP_NAME}:latest ${DOCKER_REPO}/${APP_NAME}:latest
     docker push ${DOCKER_REPO}/${APP_NAME}:latest
-fi
-
-if [ "${cmd}" == 'login' ];
-then
-    aws ecr --profile ${AWS_CLI_PROFILE} --region ${AWS_CLI_REGION} get-login --no-include-email
 fi

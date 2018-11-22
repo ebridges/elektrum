@@ -12,7 +12,7 @@ svc_max_percent: 200
 svc_task_containers:
   - name: "{{ svc_container_name }}"
     essential: true
-    image: "tutum/hello-world:latest"
+    image: "roja/elektron-service:latest"
     memory: 256
     cpu: 256
     # mountPoints:
