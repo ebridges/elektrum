@@ -53,7 +53,6 @@
     ecs_asg_min_size: "{{ asg_min_size }}"
     ecs_asg_max_size: "{{ asg_max_size }}"
     ecs_asg_desired_capacity: "{{ asg_desired_capacity }}"
-    ecs_instance_iam_role: "{{ service_name }}_ecs_instance_role"
     ecs_env: "{{ app_environment }}"
     ecs_ec2_tags: "{{ ecs_tags }}"
     ecs_ec2_region: "{{ aws_region }}"
