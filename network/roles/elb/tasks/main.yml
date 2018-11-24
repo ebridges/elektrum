@@ -48,6 +48,12 @@
     #    ssl_certificate_id: "{{ ssl_certificate_id }}"
     # }
 
+- name: store www port info
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: '^http_port_num="{{ http_listen_port }}"'
+    line: 'http_port_num="{{ http_listen_port }}"'
+
 - name: create elb
   ec2_elb_lb:
     name: "{{ elb_name }}"

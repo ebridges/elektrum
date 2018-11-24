@@ -1,0 +1,17 @@
+- name: Create a container repository
+  ecs_ecr: 
+    name: '{{ org_name }}/{{ service_name }}-service'
+    state: present
+  register: repository_info
+
+- debug: var=repository_info
+
+- name: set repo uri as fact
+  set_fact:
+    repository_uri: "{{ repository_info.repository.repositoryUri }}"
+
+- name: store repository info
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: '^container_repository_uri="{{ repository_uri }}"'
+    line: 'container_repository_uri="{{ repository_uri }}"'

@@ -1,5 +1,0 @@
-hostname="elektron-db.cf3jqjy0lfne.us-east-1.rds.amazonaws.com"
-port_num=5432
-instance="elektron-db"
-database="media_info"
-username="elektrondba"
