@@ -1,5 +1,5 @@
 aws_elb_ping_protocol: 'HTTP'
-aws_elb_ping_port: '80'
+aws_elb_ping_port: "{{ http_listen_port }}"
 aws_elb_ping_path: '/'
 aws_elb_healthcheck_response_timeout: 5
 aws_elb_healthcheck_interval: 10

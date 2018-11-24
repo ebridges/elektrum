@@ -2,7 +2,7 @@ svc_task_family: "{{ service_name }}_task_family"
 # svc_task_family_version: 3
 svc_name: "{{ service_name }}_service"
 svc_container_name: "{{ svc_name }}_container"
-svc_container_port: 80
+svc_container_port: "{{ http_listen_port }}"
 svc_tags: 
   - Service: "{{ service_name }}"
   - Name: "{{ ecs_task_family }}"

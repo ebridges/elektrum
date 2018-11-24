@@ -13,6 +13,7 @@ home_ip: 98.116.39.58
 service_name: elektron
 ecs_name: "{{ service_name }}-cluster"
 elb_name: "{{ service_name }}-elb"
+http_listen_port: 80
 
 # AWS Facts
 aws_ssh_key: 'roja-llc'
