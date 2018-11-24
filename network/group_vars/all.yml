@@ -16,6 +16,8 @@ cluster_name: "{{ service_name }}-cluster"
 elb_name: "{{ service_name }}-elb"
 config_info: ../etc/config.env
 http_listen_port: 80
+app_environment: "production"
+logging_namespace: "{{ service_name }}-{{ app_environment }}"
 
 # AWS Facts
 aws_ssh_key: 'roja-llc'
