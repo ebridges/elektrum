@@ -40,13 +40,13 @@
 - set_fact:
     ecs_tags: 
       - Service: "{{ service_name }}"
-      - Name: "{{ ecs_name }}"  
+      - Name: "{{ cluster_name }}"  
 
 - name: setup ecs cluster
   include_role:
     name: ecs-cluster
   vars:
-    ecs_cluster_name: "{{ ecs_name }}"
+    ecs_cluster_name: "{{ cluster_name }}"
     ecs_ssh_key_name: "{{ aws_ssh_key }}"
     ecs_security_groups: "{{ security_group_ids }}"
     ecs_vpc_subnets: "{{ subnet_ids }}"

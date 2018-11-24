@@ -12,7 +12,7 @@ home_ip: 98.116.39.58
 
 org_name: roja
 service_name: elektron
-ecs_name: "{{ service_name }}-cluster"
+cluster_name: "{{ service_name }}-cluster"
 elb_name: "{{ service_name }}-elb"
 config_info: ../etc/config.env
 http_listen_port: 80
