@@ -1,0 +1,31 @@
+- name: get ecs service details
+  ecs_service_facts:
+    cluster: "{{ cluster_name }}"
+    service: "{{ svc_name }}"
+    details: true
+  register: ecs_service_facts_output
+  
+- set_fact:
+    loadbalancers: "{{ ecs_service_facts_output.services[0].loadBalancers }}"
+  when: ecs_service_facts_output.ansible_facts.services | count
+
+- name: Scale services to zero
+  ecs_service:
+    name: "{{ svc_name }}"
+    state: present
+    cluster: "{{ cluster_name }}"
+    load_balancers: "{{ loadbalancers }}"
+    desired_count: 0
+    task_definition: "{{ svc_task_family }}"
+
+- name: Drop service to execute task
+  ecs_service:
+    name: "{{ svc_name }}"
+    state: absent
+    cluster: "{{ cluster_name }}"
+  register: task_output
+
+- debug: var=task_output
+
+- set_fact:
+    task_arn: "{{ task_output.ansible_facts.taskDefinition }}"

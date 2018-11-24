@@ -1,0 +1,42 @@
+- debug: 
+    msg: "logging: {{logging_namespace}}"
+
+- name: Configure container(s)
+  set_fact:
+    svc_task_containers:
+      - name: "{{ svc_container_name }}"
+        essential: true
+        image: "{{ repository_uri }}:latest"
+        memory: "{{ svc_containder_mem }}"
+        cpu: "{{ svc_containder_cpu }}"
+        # mountPoints:
+        # - containerPath: /usr/local/apache2/htdocs
+        #   sourceVolume: my-vol
+        workingDirectory: "/code"
+        command: 
+          - python
+          - manage.py
+          - runserver
+          - "0.0.0.0:{{ http_listen_port }}"
+        portMappings:
+          - containerPort: "{{ svc_container_port }}"
+            hostPort: "{{ svc_container_port }}"
+            protocol: "tcp"
+        logConfiguration:
+          logDriver: awslogs
+          options:
+            awslogs-group: "{{ logging_namespace }}"
+            awslogs-region: "{{ aws_region }}"
+
+- name: Create task definition
+  ecs_taskdefinition:
+    family: "{{ svc_task_family }}"
+    containers: "{{ svc_task_containers }}"
+    launch_type: EC2
+    state: present
+    network_mode: bridge
+    task_role_arn: "{{ ecs_instance_iam_role }}"
+    execution_role_arn: "{{ ecs_instance_iam_role }}"
+  register: task_output
+
+- debug: var=task_output
