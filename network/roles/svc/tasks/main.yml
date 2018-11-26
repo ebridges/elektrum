@@ -10,6 +10,13 @@
 
 - debug: var=task_output
 
+- elb_target_group_facts:
+    names: 
+      - "{{ elb_target_group_name }}"
+  register: elb_tg_info
+
+- debug: var=elb_tg_info
+
 - name: Create service to execute task
   ecs_service:
     state: present
@@ -27,4 +34,4 @@
     load_balancers:
       - containerName: "{{ svc_container_name }}"
         containerPort: "{{ svc_container_port }}"
-        loadBalancerName: "{{ elb_name }}"
+        targetGroupArn: "{{ elb_tg_info.target_groups[0].target_group_arn }}"
