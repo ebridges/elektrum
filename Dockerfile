@@ -1,8 +1,9 @@
-FROM python:3.7-alpine
-ENV PYTHONUNBUFFERED 1
-RUN mkdir /code
-WORKDIR /code
-ADD . /code
-EXPOSE 80
-RUN pip install --trusted-host pypi.python.org -r deploy/temp-requirements.txt
-CMD python manage.py runserver 0.0.0.0:80
+# start from an official image
+FROM python:3.7
+
+RUN mkdir -p /opt/services/elektron
+WORKDIR /opt/services/elektron
+COPY . /opt/services/elektron
+RUN pip install pipenv && pipenv install --system
+EXPOSE 8000
+CMD ["gunicorn", "--chdir", "elektron", "--bind", ":8000", "elektron.wsgi:application"]
