@@ -9,5 +9,5 @@ svc_tags:
 svc_desired_count: 6
 svc_min_healthy_percent: 50
 svc_max_percent: 200
-svc_containder_cpu: 256
-svc_containder_mem: 256
+svc_container_cpu: 256
+svc_container_mem: 256

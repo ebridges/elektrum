@@ -7,8 +7,8 @@
       - name: "{{ svc_container_name }}"
         essential: true
         image: "{{ repository_uri }}:latest"
-        memory: "{{ svc_containder_mem }}"
-        cpu: "{{ svc_containder_cpu }}"
+        memory: "{{ svc_container_mem }}"
+        cpu: "{{ svc_container_cpu }}"
         # mountPoints:
         # - containerPath: /usr/local/apache2/htdocs
         #   sourceVolume: my-vol
