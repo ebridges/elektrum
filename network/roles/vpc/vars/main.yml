@@ -52,6 +52,7 @@ vpc_security_groups:
         cidr_ip: "{{ home_ip }}/32"
         ports:
           - 22
+        rule_desc: "Home"
   - name: allow-public-http
     description: "Allow public web traffic"
     rules:
