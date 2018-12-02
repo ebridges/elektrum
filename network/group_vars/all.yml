@@ -16,10 +16,13 @@ cluster_name: "{{ service_name }}-cluster"
 ecs_instance_iam_role: "{{ service_name }}Service-ecsInstanceRole"
 ecs_state: "present" # set to 'absent' to decommission cluster, task def, & service
 elb_name: "{{ service_name }}-elb"
+elb_target_group_name: "{{ elb_name }}-target-group"
 config_info: ../etc/config.env
 http_listen_port: 80
 app_environment: "production"
 logging_namespace: "{{ service_name }}-{{ app_environment }}"
+logging_bucket: "cc.roja.logs"
+https_certificate_arn: "arn:aws:acm:us-east-1:169122179348:certificate/b05e2d74-c5bf-457a-a9fb-7c80379f6429"
 
 # AWS Facts
 aws_ssh_key: 'roja-llc'
@@ -40,6 +43,3 @@ aws_secret_key: !vault |
           33306133343433366338613036373030323762306234336637306634653233616538633833323436
           3339356131373634616263373564303963613562386639366431
 
-elb_target_group_name: "{{ elb_name }}-target-group"
-logging_bucket: "cc.roja.logs"
-https_certificate_arn: "arn:aws:acm:us-east-1:169122179348:certificate/b05e2d74-c5bf-457a-a9fb-7c80379f6429"
