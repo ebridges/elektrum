@@ -1,9 +1,14 @@
 ecs_ami_id: "ami-045f1b3f87ed83659"
 ecs_instance_type: "t2.micro"
-
-asg_min_size: 3
-asg_max_size: 6
-asg_desired_capacity: 3
+ecs_ec2_region: "{{ aws_region }}"
+ecs_env: "{{ app_environment }}"
+ecs_asg_min_size: 3
+ecs_asg_max_size: 6
+ecs_asg_desired_capacity: 3
+ecs_asg_health_type: ELB
+ecs_ec2_tags: 
+  - Service: "{{ service_name }}"
+  - Name: "{{ cluster_name }}"  
 
 # User-data needed to register the EC2 instance with ECS & Configure cloudwatch logs
 ecs_userdata: |
