@@ -1,27 +1,26 @@
-- debug: 
-    msg: "logging: {{logging_namespace}}"
+# - debug: 
+#     msg: "logging: {{logging_namespace}}"
 
 - name: Configure container(s)
   set_fact:
     svc_task_containers:
-      - name: "{{ svc_container_name }}"
+      - name: "{{ svc_proxy_container }}"
         essential: true
-        image: "{{ repository_uri }}:latest"
-        memory: "{{ svc_container_mem }}"
-        cpu: "{{ svc_container_cpu }}"
-        # mountPoints:
-        # - containerPath: /usr/local/apache2/htdocs
-        #   sourceVolume: my-vol
-        workingDirectory: "/code"
-        command: 
-          - python
-          - manage.py
-          - runserver
-          - "0.0.0.0:{{ http_listen_port }}"
+        image: nginx:1.13
         portMappings:
           - containerPort: "{{ svc_container_port }}"
             hostPort: "{{ svc_container_port }}"
             protocol: "tcp"
+        memoryReservation: "{{ svc_container_mem }}"
+        logConfiguration:
+          logDriver: awslogs
+          options:
+            awslogs-group: "{{ logging_namespace }}"
+            awslogs-region: "{{ aws_region }}"
+      - name: "{{ svc_app_container }}"
+        essential: true
+        image: "{{ repository_uri }}:latest"
+        memoryReservation: "{{ svc_container_mem }}"
         logConfiguration:
           logDriver: awslogs
           options:
