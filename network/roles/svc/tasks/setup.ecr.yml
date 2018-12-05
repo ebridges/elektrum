@@ -1,6 +1,6 @@
 - name: Create a container repository
   ecs_ecr: 
-    name: '{{ org_name }}/{{ service_name }}-service'
+    name: '{{ org_name }}/{{ service_name }}_app'
     state: present
   register: repository_info
 

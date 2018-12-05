@@ -1,36 +1,80 @@
 #!/usr/local/bin/bash
 
-WORKING_DIR=$(dirname "${BASH_SOURCE[0]}")  # get the script's directory name
-WORKING_DIR=$(realpath "${WORKING_DIR}/..") # resolve its full path up one dir
+USAGE="Usage: ${0} <path to config.env> [build|run|push|deploy|logs]"
 
-cd ${WORKING_DIR}
+CONFIG=${1}
+CMD=$2
 
-source etc/config.env
-
-TAG="${org_name}/${app_name}"
-
-cmd=$1
-
-if [ -z "${cmd}" ];
+if [ -z "${CONFIG}" ];
 then
-    echo "$0 [build|run|deploy]"
-    exit 0
+    echo ${USAGE}
+    exit 1
 fi
 
-if [ "${cmd}" == 'build' ];
+
+if [ -z "${CMD}" ];
 then
-    docker build --tag ${TAG} .
+    echo ${USAGE}
+    exit 1
 fi
 
-if [ "${cmd}" == 'run' ];
+if [ ! -e ./Dockerfile ];
 then
-    docker run ${TAG}
+    echo 'Dockerfile not found in current directory.'
+    exit 1
 fi
 
-if [ "${cmd}" == 'deploy' ];
+source ${CONFIG}
+
+IMAGE="${org_name}/${app_name}"
+
+
+if [ "${CMD}" == 'build' ];
 then
-    docker build  --tag ${TAG} .
+    docker build -t ${IMAGE}:latest .
+fi
+
+if [ "${CMD}" == 'push' ];
+then
+    docker build .
     $(aws ecr get-login --no-include-email --region us-east-1)
-    docker tag ${TAG}:latest ${container_repository_uri}:latest
+    docker tag ${IMAGE}:latest ${container_repository_uri}:latest
     docker push ${container_repository_uri}:latest
+fi
+
+if [ "${CMD}" == 'run' ];
+then
+    VERSION="latest" \
+      docker-compose up
+fi
+
+if [ "${CMD}" == 'deploy' ];
+then
+    ecs-cli configure \
+      --region "${aws_region_name}" \
+      --cluster "${ecs_cluster_name}"
+
+    VERSION="$(date +%Y%m%d%H%M)"
+
+    docker tag ${IMAGE}:latest "${container_repository_uri}:$VERSION"
+
+    docker push "${container_repository_uri}:$VERSION"
+
+    VERSION="${VERSION}" \
+    REGION="${aws_region_name}" \
+      ecs-cli compose \
+        --verbose \
+        --project-name "${ecs_service}" \
+        --ecs-params etc/ecs-params.yml \
+      service up \
+        --role "${ecs_task_exec_role}" \
+        --target-group-arn "${elb_target_group}" \
+        --container-name "proxy" \
+        --container-port "${http_port_num}" \
+        --timeout 0
+fi
+
+if [ "${CMD}" == 'logs' ];
+then
+    ecs-cli logs --since 10 --timestamps --follow
 fi

@@ -60,11 +60,17 @@
     target_type: instance
     targets: "{{ elb_targets }}"
     state: present
-    wait_timeout: 200
-    wait: True
+    wait: false
     tags:
        Service: "{{ service_name }}"
-       Name: "{{ elb_target_group_name }}"  
+       Name: "{{ elb_target_group_name }}"
+  register: elb_target
+
+- name: target group arn
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: '^elb_target_group="{{ elb_target.target_group_arn }}"'
+    line: 'elb_target_group="{{ elb_target.target_group_arn }}"'
 
 - name: configure instance listeners for elb
   set_fact:

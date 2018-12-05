@@ -12,7 +12,7 @@ home_ip: 98.116.39.58
 
 org_name: roja
 service_name: elektron
-cluster_name: "{{ service_name }}-cluster"
+cluster_name: "{{ service_name }}_cluster"
 ecs_instance_iam_role: "{{ service_name }}Service-ecsInstanceRole"
 ecs_state: "present" # set to 'absent' to decommission cluster, task def, & service
 elb_name: "{{ service_name }}-elb"

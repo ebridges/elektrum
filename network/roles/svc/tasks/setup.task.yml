@@ -30,7 +30,7 @@
 
 - name: Create task definition
   ecs_taskdefinition:
-    family: "{{ svc_task_family }}"
+    family: "{{ svc_name }}"
     containers: "{{ svc_task_containers }}"
     launch_type: EC2
     state: present

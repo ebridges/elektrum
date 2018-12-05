@@ -24,7 +24,7 @@
     name: "{{ svc_name }}"
     region: "{{ aws_region }}"
     cluster: "{{ cluster_name }}"
-    task_definition: '{{ svc_task_family }}'
+    task_definition: '{{ svc_name }}'
     desired_count: "{{ svc_desired_count }}"
     ### TODO need this???:
     ### role: abcdef
@@ -35,6 +35,12 @@
     #   subnets: "{{ subnet_ids }}"
     #   security_groups: "{{ security_group_ids }}"
     load_balancers:
-      - containerName: "{{ svc_container_name }}"
+      - containerName: "{{ svc_proxy_container }}"
         containerPort: "{{ svc_container_port }}"
         targetGroupArn: "{{ elb_tg_info.target_groups[0].target_group_arn }}"
+
+- name: save service name
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: '^ecs_service="{{ svc_name }}"'
+    line: 'ecs_service="{{ svc_name }}"'

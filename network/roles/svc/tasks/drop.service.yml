@@ -16,7 +16,7 @@
     cluster: "{{ cluster_name }}"
     load_balancers: "{{ loadbalancers }}"
     desired_count: 0
-    task_definition: "{{ svc_task_family }}"
+    task_definition: "{{ svc_name }}"
 
 - name: Drop service to execute task
   ecs_service:
