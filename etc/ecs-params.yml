@@ -1,0 +1,10 @@
+version: 1
+task_definition:
+  services:
+    elektron_service:
+      essential: true
+  ecs_network_mode: bridge
+docker_volumes:
+  - name: static_volume
+    scope: shared
+    autoprovision: true
