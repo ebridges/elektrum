@@ -1,8 +1,0 @@
-aws_elb_ping_protocol: 'HTTP'
-aws_elb_ping_path: '/hello.html'
-aws_elb_healthcheck_response_timeout: 5
-aws_elb_healthcheck_interval: 10
-aws_elb_unhealthy_threshold: 5
-aws_elb_healthy_threshold: 3
-aws_elb_cross_az_load_balancing: 'yes'
-aws_elb_draining_timeout: 20

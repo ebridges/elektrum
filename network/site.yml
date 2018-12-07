@@ -6,7 +6,5 @@
     AWS_REGION: "{{ aws_region }}"
 
   roles:
-    # run these roles in this order when state is "present"
-    - { role: "vpc", when: (ecs_state == 'present') }
-    - { role: "rds", when: (ecs_state == 'present') }
-    # - { role: "elb", when: (ecs_state == 'present') }
+    - vpc
+    - rds
