@@ -5,7 +5,6 @@ rds_database_name: media_info
 rds_subnet_group_name: "{{ rds_instance_name }}-sg"
 rds_parameter_group_name: "{{ rds_instance_name }}-pg"
 
-# Write out db connect info to a local file
 rds_instance_type: db.m3.medium
 
 rds_master_username: 'elektrondba'

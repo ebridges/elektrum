@@ -59,6 +59,7 @@
   ec2_vpc_igw:
     vpc_id: "{{ vpc_id }}"
     tags:
+      Name: "{{ service_name }}-igw"
       Service: "{{ service_name }}"
   register: create_gateway
 

@@ -1,7 +1,6 @@
 # host_vars/elektron.vpc.yml
 
-vpc_name: elektron-vpc-test
-vpc_key: roja-llc
+vpc_name: elektron-vpc
 
 vpc_cidr_block: 10.0.0.0/16
 
