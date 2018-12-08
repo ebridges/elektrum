@@ -21,3 +21,8 @@ temp-requirements.txt
 **/*.retry
 */vault-password.txt
 **/roles/ecs-cluster/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
