@@ -11,6 +11,7 @@ ansible_python_interpreter: python3
 home_ip: 98.116.39.58
 
 service_name: elektron
+db_instance_name: elektron-db
 config_info: ../etc/config.env
 
 # AWS Facts

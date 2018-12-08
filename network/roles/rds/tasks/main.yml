@@ -1,32 +1,11 @@
 ---
-- ec2_vpc_net_facts:
-    filters:
-      "tag:Service": "{{ service_name }}"
-  register: vpc_facts
-
-- debug:
-    msg: "{{ vpc_facts }}"
-
-- set_fact:
-    vpc_id: "{{ vpc_facts.vpcs[0].vpc_id }}"
-
-- ec2_vpc_subnet_facts:
-    filters:
-        vpc-id: "{{ vpc_id }}"
-        "tag:Service": "{{ service_name }}"
-        "tag:Visibility": "private"
-  register: subnet_facts
-
-- set_fact:
-    subnet_ids: "{{ subnet_facts.subnets|map(attribute='subnet_id')|list }}"
-
 - name: create the rds subnet group
   rds_subnet_group:
     state: present
     region: "{{ aws_region }}"
     name: "{{ rds_subnet_group_name }}"
-    description: '{{ rds_instance_name }} RDS subnet group'
-    subnets: "{{ subnet_ids }}"
+    description: '{{ db_instance_name }} RDS subnet group'
+    subnets: "{{ private_subnet_ids }}"
 
 - name: create a parameter group
   rds_param_group:
@@ -44,16 +23,6 @@
       Service: "{{ service_name }}"
       Name: "{{ rds_parameter_group_name }}"
 
-- name: look up the security group id
-  ec2_group_facts:
-    filters:
-      "tag:Name": "{{ vpc_name }}-private-sg"
-  register: rdssg
-
-- name: output rds sg info
-  debug:
-    msg: "{{ rdssg }}"
-
 - name: establish the RDS instance
   rds:
     command: create
@@ -64,11 +33,11 @@
     iops: 1000 # determines ssd vs. magnetic storage
     region: "{{ aws_region }}"
     instance_type: "{{ rds_instance_type }}"
-    instance_name: "{{ rds_instance_name }}"
+    instance_name: "{{ db_instance_name }}"
     username: "{{ rds_master_username }}"
     password: "{{ rds_master_password }}"
     subnet: "{{ rds_subnet_group_name }}"
-    vpc_security_groups: "{{ rdssg.security_groups[0].group_id }}"
+    vpc_security_groups: "{{ private_security_group_id }}"
     parameter_group: "{{ rds_parameter_group_name }}"
     publicly_accessible: no
     upgrade: yes
@@ -76,40 +45,4 @@
     wait_timeout: 3000 # 50 minutes
     tags:
       Service: "{{ service_name }}"
-      Name: "{{ rds_instance_name }}"
-  register: rds
-
-- name: output rds info
-  debug:
-    msg: "{{ rds }}"
-
-- name: store db host info
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^db_hostname="{{ rds.instance.endpoint }}"'
-    line: 'db_hostname="{{ rds.instance.endpoint }}"'
-
-- name: store db port info
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^db_port_num="{{ rds.instance.port }}"'
-    line: 'db_port_num="{{ rds.instance.port }}"'
-
-- name: store db instance info
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^db_instance="{{ rds.instance.id }}"'
-    line: 'db_instance="{{ rds.instance.id }}"'
-
-- name: store db name
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^db_name="{{ rds.instance.db_name }}"'
-    line: 'db_name="{{ rds.instance.db_name }}"'
-
-- name: store username
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^db_username="{{ rds.instance.username }}"'
-    line: 'db_username="{{ rds.instance.username }}"'
-
+      Name: "{{ db_instance_name }}"
