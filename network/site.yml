@@ -6,5 +6,7 @@
     AWS_REGION: "{{ aws_region }}"
 
   roles:
-    - vpc
-    - rds
+    - { role: common, tags: common }
+    - { role: vpc, tags: vpc }
+    - { role: rds, tags: rds }
+    - { role: cfg, tags: cfg }
