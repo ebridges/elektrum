@@ -14,7 +14,7 @@ service_name: elektron
 config_info: ../etc/config.env
 
 # AWS Facts
-aws_ssh_key: 'roja-llc'
+aws_ssh_key: roja-llc
 aws_region: us-east-1
 aws_access_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
