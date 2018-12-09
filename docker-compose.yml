@@ -17,7 +17,7 @@ services:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
       - static_volume:/opt/services/elektron/static
     depends_on:
-      - app
+      - elektron_app
     networks:
       - proxy_network
 
