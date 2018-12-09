@@ -1,7 +1,8 @@
 0.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix stray char in ALLOWED_HOSTS that caused a bad request.
+- Fix typo in app name in Dockerfile.
 
 
 0.0 (2018-12-08)
