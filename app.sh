@@ -50,7 +50,7 @@ then
        --vpc.ec2subnets "${vpc_public_subnet_ids}" \
        --vpc.elbsubnets "${vpc_public_subnet_ids}" \
        --vpc.securitygroups "${vpc_security_group_ids}" \
-       --elb-type applications \
+       --elb-type application \
        "${service_name}-${ENV}"
 
     exit $?
