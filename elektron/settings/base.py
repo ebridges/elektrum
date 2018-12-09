@@ -25,10 +25,7 @@ SECRET_KEY = '%&*mqp(4_@ec9ih9gqekms8%-^0uvdau^1*i^r)d+-z)1*h$o1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'elektron-stg.us-east-1.elasticbeanstalk.com',
-    '172.31.36.85'
-]
+ALLOWED_HOSTS = []
 
 
 # Application definition
