@@ -1,7 +1,10 @@
+Elektron Change Log
+================
+
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Health checks are done direct to IP address, which is not in ALLOWED_HOSTS and causing the health check (and deploy) to fail.
 
 
 0.1 (2018-12-09)
