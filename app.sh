@@ -11,19 +11,31 @@ fi
 if [ 'deploy-release' == "${CMD}" ];
 then
     current_branch=$(git branch | grep \* | cut -d ' ' -f2)
-    if [ "${current_branch}" == 'master' ];
+    if [ "${current_branch}" != 'master' ];
     then
-	fullrelease
-	if [ ! $? ];
-	then
-	    echo "Error bundling release."
-	    exit $?
-	fi
+	echo "Current branch is not master: [${current_branch}]."
+	exit 1
+    fi
+    
+    fullrelease --verbose --no-input
+    if [ ! $? ];
+    then
+	echo "Error bundling release."
+	exit $?
+    fi
+
+    read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
+
+    if [ "$key" = '' ]; then
+	# key pressed, do something
+	# echo [$key] is pressed # uncomment to trace
+	echo 'Release tagging successful, deploying application.'
 	eb deploy
 	exit $?
     else
-	echo "Current branch is not master: [${current_branch}]."
-	exit 1
+	# Anything else pressed, do whatever else.
+	# echo [$key] not empty
+	echo 'Deploy cancelled.'
     fi
 fi
    
