@@ -1,3 +1,48 @@
 ---
-- include_tasks: setup.sg.yml
-- include_tasks: setup.rds.yml
+- name: create the rds subnet group
+  rds_subnet_group:
+    state: present
+    region: "{{ aws_region }}"
+    name: "{{ rds_subnet_group_name }}"
+    description: '{{ db_instance_name }} RDS subnet group'
+    subnets: "{{ private_subnet_ids }}"
+
+- name: create a parameter group
+  rds_param_group:
+    state: present
+    name: "{{ rds_parameter_group_name }}"
+    description: "Parameters for {{ service_name }}"
+    engine: "postgres10"
+    region: "{{ aws_region }}"
+    params:
+      max_connections: "{{ rds_max_connections }}"
+      shared_buffers: "{{ rds_shared_buffers }}"
+      effective_cache_size: "{{ rds_effective_cache_size }}"
+      work_mem: "{{ rds_work_mem }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ rds_parameter_group_name }}"
+
+- name: establish the RDS instance
+  rds:
+    command: create
+    db_engine: postgres
+    db_name: "{{ rds_database_name }}"
+    port: "{{ rds_listen_port }}"
+    size: "{{ rds_storage_size }}"
+    iops: 1000 # determines ssd vs. magnetic storage
+    region: "{{ aws_region }}"
+    instance_type: "{{ rds_instance_type }}"
+    instance_name: "{{ db_instance_name }}"
+    username: "{{ rds_master_username }}"
+    password: "{{ rds_master_password }}"
+    subnet: "{{ rds_subnet_group_name }}"
+    vpc_security_groups: "{{ private_security_group_id }}"
+    parameter_group: "{{ rds_parameter_group_name }}"
+    publicly_accessible: no
+    upgrade: yes
+    wait: yes
+    wait_timeout: 3000 # 50 minutes
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ db_instance_name }}"

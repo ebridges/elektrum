@@ -10,6 +10,7 @@ sent_emails/
 
 # pyenv
 .python-version
+temp-requirements.txt
 
 # editor
 **/.vscode/
@@ -20,3 +21,8 @@ sent_emails/
 **/*.retry
 */vault-password.txt
 **/roles/ecs-cluster/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

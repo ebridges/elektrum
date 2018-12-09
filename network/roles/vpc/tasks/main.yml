@@ -1,3 +1,84 @@
----
-- include_tasks: setup.vpc.yml
-- include_tasks: setup.gateways.yml
+# tasks/vpc/setup.vpc.yml
+# ---
+# creates a VPC, configures a list of defined subnets, configures a list of defined security groups
+
+# confirm existence of auth key
+- name: create EC2 key
+  ec2_key:
+    name: "{{ aws_ssh_key }}"
+
+# create our VPC named {{ vpc_name }}, saving the output into `create_vpc`
+- name: "create a new vpc named: [{{ vpc_name }}]"
+  ec2_vpc_net:
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    region: "{{ aws_region }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ vpc_name }}"
+  register: create_vpc
+
+# parse the output of creating the VPC to extract the VPC ID -- we need to specify this in the subsequent tasks
+- name: "collect id of newly created vpc [{{ vpc_name }}]"
+  set_fact:
+    vpc_id: "{{ create_vpc.vpc.id }}"
+
+# iterate over our dictionary of subnets with `with_dict`, and create each one with the Ansible module
+- name: "create a set of subnets within the vpc [{{ vpc_name }}]"
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_id }}"
+    cidr: "{{ item.value.cidr }}"
+    az: "{{ item.value.az }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ item.key }}"
+      Visibility: "{{ item.value.visibility }}"
+  with_dict: "{{ vpc_subnets }}"
+  register: create_vpc_subnets
+
+# register a dictionary of subnet-name -> subnet-id
+- name: "set fact: VPC subnet IDs"
+  set_fact:
+    vpc_subnet_ids: "{{ vpc_subnet_ids | default({}) | combine({ item.subnet.tags.Name: item.subnet.id }) }}"
+  loop: "{{ create_vpc_subnets.results }}"
+
+# create a set of security groups
+- name: create VPC security groups
+  ec2_group:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    vpc_id: "{{ vpc_id }}"
+    rules: "{{ item.rules }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ item.name }}"
+  loop: "{{ vpc_security_groups }}"
+
+# create the internet gateway, saving the output to extract the ID later
+- name: create internet gateway
+  ec2_vpc_igw:
+    vpc_id: "{{ vpc_id }}"
+    tags:
+      Name: "{{ service_name }}-igw"
+      Service: "{{ service_name }}"
+  register: create_gateway
+
+# capture new gateway id
+- name: "set facts: Gateway IDs and IP"
+  set_fact:
+    vpc_gateway_id: "{{ create_gateway.gateway_id }}"
+
+# public route table that routes through the internet gateway -- attach it to our three public subnets
+- name: create route table for public subnets
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ vpc_name }}-public"
+    subnets:
+      - "{{ vpc_subnet_ids['public-01'] }}"
+      - "{{ vpc_subnet_ids['public-02'] }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ vpc_gateway_id }}"

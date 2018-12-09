@@ -14,3 +14,18 @@ https://medium.com/@tomwwright/automating-with-ansible-building-a-vpc-c252944d3d
 
 AMI that has ECS Client & Docker Server pre-installed:
 ami_id: 'ami-07eb698ce660402d2'
+
+### Info
+
+Run locally:
+
+`cd elektron && python manage.py runserver`
+
+Run via Gunicorn:
+
+`gunicorn --chdir elektron --bind :8000 elektron.wsgi:application`
+
+Build network:
+
+`cd network && ./run.sh`
+

@@ -6,9 +6,17 @@ name = "pypi"
 [packages]
 django = "*"
 django-allauth = "*"
+gunicorn = "*"
 
 [dev-packages]
 pylint = "*"
+ansible = "*"
+ansible-vault = "*"
+"boto3" = "*"
+botocore = "*"
+boto = "*"
+awsebcli = "*"
+zest-releaser = "*"
 
 [requires]
 python_version = "3.7"

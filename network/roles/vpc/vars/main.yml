@@ -1,8 +1,6 @@
 # host_vars/elektron.vpc.yml
 
 vpc_name: elektron-vpc
-vpc_key: elektron-key
-vpc_dns_zone: elektron-dns
 
 vpc_cidr_block: 10.0.0.0/16
 
@@ -23,47 +21,37 @@ vpc_subnets:
     cidr: 10.0.4.0/24
     az: "{{ aws_region }}b"
     visibility: public
-  private-03:
-    cidr: 10.0.5.0/24
-    az: "{{ aws_region }}c"
-    visibility: private
-  public-03:
-    cidr: 10.0.6.0/24
-    az: "{{ aws_region }}c"
-    visibility: public
 
 # a list defining the security groups for our VPC
 vpc_security_groups:
-  - name: vpc
-    description: "Allow internal traffic in the VPC"
-    rules:
-      - proto: all
-        group_name: vpc
-        ports:
-          - 22
-          - 80
-          - 443
-          - 5432
-          - 8080-8099
-  - name: allow-public-ssh
-    description: "Allow limited public SSH only from specific IP"
+  - name: "{{ vpc_name }}-public-sg"
+    description: "Allow public HTTP & limited public SSH"
     rules:
       - proto: tcp
         cidr_ip: "{{ home_ip }}/32"
         ports:
           - 22
-  - name: allow-public-http
-    description: "Allow public web traffic"
-    rules:
+        rule_desc: "Home"
+      - proto: tcp
+        cidr_ip: "152.179.78.138/32"
+        ports:
+          - 22
+        rule_desc: "Work"
+      - proto: tcp
+        cidr_ip: "72.69.147.155/32"
+        ports:
+          - 22
+        rule_desc: "Cafe"
       - proto: tcp
         cidr_ip: 0.0.0.0/0
         ports:
           - 80
           - 443
-  - name: allow-public-postgres
-    description: "Allow limited public PostgreSQL traffic only from specific IP"
+  - name: "{{ vpc_name }}-private-sg"
+    description: "Allow traffic to PSQL only if the public group allowed it"
     rules:
       - proto: tcp
-        cidr_ip: "{{ home_ip }}/32"
+        group_name: "{{ vpc_name }}-public-sg"
         ports:
           - 5432
+        rule_desc: "Access to PostgreSQL from app servers."

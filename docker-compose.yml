@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  elektron_app:
+    image: roja/elektron_app:latest
+    volumes:
+      - .:/opt/services/elektron
+      - static_volume:/opt/services/elektron/static
+    networks:
+      - proxy_network
+
+  elektron_proxy:
+    image: nginx:1.13
+    ports:
+      - 80:80
+    volumes:
+      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/opt/services/elektron/static
+    depends_on:
+      - app
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    driver: bridge
+
+volumes:
+  static_volume:

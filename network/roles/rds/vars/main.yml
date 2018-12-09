@@ -1,12 +1,9 @@
 # RDS / PostgreSQL Facts
 
-rds_instance_name: elektron-db
 rds_database_name: media_info
-rds_subnet_group_name: "{{ rds_instance_name }}-sg"
-rds_parameter_group_name: "{{ rds_instance_name }}-pg"
+rds_subnet_group_name: "{{ db_instance_name }}-sg"
+rds_parameter_group_name: "{{ db_instance_name }}-pg"
 
-# Write out db connect info to a local file
-rds_database_info: ../etc/database-info.txt
 rds_instance_type: db.m3.medium
 
 rds_master_username: 'elektrondba'

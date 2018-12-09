@@ -10,12 +10,14 @@ ansible_python_interpreter: python3
 # IP Address to allow access for SSH & PostgreSQL from:
 home_ip: 98.116.39.58
 
+org_name: roja
 service_name: elektron
-ecs_name: "{{ service_name }}-cluster"
-elb_name: "{{ service_name }}-elb"
+app_name: elektron_app
+db_instance_name: elektron-db
+config_info: ../etc/config.env
 
 # AWS Facts
-aws_ssh_key: 'roja-llc'
+aws_ssh_key: roja-llc
 aws_region: us-east-1
 aws_access_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -33,6 +35,3 @@ aws_secret_key: !vault |
           33306133343433366338613036373030323762306234336637306634653233616538633833323436
           3339356131373634616263373564303963613562386639366431
 
-elb_target_group_name: "{{ elb_name }}-target-group"
-logging_bucket: "cc.roja.logs"
-https_certificate_arn: "arn:aws:acm:us-east-1:169122179348:certificate/b05e2d74-c5bf-457a-a9fb-7c80379f6429"
