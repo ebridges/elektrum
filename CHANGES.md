@@ -1,4 +1,4 @@
-0.1 (unreleased)
+0.1 (2018-12-09)
 ----------------
 
 - Fix stray char in ALLOWED_HOSTS that caused a bad request.
