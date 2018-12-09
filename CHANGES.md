@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.3 (unreleased)
+0.3 (2018-12-09)
 ----------------
 
 - Pause before a deploy, and rely on defaults for release bundling.
