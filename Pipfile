@@ -16,6 +16,7 @@ ansible-vault = "*"
 botocore = "*"
 boto = "*"
 awsebcli = "*"
+zest-releaser = "*"
 
 [requires]
 python_version = "3.7"
