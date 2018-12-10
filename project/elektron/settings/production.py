@@ -1,6 +1,9 @@
 from .base import *
+import os
+
 DEBUG = False
 ALLOWED_HOSTS = [ 'elektron-production.us-east-1.elasticbeanstalk.com', '127.0.0.1', 'localhost'  ]
+SECRET_KEY=os.getenv('secret_key')
 
 import requests
 try:
