@@ -4,7 +4,7 @@ Elektron Change Log
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Run migrations before running server to collect static files and apply any db changes.
 
 
 0.3 (2018-12-09)
