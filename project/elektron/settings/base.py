@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +28,22 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#### Elektron Settings
+
+# establish project root directory as a variable
+ELEKTRON_PROJECT_DIR=os.path.abspath('%s/..' % BASE_DIR)
+
+# read version number for display in the app
+with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
+    APP_VERSION_NUMBER = v_file.read()
+
+# declare location of environment file
+ELEKTRON_ENV_PATH='%s/etc/config.env' % ELEKTRON_PROJECT_DIR
+
+# import project environment
+load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
+
+#### End Elektron Settings
 
 # Application definition
 

@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 django-allauth = "*"
 gunicorn = "*"
+python-dotenv = {extras = ["cli"],version = "*"}
 
 [dev-packages]
 pylint = "*"
