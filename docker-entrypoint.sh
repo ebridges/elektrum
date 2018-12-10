@@ -1,4 +1,5 @@
 #!/bin/sh
+cd project
 echo 'Collecting static files.'
 python manage.py collectstatic --noinput
 echo 'Making migrations.'
