@@ -7,5 +7,5 @@ COPY . /opt/services/elektron
 RUN chmod +x docker-entrypoint.sh
 RUN pip install pipenv && pipenv install --system
 EXPOSE 8000
-CMD ["gunicorn", "--chdir", "elektron", "--bind", ":8000", "elektron.wsgi:application"]
+CMD ["gunicorn", "--chdir", "elektron/project", "--bind", ":8000", "elektron.wsgi:application"]
 ENTRYPOINT [ "./docker-entrypoint.sh" ]

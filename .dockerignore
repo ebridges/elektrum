@@ -4,12 +4,9 @@
 .vscode
 README.md
 TODO.md
-bin
-bitbucket-pipelines.yml
-db.sqlite3
-etc
+**/db.sqlite3
 network
-sent_emails
+**/sent_emails
 **/__pycache__
 **/*.pyc
 *.log
