@@ -4,7 +4,7 @@ Elektron Change Log
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Organize Django project files under a subdirectory, and expose some product information to the templates so that we know what version is being displayed.
 
 
 0.4 (2018-12-09)
