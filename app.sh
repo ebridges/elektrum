@@ -13,8 +13,8 @@ then
     current_branch=$(git branch | grep \* | cut -d ' ' -f2)
     if [ "${current_branch}" != 'master' ];
     then
-	echo "Current branch is not master: [${current_branch}]."
-	exit 1
+        echo "Current branch is not master: [${current_branch}]."
+        exit 1
     fi
     
     fullrelease --verbose --no-input
@@ -27,15 +27,15 @@ then
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-	# key pressed, do something
-	# echo [$key] is pressed # uncomment to trace
-	echo 'Release tagging successful, deploying application.'
-	eb deploy
-	exit $?
+        # key pressed, do something
+        # echo [$key] is pressed # uncomment to trace
+        echo 'Release tagging successful, deploying application.'
+        eb deploy
+        exit $?
     else
-	# Anything else pressed, do whatever else.
-	# echo [$key] not empty
-	echo 'Deploy cancelled.'
+        # Anything else pressed, do whatever else.
+        # echo [$key] not empty
+        echo 'Deploy cancelled.'
     fi
 fi
    
