@@ -13,4 +13,4 @@ python manage.py makemigrations
 echo 'Running migrations.'
 python manage.py migrate
 echo "Executing CMD: $@"
-exec "$@"
+exec gunicorn --chdir elektron --bind :8000 elektron.wsgi:application
