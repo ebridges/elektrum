@@ -3,7 +3,7 @@ Elektron Change Log
 
 0.6 (unreleased)
 ----------------
-- Nothing changed yet.
+- Correct a bunch of misc errors with running container, document it better, and fail releases if container is not functioning correctly.
 
 0.5 (2018-12-10)
 ----------------
