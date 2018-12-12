@@ -2,10 +2,10 @@ version: '3'
 
 services:
   elektron_app:
-    image: roja/elektron_app:latest
+    image: roja/elektron:latest
     volumes:
-      - .:/opt/services/elektron
-      - static_volume:/opt/services/elektron/project/static
+      - .:/app
+      - static_volume:/app/project/static
     networks:
       - proxy_network
 
@@ -15,7 +15,7 @@ services:
       - 80:80
     volumes:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
-      - static_volume:/opt/services/elektron/project/static
+      - static_volume:/app/project/static
     depends_on:
       - elektron_app
     networks:

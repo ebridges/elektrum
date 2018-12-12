@@ -1,3 +1,6 @@
+# project related
+project/static/admin/**
+
 # byte-compiled
 __pycache__/
 *.pyc
