@@ -15,17 +15,45 @@ https://medium.com/@tomwwright/automating-with-ansible-building-a-vpc-c252944d3d
 AMI that has ECS Client & Docker Server pre-installed:
 ami_id: 'ami-07eb698ce660402d2'
 
-### Info
+#### Running the Application
 
-Run locally:
+*Running Locally*
 
-`cd elektron && python manage.py runserver`
+Django `runserver`:
 
-Run via Gunicorn:
+* `cd project`
+* `ELEKTRON_ENV=development python manage.py runserver`
+* `open http://localhost:8000`
 
-`gunicorn --chdir elektron --bind :8000 elektron.wsgi:application`
+Gunicorn:
+
+* `cd project`
+* `ELEKTRON_ENV=development gunicorn --bind :8000 elektron.wsgi:application`
+* `open http://localhost:8000`
+
+*Running in a container*
+
+Building the container image:
+
+* `docker build -t roja/elektron:latest .`
+
+_Before running, specify the environment by editing `ELEKTRON_ENV` in `etc/config.env`._
+
+To run via Docker:
+
+* `docker run --publish 8000:8000 roja/elektron:latest`
+* `open http://localhost:8000`
+
+Run via Docker Compose:
+
+_Docker compose runs the application behind a proxy, so it listens on `80` instead._
+
+* `docker-compose up`
+* `open http://localhost:80`
+
+#### Misc Info
 
 Build network:
 
-`cd network && ./run.sh`
+* see `network/README.md`
 
