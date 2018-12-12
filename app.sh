@@ -17,11 +17,27 @@ then
         exit 1
     fi
     
-    fullrelease --verbose --no-input
-    if [ ! $? ];
+    echo "Running integration test."
+    ./integration_test.py
+    result=$?
+    echo "result: ${result}"
+    if [ ! ${result} ];
     then
-	echo "Error bundling release."
-	exit $?
+        echo "Error running integration test."
+        exit ${result}
+    fi
+    read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
+
+    if [ "$key" = '' ]; then
+        fullrelease --verbose --no-input
+        result=$?
+        if [ ! ${result} ];
+        then
+            echo "Error bundling release."
+            exit ${result}
+        else
+            echo 'Deploy cancelled.'
+        fi
     fi
 
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
