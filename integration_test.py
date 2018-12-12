@@ -13,7 +13,7 @@ def run_test():
       print("testing localhost")
       r = requests.head("http://localhost/status/ok")
       print("response %s" % r.status_code)
-      if r.status_code > 400:
+      if r.status_code < 400:
         print("OK")
       else:
         raise AssertionError("status not okay")
