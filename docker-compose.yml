@@ -2,7 +2,7 @@ version: '3'
 
 services:
   elektron_app:
-    image: roja/elektron_app:latest
+    image: roja/elektron:latest
     volumes:
       - .:/app
       - static_volume:/app/project/static
