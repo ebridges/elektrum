@@ -1,4 +1,10 @@
 #!/bin/sh
+
+if [ -z "${ELEKTRON_ENV}" ];
+then
+  . etc/config.env
+fi
+
 cd project
 echo 'Collecting static files.'
 python manage.py collectstatic --noinput
