@@ -21,7 +21,7 @@ def run_tests():
   for url in urls_to_test:
     try:
       test_url(url)
-    catch AssertionError e:
+    except AssertionError as e:
       print('[FAIL]: %s [%s]' % (url,e))
       has_errors=True
     else:
@@ -34,7 +34,7 @@ def test_url(url):
     r = requests.head(url)
     if r.status_code >= 400:
       raise AssertionError('status code %d' % r.status_code)
-  except requests.ConnectionError e:
+  except requests.ConnectionError as e:
     raise AssertionError('cannot connect to container: %s' % e)
 
 
