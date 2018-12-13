@@ -46,7 +46,7 @@ def main():
   message = 'Test Completed'
 
   if run_tests():
-    message += ' - ERROR: %s' % e
+    message += ' - ERROR'
     result = 1
   else:
     message += ' - OK'
