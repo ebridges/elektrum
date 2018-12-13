@@ -31,13 +31,14 @@ then
     if [ "$key" = '' ]; then
         fullrelease --verbose --no-input
         result=$?
-        if [ ! ${result} ];
+        if [ ${result} ];
         then
             echo "Error bundling release."
             exit ${result}
-        else
-            echo 'Deploy cancelled.'
         fi
+    else
+        echo 'Deploy cancelled.'
+        exit 0
     fi
 
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
@@ -52,6 +53,7 @@ then
         # Anything else pressed, do whatever else.
         # echo [$key] not empty
         echo 'Deploy cancelled.'
+        exit 0
     fi
 fi
    
