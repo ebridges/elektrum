@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.7 (unreleased)
 ----------------
-
-- Nothing changed yet.
-
+- Add test to confirm static files are configured properly.
 
 0.6 (2018-12-12)
 ----------------
