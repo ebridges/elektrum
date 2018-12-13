@@ -10,17 +10,32 @@ import sys
 
 process=None
 
-def run_test():
+urls_to_test = [
+  'http://localhost/status/ok',
+  'http://localhost/static/img/logo.png',
+]
+
+
+def run_tests():
+  has_errors = False
+  for url in urls_to_test:
+    try:
+      test_url(url)
+    except AssertionError as e:
+      print('[FAIL]: %s [%s]' % (url,e))
+      has_errors=True
+    else:
+      print('[OK]: %s' % url)
+  return has_errors
+
+
+def test_url(url):
   try:
-      print("testing localhost")
-      r = requests.head("http://localhost/status/ok")
-      print("response %s" % r.status_code)
-      if r.status_code < 400:
-        print("OK")
-      else:
-        raise AssertionError("status not okay")
-  except requests.ConnectionError:
-    raise AssertionError("container does not work")
+    r = requests.head(url)
+    if r.status_code >= 400:
+      raise AssertionError('status code %d' % r.status_code)
+  except requests.ConnectionError as e:
+    raise AssertionError('cannot connect to container: %s' % e)
 
 
 def main():
@@ -29,16 +44,16 @@ def main():
   time.sleep(5)
   result = 0
   message = 'Test Completed'
-  try:
-    run_test()
-    message += ' - OK'
-  except AssertionError as e:
-    message += ' - ERROR: %s' % e
+
+  if run_tests():
+    message += ' - ERROR'
     result = 1
-  finally:
-    os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-    time.sleep(5)
-    s.join()
+  else:
+    message += ' - OK'
+
+  os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+  time.sleep(5)
+  s.join()
 
   print(message)
   return result
