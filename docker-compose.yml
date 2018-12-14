@@ -1,8 +1,13 @@
 version: '3'
+volumes:
+  static_volume:
+    driver: local
 
 services:
   elektron_app:
     image: roja/elektron:latest
+    volumes:
+      - static_volume:/app/static
     networks:
       - proxy_network
 
@@ -12,6 +17,7 @@ services:
       - 80:80
     volumes:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/app/static
     depends_on:
       - elektron_app
     networks:
