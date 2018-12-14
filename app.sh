@@ -27,8 +27,9 @@ then
         exit ${result}
     fi
     read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
-
+    declare version
     if [ "$key" = '' ]; then
+        version=$(cat ./version.txt | sed 's/\.dev0//')
         fullrelease --verbose --no-input
         result=$?
         if [ ! ${result} ];
@@ -41,13 +42,20 @@ then
         exit 0
     fi
 
+    if [ -z "${version}"];
+    then
+        echo "Version not set."
+        exit 1
+    fi
+
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
         # key pressed, do something
         # echo [$key] is pressed # uncomment to trace
-        echo 'Release tagging successful, deploying application.'
-        eb deploy
+        echo "Release tagging successful, deploying application version ${version}"
+        docker build -t roja/elektron:${version} .
+        eb deploy --version "${version}"
         exit $?
     else
         # Anything else pressed, do whatever else.
