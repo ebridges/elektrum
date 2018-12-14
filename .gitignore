@@ -1,5 +1,5 @@
 # project related
-project/static/admin/**
+static/**
 
 # byte-compiled
 __pycache__/
