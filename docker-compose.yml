@@ -4,8 +4,8 @@ services:
   elektron_app:
     image: roja/elektron:latest
     volumes:
-      - .:/app
-      - static_volume:/app/project/static
+      # - .:/app
+      # - static_volume:/app/project/static
     networks:
       - proxy_network
 
@@ -15,7 +15,7 @@ services:
       - 80:80
     volumes:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
-      - static_volume:/app/project/static
+      # - static_volume:/app/project/static
     depends_on:
       - elektron_app
     networks:
@@ -25,5 +25,5 @@ networks:
   proxy_network:
     driver: bridge
 
-volumes:
-  static_volume:
+# volumes:
+#   static_volume:
