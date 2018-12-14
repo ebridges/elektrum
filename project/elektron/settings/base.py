@@ -48,6 +48,7 @@ load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
