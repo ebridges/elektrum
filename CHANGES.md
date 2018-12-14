@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.8 (unreleased)
 ----------------
-
-- Nothing changed yet.
-
+- Fix bug in condition check in deploy script.
 
 0.7 (2018-12-12)
 ----------------
