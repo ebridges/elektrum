@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.9 (unreleased)
+0.9 (2018-12-14)
 ----------------
 - [#1]: Add a library to proxy static files in-app, resolving issue where static files were 404 on beanstalk.
 - [#2]: After the previous fix it turned out that files were not available to nginx, leading to 404 errors -- explaining the need for a volume LoL.  Also, to better determine what version is running add some logic to rebuild the image each deploy and version it.
