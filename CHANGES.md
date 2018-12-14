@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.9 (unreleased)
 ----------------
-
-- Nothing changed yet.
-
+- [#1]: Add a library to proxy static files in-app, resolving issue where static files were 404 on beanstalk.
 
 0.8 (2018-12-14)
 ----------------
