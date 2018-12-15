@@ -42,7 +42,7 @@ then
         exit 0
     fi
 
-    if [ -z "${version}"];
+    if [ -z "${version}" ];
     then
         echo "Version not set."
         exit 1
