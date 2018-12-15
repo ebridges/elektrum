@@ -58,7 +58,7 @@ then
         echo "Release tagging successful, deploying application version ${version}"
         git checkout ${version}
         docker build -t roja/elektron:${version} .
-        eb deploy --version "${version}"
+        eb deploy --label "${version}"
         git checkout master
         exit $?
     else
