@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.12 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.11 (2018-12-14)
 -----------------
 - Ensure the app is on the tag so that `version.txt` has a non-`dev` version number.
