@@ -7,5 +7,5 @@ def selected_settings(request):
   return {
     'APP_VERSION_NUMBER': settings.APP_VERSION_NUMBER,
     'APP_DB_HOST': getenv('db_hostname'),
-    'APP_NAME': getenv('app_name')
+    'APP_NAME': getenv('service_name')
   }
