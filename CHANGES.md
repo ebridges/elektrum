@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.10 (unreleased)
+0.10 (2018-12-14)
 -----------------
 - Misc fixes around version number.
 
