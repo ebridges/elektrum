@@ -1,6 +1,14 @@
 #!/usr/local/bin/bash
 
+source etc/config.env
+
 CMD=$1
+ENV=$2
+if [ -z "${ENV}" ];
+then
+    # default environment
+    ENV=elektron-staging
+fi
 
 if [ -z "${CMD}" ];
 then
@@ -71,20 +79,12 @@ fi
    
 if [ 'create-environment' == "${CMD}" ];
 then
-    ENV=$2
-    if [ -z "${ENV}" ];
-    then
-	ENV=staging
-    fi
-
-    source etc/config.env
-
     ## TODO: raise error if environment already exists
     
     ## create environment
     eb create --verbose \
        --tags "Service=${service_name}" \
-       --cname "${service_name}-${ENV}" \
+       --cname "${ENV}" \
        --vpc \
        --vpc.id "${vpc_id}" \
        --vpc.elbpublic \
@@ -93,7 +93,7 @@ then
        --vpc.elbsubnets "${vpc_public_subnet_ids}" \
        --vpc.securitygroups "${vpc_security_group_ids}" \
        --elb-type application \
-       "${service_name}-${ENV}"
+       "${ENV}"
 
     exit $?
 fi
