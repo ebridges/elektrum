@@ -13,3 +13,6 @@ network
 *.sublime-project
 *.sublime-workspace
 *.retry
+integration_test.py
+*.md
+app.sh
