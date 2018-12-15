@@ -47,7 +47,7 @@ then
         echo "Version not set."
         exit 1
     else
-	echo "${version} ready for deploy."
+        echo "${version} ready for deploy."
     fi
 
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
