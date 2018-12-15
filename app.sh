@@ -56,8 +56,10 @@ then
         # key pressed, do something
         # echo [$key] is pressed # uncomment to trace
         echo "Release tagging successful, deploying application version ${version}"
+        git checkout ${version}
         docker build -t roja/elektron:${version} .
         eb deploy --version "${version}"
+        git checkout master
         exit $?
     else
         # Anything else pressed, do whatever else.
