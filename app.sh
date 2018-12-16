@@ -25,6 +25,18 @@ then
         exit 1
     fi
     
+    echo "Running unit tests."
+    pushd project
+    python manage.py test
+    popd
+    result=$?
+    echo "result: ${result}"
+    if [ ! ${result} ];
+    then
+        echo "Error running unit tests."
+        exit ${result}
+    fi
+
     echo "Running integration test."
     ./integration_test.py
     result=$?
@@ -34,7 +46,9 @@ then
         echo "Error running integration test."
         exit ${result}
     fi
+
     read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
+    
     declare version
     if [ "$key" = '' ]; then
         version=$(cat ./version.txt | sed 's/\.dev0//')
