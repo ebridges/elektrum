@@ -40,3 +40,17 @@ class SimpleTest(TestCase):
     c = Client(enforce_csrf_checks=True)
     response = c.post('/account/logout/')
     self.assertEqual(response.status_code, 403)
+
+  # def test_signup_flow(self):
+  #   c = Client()
+  #   response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+  #   self.assertEqual(response.status_code, 200)
+
+  # def test_signup_flow_multiple(self):
+  #   c = Client()
+  #   response = c.post('/account/signup/', {'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+  #   self.assertEqual(response.status_code, 200)
+
+  #   response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+  #   self.assertEqual(response.status_code, 200)
+
