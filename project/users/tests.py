@@ -24,8 +24,19 @@ class SimpleTest(TestCase):
     user = CustomUser.objects.get(username='temporary')
     self.assertEqual(response.context['user'].email, user.email)
 
-  def test_csrf_failure(self):
+  def test_csrf_login_failure(self):
     c = Client(enforce_csrf_checks=True)
     response = c.post('/account/login/', {'login': 'temporary@gmail.com', 'password': 'temporary'})
     self.assertEqual(response.status_code, 403)
 
+  def test_logout(self):
+    c = Client()
+    result = c.login(email='temporary@gmail.com', password='temporary')
+    self.assertTrue(result)
+    response = c.post('/account/logout/')
+    self.assertRedirects(response, '/', status_code=302)
+
+  def test_csrf_logout_failure(self):
+    c = Client(enforce_csrf_checks=True)
+    response = c.post('/account/logout/')
+    self.assertEqual(response.status_code, 403)
