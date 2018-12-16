@@ -34,7 +34,9 @@ then
         echo "Error running integration test."
         exit ${result}
     fi
+
     read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
+    
     declare version
     if [ "$key" = '' ]; then
         version=$(cat ./version.txt | sed 's/\.dev0//')
