@@ -55,3 +55,10 @@ class SimpleTest(TestCase):
   #   response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
   #   self.assertEqual(response.status_code, 200)
 
+  # def test_reset_flow(self):
+  #   c = Client()
+  #   response = c.post('/account/password/reset/', {'email': 'temporary@gmail.com'})
+  #   self.assertEqual(response.status_code, 200)
+  #   user = CustomUser.objects.get(username='temporary@gmail.com')
+  #   @todo: look for field on user object that indicates that the password email was sent?
+  #   pprint(user)
