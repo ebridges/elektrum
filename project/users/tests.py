@@ -20,8 +20,7 @@ class SimpleTest(TestCase):
   def test_login_via_post(self):
     c = Client()
     response = c.post('/account/login/', {'login': 'temporary@gmail.com', 'password': 'temporary'})
-    print(response)
-    self.assertEqual(response.status_code, 302)
+    self.assertRedirects(response, '/', status_code=302)
     user = CustomUser.objects.get(username='temporary')
     self.assertEqual(response.context['user'].email, user.email)
 
