@@ -19,6 +19,7 @@ botocore = "*"
 boto = "*"
 awsebcli = "*"
 zest-releaser = "*"
+selenium = "*"
 
 [requires]
 python_version = "3.7"
