@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.12 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- Require an email address & first/last names for login, ignoring username field; require unit tests to run and succeed before deploying.
 
 0.11 (2018-12-14)
 -----------------
