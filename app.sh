@@ -25,6 +25,18 @@ then
         exit 1
     fi
     
+    echo "Running unit tests."
+    pushd project
+    python manage.py test
+    popd
+    result=$?
+    echo "result: ${result}"
+    if [ ! ${result} ];
+    then
+        echo "Error running unit tests."
+        exit ${result}
+    fi
+
     echo "Running integration test."
     ./integration_test.py
     result=$?
