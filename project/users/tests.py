@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.test import Client
 from .models import CustomUser
+from pprint import pprint
 
 # Create your tests here.
 class SimpleTest(TestCase):
