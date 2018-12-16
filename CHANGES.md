@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.13 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- Add a single selenium-based integration test to provide basis for further tests.
 
 0.12 (2018-12-16)
 -----------------
