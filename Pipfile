@@ -9,6 +9,7 @@ django-allauth = "*"
 gunicorn = "*"
 python-dotenv = {extras = ["cli"],version = "*"}
 whitenoise = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 pylint = "*"
