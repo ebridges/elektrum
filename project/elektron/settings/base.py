@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-#### Elektron Settings
+#### BEGIN Initialize environment
 
 # establish project root directory as a variable
 ELEKTRON_PROJECT_DIR=os.path.abspath('%s/..' % BASE_DIR)
@@ -44,7 +44,7 @@ ELEKTRON_ENV_PATH='%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, env)
 # import project environment
 load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
 
-#### End Elektron Settings
+#### END Initialize environment
 
 # Application definition
 
