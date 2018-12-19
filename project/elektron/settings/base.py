@@ -38,7 +38,8 @@ with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
     APP_VERSION_NUMBER = v_file.read()
 
 # declare location of environment file
-ELEKTRON_ENV_PATH='%s/etc/config.env' % ELEKTRON_PROJECT_DIR
+env = os.getenv('ELEKTRON_ENV', 'production')
+ELEKTRON_ENV_PATH='%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, env)
 
 # import project environment
 load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
