@@ -2,54 +2,72 @@
 - name: Output service name
   lineinfile:
     path: "{{ config_info }}"
+    regexp: "^service_name='{{ service_name }}'"
+    line: "service_name='{{ service_name }}'"
+  tags:
+    - cfg
 
 - name: Output db host info
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^db_hostname="{{ db_endpoint_url }}"'
-    line: 'db_hostname="{{ db_endpoint_url }}"'
+    regexp: "^db_hostname='{{ db_endpoint_url }}'"
+    line: "db_hostname='{{ db_endpoint_url }}'"
+  tags:
+    - cfg
 
 - name: store db port info
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^db_port_num="{{ db_port_number }}"'
-    line: 'db_port_num="{{ db_port_number }}"'
-
-- name: store db instance info
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^db_instance="{{ db_instance }}"'
-    line: 'db_instance="{{ db_instance }}"'
+    regexp: "^db_port_num='{{ db_port_number }}'"
+    line: "db_port_num='{{ db_port_number }}'"
+  tags:
+    - cfg
 
 - name: store db name
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^db_name="{{ db_name }}"'
-    line: 'db_name="{{ db_name }}"'
+    regexp: "^db_name='{{ db_name }}'"
+    line: "db_name='{{ db_name }}'"
+  tags:
+    - cfg
 
 - name: store username
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^db_username="{{ db_username }}"'
-    line: 'db_username="{{ db_username }}"'
+    regexp: "^db_username='{{ db_username }}'"
+    line: "db_username='{{ db_username }}'"
+  tags:
+    - cfg
 
 - name: store vpc info (id)
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^vpc_id="{{ vpc_id }}"'
-    line: 'vpc_id="{{ vpc_id }}"'
+    regexp: "^vpc_id='{{ vpc_id }}'"
+    line: "vpc_id='{{ vpc_id }}'"
+  when: elektron_env != 'development'
+  tags:
+    - cfg
 
 - set_fact:
-    sn_ids="{{ public_subnet_ids|join(',') }}"
+    sn_ids='{{ public_subnet_ids|join(',') }}'
+  when: elektron_env != 'development'
+  tags:
+    - cfg
 
 - name: store vpc info (subnet ids)
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^vpc_public_subnet_ids="{{ sn_ids }}"'
-    line: 'vpc_public_subnet_ids="{{ sn_ids }}"'
+    regexp: "^vpc_public_subnet_ids='{{ sn_ids }}'"
+    line: "vpc_public_subnet_ids='{{ sn_ids }}'"
+  when: elektron_env != 'development'
+  tags:
+    - cfg
 
 - name: store vpc info (security group id)
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^vpc_security_group_ids="{{ public_security_group_id }}"'
-    line: 'vpc_security_group_ids="{{ public_security_group_id }}"'
+    regexp: "^vpc_security_group_ids='{{ public_security_group_id }}'"
+    line: "vpc_security_group_ids='{{ public_security_group_id }}'"
+  when: elektron_env != 'development'
+  tags:
+    - cfg
