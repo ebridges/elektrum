@@ -27,6 +27,8 @@ ami_id: 'ami-07eb698ce660402d2'
   
   `cd network && ./run.sh --tags=common,cfg`
 
+* Edit `db_hostname` in `etc/development.env` to be the IP address of the development database.
+
 *Running Locally*
 
 Django `runserver`:
