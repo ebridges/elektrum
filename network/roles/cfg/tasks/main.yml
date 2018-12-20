@@ -2,20 +2,6 @@
 - name: Output service name
   lineinfile:
     path: "{{ config_info }}"
-    regexp: '^service_name="{{ service_name }}"'
-    line: 'service_name="{{ service_name }}"'
-
-- name: Output app name
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^app_name="{{ app_name }}"'
-    line: 'app_name="{{ app_name }}"'
-
-- name: Output org name
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: '^org_name="{{ org_name }}"'
-    line: 'org_name="{{ org_name }}"'
 
 - name: Output db host info
   lineinfile:
