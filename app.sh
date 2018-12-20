@@ -42,8 +42,7 @@ then
     echo "Running integration test."
     ./integration_test.py
     result=$?
-    echo "result: ${result}"
-    if [ ! ${result} ];
+    if [ ${result} ];
     then
         echo "Error running integration test."
         exit ${result}
