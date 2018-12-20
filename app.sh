@@ -30,10 +30,9 @@ then
     echo "Running unit tests."
     pushd project
     python manage.py test
-    popd
     result=$?
-    echo "result: ${result}"
-    if [ ! ${result} ];
+    popd
+    if [ "${result}" != "0" ];
     then
         echo "Error running unit tests."
         exit ${result}
@@ -42,7 +41,7 @@ then
     echo "Running integration test."
     ./integration_test.py
     result=$?
-    if [ ${result} ];
+    if [ "${result}" != "0" ];
     then
         echo "Error running integration test."
         exit ${result}
