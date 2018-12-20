@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.14 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- Configured app to use PostgreSQL across multiple environments.
 
 0.13 (2018-12-16)
 -----------------
