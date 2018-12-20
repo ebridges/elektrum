@@ -38,7 +38,6 @@ def test_url(url, header=None):
   try:
     r = requests.head(url)
     if header:
-      print("header %s" % header)
       if header in r.headers:
         header_val = r.headers[header]
       else:
