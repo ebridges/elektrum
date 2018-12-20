@@ -2,7 +2,8 @@
 
 if [ -z "${ELEKTRON_ENV}" ];
 then
-  . etc/config.env
+    echo 'ELEKTRON_ENV not found in environment'
+    exit 1
 fi
 
 cd project
