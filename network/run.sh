@@ -1,3 +1,7 @@
 #!/bin/sh
 
-ansible-playbook -i hosts.ini site.yml --vault-password-file ./vault-password.txt $@
+ansible-playbook \
+  --inventory hosts.ini \
+  --vault-password-file ./vault-password.txt \
+  $@ \
+  site.yml
