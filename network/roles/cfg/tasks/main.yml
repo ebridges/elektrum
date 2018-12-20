@@ -34,8 +34,8 @@
 - name: store username
   lineinfile:
     path: "{{ config_info }}"
-    regexp: "^db_username='{{ db_username }}'"
-    line: "db_username='{{ db_username }}'"
+    regexp: "^db_username='{{ rds_app_username }}'"
+    line: "db_username='{{ rds_app_username }}'"
   tags:
     - cfg
 
