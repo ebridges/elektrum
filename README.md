@@ -17,18 +17,24 @@ ami_id: 'ami-07eb698ce660402d2'
 
 #### Running the Application
 
+*Prerequisites*
+
+* Configure environment:
+
+`export ELEKTRON_ENV=[development|staging|production]`
+
 *Running Locally*
 
 Django `runserver`:
 
 * `cd project`
-* `ELEKTRON_ENV=development python manage.py runserver`
+* `python manage.py runserver`
 * `open http://localhost:8000`
 
 Gunicorn:
 
 * `cd project`
-* `ELEKTRON_ENV=development gunicorn --bind :8000 elektron.wsgi:application`
+* `gunicorn --bind :8000 elektron.wsgi:application`
 * `open http://localhost:8000`
 
 *Running in a container*
@@ -36,8 +42,6 @@ Gunicorn:
 Building the container image:
 
 * `docker build -t roja/elektron:latest .`
-
-_Before running, specify the environment by editing `ELEKTRON_ENV` in `etc/config.env`._
 
 To run via Docker:
 
@@ -56,4 +60,3 @@ _Docker compose runs the application behind a proxy, so it listens on `80` inste
 Build network:
 
 * see `network/README.md`
-
