@@ -14,7 +14,7 @@ org_name: roja
 service_name: elektron
 app_name: elektron_app
 db_instance_name: elektron-db
-config_info: ../etc/config.env
+config_info: "../etc/{{ elektron_env }}.env"
 
 # AWS Facts
 aws_ssh_key: roja-llc
