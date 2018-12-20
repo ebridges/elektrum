@@ -36,7 +36,7 @@ def run_tests():
 def test_url(url, header=None):
   header_val = None
   try:
-    r = requests.head(url)
+    r = requests.head(url, allow_redirects=True)
     if header:
       if header in r.headers:
         header_val = r.headers[header]
