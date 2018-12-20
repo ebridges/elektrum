@@ -23,6 +23,10 @@ ami_id: 'ami-07eb698ce660402d2'
 
 `export ELEKTRON_ENV=[development|staging|production]`
 
+* Generate environment file for the environment
+  
+  `cd network && ./run.sh --tags=common,cfg`
+
 *Running Locally*
 
 Django `runserver`:
