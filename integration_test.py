@@ -11,29 +11,40 @@ import sys
 process=None
 
 urls_to_test = [
-  'http://localhost/status/ok',
-  'http://localhost/static/img/logo.png',
+  {'url': 'http://localhost/status/ok', 'header': 'X-Elektron-Now'},
+  {'url': 'http://localhost/static/img/logo.png'},
 ]
 
 
 def run_tests():
   has_errors = False
-  for url in urls_to_test:
+  for url_info in urls_to_test:
+    url = url_info['url']
     try:
-      test_url(url)
+      header_val = test_url(url, url_info.get('header'))
     except AssertionError as e:
       print('[FAIL]: %s [%s]' % (url,e))
       has_errors=True
     else:
-      print('[OK]: %s' % url)
+      if header_val:
+        print('[OK]: %s (%s)' % (url, header_val))
+      else:
+        print('[OK]: %s' % url)
   return has_errors
 
 
-def test_url(url):
+def test_url(url, header=None):
+  header_val = None
   try:
-    r = requests.head(url)
+    r = requests.head(url, allow_redirects=True)
+    if header:
+      if header in r.headers:
+        header_val = r.headers[header]
+      else:
+        header_val = 'Header [%s] not found' % header
     if r.status_code >= 400:
       raise AssertionError('status code %d' % r.status_code)
+    return header_val
   except requests.ConnectionError as e:
     raise AssertionError('cannot connect to container: %s' % e)
 

@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-#### Elektron Settings
+#### BEGIN Initialize environment
 
 # establish project root directory as a variable
 ELEKTRON_PROJECT_DIR=os.path.abspath('%s/..' % BASE_DIR)
@@ -38,12 +38,13 @@ with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
     APP_VERSION_NUMBER = v_file.read()
 
 # declare location of environment file
-ELEKTRON_ENV_PATH='%s/etc/config.env' % ELEKTRON_PROJECT_DIR
+env = os.getenv('ELEKTRON_ENV', 'production')
+ELEKTRON_ENV_PATH='%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, env)
 
 # import project environment
 load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
 
-#### End Elektron Settings
+#### END Initialize environment
 
 # Application definition
 
@@ -104,10 +105,20 @@ WSGI_APPLICATION = 'elektron.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('db_name'),
+        'USER': os.getenv('db_username'),
+        'PASSWORD': os.getenv('db_password'),
+        'HOST': os.getenv('db_hostname'),
+        'PORT': os.getenv('db_port_num'),
     }
 }
 

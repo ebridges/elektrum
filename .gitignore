@@ -1,5 +1,6 @@
 # project related
 static/**
+etc/*.env
 
 # byte-compiled
 __pycache__/

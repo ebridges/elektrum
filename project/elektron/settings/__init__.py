@@ -1,6 +1,6 @@
 import os
 
-env = os.getenv('ELEKTRON_ENV')
+env = os.getenv('ELEKTRON_ENV', 'production')
 
 if env == 'staging':
     from .staging import *

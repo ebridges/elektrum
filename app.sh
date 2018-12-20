@@ -1,14 +1,16 @@
 #!/usr/local/bin/bash
 
-source etc/config.env
-
 CMD=$1
 ENV=$2
 if [ -z "${ENV}" ];
 then
     # default environment
-    ENV=elektron-staging
+    ENV=staging
 fi
+
+source "etc/${ENV}.env"
+
+ENV_NAME="${service_name}-${ENV}"
 
 if [ -z "${CMD}" ];
 then
@@ -80,7 +82,7 @@ then
         echo "Release tagging successful, deploying application version ${version}"
         git checkout ${version}
         docker build -t roja/elektron:${version} .
-        eb deploy --label "${version}" "${ENV}"
+        eb deploy --label "${version}" "${ENV_NAME}"
         git checkout master
         exit $?
     else
@@ -98,7 +100,7 @@ then
     ## create environment
     eb create --verbose \
        --tags "Service=${service_name}" \
-       --cname "${ENV}" \
+       --cname "${ENV_NAME}" \
        --vpc \
        --vpc.id "${vpc_id}" \
        --vpc.elbpublic \
@@ -107,7 +109,7 @@ then
        --vpc.elbsubnets "${vpc_public_subnet_ids}" \
        --vpc.securitygroups "${vpc_security_group_ids}" \
        --elb-type application \
-       "${ENV}"
+       "${ENV_NAME}"
 
     exit $?
 fi

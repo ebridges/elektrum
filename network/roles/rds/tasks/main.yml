@@ -46,3 +46,14 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ db_instance_name }}"
+  register: rds
+
+- name: create non-privileged user
+  postgresql_user:
+    login_host: "{{ rds.instance.endpoint }}"
+    login_user: "{{ rds_master_username }}"
+    login_password: "{{ rds_master_password }}"
+    db: "{{ rds_database_name }}"
+    name: "{{ rds_app_username }}"
+    password: "{{ rds_app_password }}"
+    role_attr_flags: NOSUPERUSER
