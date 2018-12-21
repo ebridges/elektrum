@@ -16,3 +16,4 @@ network
 integration_test.py
 *.md
 app.sh
+etc/*.tmpl
