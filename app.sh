@@ -79,7 +79,7 @@ then
         # echo [$key] is pressed # uncomment to trace
         echo "Release tagging successful, deploying application version ${version}"
         git checkout ${version}
-        docker build -t roja/elektron:${version} .
+        docker build --build-arg="ELEKTRON_ENV=${ENV}" --tag roja/elektron:${version} .
         eb deploy --label "${version}" "${ENV_NAME}"
         git checkout master
         exit $?
@@ -107,6 +107,7 @@ then
        --vpc.elbsubnets "${vpc_public_subnet_ids}" \
        --vpc.securitygroups "${vpc_security_group_ids}" \
        --elb-type application \
+       --envvars "ELEKTRON_ENV=${ENV}" \
        "${ENV_NAME}"
 
     exit $?
