@@ -1,16 +1,17 @@
 #!/usr/local/bin/bash
 
 CMD=$1
-ENV=$2
-if [ -z "${ENV}" ];
+ELEKTRON_ENV=$2
+
+if [ -z "${ELEKTRON_ENV}" ];
 then
     # default environment
-    ENV=staging
+    ELEKTRON_ENV=staging
 fi
 
-source "etc/${ENV}.env"
+source "etc/${ELEKTRON_ENV}.env"
 
-ENV_NAME="${service_name}-${ENV}"
+ENV_NAME="${service_name}-${ELEKTRON_ENV}"
 
 if [ -z "${CMD}" ];
 then
@@ -79,7 +80,7 @@ then
         # echo [$key] is pressed # uncomment to trace
         echo "Release tagging successful, deploying application version ${version}"
         git checkout ${version}
-        docker build --build-arg="ELEKTRON_ENV=${ENV}" --tag roja/elektron:${version} .
+        docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}" --tag roja/elektron:${version} .
         eb deploy --label "${version}" "${ENV_NAME}"
         git checkout master
         exit $?
@@ -107,7 +108,7 @@ then
        --vpc.elbsubnets "${vpc_public_subnet_ids}" \
        --vpc.securitygroups "${vpc_security_group_ids}" \
        --elb-type application \
-       --envvars "ELEKTRON_ENV=${ENV}" \
+       --envvars "ELEKTRON_ENV=${ELEKTRON_ENV}" \
        "${ENV_NAME}"
 
     exit $?
