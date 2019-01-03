@@ -1,0 +1,20 @@
+branch-defaults:
+  master:
+    environment: elektron-staging
+    group_suffix: null
+global:
+  application_name: elektron
+  branch: null
+  default_ec2_keyname: roja-llc
+  default_platform: Docker 18.06.1-ce
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: git@bitbucket.org:roja-cc/elektron.git
+  sc: git
+  workspace_type: Application
+deploy:
+  artifact: Dockerrun.aws.json

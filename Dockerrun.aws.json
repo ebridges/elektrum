@@ -1,0 +1,59 @@
+{
+    "containerDefinitions": [
+        {
+            "environment": [
+                {
+                    "name": "ELEKTRON_ENV",
+                    "value": "ELEKTRON_ENV"
+                }
+            ],
+            "essential": true,
+            "image": "169122179348.dkr.ecr.us-east-1.amazonaws.com/roja/elektron:1.0",
+            "mountPoints": [
+                {
+                    "containerPath": "/app/static",
+                    "sourceVolume": "Static_Volume"
+                }
+            ],
+            "memory": 4048,
+            "name": "elektron_app"
+        },
+        {
+            "essential": true,
+            "image": "nginx:1.13",
+            "mountPoints": [
+                {
+                    "containerPath": "/etc/nginx/conf.d",
+                    "sourceVolume": "_EtcNginxConf_D"
+                },
+                {
+                    "containerPath": "/app/static",
+                    "sourceVolume": "Static_Volume"
+                }
+            ],
+            "name": "elektron_proxy",
+            "memory": 4048,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80
+                }
+            ]
+        }
+    ],
+    "family": "",
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "static_volume"
+            },
+            "name": "Static_Volume"
+        },
+        {
+            "host": {
+                "sourcePath": "./etc/nginx/conf.d"
+            },
+            "name": "_EtcNginxConf_D"
+        }
+    ]
+}
