@@ -2,6 +2,8 @@ branch-defaults:
   master:
     environment: elektron-staging
     group_suffix: null
+deploy:
+  artifact: Dockerrun.aws.json
 global:
   application_name: elektron
   branch: null
@@ -16,5 +18,3 @@ global:
   repository: git@bitbucket.org:roja-cc/elektron.git
   sc: git
   workspace_type: Application
-deploy:
-  artifact: Dockerrun.aws.json
