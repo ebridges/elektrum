@@ -8,7 +8,7 @@ global:
   application_name: elektron
   branch: null
   default_ec2_keyname: roja-llc
-  default_platform: Docker 18.06.1-ce
+  default_platform: multi-container-docker-18.06.1-ce-(generic)
   default_region: us-east-1
   include_git_submodules: true
   instance_profile: null

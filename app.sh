@@ -97,8 +97,10 @@ then
     ## TODO: raise error if environment already exists
     
     ## create environment
+    echo "Creating new environment: ${ENV_NAME}"
     eb create --verbose \
        --tags "Service=${service_name}" \
+       --platform "multi-container-docker-18.06.1-ce-(generic)" \
        --cname "${ENV_NAME}" \
        --vpc \
        --vpc.id "${vpc_id}" \
