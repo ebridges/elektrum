@@ -1,21 +1,29 @@
-# start from an official image
-FROM python:3.7
+FROM python:3.7 AS base
 
-ARG ELEKTRON_ENV=staging
-RUN mkdir -p /app/etc/nginx
 RUN mkdir -p /app/project
 RUN mkdir -p /app/static
-WORKDIR /app
-ADD project /app/project
-ADD static /app/static
+RUN mkdir -p /app/etc
+
 COPY Pipfile /app
 COPY Pipfile.lock /app
-COPY etc/${ELEKTRON_ENV}.env /app/etc
-COPY etc/nginx /app/etc/nginx
-COPY version.txt /app
-COPY docker-entrypoint.sh /app
-RUN chmod +x /app/docker-entrypoint.sh
+
+WORKDIR /app
+
 RUN pip install pipenv
 RUN pipenv install --system
+
+FROM base AS release
+
+ARG ELEKTRON_ENV=production
+
+ADD project /app/project
+ADD static /app/static
+COPY etc/${ELEKTRON_ENV}.env /app/etc
+COPY version.txt /app
+COPY docker-entrypoint.sh /app
+
+RUN chmod +x /app/docker-entrypoint.sh
+
 EXPOSE 8000
+
 ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
