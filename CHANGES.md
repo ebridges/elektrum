@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.16 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.15 (2019-01-05)
 -----------------
 - [#9]: Introduce multi-container config in order to address underlying issues that prevented access to staging DB.
