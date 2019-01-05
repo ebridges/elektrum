@@ -86,3 +86,12 @@
   when: elektron_env != 'development'
   tags:
     - cfg
+
+- name: store ecr repository host info
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^ecr_host='{{ repository_uri_host }}'"
+    line: "ecr_host='{{ repository_uri_host }}'"
+  when: elektron_env != 'development'
+  tags:
+    - cfg
