@@ -1,0 +1,29 @@
+FROM python:3.7 AS base
+
+RUN mkdir -p /app/project
+RUN mkdir -p /app/static
+RUN mkdir -p /app/etc
+
+COPY Pipfile /app
+COPY Pipfile.lock /app
+
+WORKDIR /app
+
+RUN pip install pipenv
+RUN pipenv install --system
+
+FROM base AS release
+
+ARG ELEKTRON_ENV=production
+
+ADD project /app/project
+ADD static /app/static
+COPY etc/${ELEKTRON_ENV}.env /app/etc
+COPY version.txt /app
+COPY docker-entrypoint.sh /app
+
+RUN chmod +x /app/docker-entrypoint.sh
+
+EXPOSE 8000
+
+ENTRYPOINT [ "/app/docker-entrypoint.sh" ]

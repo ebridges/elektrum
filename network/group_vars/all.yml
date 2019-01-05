@@ -10,6 +10,7 @@ ansible_python_interpreter: python3
 # IP Address to allow access for SSH & PostgreSQL from:
 home_ip: 98.116.39.58
 
+org_name: roja
 service_name: elektron
 config_info: "../etc/{{ elektron_env }}.env"
 

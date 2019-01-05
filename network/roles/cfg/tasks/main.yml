@@ -1,4 +1,10 @@
 ---
+- name: ensure config file exists
+  copy:
+    content: ""
+    dest: "{{ config_info }}"
+    force: no
+
 - name: Output service name
   lineinfile:
     path: "{{ config_info }}"
@@ -31,7 +37,7 @@
   tags:
     - cfg
 
-- name: store username
+- name: store db username
   lineinfile:
     path: "{{ config_info }}"
     regexp: "^db_username='{{ rds_app_username }}'"
@@ -39,6 +45,15 @@
   tags:
     - cfg
 
+- name: store db password
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^db_password='{{ rds_app_password | replace('\n', '') }}'"
+    line: "db_password='{{ rds_app_password | replace('\n', '') }}'"
+  when: elektron_env != 'development'
+  tags:
+    - cfg
+    
 - name: store vpc info (id)
   lineinfile:
     path: "{{ config_info }}"
@@ -68,6 +83,15 @@
     path: "{{ config_info }}"
     regexp: "^vpc_security_group_ids='{{ public_security_group_id }}'"
     line: "vpc_security_group_ids='{{ public_security_group_id }}'"
+  when: elektron_env != 'development'
+  tags:
+    - cfg
+
+- name: store ecr repository host info
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^ecr_host='{{ repository_uri_host }}'"
+    line: "ecr_host='{{ repository_uri_host }}'"
   when: elektron_env != 'development'
   tags:
     - cfg
