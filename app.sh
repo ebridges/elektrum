@@ -96,19 +96,19 @@ then
 
         $(aws ecr get-login --no-include-email --region us-east-1)
 
-        ecr_repo='169122179348.dkr.ecr.us-east-1.amazonaws.com'
+        ecr_host='169122179348.dkr.ecr.us-east-1.amazonaws.com'
 
         echo "Building a fresh image of Dockerfile-Proxy for ${ELEKTRON_ENV} at version ${version}"
         docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:${version} .
-        docker tag roja/elektron_proxy:${version} ${ecr_repo}/roja/elektron_proxy:${version}
-        docker push ${ecr_repo}/roja/elektron_proxy:${version}
+        docker tag roja/elektron_proxy:${version} ${ecr_host}/roja/elektron_proxy:${version}
+        docker push ${ecr_host}/roja/elektron_proxy:${version}
         tmp=$(mktemp)
         cat Dockerrun.aws.json | sed "s/roja\/elektron_proxy:latest/roja\/elektron_proxy:${version}/" > "$tmp" && mv "$tmp" Dockerrun.aws.json
 
         echo "Building a fresh image of Dockerfile-App for ${ELEKTRON_ENV} at version ${version}"
         docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}" --tag roja/elektron:${version} .
-        docker tag roja/elektron:${version} ${ecr_repo}/roja/elektron:${version}
-        docker push ${ecr_repo}/roja/elektron:${version}
+        docker tag roja/elektron:${version} ${ecr_host}/roja/elektron:${version}
+        docker push ${ecr_host}/roja/elektron:${version}
         tmp=$(mktemp)
         cat Dockerrun.aws.json | sed "s/roja\/elektron:latest/roja\/elektron:${version}/" > "$tmp" && mv "$tmp" Dockerrun.aws.json
 
