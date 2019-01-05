@@ -48,8 +48,8 @@
 - name: store db password
   lineinfile:
     path: "{{ config_info }}"
-    regexp: "^db_password='{{ rds_app_password }}'"
-    line: "db_password='{{ rds_app_password }}'"
+    regexp: "^db_password='{{ rds_app_password | replace('\n', '') }}'"
+    line: "db_password='{{ rds_app_password | replace('\n', '') }}'"
   when: elektron_env != 'development'
   tags:
     - cfg
