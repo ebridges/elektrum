@@ -14,11 +14,10 @@ services:
       - ELEKTRON_ENV
 
   elektron_proxy:
-    image: nginx:1.13
+    image: roja/elektron_proxy:latest
     ports:
       - 80:80
     volumes:
-      - ./etc/nginx/conf.d:/etc/nginx/conf.d
       - static_volume:/app/static
     depends_on:
       - elektron_app
