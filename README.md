@@ -45,20 +45,24 @@ Gunicorn:
 
 *Running in a container*
 
-Building the container image:
+Building the container image for the App:
 
-* `docker build -t roja/elektron:latest .`
+* `docker build --file Dockerfile-App --build-arg ELEKTRON_ENV=${ELEKTRON_ENV} -t roja/elektron:latest .`
+
+Building the container image for the Proxy:
+
+* `docker build --file Dockerfile-Proxy --build-arg ELEKTRON_ENV=${ELEKTRON_ENV} -t roja/elektron_proxy:latest .`
 
 To run via Docker:
 
-* `docker run --publish 8000:8000 roja/elektron:latest`
+* `docker run --env ELEKTRON_ENV=${ELEKTRON_ENV} --publish 8000:8000 roja/elektron:latest`
 * `open http://localhost:8000`
 
 Run via Docker Compose:
 
 _Docker compose runs the application behind a proxy, so it listens on `80` instead._
 
-* `docker-compose up`
+* `ELEKTRON_ENV=[development|staging|production] docker-compose up`
 * `open http://localhost:80`
 
 #### Misc Info
