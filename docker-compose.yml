@@ -5,7 +5,7 @@ volumes:
 
 services:
   elektron_app:
-    image: roja/elektron:latest
+    image: roja/elektron_app:latest
     volumes:
       - static_volume:/app/static
     networks:

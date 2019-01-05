@@ -52,7 +52,7 @@ then
 
     echo "Running integration test in dev environment."
     docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
-    docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron:latest .
+    docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron_app:latest .
     ELEKTRON_ENV=development ./integration_test.py
     result=$?
     if [ "${result}" != "0" ];
@@ -106,9 +106,9 @@ then
         cat Dockerrun.aws.json | sed "s/roja\/elektron_proxy:latest/roja\/elektron_proxy:${version}/" > "$tmp" && mv "$tmp" Dockerrun.aws.json
 
         echo "Building a fresh image of Dockerfile-App for ${ELEKTRON_ENV} at version ${version}"
-        docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}" --tag roja/elektron:${version} .
-        docker tag roja/elektron:${version} ${ecr_host}/roja/elektron:${version}
-        docker push ${ecr_host}/roja/elektron:${version}
+        docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}" --tag roja/elektron_app:${version} .
+        docker tag roja/elektron_app:${version} ${ecr_host}/roja/elektron_app:${version}
+        docker push ${ecr_host}/roja/elektron_app:${version}
         tmp=$(mktemp)
         cat Dockerrun.aws.json | sed "s/roja\/elektron:latest/roja\/elektron:${version}/" > "$tmp" && mv "$tmp" Dockerrun.aws.json
 

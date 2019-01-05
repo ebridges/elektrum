@@ -47,7 +47,7 @@ Gunicorn:
 
 Building the container image for the App:
 
-* `docker build --file Dockerfile-App --build-arg ELEKTRON_ENV=${ELEKTRON_ENV} -t roja/elektron:latest .`
+* `docker build --file Dockerfile-App --build-arg ELEKTRON_ENV=${ELEKTRON_ENV} -t roja/elektron_app:latest .`
 
 Building the container image for the Proxy:
 
@@ -55,7 +55,7 @@ Building the container image for the Proxy:
 
 To run via Docker:
 
-* `docker run --env ELEKTRON_ENV=${ELEKTRON_ENV} --publish 8000:8000 roja/elektron:latest`
+* `docker run --env ELEKTRON_ENV=${ELEKTRON_ENV} --publish 8000:8000 roja/elektron_app:latest`
 * `open http://localhost:8000`
 
 Run via Docker Compose:

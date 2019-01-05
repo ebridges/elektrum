@@ -98,7 +98,7 @@
 
 - name: Create repository for app
   ecs_ecr: 
-    name: '{{ org_name }}/{{ service_name }}'
+    name: '{{ org_name }}/{{ service_name }}_app'
     state: present
 
 - name: Create repository for proxy

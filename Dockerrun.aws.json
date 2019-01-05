@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "elektron_app",
-            "image": "169122179348.dkr.ecr.us-east-1.amazonaws.com/roja/elektron:latest",
+            "image": "169122179348.dkr.ecr.us-east-1.amazonaws.com/roja/elektron_app:latest",
             "memory": 640,
             "essential": true,
             "mountPoints": [
