@@ -1,4 +1,10 @@
 ---
+- name: ensure config file exists
+  copy:
+    content: ""
+    dest: "{{ config_info }}"
+    force: no
+
 - name: Output service name
   lineinfile:
     path: "{{ config_info }}"
