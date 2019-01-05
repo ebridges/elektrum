@@ -3,9 +3,7 @@ Elektron Change Log
 
 0.18 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- Configure HTTPS.
 
 0.17 (2019-01-05)
 -----------------
