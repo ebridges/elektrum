@@ -1,38 +1,38 @@
 {
+    "AWSEBDockerrunVersion": 2,
     "containerDefinitions": [
         {
+            "name": "elektron_app",
+            "image": "169122179348.dkr.ecr.us-east-1.amazonaws.com/roja/elektron:latest",
+            "memory": 640,
+            "essential": true,
+            "mountPoints": [
+                {
+                    "containerPath": "/app/static",
+                    "sourceVolume": "Static_Volume"
+                }
+            ],
             "environment": [
                 {
                     "name": "ELEKTRON_ENV",
-                    "value": "ELEKTRON_ENV"
+                    "value": "production"
                 }
-            ],
-            "essential": true,
-            "image": "169122179348.dkr.ecr.us-east-1.amazonaws.com/roja/elektron:1.0",
-            "mountPoints": [
-                {
-                    "containerPath": "/app/static",
-                    "sourceVolume": "Static_Volume"
-                }
-            ],
-            "memory": 4048,
-            "name": "elektron_app"
+            ]
         },
         {
+            "name": "elektron_proxy",
+            "image": "169122179348.dkr.ecr.us-east-1.amazonaws.com/roja/elektron_proxy:latest",
+            "memory": 128,
             "essential": true,
-            "image": "nginx:1.13",
             "mountPoints": [
-                {
-                    "containerPath": "/etc/nginx/conf.d",
-                    "sourceVolume": "_EtcNginxConf_D"
-                },
                 {
                     "containerPath": "/app/static",
                     "sourceVolume": "Static_Volume"
                 }
             ],
-            "name": "elektron_proxy",
-            "memory": 4048,
+            "links": [
+                "elektron_app"
+            ],
             "portMappings": [
                 {
                     "containerPort": 80,
@@ -41,19 +41,12 @@
             ]
         }
     ],
-    "family": "",
     "volumes": [
         {
             "host": {
                 "sourcePath": "static_volume"
             },
             "name": "Static_Volume"
-        },
-        {
-            "host": {
-                "sourcePath": "./etc/nginx/conf.d"
-            },
-            "name": "_EtcNginxConf_D"
         }
     ]
 }
