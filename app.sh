@@ -112,6 +112,7 @@ then
 
         eb deploy "${ENV_NAME}"
 
+        git checkout -- Dockerrun.aws.json
         git checkout master
         exit $?
     else
