@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.16 (unreleased)
+0.16 (2019-01-05)
 -----------------
 - Clean test.
 
