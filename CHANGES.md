@@ -3,9 +3,8 @@ Elektron Change Log
 
 0.20 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- [#4]: Implement Google signup/authentication.
+- [#13]: Fix issue where Google signups caused "duplicate username" issue.
 
 0.19 (2019-01-05)
 -----------------
