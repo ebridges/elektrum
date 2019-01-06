@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.20 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.19 (2019-01-05)
 -----------------
 - Recreate environment to test logging & https config files.
