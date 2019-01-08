@@ -118,8 +118,15 @@ DATABASES = {
 }
 if 'test' in sys.argv:
     DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # see #14 - SQLite backend is not working for some tests
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "media_info",
+        'USER': "ebridges",
+        'PASSWORD': "ebridges",
+        'HOST': "localhost",
+        'PORT': 5432,
     }
 
 
