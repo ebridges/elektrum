@@ -1,41 +1,46 @@
 from django.test import TestCase
 from django.test import Client
 from users.models import CustomUser
-from pprint import pprint
+import json
 
-# Create your tests here.
+
 class AuthnUserFlowTest(TestCase):
+  fixtures = ['users/tests/user-data.json']
+
   def setUp(self):
-    user = CustomUser.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
+    self.password='temporary'
+    with open('users/tests/user-data.json') as f:
+        d = json.load(f)
+        self.data=d[0]
 
   def test_login(self):
     c = Client()
-    result = c.login(email='temporary@gmail.com', password='temporary')
+    result = c.login(email=self.data['fields']['email'], password=self.password)
     self.assertTrue(result)
 
   def test_login_fail(self):
     c = Client()
-    result = c.login(email='temporary@gmail.com', password='xxxxxx')
+    result = c.login(email=self.data['fields']['email'], password='wrong_password')
     self.assertFalse(result)
 
   def test_login_via_post(self):
     c = Client()
-    response = c.post('/account/login/', {'login': 'temporary@gmail.com', 'password': 'temporary'})
-    self.assertRedirects(response, '/', status_code=302)
-    user = CustomUser.objects.get(username='temporary')
+    response = c.post('/account/login/', {'login': self.data['fields']['email'], 'password': self.password})
+    self.util_assert_account_redirects(response)
+    user = CustomUser.objects.get(username=self.data['fields']['username'])
     self.assertEqual(response.context['user'].email, user.email)
 
   def test_csrf_login_failure(self):
     c = Client(enforce_csrf_checks=True)
-    response = c.post('/account/login/', {'login': 'temporary@gmail.com', 'password': 'temporary'})
+    response = c.post('/account/login/', {'login': self.data['fields']['email'], 'password': 'wrong_password'})
     self.assertEqual(response.status_code, 403)
 
   def test_logout(self):
     c = Client()
-    result = c.login(email='temporary@gmail.com', password='temporary')
+    result = c.login(email=self.data['fields']['email'], password=self.password)
     self.assertTrue(result)
     response = c.post('/account/logout/')
-    self.assertRedirects(response, '/', status_code=302)
+    self.util_assert_account_redirects(response)
 
   def test_csrf_logout_failure(self):
     c = Client(enforce_csrf_checks=True)
