@@ -2,7 +2,7 @@
   {  
     "model":"users.customuser",
     "pk":1,
-    "fields":{  
+    "fields":{
        "password":"pbkdf2_sha256$120000$UzZHT9v7xRHx$1NbsrrG3LnUx/B7jNaLQBZjfkpk08ECkkKGlHXKu6Vs=",
        "last_login":null,
        "is_superuser":false,
