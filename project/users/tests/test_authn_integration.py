@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 import json
-from pprint import pprint
+
 
 class AuthnIntegrationTests(StaticLiveServerTestCase):
   fixtures = ['users/tests/user-data.json']

@@ -42,23 +42,17 @@ class AuthnUserFlowTest(TestCase):
     response = c.post('/account/logout/')
     self.assertEqual(response.status_code, 403)
 
-  # def test_signup_flow(self):
-  #   c = Client()
-  #   response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
-  #   self.assertEqual(response.status_code, 200)
+  def test_signup_flow(self):
+    c = Client()
+    response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    self.util_assert_account_redirects(response)
 
-  # def test_signup_flow_multiple(self):
-  #   c = Client()
-  #   response = c.post('/account/signup/', {'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
-  #   self.assertEqual(response.status_code, 200)
+  def test_signup_flow_multiple(self):
+    c = Client()
+    response = c.post('/account/signup/', {'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    self.util_assert_account_redirects(response)
+    response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    self.util_assert_account_redirects(response)
 
-  #   response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
-  #   self.assertEqual(response.status_code, 200)
-
-  # def test_reset_flow(self):
-  #   c = Client()
-  #   response = c.post('/account/password/reset/', {'email': 'temporary@gmail.com'})
-  #   self.assertEqual(response.status_code, 200)
-  #   user = CustomUser.objects.get(username='temporary@gmail.com')
-  #   @todo: look for field on user object that indicates that the password email was sent?
-  #   pprint(user)
+  def util_assert_account_redirects(self, response, expected_url='/', expected_redirect_sc=302, expected_target_sc=200):
+    self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
