@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.22 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.21 (2019-01-08)
 -----------------
 - Add a couple of unit tests.
