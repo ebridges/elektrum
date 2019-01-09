@@ -77,3 +77,8 @@ class AuthnUserFlowTest(TestCase):
       if os.path.exists(loc):
         os.remove(loc)
 
+
+class MyEmailBackend(EmailBackend):
+  def _get_filename(self):
+    self._fname = os.path.join(self.file_path, 'test_authn_user_flows.log')
+    return self._fname
