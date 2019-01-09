@@ -193,3 +193,4 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
