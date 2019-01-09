@@ -173,6 +173,7 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+LOGIN_URL = '/account/login/' # is there a better way to do this?
 LOGIN_REDIRECT_URL = 'home' # change to app-home after app is added
 LOGOUT_REDIRECT_URL = 'home'
 AUTH_USER_MODEL = 'users.CustomUser'
