@@ -1,8 +1,11 @@
-from django.test import TestCase
-from django.test import Client
-from users.models import CustomUser
+import os
 import json
+import email
 
+from django.test import Client, TestCase, override_settings
+from django.core.mail.backends.filebased import EmailBackend
+
+from users.models import CustomUser
 
 class AuthnUserFlowTest(TestCase):
   fixtures = ['users/tests/user-data.json']
