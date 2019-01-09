@@ -51,17 +51,23 @@ class AuthnUserFlowTest(TestCase):
     response = c.post('/account/logout/')
     self.assertEqual(response.status_code, 403)
 
+  @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow(self):
     c = Client()
     response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
+    self.util_assert_signup_mail('newuser@example.com')
 
+  @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow_multiple(self):
     c = Client()
     response = c.post('/account/signup/', {'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
+    self.util_assert_signup_mail('newuser2@example.com')
+
     response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
+    self.util_assert_signup_mail('newuser3@example.com')
 
   def util_assert_account_redirects(self, response, expected_url='/account/confirm-email/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
