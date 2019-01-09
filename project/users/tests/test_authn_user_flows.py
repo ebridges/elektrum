@@ -1,13 +1,17 @@
-from django.test import TestCase
-from django.test import Client
-from users.models import CustomUser
+import os
 import json
+import email
 
+from django.test import Client, TestCase, override_settings
+from django.core.mail.backends.filebased import EmailBackend
+
+from users.models import CustomUser
 
 class AuthnUserFlowTest(TestCase):
   fixtures = ['users/tests/user-data.json']
 
   def setUp(self):
+    self.email_log_dir = './sent_emails'
     self.password='temporary'
     with open('users/tests/user-data.json') as f:
         d = json.load(f)
@@ -40,24 +44,47 @@ class AuthnUserFlowTest(TestCase):
     result = c.login(email=self.data['fields']['email'], password=self.password)
     self.assertTrue(result)
     response = c.post('/account/logout/')
-    self.util_assert_account_redirects(response)
+    self.util_assert_account_redirects(response, expected_url='/')
 
   def test_csrf_logout_failure(self):
     c = Client(enforce_csrf_checks=True)
     response = c.post('/account/logout/')
     self.assertEqual(response.status_code, 403)
 
+  @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow(self):
     c = Client()
     response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
+    self.util_assert_signup_mail('newuser@example.com')
 
+  @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow_multiple(self):
     c = Client()
     response = c.post('/account/signup/', {'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
+    self.util_assert_signup_mail('newuser2@example.com')
+
     response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
+    self.util_assert_signup_mail('newuser3@example.com')
 
-  def util_assert_account_redirects(self, response, expected_url='/', expected_redirect_sc=302, expected_target_sc=200):
+  def util_assert_account_redirects(self, response, expected_url='/account/confirm-email/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
+
+  def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
+    loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
+    try:
+      with open(loc, 'rb') as fp:
+        msg = email.message_from_binary_file(fp)
+        self.assertEqual(msg['To'], email_to)
+        self.assertRegex(msg['Subject'], '\s+%s\s+' % email_subject_substr)
+    finally:
+      if os.path.exists(loc):
+        os.remove(loc)
+
+
+class MyEmailBackend(EmailBackend):
+  def _get_filename(self):
+    self._fname = os.path.join(self.file_path, 'test_authn_user_flows.log')
+    return self._fname

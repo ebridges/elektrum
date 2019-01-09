@@ -3,9 +3,8 @@ Elektron Change Log
 
 0.22 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- [#15]: Configure mandatory email confirmation for new accounts.
+- [#16]: Default email backend will print the message to console.
 
 0.21 (2019-01-08)
 -----------------
