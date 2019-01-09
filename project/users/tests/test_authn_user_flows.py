@@ -1,3 +1,4 @@
+import re
 import os
 import json
 import email
@@ -74,14 +75,25 @@ class AuthnUserFlowTest(TestCase):
 
   def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
     loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
+    pattern = re.compile("(https?://[^/]+/account/confirm-email\/[A-Za-z0-9:]+/)")
+    confirm_url = None
     try:
       with open(loc, 'rb') as fp:
         msg = email.message_from_binary_file(fp)
         self.assertEqual(msg['To'], email_to)
         self.assertRegex(msg['Subject'], '\s+%s\s+' % email_subject_substr)
+
+      for i, line in enumerate(open(loc)):
+        match = re.search(pattern, line)
+        if match:
+          confirm_url = match.group(0)
+          break
+
     finally:
       if os.path.exists(loc):
         os.remove(loc)
+    
+    return confirm_url
 
 
 class MyEmailBackend(EmailBackend):
