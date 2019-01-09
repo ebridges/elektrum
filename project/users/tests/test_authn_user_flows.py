@@ -11,6 +11,7 @@ class AuthnUserFlowTest(TestCase):
   fixtures = ['users/tests/user-data.json']
 
   def setUp(self):
+    self.email_log_dir = './sent_emails'
     self.password='temporary'
     with open('users/tests/user-data.json') as f:
         d = json.load(f)
@@ -64,3 +65,15 @@ class AuthnUserFlowTest(TestCase):
 
   def util_assert_account_redirects(self, response, expected_url='/account/confirm-email/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
+
+  def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
+    loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
+    try:
+      with open(loc, 'rb') as fp:
+        msg = email.message_from_binary_file(fp)
+        self.assertEqual(msg['To'], email_to)
+        self.assertRegex(msg['Subject'], '\s+%s\s+' % email_subject_substr)
+    finally:
+      if os.path.exists(loc):
+        os.remove(loc)
+
