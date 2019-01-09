@@ -40,7 +40,7 @@ class AuthnUserFlowTest(TestCase):
     result = c.login(email=self.data['fields']['email'], password=self.password)
     self.assertTrue(result)
     response = c.post('/account/logout/')
-    self.util_assert_account_redirects(response)
+    self.util_assert_account_redirects(response, expected_url='/')
 
   def test_csrf_logout_failure(self):
     c = Client(enforce_csrf_checks=True)
@@ -59,5 +59,5 @@ class AuthnUserFlowTest(TestCase):
     response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
 
-  def util_assert_account_redirects(self, response, expected_url='/', expected_redirect_sc=302, expected_target_sc=200):
+  def util_assert_account_redirects(self, response, expected_url='/account/confirm-email/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
