@@ -30,12 +30,12 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
     self.password='temporary'
     with open('users/tests/user-data.json') as f:
         d = json.load(f)
-        self.data=d[0]
+        self.data=d
 
 
   def test_login_with_verification(self):
-    user = CustomUser.objects.get(username=self.data['fields']['username'])
-    email = EmailAddress.objects.add_email(request=None, user=user, email=self.data['fields']['email'])
+    user = CustomUser.objects.get(username=self.data[0]['fields']['username'])
+    email = EmailAddress.objects.add_email(request=None, user=user, email=self.data[0]['fields']['email'])
     email.verified = True
     email.save()
 
@@ -51,7 +51,7 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
   def util_login_user(self, password):
     self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
     username_input = self.driver.find_element_by_name('login')
-    username_input.send_keys(self.data['fields']['email'])
+    username_input.send_keys(self.data[0]['fields']['email'])
     password_input = self.driver.find_element_by_name('password')
     password_input.send_keys(password)
     self.driver.find_element_by_xpath('//button').click()
