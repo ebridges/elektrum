@@ -1,9 +1,11 @@
+import re
 import os
 import json
 import email
 
 from django.test import Client, TestCase, override_settings
 from django.core.mail.backends.filebased import EmailBackend
+from allauth.account.models import EmailAddress
 
 from users.models import CustomUser
 
@@ -56,7 +58,13 @@ class AuthnUserFlowTest(TestCase):
     c = Client()
     response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
-    self.util_assert_signup_mail('newuser@example.com')
+    confirm_url = self.util_assert_signup_mail('newuser@example.com')
+    self.assertIsNotNone(confirm_url)
+    response = c.post(confirm_url)
+    self.util_assert_account_redirects(response, expected_url='/account/login/')
+    email = EmailAddress.objects.get(email='newuser@example.com')
+    self.assertTrue(email.verified)
+
 
   @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow_multiple(self):
@@ -74,14 +82,25 @@ class AuthnUserFlowTest(TestCase):
 
   def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
     loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
+    pattern = re.compile("(https?://[^/]+/account/confirm-email\/[A-Za-z0-9:]+/)")
+    confirm_url = None
     try:
       with open(loc, 'rb') as fp:
         msg = email.message_from_binary_file(fp)
         self.assertEqual(msg['To'], email_to)
         self.assertRegex(msg['Subject'], '\s+%s\s+' % email_subject_substr)
+
+      for i, line in enumerate(open(loc)):
+        match = re.search(pattern, line)
+        if match:
+          confirm_url = match.group(0)
+          break
+
     finally:
       if os.path.exists(loc):
         os.remove(loc)
+    
+    return confirm_url
 
 
 class MyEmailBackend(EmailBackend):
