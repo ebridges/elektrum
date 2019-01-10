@@ -4,7 +4,9 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver 
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
+from allauth.account.models import EmailAddress
 
+from users.models import CustomUser
 
 class AuthnIntegrationTests(StaticLiveServerTestCase):
   fixtures = ['users/tests/user-data.json']
@@ -29,6 +31,11 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
     with open('users/tests/user-data.json') as f:
         d = json.load(f)
         self.data=d[0]
+
+    user = CustomUser.objects.get(username=self.data['fields']['username'])
+    email = EmailAddress.objects.add_email(request=None, user=user, email=self.data['fields']['email'])
+    email.verified = True
+    email.save()
 
 
   def test_login(self):
