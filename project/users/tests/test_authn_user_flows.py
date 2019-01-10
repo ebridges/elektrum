@@ -86,7 +86,7 @@ class AuthnUserFlowTest(TestCase):
 
   def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
     loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
-    pattern = re.compile("(https?://[^/]+/account/confirm-email\/[A-Za-z0-9:]+/)")
+    pattern = re.compile("(https?://[^/]+/account/confirm-email\/[^/]+/)")
     confirm_url = None
     try:
       with open(loc, 'rb') as fp:
