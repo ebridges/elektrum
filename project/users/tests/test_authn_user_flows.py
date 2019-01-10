@@ -61,7 +61,11 @@ class AuthnUserFlowTest(TestCase):
     confirm_url = self.util_assert_signup_mail('newuser@example.com')
     self.assertIsNotNone(confirm_url)
     response = c.post(confirm_url)
-    self.util_assert_account_redirects(response, expected_url='/account/login/')
+    
+    # Because `ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION` is "True", the user is redirected to '/'
+    # If there is some delay (see docs on that setting) then the redirect will be to '/account/login/'
+    self.util_assert_account_redirects(response, expected_url='/')
+
     email = EmailAddress.objects.get(email='newuser@example.com')
     self.assertTrue(email.verified)
 
@@ -82,7 +86,7 @@ class AuthnUserFlowTest(TestCase):
 
   def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
     loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
-    pattern = re.compile("(https?://[^/]+/account/confirm-email\/[A-Za-z0-9:]+/)")
+    pattern = re.compile("(https?://[^/]+/account/confirm-email\/[^/]+/)")
     confirm_url = None
     try:
       with open(loc, 'rb') as fp:
