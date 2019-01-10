@@ -1,8 +1,9 @@
+import json
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver 
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
-import json
 
 
 class AuthnIntegrationTests(StaticLiveServerTestCase):
