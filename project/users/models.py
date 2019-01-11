@@ -8,10 +8,9 @@ class CustomUser(AbstractUser):
     email = models.EmailField(blank=False, null=False, unique=True, max_length=512, verbose_name='email address')
     first_name = models.CharField(blank=False, null=False, max_length=255, verbose_name='first name')
     last_name = models.CharField(blank=False, null=False, max_length=255, verbose_name='last name')
-    ### [#13]: do not require username
     username = models.CharField(
         _('username'),
-        null=True,
+        null=False,
         max_length=150,
         unique=True,
         help_text=_('Optional. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
