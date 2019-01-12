@@ -69,6 +69,9 @@ class AuthnUserFlowTest(TestCase):
     email = EmailAddress.objects.get(email='newuser@example.com')
     self.assertTrue(email.verified)
 
+    user = CustomUser.objects.get(username='newuser')
+    self.assertTrue(user.is_account_verified())
+
 
   @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow_multiple(self):
