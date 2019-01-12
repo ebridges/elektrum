@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractUser, UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount
+import hashlib
 
 class CustomUser(AbstractUser):
     username_validator = UnicodeUsernameValidator()
@@ -19,6 +22,24 @@ class CustomUser(AbstractUser):
             'unique': _("A user with that username already exists."),
         },
     )
+
+
+    def is_account_verified(self):
+        if self.is_authenticated:
+            result = EmailAddress.objects.filter(email=self.email)
+            if len(result):
+                return result[0].verified
+        return False
+
+
+    def profile_image_url(self):
+        gogl_acct = SocialAccount.objects.filter(user_id=self.id, provider='google')
+    
+        if len(gogl_acct):
+            return gogl_acct[0].extra_data['picture']
+    
+        return "http://www.gravatar.com/avatar/{}?s=40".format(hashlib.md5(self.email.encode('utf-8')).hexdigest())
+
 
     def __str__(self):
         return '%s %s <%s>' % (self.first_name, self.last_name, self.email)
