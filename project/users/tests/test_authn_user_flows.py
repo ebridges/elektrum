@@ -17,33 +17,33 @@ class AuthnUserFlowTest(TestCase):
     self.password='temporary'
     with open('users/tests/user-data.json') as f:
         d = json.load(f)
-        self.data=d[0]
+        self.data=d
 
   def test_login(self):
     c = Client()
-    result = c.login(email=self.data['fields']['email'], password=self.password)
+    result = c.login(email=self.data[0]['fields']['email'], password=self.password)
     self.assertTrue(result)
 
   def test_login_fail(self):
     c = Client()
-    result = c.login(email=self.data['fields']['email'], password='wrong_password')
+    result = c.login(email=self.data[0]['fields']['email'], password='wrong_password')
     self.assertFalse(result)
 
   def test_login_via_post(self):
     c = Client()
-    response = c.post('/account/login/', {'login': self.data['fields']['email'], 'password': self.password})
+    response = c.post('/account/login/', {'login': self.data[0]['fields']['email'], 'password': self.password})
     self.util_assert_account_redirects(response)
-    user = CustomUser.objects.get(username=self.data['fields']['username'])
+    user = CustomUser.objects.get(username=self.data[0]['fields']['username'])
     self.assertEqual(response.context['user'].email, user.email)
 
   def test_csrf_login_failure(self):
     c = Client(enforce_csrf_checks=True)
-    response = c.post('/account/login/', {'login': self.data['fields']['email'], 'password': 'wrong_password'})
+    response = c.post('/account/login/', {'login': self.data[0]['fields']['email'], 'password': 'wrong_password'})
     self.assertEqual(response.status_code, 403)
 
   def test_logout(self):
     c = Client()
-    result = c.login(email=self.data['fields']['email'], password=self.password)
+    result = c.login(email=self.data[0]['fields']['email'], password=self.password)
     self.assertTrue(result)
     response = c.post('/account/logout/')
     self.util_assert_account_redirects(response, expected_url='/')

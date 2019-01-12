@@ -7,6 +7,7 @@ Elektron Change Log
 - [#16]: Default email backend will print the message to console.
 - [#3]: Fix error when trying to send email when signing up.
 - [#17]: Add test for email confirmation flow.
+- [#18]: Make username a required field when signing up.
 
 0.21 (2019-01-08)
 -----------------
