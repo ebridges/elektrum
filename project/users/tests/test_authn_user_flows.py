@@ -56,7 +56,7 @@ class AuthnUserFlowTest(TestCase):
   @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow(self):
     c = Client()
-    response = c.post('/account/signup/', {'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    response = c.post('/account/signup/', {'username': 'newuser', 'email': 'newuser@example.com', 'first_name': 'first', 'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
     confirm_url = self.util_assert_signup_mail('newuser@example.com')
     self.assertIsNotNone(confirm_url)
@@ -73,11 +73,11 @@ class AuthnUserFlowTest(TestCase):
   @override_settings(EMAIL_BACKEND = 'users.tests.test_authn_user_flows.MyEmailBackend')
   def test_signup_flow_multiple(self):
     c = Client()
-    response = c.post('/account/signup/', {'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    response = c.post('/account/signup/', {'username': 'newuser2', 'email': 'newuser2@example.com', 'first_name': 'first2', 'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
     self.util_assert_signup_mail('newuser2@example.com')
 
-    response = c.post('/account/signup/', {'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    response = c.post('/account/signup/', {'username': 'newuser3', 'email': 'newuser3@example.com', 'first_name': 'first3', 'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
     self.util_assert_account_redirects(response)
     self.util_assert_signup_mail('newuser3@example.com')
 

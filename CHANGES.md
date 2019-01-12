@@ -8,6 +8,7 @@ Elektron Change Log
 - [#3]: Fix error when trying to send email when signing up.
 - [#17]: Add test for email confirmation flow.
 - [#18]: Make username a required field when signing up.
+- [#19]: Update tests to provide username.
 
 0.21 (2019-01-08)
 -----------------
