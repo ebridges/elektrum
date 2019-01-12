@@ -8,6 +8,8 @@
 <h1>Elektron</h1>
 {% if user.is_authenticated %}
 <p>Welcome {{ user.username }} !!!</p>
+<p><img src="{{ request.user.profile_image_url }}"/></p>
+<p>User's email is {% if not user.is_account_verified %} not{% endif %} verified.</p>
 <p><a href="{% url 'account_logout' %}">Log out</a>
 {% else %}
 <p><a href="{% url 'account_signup' %}">Sign Up</a></p>
