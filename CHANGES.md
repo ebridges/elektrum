@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.23 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.22 (2019-01-12)
 -----------------
 - [#15]: Configure mandatory email confirmation for new accounts.
