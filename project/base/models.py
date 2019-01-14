@@ -6,10 +6,14 @@ from django.utils.translation import gettext_lazy as _
 
 
 class BaseUser(AbstractUser):
-    id = models.UUIDField(
-      _('id'),
-      primary_key=True,
-      default=uuid4,
-      editable=False,
-      max_length=64
-    )
+
+  class Meta:
+      abstract = True
+
+  id = models.UUIDField(
+    _('id'),
+    primary_key=True,
+    default=uuid4,
+    editable=False,
+    max_length=64
+  )
