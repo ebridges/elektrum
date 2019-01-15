@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.24 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.23 (2019-01-15)
 -----------------
 - [#20] Enhance user profile by adding profile image url.
