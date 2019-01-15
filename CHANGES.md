@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.23 (unreleased)
+0.23 (2019-01-15)
 -----------------
 - [#20] Enhance user profile by adding profile image url.
 - [#12] Change model to use a UUID for primary key.
