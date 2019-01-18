@@ -6,6 +6,17 @@ from django.utils.translation import gettext_lazy as _
 from base.models import BaseModel
 from users.models import CustomUser
 
+
+@deconstructible
+class CollectionPathValidator(validators.RegexValidator):
+  regex = r'^\/[0-9]{4}$'
+  message = _(
+    'Enter a valid collection path. This value may only be a 4 digit year, '
+    'with a leading slash.'
+  )
+  flags = 0
+
+
 class Collection(BaseModel):
   collection_path_validator = CollectionPathValidator()
 
@@ -38,13 +49,3 @@ class Collection(BaseModel):
     unique_together = (
       ('path', 'user_id'),
     )
-
-
-@deconstructible
-class CollectionPathValidator(validators.RegexValidator):
-  regex = r'^\/[0-9]{4}$'
-  message = _(
-    'Enter a valid collection path. This value may only be a 4 digit year, '
-    'with a leading slash.'
-  )
-  flags = 0
