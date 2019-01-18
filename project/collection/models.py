@@ -46,6 +46,7 @@ class Collection(BaseModel):
 
 
   class Meta:
+    db_table = 'collection'
     unique_together = (
       ('path', 'user_id'),
     )
