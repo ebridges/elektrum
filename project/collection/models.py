@@ -3,8 +3,8 @@ from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
-from base import BaseModel
-from users import CustomUser
+from base.models import BaseModel
+from users.models import CustomUser
 
 class Collection(BaseModel):
   collection_path_validator = CollectionPathValidator()
