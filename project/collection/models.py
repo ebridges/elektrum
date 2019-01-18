@@ -35,6 +35,7 @@ class Collection(BaseModel):
     CustomUser, 
     null=False, 
     help_text=_('User that owns this collection'),
+    on_delete=models.CASCADE,
   )
 
   def __str__(self):
