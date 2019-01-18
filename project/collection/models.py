@@ -31,7 +31,7 @@ class Collection(BaseModel):
     max_length=1024,
   )
 
-  user_id = models.ForeignKey(
+  user = models.ForeignKey(
     CustomUser, 
     null=False, 
     help_text=_('User that owns this collection'),
@@ -48,5 +48,5 @@ class Collection(BaseModel):
   class Meta:
     db_table = 'collection'
     unique_together = (
-      ('path', 'user_id'),
+      ('path', 'user'),
     )
