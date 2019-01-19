@@ -15,7 +15,10 @@
 
   {% else %}
 
-    {% blocktrans with site.name as site_name %}In order to access {{ site_name }} you can sign up or log in with your Google credentials, or create an account an log in with those credentials.{% endblocktrans %}
+  {% block logged_out_content_top %}
+  {% endblock %}
+
+  {% blocktrans with site.name as site_name %}In order to access {{ site_name }} you can sign up or log in with your Google credentials, or create an account an log in with those credentials.{% endblocktrans %}
 
     {% get_providers as socialaccount_providers %}
     {% if socialaccount_providers %}
@@ -54,8 +57,7 @@
       </form>
     </div>    
 
-
-    {% block logged_out_content %}
+    {% block logged_out_content_bottom %}
     {% endblock %}
 
     {% endif %}
