@@ -24,13 +24,10 @@
     {% if socialaccount_providers %}
     <div class="social-form">
       {% blocktrans %}Connect via Google:{% endblocktrans %}
-      {% for provider in socialaccount_providers %}
-        <li>
-          <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}" 
-            href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">{{provider.name}}</a>
-        </li>
-      {% endfor %}
-      {% providers_media_js %}
+      <ul>
+        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+      </ul>
+      {% include "socialaccount/snippets/login_extra.html" %}
     </div>
     {% endif %}
 
