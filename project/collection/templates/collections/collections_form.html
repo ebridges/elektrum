@@ -1,0 +1,27 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Collections{% endblock %}
+
+{% block content %}
+<h1>Elektron</h1>
+{% if user.is_authenticated %}
+<p>Welcome {{ user.username }} !!!</p>
+<p><img src="{{ request.user.profile_image_url }}"/></p>
+<p>User's email is {% if not user.is_account_verified %} not{% endif %} verified.</p>
+<p><a href="{% url 'account_logout' %}">Log out</a>
+
+<h2>Edit Collection: {{object.path}}</h2>
+
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
+
+
+{% else %}
+<p><a href="{% url 'account_signup' %}">Sign Up</a></p>
+<p><a href="{% url 'account_login' %}">Log In </a></p>
+<p><a href="{% provider_login_url 'google' %}">Log In with Gmail</a></p>
+{% endif %}
+{% endblock %}
