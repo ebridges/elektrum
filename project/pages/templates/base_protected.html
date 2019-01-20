@@ -22,6 +22,7 @@
 
     {% get_providers as socialaccount_providers %}
     {% if socialaccount_providers %}
+    <h3>Authenticate via Google</h3>
     <div class="social-form">
       {% blocktrans %}Connect via Google:{% endblocktrans %}
       <ul>
@@ -31,10 +32,13 @@
     </div>
     {% endif %}
 
+    <hr size="1"/>
+
+    <h3>Authenticate via Password</h3>
     <div class="login-form">
       <form class="login" method="POST" action="{% url 'account_login' %}">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ login_form.as_p }}
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
@@ -43,6 +47,9 @@
       </form>
     </div>
 
+    <hr size="1"/>
+
+    <h3>Create an Account</h3>
     <div class="signup-form">
       <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
         {% csrf_token %}
@@ -56,6 +63,8 @@
 
     {% block logged_out_content_bottom %}
     {% endblock %}
+    <hr size="1"/>
+
 
     {% endif %}
 
