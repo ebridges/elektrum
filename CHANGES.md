@@ -3,9 +3,8 @@ Elektron Change Log
 
 0.24 (unreleased)
 -----------------
-
-- Nothing changed yet.
-
+- [#24] Enhance internal structure of templates to handle showing authenticated content.
+- [#25] Simplify signup/login UX by putting both forms on the home page, rather than two separate pages.
 
 0.23 (2019-01-15)
 -----------------
