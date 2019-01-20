@@ -12,3 +12,5 @@ class HomePageView(SignupView):
         context['login_form'] = LoginForm() # add form to context
         return context
 
+class AppHomePageView(TemplateView):
+    template_name = 'app-home.html'
