@@ -22,19 +22,15 @@ def collection_view(request, pk, template_name='collection/collection_detail.htm
 
 def collection_create(request, template_name='collection/collection_form.html'):
     form = CollectionForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('collection_list')
-    return render(request, template_name, {'form':form})
+    user = request.user
+    return _save_collection_form(user, form)
 
 
 def collection_edit(request, pk, template_name='collection/collection_form.html'):
     collection= get_object_or_404(Collection, pk=pk)
     form = CollectionForm(request.POST or None, instance=collection)
-    if form.is_valid():
-        form.save()
-        return redirect('collection_list')
-    return render(request, template_name, {'form':form})
+    user = request.user
+    return _save_collection_form(user, form)
 
 
 def collection_delete(request, pk, template_name='collection/collection_confirm_delete.html'):
