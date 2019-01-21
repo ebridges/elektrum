@@ -5,7 +5,6 @@ import email
 
 from django.test import Client, TestCase
 
-from users.models import CustomUser
 
 class AuthnUserFlowTest(TestCase):
   fixtures = ['users/tests/user-data.json']
