@@ -2,9 +2,9 @@ from django.db import models
 from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 
 from base.models import BaseModel
-from users.models import CustomUser
 
 
 @deconstructible
@@ -32,7 +32,7 @@ class Collection(BaseModel):
   )
 
   user = models.ForeignKey(
-    CustomUser, 
+    get_user_model(),
     null=False, 
     help_text=_('User that owns this collection'),
     on_delete=models.CASCADE,
