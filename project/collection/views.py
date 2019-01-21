@@ -43,3 +43,13 @@ def collection_delete(request, pk, template_name='collection/collection_confirm_
         collection.delete()
         return redirect('collection_list')
     return render(request, template_name, {'object':collection})
+
+
+def _save_collection_form(user, form):
+    if not user.is_authenticated:
+        return HttpResponseForbidden()
+    if form.is_valid():
+        form.instance.user = user
+        form.save()
+        return redirect('collection_list')
+    return render(request, template_name, {'form':form})
