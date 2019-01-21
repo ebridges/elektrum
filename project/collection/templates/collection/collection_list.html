@@ -1,14 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'base_protected.html' %}
 
 {% block title %}Collections{% endblock %}
 
-{% block content %}
-<h1>Elektron</h1>
-{% if user.is_authenticated %}
-<p>Welcome {{ user.username }} !!!</p>
-<p><img src="{{ request.user.profile_image_url }}"/></p>
-<p>User's email is {% if not user.is_account_verified %} not{% endif %} verified.</p>
-<p><a href="{% url 'account_logout' %}">Log out</a>
+{% block logged_in_content %}
 
 <h2>Collections</h2>
 
@@ -34,10 +28,14 @@
       {% endfor %}
   </tbody>
   </table>
-  
-{% else %}
-<p><a href="{% url 'account_signup' %}">Sign Up</a></p>
-<p><a href="{% url 'account_login' %}">Log In </a></p>
-<p><a href="{% provider_login_url 'google' %}">Log In with Gmail</a></p>
-{% endif %}
 {% endblock %}
+  
+  
+{% block logged_out_content_top %}
+  <h2>Please sign in!</h2>
+{% endblock %}
+
+{% block logged_out_content_bottom %}
+  <p>You must be logged in to view this content.</p>
+{% endblock %}
+ 
