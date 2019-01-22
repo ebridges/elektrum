@@ -22,15 +22,13 @@ def collection_view(request, pk, template_name='collection/collection_detail.htm
 
 def collection_create(request, template_name='collection/collection_form.html'):
     form = CollectionForm(request.POST or None)
-    user = request.user
-    return _save_collection_form(user, form)
+    return _save_collection_form(request, form)
 
 
 def collection_edit(request, pk, template_name='collection/collection_form.html'):
     collection= get_object_or_404(Collection, pk=pk)
     form = CollectionForm(request.POST or None, instance=collection)
-    user = request.user
-    return _save_collection_form(user, form)
+    return _save_collection_form(request, form)
 
 
 def collection_delete(request, pk, template_name='collection/collection_confirm_delete.html'):
@@ -41,11 +39,11 @@ def collection_delete(request, pk, template_name='collection/collection_confirm_
     return render(request, template_name, {'object':collection})
 
 
-def _save_collection_form(user, form):
-    if not user.is_authenticated:
+def _save_collection_form(request, form, template_name='collection/collection_form.html'):
+    if not request.user.is_authenticated:
         return HttpResponseForbidden()
     if form.is_valid():
-        form.instance.user = user
+        form.instance.user = request.user
         form.save()
         return redirect('collection_list')
     return render(request, template_name, {'form':form})
