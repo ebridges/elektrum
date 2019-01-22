@@ -15,8 +15,10 @@ class AuthnUserFlowTest(TestCase):
         d = json.load(f)
         self.data=d
 
-  # create a collection
   def test_create_collection(self):
+    '''
+    Create a collection
+    '''
     c = Client()
     login_result = c.login(email=self.data[0]['fields']['email'], password=self.password)
     self.assertTrue(login_result)
