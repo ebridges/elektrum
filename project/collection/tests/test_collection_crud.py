@@ -18,9 +18,12 @@ class AuthnUserFlowTest(TestCase):
   # create a collection
   def test_create_collection(self):
     c = Client()
-    c.login(email=self.data[0]['fields']['email'], password=self.data[0]['fields']['password'])
-    response = c.post('', {'path': '/3030'})
+    login_result = c.login(email=self.data[0]['fields']['email'], password=self.password)
+    self.assertTrue(login_result)
+    response = c.post('/collections/new', {'path': '/3030'})
     self.assertIsNotNone(response)
+    self.util_assert_account_redirects(response)
+
 
 # create a collection with invalid path, expect failure
 # create a collection with missing path, expect failure
@@ -28,3 +31,6 @@ class AuthnUserFlowTest(TestCase):
 # delete a user and confirm collection is deleted
 # attempt to list/edit/create/delete a collection when not authenticated (user#is_authenticated is False), expect failure
 # attempt to list/edit/create/delete another user's collection, expect failure
+
+  def util_assert_account_redirects(self, response, expected_url='/collections/', expected_redirect_sc=302, expected_target_sc=200):
+    self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
