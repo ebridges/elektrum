@@ -3,8 +3,10 @@ import os
 import json
 import email
 
+from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 
+from collection.models import Collection
 
 class AuthnUserFlowTest(TestCase):
   fixtures = ['users/tests/user-data.json']
@@ -54,7 +56,7 @@ class AuthnUserFlowTest(TestCase):
     c = self.util_authenticated_client()
 
     missing_path_msg='<li>This field is required.</li>'
-    
+
     response = c.post('/collections/new', {'path': ''})
     self.assertIsNotNone(response)
     self.assertContains(response, missing_path_msg)
@@ -77,8 +79,31 @@ class AuthnUserFlowTest(TestCase):
     self.assertContains(response, duplicate_path_msg)
 
 
+  def test_delete_user_confirm_collection_deleted(self):
+    '''
+    Delete a user and confirm collection is deleted
+    '''
+    c = self.util_authenticated_client()
 
-# delete a user and confirm collection is deleted
+    response = c.post('/collections/new', {'path': '/3030'})
+    self.assertIsNotNone(response)
+    self.util_assert_account_redirects(response)
+
+    user_model = get_user_model()
+
+    user = user_model.objects.get(email=self.data[0]['fields']['email'])
+    self.assertIsNotNone(user)
+
+    colln = Collection.objects.filter(path='/3030')
+    self.assertEqual(colln.count(), 1)
+
+    user.delete()
+    user.save()
+
+    colln = Collection.objects.filter(path='/3030')
+    self.assertEqual(colln.count(), 0)
+
+
 # attempt to list/edit/create/delete a collection when not authenticated (user#is_authenticated is False), expect failure
 # attempt to list/edit/create/delete another user's collection, expect failure
 
