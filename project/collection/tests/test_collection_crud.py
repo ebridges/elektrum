@@ -22,61 +22,57 @@ class AuthnUserFlowTest(TestCase):
     Create a collection
     '''
     c = self.util_authenticated_client()
-
-    response = c.post('/collections/new', {'path': '/3030'})
-    self.assertIsNotNone(response)
-    self.util_assert_account_redirects(response)
+    r = util_create_collection(c)
+    self.util_assert_account_redirects(r)
 
 
   def test_create_collection_invalid_paths(self):
     '''
     Create collections with invalid paths, expect failures
     '''
-    c = self.util_authenticated_client()
 
     invalid_path_msg='<li>Enter a valid collection path. This value may only be a 4 digit year, with a leading slash.</li>'
 
-    response = c.post('/collections/new', {'path': '/asdfasdf'})
-    self.assertIsNotNone(response)
-    self.assertContains(response, invalid_path_msg)
+    c = self.util_authenticated_client()
 
-    response = c.post('/collections/new', {'path': 'asdf'})
-    self.assertIsNotNone(response)
-    self.assertContains(response, invalid_path_msg)
+    r = util_create_collection(c, '/asdfasdf')
+    self.assertContains(r, invalid_path_msg)
 
-    response = c.post('/collections/new', {'path': '3030'})
-    self.assertIsNotNone(response)
-    self.assertContains(response, invalid_path_msg)
+    r = util_create_collection(c, 'asdf')
+    self.assertContains(r, invalid_path_msg)
+
+    r = util_create_collection(c, '3030')
+    self.assertContains(r, invalid_path_msg)
 
 
   def test_create_collection_missing_paths(self):
     '''
     Create a collection with missing path, expect failure
     '''
-    c = self.util_authenticated_client()
-
     missing_path_msg='<li>This field is required.</li>'
 
-    response = c.post('/collections/new', {'path': ''})
-    self.assertIsNotNone(response)
-    self.assertContains(response, missing_path_msg)
+    c = self.util_authenticated_client()
+
+    r = util_create_collection(c, '')
+    self.assertContains(r, missing_path_msg)
+
+    r = util_create_collection(c, None)
+    self.assertContains(r, missing_path_msg)
 
 
   def test_create_collection_duplicate_paths(self):
     '''
     Create a collection with duplicate path, expect failure
     '''
-    c = self.util_authenticated_client()
-
     duplicate_path_msg='<li>A collection with that path already exists.</li>'
 
-    response = c.post('/collections/new', {'path': '/3030'})
-    self.assertIsNotNone(response)
-    self.util_assert_account_redirects(response)
+    c = self.util_authenticated_client()
 
-    response = c.post('/collections/new', {'path': '/3030'})
-    self.assertIsNotNone(response)
-    self.assertContains(response, duplicate_path_msg)
+    r = util_create_collection(c)
+    self.util_assert_account_redirects(r)
+
+    r = util_create_collection(c)
+    self.assertContains(r, duplicate_path_msg)
 
 
   def test_delete_user_confirm_collection_deleted(self):
@@ -104,6 +100,7 @@ class AuthnUserFlowTest(TestCase):
     self.assertEqual(colln.count(), 0)
 
 
+
 # attempt to list/edit/create/delete a collection when not authenticated (user#is_authenticated is False), expect failure
 # attempt to list/edit/create/delete another user's collection, expect failure
 
@@ -115,3 +112,8 @@ class AuthnUserFlowTest(TestCase):
     login_result = c.login(email=self.data[0]['fields']['email'], password=self.password)
     self.assertTrue(login_result)
     return c
+
+  def util_create_collection(client, colln_path='/3030')
+    response = client.post('/collections/new', {'path': colln_path})
+    self.assertIsNotNone(response)
+    return response
