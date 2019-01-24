@@ -81,9 +81,8 @@ class CollectionTest(TestCase):
     '''
     c = self.util_authenticated_client()
 
-    response = c.post('/collections/new', {'path': '/3030'})
-    self.assertIsNotNone(response)
-    self.util_assert_account_redirects(response)
+    r = self.util_create_collection(c)
+    self.util_assert_account_redirects(r)
 
     user_model = get_user_model()
 
