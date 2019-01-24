@@ -8,7 +8,7 @@ from django.test import Client, TestCase
 
 from collection.models import Collection
 
-class AuthnUserFlowTest(TestCase):
+class CollectionTest(TestCase):
   fixtures = ['users/tests/user-data.json']
 
   def setUp(self):
