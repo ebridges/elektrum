@@ -125,6 +125,22 @@ class CollectionTest(TestCase):
     self.assertContains(r, '<p>You must be logged in to view this content.</p>')
 
 
+  def test_delete_collection_unauthenticated(self):
+    '''
+    Attempt to delete a collection when not authenticated, expect failure
+    '''
+    c = self.util_authenticated_client()
+
+    r = self.util_create_collection(c)
+    self.util_assert_account_redirects(r)
+    colln = Collection.objects.get(path='/3030')
+
+    c.logout()
+
+    r = c.post('/collections/delete/%s' % colln.id)
+    self.util_assert_account_redirects(r, expected_target_sc=200)
+    self.util_assert_redirect_contains(r, '<p>You must be logged in to view this content.</p>')
+
   def util_assert_account_redirects(self, response, expected_url='/collections/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
 
