@@ -99,6 +99,14 @@ class CollectionTest(TestCase):
     self.assertEqual(colln.count(), 0)
 
 
+  def test_create_collection_unauthenticated(self):
+    '''
+    Attempt to create a collection when not authenticated, expect failure
+    '''
+    c = Client()
+    r = self.util_create_collection(c)
+    self.assertEqual(r.status_code, 403)
+
 
 # attempt to list/edit/create/delete a collection when not authenticated (user#is_authenticated is False), expect failure
 # attempt to list/edit/create/delete another user's collection, expect failure
