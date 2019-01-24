@@ -31,7 +31,6 @@ class CollectionTest(TestCase):
     '''
     Create collections with invalid paths, expect failures
     '''
-
     invalid_path_msg='<li>Enter a valid collection path. This value may only be a 4 digit year, with a leading slash.</li>'
 
     c = self.util_authenticated_client()
