@@ -23,7 +23,7 @@ class CollectionTest(TestCase):
     Create a collection
     '''
     c = self.util_authenticated_client()
-    r = util_create_collection(c)
+    r = self.util_create_collection(c)
     self.util_assert_account_redirects(r)
 
 
@@ -36,13 +36,13 @@ class CollectionTest(TestCase):
 
     c = self.util_authenticated_client()
 
-    r = util_create_collection(c, '/asdfasdf')
+    r = self.util_create_collection(c, '/asdfasdf')
     self.assertContains(r, invalid_path_msg)
 
-    r = util_create_collection(c, 'asdf')
+    r = self.util_create_collection(c, 'asdf')
     self.assertContains(r, invalid_path_msg)
 
-    r = util_create_collection(c, '3030')
+    r = self.util_create_collection(c, '3030')
     self.assertContains(r, invalid_path_msg)
 
 
@@ -54,10 +54,7 @@ class CollectionTest(TestCase):
 
     c = self.util_authenticated_client()
 
-    r = util_create_collection(c, '')
-    self.assertContains(r, missing_path_msg)
-
-    r = util_create_collection(c, None)
+    r = self.util_create_collection(c, '')
     self.assertContains(r, missing_path_msg)
 
 
@@ -69,10 +66,10 @@ class CollectionTest(TestCase):
 
     c = self.util_authenticated_client()
 
-    r = util_create_collection(c)
+    r = self.util_create_collection(c)
     self.util_assert_account_redirects(r)
 
-    r = util_create_collection(c)
+    r = self.util_create_collection(c)
     self.assertContains(r, duplicate_path_msg)
 
 
@@ -114,7 +111,7 @@ class CollectionTest(TestCase):
     self.assertTrue(login_result)
     return c
 
-  def util_create_collection(client, colln_path='/3030')
+  def util_create_collection(self, client, colln_path='/3030'):
     response = client.post('/collections/new', {'path': colln_path})
     self.assertIsNotNone(response)
     return response
