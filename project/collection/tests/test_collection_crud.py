@@ -44,6 +44,9 @@ class CollectionTest(TestCase):
     r = self.util_create_collection(c, '3030')
     self.assertContains(r, invalid_path_msg)
 
+    r = self.util_create_collection(c, None)
+    self.assertContains(r, invalid_path_msg)
+
 
   def test_create_collection_missing_paths(self):
     '''
