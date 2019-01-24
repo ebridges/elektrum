@@ -4,6 +4,7 @@ import json
 import email
 
 from django.contrib.auth import get_user_model
+from django.http import QueryDict
 from django.test import Client, TestCase
 
 from collection.models import Collection
@@ -117,3 +118,7 @@ class CollectionTest(TestCase):
     response = client.post('/collections/new', {'path': colln_path})
     self.assertIsNotNone(response)
     return response
+
+  def util_assert_redirect_contains(self, response, text, path='/collections/'):
+    redirect_response = response.client.get(path, QueryDict())
+    self.assertContains(redirect_response, text)
