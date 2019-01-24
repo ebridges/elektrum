@@ -141,6 +141,23 @@ class CollectionTest(TestCase):
     self.util_assert_account_redirects(r, expected_target_sc=200)
     self.util_assert_redirect_contains(r, '<p>You must be logged in to view this content.</p>')
 
+
+  def test_edit_collection_unauthenticated(self):
+    '''
+    Attempt to edit a collection when not authenticated, expect failure
+    '''
+    c = self.util_authenticated_client()
+
+    r = self.util_create_collection(c)
+    self.util_assert_account_redirects(r)
+    colln = Collection.objects.get(path='/3030')
+
+    c.logout()
+
+    r = c.post('/collections/edit/%s' % colln.id, {'path':'/3031'})
+    self.assertEquals(r.status_code, 403)
+
+
   def util_assert_account_redirects(self, response, expected_url='/collections/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
 
