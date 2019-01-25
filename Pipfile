@@ -21,6 +21,8 @@ boto = "*"
 awsebcli = "*"
 zest-releaser = "*"
 selenium = "*"
+django-nose = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.7"
