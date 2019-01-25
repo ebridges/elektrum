@@ -16,7 +16,7 @@ def collection_list(request, template_name='collection/collection_list.html'):
 
 
 def collection_view(request, pk, template_name='collection/collection_detail.html'):
-    collection= get_object_or_404(Collection, pk=pk)    
+    collection = get_object_or_404(Collection, pk=pk)    
     return render(request, template_name, {'object':collection})
 
 
