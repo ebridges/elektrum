@@ -23,11 +23,7 @@ class Collection(BaseModel):
   path = models.CharField(
     _('collection path'),
     help_text=_('Required. Path to media collection from the root of your archive.'),
-    error_messages={
-      'unique': _('A collection with that path already exists.'),
-    },
     validators=[collection_path_validator],
-    unique=True, 
     max_length=1024,
   )
 
