@@ -122,7 +122,7 @@ class CollectionTest(TestCase):
     c.logout()
 
     r = c.get('/collections/')
-    self.assertContains(r, '<p>You must be logged in to view this content.</p>')
+    self.assertEquals(r.status_code, 403)
 
 
   def test_delete_collection_unauthenticated(self):
@@ -138,8 +138,7 @@ class CollectionTest(TestCase):
     c.logout()
 
     r = c.post('/collections/delete/%s' % colln.id)
-    self.util_assert_account_redirects(r, expected_target_sc=200)
-    self.util_assert_redirect_contains(r, '<p>You must be logged in to view this content.</p>')
+    self.assertEquals(r.status_code, 403)
 
 
   def test_edit_collection_unauthenticated(self):
