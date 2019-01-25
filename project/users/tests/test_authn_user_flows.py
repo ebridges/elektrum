@@ -64,7 +64,7 @@ class AuthnUserFlowTest(TestCase):
     
     # Because `ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION` is "True", the user is redirected to '/'
     # If there is some delay (see docs on that setting) then the redirect will be to '/account/login/'
-    self.util_assert_account_redirects(response, expected_url='/')
+    self.util_assert_account_redirects(response, expected_url='/app-home')
 
     email = EmailAddress.objects.get(email='newuser@example.com')
     self.assertTrue(email.verified)
