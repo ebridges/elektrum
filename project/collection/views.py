@@ -10,30 +10,40 @@ class CollectionForm(ModelForm):
         fields = ['path']
 
 def collection_list(request, template_name='collection/collection_list.html'):
-    collection = Collection.objects.all()
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    collection = Collection.objects.filter(user=request.user)
     data = {}
     data['object_list'] = collection
     return render(request, template_name, data)
 
 
 def collection_view(request, pk, template_name='collection/collection_detail.html'):
-    collection = get_object_or_404(Collection, pk=pk)    
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    collection = get_object_or_404(Collection, pk=pk, user=request.user)    
     return render(request, template_name, {'object':collection})
 
 
 def collection_create(request, template_name='collection/collection_form.html'):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
     form = CollectionForm(request.POST or None)
     return _save_collection_form(request, form)
 
 
 def collection_edit(request, pk, template_name='collection/collection_form.html'):
-    collection= get_object_or_404(Collection, pk=pk)
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    collection= get_object_or_404(Collection, pk=pk, user=request.user)
     form = CollectionForm(request.POST or None, instance=collection)
     return _save_collection_form(request, form)
 
 
 def collection_delete(request, pk, template_name='collection/collection_confirm_delete.html'):
-    collection= get_object_or_404(Collection, pk=pk)    
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    collection= get_object_or_404(Collection, pk=pk, user=request.user)    
     if request.method=='POST':
         collection.delete()
         return redirect('collection_list')
@@ -41,8 +51,6 @@ def collection_delete(request, pk, template_name='collection/collection_confirm_
 
 
 def _save_collection_form(request, form, template_name='collection/collection_form.html'):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
     if form.is_valid():
         form.instance.user = request.user
         form.save()
