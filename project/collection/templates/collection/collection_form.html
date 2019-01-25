@@ -4,20 +4,11 @@
 
 {% block logged_in_content %}
 
-<h2>Collection: {{object.path}}</h2>
+  <h2>Collection: {{object.path}}</h2>
 
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-</form>
-{% endblock %}
-  
-  
-{% block logged_out_content_top %}
-  <h2>Please sign in!</h2>
-{% endblock %}
+  <form method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Submit" />
+  </form>
 
-{% block logged_out_content_bottom %}
-  <p>You must be logged in to view this content.</p>
 {% endblock %}
- 
