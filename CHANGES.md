@@ -6,6 +6,7 @@ Elektron Change Log
 - [#24] Enhance internal structure of templates to handle showing authenticated content.
 - [#25] Simplify signup/login UX by putting both forms on the home page, rather than two separate pages.
 - [#23] Model collections.
+- [#27] Fix syntax error in collection templates.
 
 0.23 (2019-01-15)
 -----------------
