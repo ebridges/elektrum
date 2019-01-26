@@ -3,6 +3,7 @@ from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 
 from base.models import BaseModel
 
@@ -33,6 +34,11 @@ class Collection(BaseModel):
     help_text=_('User that owns this collection'),
     on_delete=models.CASCADE,
   )
+
+  def validate_unique(self, exclude):
+    o = Collection.objects.filter(path=self.path, user=self.user)
+    if o:
+      raise ValidationError({'path': _('There exists already a path with name [%s] for user [%s]' % (self.path, self.user.username))})
 
   def __str__(self):
     return self.path

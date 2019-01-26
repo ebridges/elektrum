@@ -64,8 +64,7 @@ class CollectionTest(TestCase):
     '''
     Create a collection with duplicate path, expect failure
     '''
-    duplicate_path_msg='<li>A collection with that path already exists.</li>'
-
+    duplicate_path_msg='There exists already a path with name'
     c = self.util_authenticated_client()
 
     r = self.util_create_collection(c)
