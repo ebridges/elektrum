@@ -39,7 +39,7 @@ class CustomUser(AbstractUser, BaseModel):
         gogl_acct = SocialAccount.objects.filter(user_id=self.id, provider='google')
     
         if len(gogl_acct):
-            return gogl_acct[0].extra_data['picture']
+            return gogl_acct[0].extra_data['picture']  # pragma: no cover
     
         return "http://www.gravatar.com/avatar/{}?s=40".format(hashlib.md5(self.email.encode('utf-8')).hexdigest())
 
