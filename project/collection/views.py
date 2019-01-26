@@ -51,8 +51,8 @@ def collection_delete(request, pk, template_name='collection/collection_confirm_
 
 
 def _save_collection_form(request, form, template_name='collection/collection_form.html'):
+    form.instance.user = request.user
     if form.is_valid():
-        form.instance.user = request.user
         form.save()
         return redirect('collection_list')
     return render(request, template_name, {'form':form})
