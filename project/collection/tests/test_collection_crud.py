@@ -12,6 +12,7 @@ from collection.models import Collection
 class CollectionTest(TestCase):
   fixtures = ['users/tests/user-data.json']
 
+
   def setUp(self):
     self.password='temporary'
     with open('users/tests/user-data.json') as f:
@@ -267,16 +268,19 @@ class CollectionTest(TestCase):
   def util_assert_account_redirects(self, response, expected_url='/collections/', expected_redirect_sc=302, expected_target_sc=200):
     self.assertRedirects(response, expected_url, expected_redirect_sc, expected_target_sc)
 
+
   def util_authenticated_client(self):
     c = Client()
     login_result = c.login(email=self.data[0]['fields']['email'], password=self.password)
     self.assertTrue(login_result)
     return c
 
+
   def util_create_collection(self, client, colln_path='/3030'):
     response = client.post('/collections/new', {'path': colln_path})
     self.assertIsNotNone(response)
     return response
+
 
   def util_assert_redirect_contains(self, response, text, path='/collections/'):
     redirect_response = response.client.get(path, QueryDict())
