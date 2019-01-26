@@ -107,8 +107,6 @@ class CollectionTest(TestCase):
     self.assertEqual(r.status_code, 403)
 
 
-# attempt to list/edit/create/delete a collection when not authenticated (user#is_authenticated is False), expect failure
-# attempt to list/edit/create/delete another user's collection, expect failure
   def test_list_collection_unauthenticated(self):
     '''
     Attempt to list a collection when not authenticated, expect failure
