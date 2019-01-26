@@ -18,6 +18,39 @@ class CollectionTest(TestCase):
         d = json.load(f)
         self.data=d
 
+
+  def test_view_collection_unauthenticated(self):
+    '''
+    View a collection
+    '''
+    colln_path='/4041'
+
+    c = self.util_authenticated_client()
+    r = self.util_create_collection(c, colln_path=colln_path)
+    self.util_assert_account_redirects(r)
+
+    colln = Collection.objects.get(path=colln_path)
+    c.logout()
+
+    r = c.get('/collections/view/%s' % colln.id)
+    self.assertEqual(r.status_code, 403)
+
+
+  def test_view_collection(self):
+    '''
+    View a collection
+    '''
+    colln_path='/4040'
+
+    c = self.util_authenticated_client()
+    r = self.util_create_collection(c, colln_path=colln_path)
+    self.util_assert_account_redirects(r)
+
+    colln = Collection.objects.get(path=colln_path)
+    r = c.get('/collections/view/%s' % colln.id)
+    self.assertContains(r, '<h2>Collection: %s</h2>' % colln_path)    
+
+
   def test_create_collection(self):
     '''
     Create a collection
@@ -25,6 +58,21 @@ class CollectionTest(TestCase):
     c = self.util_authenticated_client()
     r = self.util_create_collection(c)
     self.util_assert_account_redirects(r)
+
+
+  def test_verify_name_from_path(self):
+    '''
+    Verify that the name of a colln is the same as the path, without a leading slash.
+    '''
+    colln_path = '/5050'
+    colln_name = '5050'
+    c = self.util_authenticated_client()
+    r = self.util_create_collection(c, colln_path=colln_path)
+    self.util_assert_account_redirects(r)
+
+    colln = Collection.objects.get(path=colln_path)
+
+    self.assertEqual(colln.name(), colln_name)
 
 
   def test_create_collection_invalid_paths(self):
@@ -72,6 +120,68 @@ class CollectionTest(TestCase):
 
     r = self.util_create_collection(c)
     self.assertContains(r, duplicate_path_msg)
+
+
+  def test_edit_collection(self):
+    '''
+    Edit a collection
+    '''
+    c = self.util_authenticated_client()
+
+    r = self.util_create_collection(c)
+    self.util_assert_account_redirects(r)
+    colln = Collection.objects.get(path='/3030')
+    self.assertIsNotNone( colln )
+
+    r = c.post('/collections/edit/%s' % colln.id, {'path':'/3031'})
+    colln = Collection.objects.filter(path='/3031')
+    self.assertTrue( colln.exists() )
+
+    self.util_assert_account_redirects(r)
+
+
+  def test_edit_nonexistent_collection(self):
+    '''
+    Edit a collection that doesn't exist
+    '''
+    c = self.util_authenticated_client()
+
+    nonexistent_colln_id='91cf609b-1ed9-44fd-b478-09f083ce2b36'
+    r = c.post('/collections/edit/%s' % nonexistent_colln_id, {'path':'/3031'})
+    self.assertEqual(r.status_code, 404)
+
+    colln = Collection.objects.filter(path='/3031')
+    self.assertFalse( colln.exists() )
+
+
+  def test_delete_collection(self):
+    '''
+    Delete a collection
+    '''
+    c = self.util_authenticated_client()
+
+    r = self.util_create_collection(c)
+    self.util_assert_account_redirects(r)
+    colln = Collection.objects.get(path='/3030')
+
+    r = c.post('/collections/delete/%s' % colln.id)
+    self.util_assert_account_redirects(r)
+    colln = Collection.objects.filter(path='/3030')
+    self.assertFalse( colln.exists() )
+
+
+  def test_delete_collection_confirmation(self):
+    '''
+    Confirm deletion of a collection
+    '''
+    c = self.util_authenticated_client()
+
+    r = self.util_create_collection(c)
+    self.util_assert_account_redirects(r)
+    colln = Collection.objects.get(path='/3030')
+
+    r = c.get('/collections/delete/%s' % colln.id)
+    self.assertContains(r, 'Are you sure you want to delete')
 
 
   def test_delete_user_confirm_collection_deleted(self):
