@@ -37,7 +37,7 @@ class Collection(BaseModel):
 
   def validate_unique(self, exclude):
     o = Collection.objects.filter(path=self.path, user=self.user)
-    if o:
+    if o.exists():
       raise ValidationError({'path': _('There exists already a path with name [%s] for user [%s]' % (self.path, self.user.username))})
 
   def __str__(self):
