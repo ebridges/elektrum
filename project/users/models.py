@@ -8,6 +8,7 @@ from allauth.socialaccount.models import SocialAccount
 
 from base.models import BaseModel
 
+
 class CustomUser(AbstractUser, BaseModel):
     username_validator = UnicodeUsernameValidator()
 
