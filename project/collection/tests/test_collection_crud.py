@@ -61,21 +61,6 @@ class CollectionTest(TestCase):
     self.util_assert_account_redirects(r)
 
 
-  def test_verify_name_from_path(self):
-    '''
-    Verify that the name of a colln is the same as the path, without a leading slash.
-    '''
-    colln_path = '/5050'
-    colln_name = '5050'
-    c = self.util_authenticated_client()
-    r = self.util_create_collection(c, colln_path=colln_path)
-    self.util_assert_account_redirects(r)
-
-    colln = Collection.objects.get(path=colln_path)
-
-    self.assertEqual(colln.name(), colln_name)
-
-
   def test_create_collection_invalid_paths(self):
     '''
     Create collections with invalid paths, expect failures
