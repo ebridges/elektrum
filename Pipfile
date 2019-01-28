@@ -23,6 +23,7 @@ zest-releaser = "*"
 selenium = "*"
 django-nose = "*"
 coverage = "*"
+factory-boy = "*"
 
 [requires]
 python_version = "3.7"
