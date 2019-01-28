@@ -24,6 +24,8 @@ selenium = "*"
 django-nose = "*"
 coverage = "*"
 factory-boy = "*"
+pytest = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.7"
