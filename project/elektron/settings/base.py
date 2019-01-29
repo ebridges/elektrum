@@ -120,7 +120,9 @@ DATABASES = {
         'PORT': os.getenv('db_port_num'),
     }
 }
-if 'test' in sys.argv:
+
+# substring search across cmdline args
+if [s for s in sys.argv if 'pytest' in s]:
     DATABASES['default'] = {
         # see #14 - SQLite backend is not working for some tests
         # 'ENGINE': 'django.db.backends.sqlite3',
