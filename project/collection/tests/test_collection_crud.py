@@ -215,7 +215,7 @@ class CollectionTest(TestCase):
     c.logout()
 
     r = c.get('/collections/')
-    self.assertEquals(r.status_code, 403)
+    self.assertEqual(r.status_code, 403)
 
 
   def test_delete_collection_unauthenticated(self):
@@ -231,7 +231,7 @@ class CollectionTest(TestCase):
     c.logout()
 
     r = c.post('/collections/delete/%s' % colln.id)
-    self.assertEquals(r.status_code, 403)
+    self.assertEqual(r.status_code, 403)
 
 
   def test_edit_collection_unauthenticated(self):
@@ -247,7 +247,7 @@ class CollectionTest(TestCase):
     c.logout()
 
     r = c.post('/collections/edit/%s' % colln.id, {'path':'/3031'})
-    self.assertEquals(r.status_code, 403)
+    self.assertEqual(r.status_code, 403)
 
 
   def util_assert_account_redirects(self, response, expected_url='/collections/', expected_redirect_sc=302, expected_target_sc=200):

@@ -16,7 +16,7 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
     super().setUpClass()
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    cls.driver = webdriver.Chrome(chrome_options=chrome_options)
+    cls.driver = webdriver.Chrome(options=chrome_options)
     cls.driver.implicitly_wait(10)
 
  
