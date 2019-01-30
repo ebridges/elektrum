@@ -1,3 +1,7 @@
+VSCode Setup
+https://gist.github.com/ebridges/9e2e5a840c91c7a034c80e3e43dd3a9b
+
+
 
 ## Elektron
 
