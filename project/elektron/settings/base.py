@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import sys
 from dotenv import load_dotenv
+from . import elektron_env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,8 +40,7 @@ with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
     APP_VERSION_NUMBER = v_file.read()
 
 # declare location of environment file
-env = os.getenv('ELEKTRON_ENV', 'production')
-ELEKTRON_ENV_PATH='%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, env)
+ELEKTRON_ENV_PATH='%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, elektron_env)
 
 # import project environment
 load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
