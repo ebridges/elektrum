@@ -1,11 +1,20 @@
+[run]
+source = .
+branch = True
+
 [report]
 omit=
+    base/*
+    elektron/*
+    status/*
+    manage.py
     */admin.py
     */apps.py
     */migrations/*
     */urls.py
     */__init__.py
     */forms.py
+    */tests*
 show_missing = True
 exclude_lines =
   pragma: no cover
