@@ -96,13 +96,13 @@ class AuthnUserFlowTest(TestCase):
 
     def util_assert_signup_mail(self, email_to, email_subject_substr='Confirm'):
         loc = os.path.join(self.email_log_dir, 'test_authn_user_flows.log')
-        pattern = re.compile("(https?://[^/]+/account/confirm-email\/[^/]+/)")
+        pattern = re.compile(r'(https?://[^/]+/account/confirm-email/[^/]+/)')
         confirm_url = None
         try:
             with open(loc, 'rb') as fp:
                 msg = email.message_from_binary_file(fp)
                 self.assertEqual(msg['To'], email_to)
-                self.assertRegex(msg['Subject'], '\s+%s\s+' % email_subject_substr)
+                self.assertRegex(msg['Subject'], r'\s+%s\s+' % email_subject_substr)
 
             for i, line in enumerate(open(loc)):
                 match = re.search(pattern, line)
