@@ -1,6 +1,7 @@
 [report]
 omit=
     */admin.py
+    */apps.py
     */migrations/*
     */urls.py
     */__init__.py
