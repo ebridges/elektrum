@@ -2,7 +2,15 @@ import pytest
 import pathlib
 import json
 
+import pytest
+
 from django.core.management import call_command
+
+from pytest_factoryboy import register
+
+from collection.tests.factories import CollectionFactory
+
+register(CollectionFactory)
 
 
 @pytest.fixture(scope='session')
