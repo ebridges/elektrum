@@ -9,40 +9,44 @@ from users.models import CustomUser
 
 
 @pytest.mark.django_db
-def test_login_failure(client, mock_user):
+def test_login_failure(client, user_factory):
     """
     Test failed login
     :param client: mock django client
-    :param mock_user: instance of mock users.models.CustomUser
+    :param user_factory: mock user generator
+    :return:
     """
-    result = client.login(email=mock_user.email, password='wrong_password')
+    u = user_factory()
+    result = client.login(email=u.email, password='wrong_password')
     assert not result, 'Should not be able to login with wrong password'
 
 
 @pytest.mark.django_db
-def test_login_via_post(client, mock_user):
+def test_login_via_post(client, user_factory):
     """
     Test successful login via POST
     :param client: mock django client
-    :param mock_user: instance of mock users.models.CustomUser
+    :param user_factory: mock user generator
     """
-    response = client.post('/account/login/', {'login': mock_user.email, 'password': USER_PASSWORD})
+    u = user_factory()
+    response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
     util.assert_account_redirects(response, expected_url='/account/confirm-email/')
-    user = CustomUser.objects.get(username=mock_user.username)
+    user = CustomUser.objects.get(username=u.username)
     assert user is not None, 'could not locate user with username %s' % u.username
     assert response.context['user'].email == user.email
-    assert user.email == mock_user.email
+    assert user.email == u.email
 
 
 @pytest.mark.django_db
-def test_csrf_login_failure(client, mock_user):
+def test_csrf_login_failure(client, user_factory):
     """
     Test login failed via POST when enforcing csrf
     :param client: mock django client
-    :param mock_user: instance of mock users.models.CustomUser
+    :param user_factory: mock user generator
     """
+    u = user_factory()
     client.handler.enforce_csrf_checks=True
-    response = client.post('/account/login/', {'login': mock_user.email, 'password': USER_PASSWORD})
+    response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
     assert response.status_code == 403
 
 
