@@ -1,4 +1,7 @@
+import email
 import json
+import os
+import re
 
 from urllib.parse import urljoin, urlsplit
 
@@ -8,6 +11,30 @@ from django.http import QueryDict
 from django.http.request import split_domain_port, validate_host
 from django.test import Client, TestCase
 from django.test.html import HTMLParseError, parse_html
+
+
+def trunc_file(filename):
+    with open(filename, 'w') as f:
+        f.truncate()
+
+
+def assert_signup_mail(email_to, email_log, email_subject_substr='Confirm'):
+    url_pattern = re.compile(r'(https?://[^/]+/account/confirm-email/[^/]+/)')
+    # subj_pattern = re.compile(r'\s+%s\s+' % email_subject_substr)
+
+    confirm_url = None
+    with open(email_log, 'rb') as fp:
+        msg = email.message_from_binary_file(fp)
+        assert msg['To'] == email_to
+        assert email_subject_substr in msg['Subject']
+
+    for i, line in enumerate(open(email_log)):
+        match = re.search(url_pattern, line)
+        if match:
+            confirm_url = match.group(0)
+            break
+
+    return confirm_url
 
 
 def assert_account_redirects(response, expected_url='/collections/', expected_redirect_sc=302,
