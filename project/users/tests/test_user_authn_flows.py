@@ -56,7 +56,8 @@ def test_logout(authenticated_client):
     Confirm successful logout
     :param authenticated_client: mock django client that has been logged in
     """
-    response = authenticated_client.post('/account/logout/')
+    (c, __) = authenticated_client
+    response = c.post('/account/logout/')
     util.assert_account_redirects(response, expected_url='/')
 
 
@@ -66,8 +67,9 @@ def test_csrf_logout_failure(authenticated_client):
     Confirm failed logout when CSRF is enforced
     :param authenticated_client: mock django client that has been logged in
     """
-    authenticated_client.handler.enforce_csrf_checks=True
-    response = authenticated_client.post('/account/logout/')
+    (c, __) = authenticated_client
+    c.handler.enforce_csrf_checks=True
+    response = c.post('/account/logout/')
     assert response.status_code == 403
 
 
