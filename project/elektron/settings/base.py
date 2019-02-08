@@ -198,5 +198,3 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-
-TEST_RUNNER = 'elektron.test_runner.PytestTestRunner'
