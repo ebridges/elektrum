@@ -42,14 +42,6 @@ def assert_account_redirects(response, expected_url='/collections/', expected_re
     assert_redirects(response, expected_url, expected_redirect_sc, expected_target_sc)
 
 
-def authenticated_client(test_data):
-    client = Client()
-    login_result = client.login(email=test_data[0]['fields']['email'],
-                                password=test_data[0]['fields']['password_plaintext'])
-    assert login_result
-    return client
-
-
 def create_collection(client, colln_path='/3030'):
     response = client.post('/collections/new', {'path': colln_path})
     assert response is not None
