@@ -1,0 +1,14 @@
+{% extends 'base_protected.html' %}
+
+{% block title %}Album Editor{% endblock %}
+
+{% block logged_in_content %}
+
+    <h2>Deleting Album: {{object.path}}</h2>
+
+    <form method="post">{% csrf_token %}
+        Are you sure you want to delete "{{ object.path }}" ?
+        <input type="submit" value="Submit" />
+    </form>
+
+{% endblock %}

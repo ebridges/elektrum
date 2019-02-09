@@ -1,0 +1,31 @@
+{% extends 'base_protected.html' %}
+
+{% block title %}Albums{% endblock %}
+
+{% block logged_in_content %}
+
+<h2>Albums</h2>
+
+<a href="{% url "album_new" %}">New Album</a>
+
+<table border="1">
+  <thead>
+      <tr>
+      <th>Path</th>
+      <th>View</th>
+      <th>Edit</th>
+      <th>Delete</th>
+      </tr>
+  </thead>
+  <tbody>
+      {% for album in object_list %}
+      <tr>
+      <td>{{ album.path }}</td>
+      <td><a href="{% url "album_view" album.id %}">view</a></td>
+      <td><a href="{% url "album_edit" album.id %}">edit</a></td>
+      <td><a href="{% url "album_delete" album.id %}">delete</a></td>
+      </tr>
+      {% endfor %}
+  </tbody>
+  </table>
+{% endblock %}

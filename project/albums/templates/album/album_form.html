@@ -1,0 +1,14 @@
+{% extends 'base_protected.html' %}
+
+{% block title %}Album Editor{% endblock %}
+
+{% block logged_in_content %}
+
+  <h2>Album: {{object.path}}</h2>
+
+  <form method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Submit" />
+  </form>
+
+{% endblock %}

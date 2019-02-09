@@ -1,0 +1,11 @@
+{% extends 'base_protected.html' %}
+
+{% block title %}Album Editor{% endblock %}
+
+{% block logged_in_content %}
+
+<h2>Album: {{object.path}}</h2>
+
+Media in this album would be shown here.
+
+{% endblock %}
