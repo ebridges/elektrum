@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'users',
     'pages',
     'collection',
+    'albums',
 ]
 
 MIDDLEWARE = [
