@@ -1,0 +1,32 @@
+[run]
+source = .
+branch = True
+
+[report]
+omit=
+    base/*
+    elektron/*
+    status/*
+    manage.py
+    */admin.py
+    */apps.py
+    */migrations/*
+    */urls.py
+    */__init__.py
+    */forms.py
+    */tests*
+    conftest.py
+show_missing = True
+exclude_lines =
+  pragma: no cover
+  def __unicode__
+  def __repr__
+  def __str__
+  if self\.debug
+  class Meta
+  from
+  import
+ 
+  # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError

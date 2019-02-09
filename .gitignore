@@ -30,3 +30,7 @@ temp-requirements.txt
 #.elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+.coverage
+
+# pytest
+.pytest_cache/

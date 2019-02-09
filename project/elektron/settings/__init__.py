@@ -1,12 +1,13 @@
 import os
 
-env = os.getenv('ELEKTRON_ENV', 'production')
+DEFAULT_ENV='development'
+elektron_env = os.getenv('ELEKTRON_ENV', DEFAULT_ENV)
 
-if env == 'staging':
+if elektron_env == 'staging':
     from .staging import *
 
-if env == 'development':
+if elektron_env == 'development':
     from .development import *
 
-if not env or env == 'production':
+if not elektron_env or elektron_env == 'production':
     from .production import *
