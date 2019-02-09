@@ -15,6 +15,7 @@ omit=
     */__init__.py
     */forms.py
     */tests*
+    conftest.py
 show_missing = True
 exclude_lines =
   pragma: no cover
