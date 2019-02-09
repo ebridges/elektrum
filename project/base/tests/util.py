@@ -5,12 +5,18 @@ import re
 
 from urllib.parse import urljoin, urlsplit
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.http import QueryDict
 from django.http.request import split_domain_port, validate_host
 from django.test import Client, TestCase
 from django.test.html import HTMLParseError, parse_html
+
+
+USER_PASSWORD = 'temporary'
+email_file_path = os.path.join(settings.BASE_DIR, 'sent_emails')
+email_log = os.path.join(email_file_path, 'test_authn_user_flows.log')
 
 
 def trunc_file(filename):
