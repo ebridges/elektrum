@@ -26,3 +26,6 @@ class MyEmailBackend(EmailBackend):
     def _get_filename(self):
         self._fname = email_log
         return self._fname
+
+
+register(UserFactory)
