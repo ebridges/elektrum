@@ -7,9 +7,11 @@ from allauth.account.models import EmailAddress
 
 from users.models import CustomUser
 
+from base.tests.util import USER_PASSWORD
+from users.tests.factories import UserFactory
+
 
 class AuthnIntegrationTests(StaticLiveServerTestCase):
-    fixtures = ['users/tests/user-data.json']
 
     @classmethod
     def setUpClass(cls):
@@ -24,29 +26,30 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
         cls.driver.quit()
         super().tearDownClass()
 
-    def setUp(self):
-        self.password = 'temporary'
-        with open('users/tests/user-data.json') as f:
-            d = json.load(f)
-            self.data = d
-
     def test_login_with_verification(self):
-        user = CustomUser.objects.get(username=self.data[0]['fields']['username'])
-        email = EmailAddress.objects.add_email(request=None, user=user, email=self.data[0]['fields']['email'])
+        u = UserFactory()
+        user = CustomUser.objects.get(username=u.username)
+        email = EmailAddress.objects.add_email(request=None, user=user, email=user.email)
         email.verified = True
         email.save()
 
-        self.util_login_user(self.password)
+        self.util_login_user(user.email, USER_PASSWORD)
         self.assertInHTML('<a href="/account/logout/">Log out</a>', self.driver.page_source, count=1)
 
     def test_login_without_verification(self):
-        self.util_login_user(self.password)
-        self.assertInHTML('<h1>Verify Your E-mail Address</h1>', self.driver.page_source, count=1)
+        u = UserFactory()
+        user = CustomUser.objects.get(username=u.username)
+        email = EmailAddress.objects.add_email(request=None, user=user, email=user.email)
+        email.verified = False
+        email.save()
 
-    def util_login_user(self, password):
+        self.util_login_user(u.email, USER_PASSWORD)
+        self.assertInHTML('Verify Your E-mail Address', self.driver.page_source)
+
+    def util_login_user(self, email, password):
         self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
         username_input = self.driver.find_element_by_name('login')
-        username_input.send_keys(self.data[0]['fields']['email'])
+        username_input.send_keys(email)
         password_input = self.driver.find_element_by_name('password')
         password_input.send_keys(password)
         self.driver.find_element_by_xpath('//button').click()
