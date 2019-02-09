@@ -3,9 +3,15 @@ from django.forms import ModelForm
 from django.http import HttpResponseForbidden
 
 from albums.models import Album
+from collection.models import Collection
 
 
 class AlbumForm(ModelForm):
+
+    def __init__(self, user, *args, **kwargs):
+        super(AlbumForm, self).__init__(*args, **kwargs)
+        self.fields['collection'].queryset = Collection.objects.filter(user=user)
+
     class Meta:
         model = Album
         fields = ['path', 'collection']
@@ -29,7 +35,7 @@ def album_view(request, pk, template_name='album/album_detail.html'):
 def album_create(request, template_name='album/album_form.html'):
     if not request.user.is_authenticated:
         return HttpResponseForbidden(content='Authentication is required.')
-    form = AlbumForm(request.POST or None)
+    form = AlbumForm(request.user, request.POST or None)
     return _save_album_form(request, form, template_name)
 
 
@@ -37,7 +43,7 @@ def album_edit(request, pk, template_name='album/album_form.html'):
     if not request.user.is_authenticated:
         return HttpResponseForbidden(content='Authentication is required.')
     album = get_object_or_404(Album, pk=pk, user=request.user)
-    form = AlbumForm(request.POST or None, instance=album)
+    form = AlbumForm(request.user, request.POST or None, instance=album)
     return _save_album_form(request, form, template_name)
 
 
