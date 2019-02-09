@@ -13,9 +13,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import sys
 from dotenv import load_dotenv
+from . import elektron_env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.abspath('%s/../..' % os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -29,23 +30,22 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-#### BEGIN Initialize environment
+# BEGIN Initialize environment
 
 # establish project root directory as a variable
-ELEKTRON_PROJECT_DIR=os.path.abspath('%s/..' % BASE_DIR)
+ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
 
 # read version number for display in the app
 with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
     APP_VERSION_NUMBER = v_file.read()
 
 # declare location of environment file
-env = os.getenv('ELEKTRON_ENV', 'production')
-ELEKTRON_ENV_PATH='%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, env)
+ELEKTRON_ENV_PATH = '%s/etc/%s.env' % (ELEKTRON_PROJECT_DIR, elektron_env)
 
 # import project environment
 load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
 
-#### END Initialize environment
+# END Initialize environment
 
 # Application definition
 
@@ -106,7 +106,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'elektron.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -120,7 +119,9 @@ DATABASES = {
         'PORT': os.getenv('db_port_num'),
     }
 }
-if 'test' in sys.argv:
+
+# substring search across cmdline args
+if [s for s in sys.argv if 'pytest' in s]:
     DATABASES['default'] = {
         # see #14 - SQLite backend is not working for some tests
         # 'ENGINE': 'django.db.backends.sqlite3',
@@ -132,7 +133,6 @@ if 'test' in sys.argv:
         'HOST': "localhost",
         'PORT': 5432,
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -152,7 +152,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -166,7 +165,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -177,7 +175,7 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-LOGIN_URL = '/account/login/' # is there a better way to do this?
+LOGIN_URL = '/account/login/'  # is there a better way to do this?
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 LOGIN_REDIRECT_URL = 'app-home'
 LOGOUT_REDIRECT_URL = 'home'
@@ -199,10 +197,4 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=collection,users',
-]
+EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')

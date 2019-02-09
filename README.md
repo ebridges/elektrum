@@ -1,3 +1,9 @@
+VSCode Setup
+https://gist.github.com/ebridges/9e2e5a840c91c7a034c80e3e43dd3a9b
+
+PyCharm Setup for Coverage
+https://gist.github.com/ebridges/d1ebe05e9fd87e409f6e5c978e44bde1
+
 
 ## Elektron
 

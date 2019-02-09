@@ -27,7 +27,6 @@ class CustomUser(AbstractUser, BaseModel):
         },
     )
 
-
     def is_account_verified(self):
         if self.is_authenticated:
             result = EmailAddress.objects.filter(email=self.email)
@@ -35,15 +34,13 @@ class CustomUser(AbstractUser, BaseModel):
                 return result[0].verified
         return False
 
-
-    def profile_image_url(self): # pragma: no cover
+    def profile_image_url(self):  # pragma: no cover
         gogl_acct = SocialAccount.objects.filter(user_id=self.id, provider='google')
-    
+
         if len(gogl_acct):
             return gogl_acct[0].extra_data['picture']
-    
-        return "http://www.gravatar.com/avatar/{}?s=40".format(hashlib.md5(self.email.encode('utf-8')).hexdigest())
 
+        return "http://www.gravatar.com/avatar/{}?s=40".format(hashlib.md5(self.email.encode('utf-8')).hexdigest())
 
     def __str__(self):
         return '%s %s <%s>' % (self.first_name, self.last_name, self.email)

@@ -24,6 +24,10 @@ selenium = "*"
 django-nose = "*"
 coverage = "*"
 factory-boy = "*"
+pytest = "~=4.0.1"
+pytest-django = "*"
+pytest-cov = "*"
+pytest-factoryboy = "*"
 
 [requires]
 python_version = "3.7"
