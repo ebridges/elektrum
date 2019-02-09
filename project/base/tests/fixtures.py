@@ -1,31 +1,20 @@
-import pathlib
-import json
-
+import os
 import pytest
 
-from django.core.management import call_command
+from base.tests.util import USER_PASSWORD, email_log
 
 
-@pytest.fixture(scope='session')
-def data_file(request):
-    f = pathlib.Path(request.node.fspath.strpath)
-    print("\nCurrent dir : %s" % f)
-    config = f / 'users/tests/user-data.json'
-    print("Test data file : %s" % config)
-    assert config.exists()
-    return config
+@pytest.fixture
+def authenticated_client(client, user_factory):
+    user = user_factory()
+    login_result = client.login(email=user.email,
+                                password=USER_PASSWORD)
+    assert login_result, 'Unable to login'
+    return client, user
 
 
-@pytest.fixture(scope='session')
-def django_db_data_setup(data_file, django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        call_command('loaddata', data_file)
-
-
-@pytest.fixture(scope='session')
-def test_data(django_db_data_setup, data_file):
-    with data_file.open() as fd:
-        test_data = json.loads(fd.read())
-    for item in test_data:
-        item['fields']['password_plaintext'] = 'temporary'
-    yield test_data
+@pytest.fixture
+def mock_email_log():
+    yield email_log
+    if os.path.exists(email_log):
+        os.remove(email_log)
