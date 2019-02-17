@@ -26,7 +26,7 @@ MIME_TYPE_CHOICES = (
 
 
 class MediaItem(BaseModel):
-    objects = MediaItemManager()
+
     media_item_path_validator = MediaItemPathValidator()
 
     owner = models.ForeignKey(
