@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'users',
     'pages',
     'collection',
+    'media_items',
 ]
 
 MIDDLEWARE = [
