@@ -7,7 +7,7 @@ from allauth.account.models import EmailAddress
 
 from users.models import CustomUser
 
-from base.tests.util import USER_PASSWORD
+from base.tests.util import USER_PASSWORD, util_login_user
 from users.tests.factories import UserFactory
 
 
@@ -33,7 +33,7 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
         email.verified = True
         email.save()
 
-        self.util_login_user(user.email, USER_PASSWORD)
+        util_login_user(self.driver, self.live_server_url, user.email, USER_PASSWORD)
         self.assertInHTML('<a href="/account/logout/">Log out</a>', self.driver.page_source, count=1)
 
     def test_login_without_verification(self):
@@ -43,13 +43,6 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
         email.verified = False
         email.save()
 
-        self.util_login_user(u.email, USER_PASSWORD)
+        util_login_user(self.driver, self.live_server_url, u.email, USER_PASSWORD)
         self.assertInHTML('Verify Your E-mail Address', self.driver.page_source)
 
-    def util_login_user(self, email, password):
-        self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
-        username_input = self.driver.find_element_by_name('login')
-        username_input.send_keys(email)
-        password_input = self.driver.find_element_by_name('password')
-        password_input.send_keys(password)
-        self.driver.find_element_by_xpath('//button').click()

@@ -19,6 +19,15 @@ email_file_path = os.path.join(settings.BASE_DIR, 'sent_emails')
 email_log = os.path.join(email_file_path, 'test_authn_user_flows.log')
 
 
+def util_login_user(driver, live_server_url, user_email, password):
+    driver.get('%s%s' % (live_server_url, '/account/login/'))
+    username_input = driver.find_element_by_name('login')
+    username_input.send_keys(user_email)
+    password_input = driver.find_element_by_name('password')
+    password_input.send_keys(password)
+    driver.find_element_by_xpath('//button').click()
+
+
 def trunc_file(filename):
     with open(filename, 'w') as f:
         f.truncate()
