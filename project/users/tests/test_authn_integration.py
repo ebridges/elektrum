@@ -45,4 +45,3 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
 
         util_login_user(self.driver, self.live_server_url, u.email, USER_PASSWORD)
         self.assertInHTML('Verify Your E-mail Address', self.driver.page_source)
-
