@@ -40,7 +40,6 @@ class MediaItem(BaseModel):
         _('file path'),
         help_text=_('Required. Path to media item from the root of users archive.'),
         null=False,
-        unique=True,
         validators=[media_item_path_validator],
         max_length=4096,
     )
@@ -54,5 +53,17 @@ class MediaItem(BaseModel):
         max_length=64,
     )
 
+    def validate_unique(self, exclude=None):
+        o = MediaItem.objects.filter(path=self.path, owner=self.owner)
+        if o.exists():
+            raise ValidationError({'path': _(
+                'There already exists a media item named [%s] for user [%s]' % (self.path, self.owner.username))})
+
     def __str__(self):
         return self.path
+
+    class Meta:
+        db_table = 'media_item'
+        unique_together = (
+            ('path', 'owner'),
+        )
