@@ -15,7 +15,7 @@ supported_upload_types = {
 }
 
 
-def record_upload_request(user, upload_url, upload_size, mime_type):
+def record_upload_request(user, upload_url, mime_type):
     """
     Records an upload request so that after the upload has been completed, the media processing pipeline
     can enrich this record with metadata about the media_item.
