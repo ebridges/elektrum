@@ -27,11 +27,11 @@ def record_upload_request(user, upload_url, mime_type):
     """
     u = urlparse(upload_url)
     user_id, file_path = split_upload_path(u.path)
-    if user_id != user.id:
+    if user_id != str(user.id):
         # This id should correspond to the current logged in user.
         raise SuspiciousOperation('ID in path not found.')
     item = MediaItem.objects.create(
-        user=user,
+        owner=user,
         path=file_path,
         media_type=mime_type
     )
