@@ -34,4 +34,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('status/', include('status.urls')),
     path('collections/', include('collection.urls')),
+    path('media/', include('media_items.urls')),
 ]
