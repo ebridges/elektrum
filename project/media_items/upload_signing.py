@@ -56,7 +56,6 @@ def split_upload_path(upload_path):
 
 def create_signed_upload_url(user, create_date, mime_type):
     """
-
     :param user:
     :param create_date:
     :param mime_type:
