@@ -55,7 +55,8 @@ public class ImageDateExtractor {
 
     if ((o instanceof String) || (o instanceof StringValue)) {
       // This seems to cover all known Exif and Xmp date strings
-      // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
+      // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown
+      // date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
       String datePatterns[] = {
           "yyyy:MM:dd HH:mm:ss",
           "yyyy:MM:dd HH:mm",
