@@ -40,6 +40,7 @@ public class DateUtil {
     String[] yymmFormats = new String[]{"yyyyMM", "yyyy-MM"};
     for (String format : yymmFormats) {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+      //noinspection CatchMayIgnoreException
       try {
         YearMonth yyyyMM = YearMonth.parse(date, formatter);
         return LocalDate.of(yyyyMM.getYear(), yyyyMM.getMonth(), 1);
