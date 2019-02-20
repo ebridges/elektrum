@@ -15,6 +15,7 @@ import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ISO_EQUIVALENT;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_MAKE;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_MODEL;
 import static com.drew.metadata.exif.GpsDirectory.TAG_ALTITUDE;
+import static com.drew.metadata.file.FileSystemDirectory.TAG_FILE_NAME;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
-import com.drew.metadata.file.FileMetadataDirectory;
+import com.drew.metadata.file.FileSystemDirectory;
 
 import cc.roja.photo.util.ImageDateExtractor;
 import cc.roja.photo.util.MetadataUtil;
@@ -140,7 +141,7 @@ public class MetaDataExtractor {
   }
 
   private static OffsetDateTime deduceCreateDateFromFilename(Metadata metadata) {
-    String filename = resolveString(metadata, of(FileMetadataDirectory.class, FileMetadataDirectory.TAG_FILE_NAME));
+    String filename = resolveString(metadata, of(FileSystemDirectory.class, TAG_FILE_NAME));
     if(filename == null || filename.isEmpty()) {
       return null;
     }
