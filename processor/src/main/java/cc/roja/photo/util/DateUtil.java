@@ -44,7 +44,8 @@ public class DateUtil {
         YearMonth yyyyMM = YearMonth.parse(date, formatter);
         return LocalDate.of(yyyyMM.getYear(), yyyyMM.getMonth(), 1);
       } catch(DateTimeParseException ignored) {
-        LOG.warn("exception: "+ignored.getMessage(), ignored);
+        // This is expected when the format does not match input
+        LOG.debug("exception: "+ignored.getMessage(), ignored);
       }
     }
 
