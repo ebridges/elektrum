@@ -112,32 +112,14 @@ public class MetaDataExtractor {
     meta.setImageWidth(imageWidth);
   }
 
-  /*
-   * Use [Google TZ service](https://developers.google.com/maps/documentation/timezone/intro) to
-   * derive timezone offset instead of relying on GPS date.
-   */
-  private static OffsetDateTime deduceCreateDate(Metadata metadata, ImageInfo imageInfo) {
-    OffsetDateTime createDate = MetadataUtil.resolveDate(metadata, MetadataUtil.createDateTags);
+  private static LocalDateTime deduceCreateDate(Metadata metadata) {
+    TemporalAccessor createDate = MetadataUtil.resolveDate(metadata, MetadataUtil.createDateTags);
 
     if(createDate == null) {
       createDate = deduceCreateDateFromFilename(metadata);
     }
 
-    if(createDate == null) {
-      LocalDate localDate = imageInfo.getAlbumInfo().getAlbumDate();
-      createDate = OffsetDateTime.of(localDate, LocalTime.of(0,0,0), ZoneOffset.UTC);
-    }
-
-    OffsetDateTime utcTime = imageInfo.getGpsDatetime();
-    if(utcTime != null) {
-      ZoneOffset zoneOffset = determineTimeZoneOffset(createDate, utcTime);
-
-      if (zoneOffset != null) {
-        createDate = createDate.withOffsetSameLocal(zoneOffset);
-      }
-    }
-
-    return createDate;
+    return DateUtil.stripTimeZone(createDate);
   }
 
   private static OffsetDateTime deduceCreateDateFromFilename(Metadata metadata) {
