@@ -1,10 +1,7 @@
 package cc.roja.photo;
 
-import static cc.roja.photo.util.DateUtil.parseDate;
-
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,73 +34,12 @@ public class Processor {
       File imageFile = ImageLoader.load(imageKey);
 
       List<String> keyInfo = parseKey(imageKey);
-      String collectionId = getCollection(dao, keyInfo.get(0));
-      AlbumInfo albumInfo = getAlbum(dao, collectionId, keyInfo.get(0) + keyInfo.get(1));
 
-      ImageInfo imageInfo = new ImageInfo(albumInfo);
+      ImageInfo imageInfo = new ImageInfo();
       metaDataExtractor.extract(imageFile, imageInfo);
 
-      String artistName = imageInfo.getArtist();
-      String artistId = getArtist(dao, artistName);
-
-      return dao.getOrCreateImage(keyInfo.get(2), imageKey, imageInfo, albumInfo.getId(), artistId);
+      return dao.getOrCreateImage(keyInfo.get(2), imageKey, imageInfo);
     }
-  }
-
-  private String getArtist(PhotoProcessorDAO dao, String artistName) {
-    String artistId = null;
-    if(artistName != null) {
-      artistId = dao.getOrCreateArtist(artistName);
-    }
-    return artistId;
-  }
-
-  private AlbumInfo getAlbum(PhotoProcessorDAO dao, String collectionId, String path) {
-    String regex = "(?<name>(?<date>[0-9]{4}[-]?[0-9]{2}[-]?[0-9]{0,2})(?<caption>[_A-Za-z0-9- ,']*))$";
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(path);
-    boolean success = matcher.find();
-    if(!success) {
-      throw new IllegalArgumentException("invalid album path: "+path);
-    }
-
-    String name = matcher.group("name");
-    String date = matcher.group("date");
-    String caption = matcher.group("caption");
-
-    AlbumInfo albumInfo = albumInfo(name, path, date, caption, collectionId);
-
-    String id = dao.getOrCreateAlbum(albumInfo);
-    albumInfo.setId(id);
-
-    return albumInfo;
-  }
-
-  private AlbumInfo albumInfo(String name, String path, String date, String caption, String collectionId) {
-    LocalDate albumDate = parseDate(date);
-    String albumCaption = null;
-    if(caption != null && !caption.isEmpty()) {
-      albumCaption = caption.replace("_", " ").trim();
-    }
-
-    return new AlbumInfo(
-        name,
-        path,
-        albumCaption,
-        null, // no source for this at this time.
-        albumDate,
-        collectionId
-    );
-  }
-
-
-  private String getCollection(PhotoProcessorDAO dao, String path) {
-    if(!path.matches("^/[0-9]{4}$")) {
-      throw new IllegalArgumentException("invalid collection path: "+path);
-    }
-
-    String name = path.substring(1);
-    return dao.getOrCreateCollection(name, path);
   }
 
   private List<String> parseKey(String imageKey) {

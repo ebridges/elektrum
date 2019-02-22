@@ -10,56 +10,6 @@ import cc.roja.photo.util.Constants;
 
 public interface PhotoProcessorDAO extends Closeable {
   @SqlQuery(
-      "    with i as (\n"
-      + "        insert into collection (name, path)\n"
-      + "        select :name, :path\n"
-      + "    where not exists (\n"
-      + "        select 1\n"
-      + "        from collection\n"
-      + "        where path = :path\n"
-      + "    )\n"
-      + "    returning id\n"
-      + "    )\n"
-      + "    select id from collection where path = :path\n"
-      + "    union all\n"
-      + "    select id from i\n")
-  String getOrCreateCollection(@Bind("name") String name, @Bind("path") String path);
-
-  @SqlQuery(
-      "with i as (\n"
-      + "      insert into album\n"
-      + "          (name, path, album_date, caption, icon, collection_id)\n"
-      + "      select\n"
-      + "          :a.name, :a.path, :a.albumDate, :a.caption, :a.icon, CAST(:a.collectionId AS UUID)\n"
-      + "      where not exists (\n"
-      + "          select 1\n"
-      + "          from album\n"
-      + "          where path = :a.path\n"
-      + "      )\n"
-      + "      returning id\n"
-      + "      )\n"
-      + "      select id from album where path = :a.path\n"
-      + "      union all\n"
-      + "      select id from i")
-  String getOrCreateAlbum(@BindBean("a") AlbumInfo albumInfo);
-
-  @SqlQuery(
-      "with i as (\n"
-      + "        insert into artist (name)\n"
-      + "        select :name\n"
-      + "        where not exists (\n"
-      + "            select 1\n"
-      + "            from artist\n"
-      + "            where name = :name\n"
-      + "        )\n"
-      + "        returning id\n"
-      + "    )\n"
-      + "    select id from artist where name = :name\n"
-      + "    union all\n"
-      + "    select id from i")
-  String getOrCreateArtist(@Bind("name") String artistName);
-
-  @SqlQuery(
       "with i as (\n"
       + "    insert into image (\n"
       + "      name,\n"
@@ -78,8 +28,6 @@ public interface PhotoProcessorDAO extends Closeable {
       + "      gps_alt,\n"
       + "      gps_location,\n"
       + "      gps_datetime,\n"
-      + "      album_id,\n"
-      + "      artist_id,\n"
       + "      image_width,\n"
       + "      image_height\n"
       + "    )\n"
@@ -100,8 +48,6 @@ public interface PhotoProcessorDAO extends Closeable {
       + "      :i.gpsAlt,\n"
       + "      ST_SetSRID(ST_MakePoint(:i.gpsLon, :i.gpsLat, :i.gpsAlt), "+ Constants.SRID+"),\n"
       + "      :i.gpsDatetime,\n"
-      + "      CAST(:album_id AS UUID),\n"
-      + "      CAST(:artist_id AS UUID),\n"
       + "      :i.imageWidth,\n"
       + "      :i.imageHeight\n"
       + "    where not exists (\n"
@@ -117,8 +63,7 @@ public interface PhotoProcessorDAO extends Closeable {
       + "union all\n"
       + "select id from i")
   // http://postgis.refractions.net/documentation/manual-1.5SVN/ST_MakePointM.html
-  String getOrCreateImage(@Bind("name") String name, @Bind("path") String path, @BindBean("i") ImageInfo imageInfo,
-      @Bind("album_id") String albumId, @Bind("artist_id") String artistId);
+  String getOrCreateImage(@Bind("name") String name, @Bind("path") String path, @BindBean("i") ImageInfo imageInfo);
 
   @SqlQuery("select id from image where path = :path")
   String queryByPath(@Bind("path") String path);
