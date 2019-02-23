@@ -41,7 +41,7 @@ class DateUtilsTest {
       "20200226, yyyyMMdd",
       "2020, yyyy",
   })
-  void getDateForTag_Success(String testCase, String pattern) {
+  void getDateValueFromMetadata_Success(String testCase, String pattern) {
     int tagType = 999;
     Directory mockDirectory = mock(Directory.class);
     when(mockDirectory.getObject(tagType)).thenReturn(testCase);
@@ -51,7 +51,7 @@ class DateUtilsTest {
   }
 
   @Test
-  void getDate_TagTypeNotFound() {
+  void getDateValueFromMetadata_TagTypeNotFound() {
     int tagType = 0;
     Directory mockDirectory = mock(Directory.class);
     when(mockDirectory.getObject(tagType)).thenReturn(null);
@@ -60,7 +60,7 @@ class DateUtilsTest {
   }
 
   @Test()
-  void getDate_DirectoryIsNull() {
+  void getDateValueFromMetadata_DirectoryIsNull() {
     assertThrows(NullPointerException.class, () -> {getDateValueFromMetadata(null, 0);});
   }
 
