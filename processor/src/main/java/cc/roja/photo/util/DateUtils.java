@@ -37,12 +37,12 @@ public class DateUtils {
     );
   }
 
-  public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern) {
+  static TemporalAccessor parseDateWithDefaults(String dateString, String pattern) {
     return parseDateWithDefaults(dateString, pattern, Optional.empty());
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern, Optional<TimeZone> timeZone) {
+  static TemporalAccessor parseDateWithDefaults(String dateString, String pattern, Optional<TimeZone> timeZone) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(pattern)
         .parseDefaulting(MONTH_OF_YEAR, 1)
         .parseDefaulting(DAY_OF_MONTH, 1)
