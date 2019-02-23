@@ -1,6 +1,5 @@
 package cc.roja.photo;
 
-import static cc.roja.photo.util.DateUtil.determineTimeZoneOffset;
 import static cc.roja.photo.util.MetadataUtil.getDirectory;
 import static cc.roja.photo.util.MetadataUtil.resolveRational;
 import static cc.roja.photo.util.MetadataUtil.resolveString;
