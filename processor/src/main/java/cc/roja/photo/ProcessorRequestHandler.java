@@ -7,6 +7,9 @@ import java.util.List;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.event.S3EventNotification;
+import org.apache.log4j.Logger;
+
+import static java.lang.String.format;
 
 /*
 Example event:
@@ -52,16 +55,14 @@ Example event:
   ```
  */
 
+@SuppressWarnings("unused")
 public class ProcessorRequestHandler implements RequestHandler<S3EventNotification, ProcessorResult> {
-  private Processor processor;
-
-  public ProcessorRequestHandler() {
-    this.processor = new Processor();
-  }
+  private static final Logger LOG = Logger.getLogger(ProcessorRequestHandler.class);
 
   @Override
   public ProcessorResult handleRequest(S3EventNotification event, Context context) {
     try {
+      Processor processor = new Processor();
       ProcessorResult result = new ProcessorResult();
       List<String> imageKeys = new ArrayList<>();
 
@@ -79,6 +80,10 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
 
         String imageId = processor.processPhoto(imagePath);
         result.addImageId(imageId);
+      }
+
+      if(imageKeys.size() != result.count()) {
+        LOG.warn(format("result count did not match event count: [%d vs. %d]", result.count(), imageKeys.size()));
       }
 
       return result;

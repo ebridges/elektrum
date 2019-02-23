@@ -23,6 +23,10 @@ public class ProcessorResult {
     this.imageIds = imageIds;
   }
 
+  public int count() {
+    return this.imageIds.size();
+  }
+
   @Override
   public String toString() {
     return "ProcessorResult{" +
