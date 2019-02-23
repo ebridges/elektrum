@@ -1,6 +1,8 @@
 package cc.roja.photo;
 
 import static cc.roja.photo.util.MetadataUtil.getDirectory;
+import static cc.roja.photo.util.MetadataUtil.resolveDescription;
+import static cc.roja.photo.util.MetadataUtil.resolveInteger;
 import static cc.roja.photo.util.MetadataUtil.resolveRational;
 import static cc.roja.photo.util.MetadataUtil.resolveString;
 import static cc.roja.photo.util.TagPair.of;
@@ -69,15 +71,15 @@ public class MetaDataExtractor {
     meta.setCreateDate(createDate);
     LOG.debug("createDate: "+createDate);
 
-    String artist = MetadataUtil.resolveString(metadata, of(ExifIFD0Directory.class, TAG_ARTIST));
+    String artist = resolveString(metadata, of(ExifIFD0Directory.class, TAG_ARTIST));
     LOG.debug("artist: "+artist);
     meta.setArtist(artist);
 
-    String cameraMake = MetadataUtil.resolveString(metadata, of(ExifIFD0Directory.class, TAG_MAKE));
+    String cameraMake = resolveString(metadata, of(ExifIFD0Directory.class, TAG_MAKE));
     LOG.debug("cameraMake: "+cameraMake);
     meta.setCameraMake(cameraMake);
 
-    String cameraModel = MetadataUtil.resolveString(metadata, of(ExifIFD0Directory.class, TAG_MODEL));
+    String cameraModel = resolveString(metadata, of(ExifIFD0Directory.class, TAG_MODEL));
     LOG.debug("cameraModel: "+cameraModel);
     meta.setCameraModel(cameraModel);
 
@@ -87,11 +89,11 @@ public class MetaDataExtractor {
       meta.setFocalLength(Math.round(focalLength.floatValue()));
     }
 
-    String apertureDescription = MetadataUtil.resolveDescription(metadata, of(ExifSubIFDDirectory.class, TAG_APERTURE));
+    String apertureDescription = resolveDescription(metadata, of(ExifSubIFDDirectory.class, TAG_APERTURE));
     LOG.debug("aperture: "+apertureDescription);
     meta.setAperture(apertureDescription);
 
-    Integer isoSpeed = MetadataUtil.resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_ISO_EQUIVALENT));
+    Integer isoSpeed = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_ISO_EQUIVALENT));
     LOG.debug("isoSpeed: "+isoSpeed);
     meta.setIsoSpeed( isoSpeed );
 
@@ -102,11 +104,11 @@ public class MetaDataExtractor {
       meta.setShutterSpeedDenominator(shutterSpeed.getDenominator());
     }
 
-    Integer imageHeight = MetadataUtil.resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_HEIGHT));
+    Integer imageHeight = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_HEIGHT));
     LOG.debug("imageHeight: "+imageHeight);
     meta.setImageHeight(imageHeight);
 
-    Integer imageWidth = MetadataUtil.resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_WIDTH));
+    Integer imageWidth = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_WIDTH));
     LOG.debug("imageWidth: "+imageWidth);
     meta.setImageWidth(imageWidth);
   }
