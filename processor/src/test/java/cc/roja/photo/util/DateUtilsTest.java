@@ -64,22 +64,6 @@ class DateUtilsTest {
     assertThrows(NullPointerException.class, () -> {getDateValueFromMetadata(null, 0);});
   }
 
-  private void assertTemporalAccessor(TemporalAccessor expected, TemporalAccessor actual) {
-    assertNotNull(expected);
-    assertNotNull(actual);
-    ChronoField[] testFields = {
-        YEAR,
-        MONTH_OF_YEAR,
-        DAY_OF_MONTH,
-        HOUR_OF_DAY,
-        MINUTE_OF_HOUR,
-        SECOND_OF_MINUTE
-    };
-    for(ChronoField field : testFields) {
-      assertEquals(expected.get(field), actual.get(field));
-    }
-  }
-
   @ParameterizedTest
   @CsvSource({
       "20200226T123456, yyyyMMdd'T'HHmmss",
@@ -95,5 +79,20 @@ class DateUtilsTest {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
     String actual = dtf.format(underTest);
     assertEquals(testCase, actual);
+  }
+  private void assertTemporalAccessor(TemporalAccessor expected, TemporalAccessor actual) {
+    assertNotNull(expected);
+    assertNotNull(actual);
+    ChronoField[] testFields = {
+        YEAR,
+        MONTH_OF_YEAR,
+        DAY_OF_MONTH,
+        HOUR_OF_DAY,
+        MINUTE_OF_HOUR,
+        SECOND_OF_MINUTE,
+    };
+    for(ChronoField field : testFields) {
+      assertEquals(expected.get(field), actual.get(field));
+    }
   }
 }
