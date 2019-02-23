@@ -30,11 +30,6 @@ public class FilenameUtils {
   private static final char UNIX_SEPARATOR = '/';
 
 
-  private FilenameUtils() {
-    super();
-  }
-
-
   /**
    * Returns the index of the last extension separator character, which is a dot. <p> This method also checks that there
    * is no directory separator after the last dot.
@@ -43,9 +38,7 @@ public class FilenameUtils {
    * @return the index of the last separator character, or -1 if there is no such character
    */
   private static int indexOfExtension(String filename) {
-    if (filename == null) {
-      return -1;
-    }
+    assert filename != null;
     int extensionPos = filename.lastIndexOf(EXTENSION_SEPARATOR);
     int lastSeparator = filename.lastIndexOf(UNIX_SEPARATOR);
     return (lastSeparator > extensionPos ? -1 : extensionPos);
