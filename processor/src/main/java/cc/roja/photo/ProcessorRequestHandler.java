@@ -86,5 +86,4 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
       throw new IllegalArgumentException(e);
     }
   }
-
 }
