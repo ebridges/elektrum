@@ -52,10 +52,10 @@ Example event:
   ```
  */
 
-public class ProcessoreRequestHandler implements RequestHandler<S3EventNotification, ProcessorResult> {
+public class ProcessorRequestHandler implements RequestHandler<S3EventNotification, ProcessorResult> {
   private Processor processor;
 
-  public ProcessoreRequestHandler() {
+  public ProcessorRequestHandler() {
     this.processor = new Processor();
   }
 
