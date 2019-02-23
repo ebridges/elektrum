@@ -65,7 +65,7 @@ public class DateUtils {
    *
    * Changes from drewnoakes implementation:
    * ============================================
-   * - parse datestring obtained via tag into a TemporalAcessor rather than a Date
+   * - parse tag value into a TemporalAcessor rather than a java.util.Date
    * - subsecond param is skipped for our purposes.
    * - timeZone param is now handled internally.
    *
