@@ -23,7 +23,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -74,7 +74,7 @@ public class MetaDataExtractor {
   }
 
   private static void setExifInfo(Metadata metadata, ImageInfo meta) {
-    OffsetDateTime createDate = deduceCreateDate(metadata, meta);
+    LocalDateTime createDate = deduceCreateDate(metadata);
     meta.setCreateDate(createDate);
     LOG.debug("createDate: "+createDate);
 
@@ -130,13 +130,16 @@ public class MetaDataExtractor {
     return DateUtils.stripTimeZone(createDate);
   }
 
-  private static OffsetDateTime deduceCreateDateFromFilename(Metadata metadata) {
+  private static LocalDateTime deduceCreateDateFromFilename(Metadata metadata) {
     String filename = resolveString(metadata, of(FileSystemDirectory.class, TAG_FILE_NAME));
     if(filename == null || filename.isEmpty()) {
       return null;
     }
-    // if the filename looks like this, we can extract from there:
-    //    20141118T110523_01.jpg
+    // if the filename starts with this parameter, we can extract from there:
+    //    20141118T110523
+    //    @todo add more patterns...
+    //    @todo consolidate date parsing logic with DateUtils
+    
     String regex = "^(?<date>[0-9]{4}[0-9]{2}[0-9]{2}T[0-9]{2}[0-9]{2}[0-9]{2})";
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(filename);
@@ -147,9 +150,9 @@ public class MetaDataExtractor {
     }
 
     String date = matcher.group("date");
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneOffset.UTC);
-    ZonedDateTime createDate = ZonedDateTime.parse(date, format);
-    return createDate.toOffsetDateTime();
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
+    LocalDateTime createDate = LocalDateTime.parse(date, format);
+    return createDate;
   }
 
   private static void setGpsInfo(Metadata metadata, ImageInfo meta) {

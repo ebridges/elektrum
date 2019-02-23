@@ -1,5 +1,6 @@
 package cc.roja.photo;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
@@ -7,7 +8,7 @@ public class ImageInfo {
 
   private String artist;
   private long fileSize;
-  private OffsetDateTime createDate;
+  private LocalDateTime createDate;
   private String cameraMake;
   private String cameraModel;
   /**
@@ -27,18 +28,8 @@ public class ImageInfo {
   private OffsetDateTime gpsDatetime;
   private Integer imageWidth;
   private Integer imageHeight;
-  private AlbumInfo albumInfo;
 
-  public ImageInfo(AlbumInfo albumInfo) {
-    this.albumInfo = albumInfo;
-  }
-
-  public AlbumInfo getAlbumInfo() {
-    return albumInfo;
-  }
-
-  public void setAlbumInfo(AlbumInfo albumInfo) {
-    this.albumInfo = albumInfo;
+  public ImageInfo() {
   }
 
   public Integer getImageWidth() {
@@ -73,11 +64,11 @@ public class ImageInfo {
     this.fileSize = fileSize;
   }
 
-  public OffsetDateTime getCreateDate() {
+  public LocalDateTime getCreateDate() {
     return createDate;
   }
 
-  public void setCreateDate(OffsetDateTime createDate) {
+  public void setCreateDate(LocalDateTime createDate) {
     this.createDate = createDate;
   }
 
@@ -188,7 +179,6 @@ public class ImageInfo {
         ", gpsDatetime=" + gpsDatetime +
         ", imageWidth=" + imageWidth +
         ", imageHeight=" + imageHeight +
-        ", albumInfo=" + albumInfo +
         '}';
   }
 }
