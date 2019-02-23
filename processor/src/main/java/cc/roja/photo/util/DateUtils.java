@@ -89,7 +89,7 @@ public class DateUtils {
       // This seems to cover all known Exif and Xmp date strings
       // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown
       // date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
-      String datePatterns[] = {
+      String[] datePatterns = {
           "yyyy:MM:dd HH:mm:ss",
           "yyyy:MM:dd HH:mm",
           "yyyy-MM-dd HH:mm:ss",
@@ -101,7 +101,7 @@ public class DateUtils {
           "yyyy-MM-dd",
           "yyyy-MM",
           "yyyyMMdd", // as used in IPTC data
-          "yyyy" };
+          "yyyy"};
 
       String dateString = o.toString();
 
