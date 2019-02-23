@@ -74,7 +74,7 @@ public class MetaDataExtractor {
   }
 
   private static void setExifInfo(Metadata metadata, ImageInfo meta) {
-    LocalDateTime createDate = deduceCreateDate(metadata);
+    LocalDateTime createDate = getCreateDate(metadata);
     meta.setCreateDate(createDate);
     LOG.debug("createDate: "+createDate);
 
@@ -120,17 +120,17 @@ public class MetaDataExtractor {
     meta.setImageWidth(imageWidth);
   }
 
-  private static LocalDateTime deduceCreateDate(Metadata metadata) {
+  private static LocalDateTime getCreateDate(Metadata metadata) {
     TemporalAccessor createDate = MetadataUtils.resolveDate(metadata, MetadataUtils.createDateTags);
 
     if(createDate == null) {
-      createDate = deduceCreateDateFromFilename(metadata);
+      createDate = getCreateDateFromFilename(metadata);
     }
 
     return DateUtils.stripTimeZone(createDate);
   }
 
-  private static LocalDateTime deduceCreateDateFromFilename(Metadata metadata) {
+  private static LocalDateTime getCreateDateFromFilename(Metadata metadata) {
     String filename = resolveString(metadata, of(FileSystemDirectory.class, TAG_FILE_NAME));
     if(filename == null || filename.isEmpty()) {
       return null;
