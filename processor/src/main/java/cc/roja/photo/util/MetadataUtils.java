@@ -1,11 +1,12 @@
 package cc.roja.photo.util;
 
+import static cc.roja.photo.util.DateUtils.getDateValueFromMetadata;
 import static cc.roja.photo.util.TagPair.of;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_DATETIME;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_DATETIME_DIGITIZED;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_DATETIME_ORIGINAL;
 
-import java.time.OffsetDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
@@ -16,8 +17,8 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 
-public class MetadataUtil {
-  private static final Logger LOG = Logger.getLogger(MetadataUtil.class);
+public class MetadataUtils {
+  private static final Logger LOG = Logger.getLogger(MetadataUtils.class);
 
   // try these tags in this order
   public static final TagPair[] createDateTags = new TagPair[] {
@@ -39,7 +40,6 @@ public class MetadataUtil {
     return value;
   }
 
-  @SuppressWarnings("WeakerAccess")
   public static Rational[] resolveRationalArray(Metadata metadata, TagPair... tags) {
     Rational[] value = null;
     for(TagPair tagPair : tags) {
@@ -53,13 +53,13 @@ public class MetadataUtil {
     return value;
   }
 
-  public static OffsetDateTime resolveDate(Metadata metadata, TagPair... tags) {
-    OffsetDateTime value;
+  public static TemporalAccessor resolveDate(Metadata metadata, TagPair... tags) {
+    TemporalAccessor value;
     for(TagPair tagPair : tags) {
       LOG.debug("tagPair: "+ tagPair);
       Directory dir = getDirectoryWith(metadata, tagPair.directory, tagPair.tag);
       if(dir != null) {
-        value = ImageDateExtractor.getDate(dir, tagPair.tag);
+        value = getDateValueFromMetadata(dir, tagPair.tag);
         LOG.debug("dir: "+dir.getName()+", dateValue: "+value);
         if (value != null) {
           return value;

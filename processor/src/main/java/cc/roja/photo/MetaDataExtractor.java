@@ -1,10 +1,10 @@
 package cc.roja.photo;
 
-import static cc.roja.photo.util.MetadataUtil.getDirectory;
-import static cc.roja.photo.util.MetadataUtil.resolveDescription;
-import static cc.roja.photo.util.MetadataUtil.resolveInteger;
-import static cc.roja.photo.util.MetadataUtil.resolveRational;
-import static cc.roja.photo.util.MetadataUtil.resolveString;
+import static cc.roja.photo.util.MetadataUtils.getDirectory;
+import static cc.roja.photo.util.MetadataUtils.resolveDescription;
+import static cc.roja.photo.util.MetadataUtils.resolveInteger;
+import static cc.roja.photo.util.MetadataUtils.resolveRational;
+import static cc.roja.photo.util.MetadataUtils.resolveString;
 import static cc.roja.photo.util.TagPair.of;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_APERTURE;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ARTIST;
@@ -16,7 +16,10 @@ import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ISO_EQUIVALENT;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_MAKE;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_MODEL;
 import static com.drew.metadata.exif.GpsDirectory.TAG_ALTITUDE;
+import static com.drew.metadata.exif.GpsDirectory.TAG_DATE_STAMP;
+import static com.drew.metadata.exif.GpsDirectory.TAG_TIME_STAMP;
 import static com.drew.metadata.file.FileSystemDirectory.TAG_FILE_NAME;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,9 +29,14 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cc.roja.photo.util.DateUtils;
+import com.drew.lang.annotations.Nullable;
 import org.apache.log4j.Logger;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -41,8 +49,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
 
-import cc.roja.photo.util.ImageDateExtractor;
-import cc.roja.photo.util.MetadataUtil;
+import cc.roja.photo.util.MetadataUtils;
 
 @SuppressWarnings("WeakerAccess")
 public class MetaDataExtractor {
@@ -114,13 +121,13 @@ public class MetaDataExtractor {
   }
 
   private static LocalDateTime deduceCreateDate(Metadata metadata) {
-    TemporalAccessor createDate = MetadataUtil.resolveDate(metadata, MetadataUtil.createDateTags);
+    TemporalAccessor createDate = MetadataUtils.resolveDate(metadata, MetadataUtils.createDateTags);
 
     if(createDate == null) {
       createDate = deduceCreateDateFromFilename(metadata);
     }
 
-    return DateUtil.stripTimeZone(createDate);
+    return DateUtils.stripTimeZone(createDate);
   }
 
   private static OffsetDateTime deduceCreateDateFromFilename(Metadata metadata) {
@@ -157,7 +164,7 @@ public class MetaDataExtractor {
       meta.setGpsAlt(altitude.doubleValue());
     }
 
-    OffsetDateTime gpsTime = ImageDateExtractor.getGpsDate(metadata);
+    OffsetDateTime gpsTime = getGpsDate(metadata);
     LOG.debug("gpsTime: "+gpsTime);
     meta.setGpsDatetime( gpsTime );
 
@@ -168,5 +175,73 @@ public class MetaDataExtractor {
     LOG.debug("gpsLocation: "+loc.toDMSString());
     meta.setGpsLat( loc.getLatitude() );
     meta.setGpsLon( loc.getLongitude() );
+  }
+
+  /**
+   * Copied from com.drew.metadata.exif.GpsDirectory#getGpsDate()
+   *
+   * Parses the date stamp tag and the time stamp tag to obtain a single Date object representing the
+   * date and time when this image was captured.
+   *
+   * @return A Date object representing when this image was captured, if possible, otherwise null
+   */
+  @Nullable
+  private static OffsetDateTime getGpsDate(Metadata metadata) {
+    String date = MetadataUtils.resolveString(metadata, of(GpsDirectory.class, TAG_DATE_STAMP));
+    Rational[] timeComponents = MetadataUtils.resolveRationalArray(metadata, of(GpsDirectory.class, TAG_TIME_STAMP));
+
+    if (timeComponents == null || timeComponents.length != 3) {
+      return null;
+    }
+
+    // Make sure we have the required values
+    if (date == null) {
+      // use date from CreateDate timestamp
+      TemporalAccessor ta = MetadataUtils.resolveDate(metadata, MetadataUtils.createDateTags);
+
+      if(ta != null) {
+        LocalDateTime createDate = DateUtils.stripTimeZone(ta);
+        LocalTime localTime =  createDate.toLocalTime();
+        LocalTime utcTime = LocalTime.of(timeComponents[0].intValue(), timeComponents[1].intValue(), timeComponents[2].intValue());
+
+        long hoursBetween = HOURS.between(localTime, utcTime);
+
+        // if the difference between the UTC hour obtained from TAG_TIME_STAMP and the hour of the createDate
+        // is greater than 18, then we move the day of the month up or down one day.
+        //
+        // Why "18"?  because ZoneOffset throws an exception if the difference in hours
+        // between two dates is greater than 18 hours.
+
+        if(hoursBetween > 18) {
+          createDate = createDate.minusDays(1);
+        } else if (hoursBetween < -18) {
+          createDate = createDate.plusDays(1);
+        }
+
+        date = createDate.format(DateTimeFormatter.ofPattern("yyyy:MM:dd"));
+      } else {
+        return null;
+      }
+    }
+
+    String dateTime = String.format(Locale.US, "%s %02d:%02d:%02.3f",
+        date,
+        timeComponents[0].intValue(),
+        timeComponents[1].intValue(),
+        timeComponents[2].doubleValue()
+    );
+
+    try {
+      DateTimeFormatter pattern = DateTimeFormatter
+          .ofPattern("yyyy:MM:dd HH:mm:s.SSS")
+          .withZone(ZoneOffset.UTC);
+
+      ZonedDateTime zdt = ZonedDateTime.parse(dateTime, pattern);
+      return zdt.toOffsetDateTime();
+
+    } catch (DateTimeParseException e) {
+      LOG.info("unable to parse GPS timestamp: "+e.getMessage());
+      return null;
+    }
   }
 }
