@@ -1,35 +1,63 @@
 package cc.roja.photo;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 
 import org.apache.log4j.Logger;
+
+import static java.lang.String.format;
 
 public class ProcessorApp {
   private static final Logger LOG = Logger.getLogger(ProcessorApp.class);
 
   public static void main(String[] args) throws IOException {
     String arg = args[0];
-    Processor processor = new Processor();
-    if("-f".equals(arg)) {
-      processFiles(processor, args[1]);
+    if("-h".equals(arg)) {
+      printUsage();
+    } else if("-f".equals(arg)) {
+      processSingleFile(args[1]);
+    } else if("-F".equals(arg)) {
+      processFilesFromInputFile(args[1]);
     } else {
-      String imageId = processor.processPhoto(arg);
-      LOG.info("imageId: " + imageId);
+      processFilesFromInput(System.in);
     }
   }
 
-  private static void processFiles(Processor processor, String fileList) throws IOException {
-    File fl = new File(fileList);
-    FileReader frd = new FileReader(fl);
-    try(BufferedReader brd = new BufferedReader(frd)) {
-      String imageKey;
-      while ((imageKey = brd.readLine()) != null) {
-        String imageId = processor.processPhoto(imageKey);
-        LOG.info("imageId: " + imageId);
-      }
+  private static void processSingleFile(String filename) throws IOException {
+    Processor processor = new Processor();
+    String imageId = processor.processPhoto(filename);
+    printOutput(imageId);
+  }
+
+  private static void processFilesFromInputFile(String inputFile) throws IOException {
+    InputStream inputStream = new FileInputStream(inputFile);
+    processFilesFromInput(inputStream);
+  }
+
+  private static void processFilesFromInput(InputStream inputStream) throws IOException {
+    Processor processor = new Processor();
+    Scanner input = new Scanner(inputStream);
+    int cnt = 0;
+    while (input.hasNextLine()) {
+      String imageId = processor.processPhoto(input.nextLine());
+      cnt++;
+      printOutput(imageId);
     }
+    LOG.info(format("Processed %d files.", cnt));
+  }
+
+  private static void printOutput(String imageId) {
+    System.out.println("ImageId: "+imageId);
+  }
+
+  private static void printUsage() {
+    System.err.println(
+        "Usage: java cc.roja.photo.ProcessorApp [-h|-f (filename)|-F (filename)]\n" +
+            "\t-h\tDisplay this help.\n" +
+            "\t-f\tProcess named file.\n" +
+            "\t-F\tProcess list of files from given file.\n" +
+            "\tElse reads a list of filenames from stdin.");
   }
 }
