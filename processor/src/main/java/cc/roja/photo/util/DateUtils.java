@@ -56,8 +56,7 @@ public class DateUtils {
       formatter = formatter.withZone(timeZone.get().toZoneId());
     }
 
-    TemporalAccessor ta = formatter.parse(dateString);
-    return ta;
+    return formatter.parse(dateString);
   }
 
   /**
