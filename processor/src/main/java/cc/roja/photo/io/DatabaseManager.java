@@ -1,4 +1,4 @@
-package cc.roja.photo;
+package cc.roja.photo.io;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import org.skife.jdbi.v2.DBI;

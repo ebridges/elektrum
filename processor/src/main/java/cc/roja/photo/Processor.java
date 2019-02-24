@@ -2,65 +2,64 @@ package cc.roja.photo;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import cc.roja.photo.io.DatabaseManager;
 import cc.roja.photo.io.ImageLoader;
+import cc.roja.photo.io.ImageLoaderFactory;
+import cc.roja.photo.io.PhotoProcessorDAO;
 import cc.roja.photo.model.ImageInfo;
+import cc.roja.photo.model.ImageKey;
 import org.skife.jdbi.v2.DBI;
 
 import org.apache.log4j.Logger;
+
+import static java.lang.String.format;
 
 @SuppressWarnings({"unused","WeakerAccess"})
 public class Processor {
   private static final Logger LOG = Logger.getLogger(Processor.class);
 
   private DBI dbi;
+  private ImageLoader imageLoader;
+
+  public Processor(DBI dbi, ImageLoader imageLoader) {
+    this.dbi = dbi;
+    this.imageLoader = imageLoader;
+  }
 
   public Processor() {
     this.dbi = DatabaseManager.getDBI();
+    this.imageLoader = ImageLoaderFactory.getLoader();
   }
 
-  public String processPhoto(String imageKey) throws IOException {
+  public String processPhoto(String imageIdentifier) throws IOException {
+    if(imageIdentifier == null || imageIdentifier.isEmpty()) {
+      throw new IllegalArgumentException("image identifier cannot be null/empty");
+    }
+
+    ImageKey imageKey = new ImageKey();
+    imageKey.parse(imageIdentifier);
+
     try (PhotoProcessorDAO dao = dbi.open(PhotoProcessorDAO.class)) {
-      String id = dao.queryByPath(imageKey);
-      if(id != null) {
-        LOG.info(String.format("Skipping: [%s]", imageKey));
-        return id;
+      String imageId = dao.queryByPath(imageKey);
+
+      if(imageId == null) {
+        LOG.warn(format("No image record found for: [%s]", imageKey));
+        throw new IllegalArgumentException(format("No image record found for: [%s]", imageKey));
       }
+
       LOG.info("Processing: " + imageKey);
+      ImageInfo imageInfo = new ImageInfo(imageKey.getFilePath());
+
+      // identify a filesystem location for the media item, which will mean a network op for S3
+      File imageFile = imageLoader.load(imageKey.getKey());
+
+      // extract and normalize metadata from the media file
       MetaDataExtractor metaDataExtractor = new MetaDataExtractor();
-
-      File imageFile = ImageLoader.load(imageKey);
-
-      List<String> keyInfo = parseKey(imageKey);
-
-      ImageInfo imageInfo = new ImageInfo();
       metaDataExtractor.extract(imageFile, imageInfo);
 
-      return dao.getOrCreateImage(keyInfo.get(2), imageKey, imageInfo);
+      // store the metadata linked to the media id record
+      return dao.updateImageInfo(imageId, imageInfo);
     }
-  }
-
-  private List<String> parseKey(String imageKey) {
-    // example key: "/2017/2017-08-22/20170822T113305_01.jpg"
-    //              "/2003/20030522_Quebec_BikeTrip/dscn1650.jpg"
-    // key structure: "/yyyy/yyyy-mm-dd/yyyymmddThhmm_##.jpg"
-
-    String regex = "^(?<collection>[/][0-9]{4})(?<album>[/][0-9]{4}[-]?[0-9]{2}[-]?[0-9]{0,2}[_A-Za-z0-9- ,']*)(?<image>[/a-zA-Z0-9._]+)";
-
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(imageKey);
-    boolean success = matcher.find();
-
-    String collection = success ? matcher.group("collection") : null;
-    String album = success ? matcher.group("album") : null;
-    String image = success ? matcher.group("image") : null;
-
-    LOG.debug("Collection: "+collection+", Album: "+album+", Image: "+image);
-
-    return Arrays.asList( collection, album, image );
   }
 }

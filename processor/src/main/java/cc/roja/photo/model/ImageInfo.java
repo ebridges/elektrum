@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 @SuppressWarnings({"unused"})
 public class ImageInfo {
 
+  private String filePath;
   private String artist;
   private long fileSize;
   private LocalDateTime createDate;
@@ -31,7 +32,16 @@ public class ImageInfo {
   private Long focalLengthNumerator;
   private Long focalLengthDenominator;
 
-  public ImageInfo() {
+  public ImageInfo(String filePath) {
+    this.filePath = filePath;
+  }
+
+  public String getFilePath() {
+    return filePath;
+  }
+
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
   }
 
   public Integer getImageWidth() {
@@ -98,19 +108,19 @@ public class ImageInfo {
     this.isoSpeed = isoSpeed;
   }
 
-  public void setFocalLengthNumerator(long focalLengthNumerator) {
+  public void setFocalLengthNumerator(Long focalLengthNumerator) {
     this.focalLengthNumerator = focalLengthNumerator;
   }
 
-  public long getFocalLengthNumerator() {
+  public Long getFocalLengthNumerator() {
     return focalLengthNumerator;
   }
 
-  public void setFocalLengthDenominator(long focalLengthDenominator) {
+  public void setFocalLengthDenominator(Long focalLengthDenominator) {
     this.focalLengthDenominator = focalLengthDenominator;
   }
 
-  public long getFocalLengthDenominator() {
+  public Long getFocalLengthDenominator() {
     return focalLengthDenominator;
   }
 

@@ -1,13 +1,15 @@
-package cc.roja.photo;
+package cc.roja.photo.io;
 
 import java.io.Closeable;
 
 import cc.roja.photo.model.ImageInfo;
+import cc.roja.photo.model.ImageKey;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 
 import cc.roja.photo.util.Constants;
+import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
 public interface PhotoProcessorDAO extends Closeable {
   @SqlQuery(
@@ -64,8 +66,11 @@ public interface PhotoProcessorDAO extends Closeable {
       + "union all\n"
       + "select id from i")
   // http://postgis.refractions.net/documentation/manual-1.5SVN/ST_MakePointM.html
-  String getOrCreateImage(@Bind("name") String name, @Bind("path") String path, @BindBean("i") ImageInfo imageInfo);
+  String getOrCreateImage(@BindBean("i") ImageInfo imageInfo);
 
-  @SqlQuery("select id from image where path = :path")
-  String queryByPath(@Bind("path") String path);
+  @SqlUpdate("update media_info set () where id = :imageId")
+  String updateImageInfo(String imageId, @BindBean("i") ImageInfo imageInfo);
+
+  @SqlQuery("select id from image where path = :i.filePath and owner = :i.userId")
+  String queryByPath(@Bind("i") ImageKey imageKey);
 }
