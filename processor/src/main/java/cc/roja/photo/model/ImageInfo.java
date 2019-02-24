@@ -16,6 +16,7 @@ public class ImageInfo {
    * To convert this value to ordinary F-number (F-stop), calculate this value's
    * power of root 2 (=1.4142). For example, if the ApertureValue is '5',
    * F-number is 1.4142^5 = F5.6.
+   * https://photo.stackexchange.com/a/60950/1789
    */
   private String aperture;
   private Long shutterSpeedNumerator;
