@@ -1,11 +1,11 @@
-package cc.roja.photo;
+package cc.roja.photo.metadata;
 
-import static cc.roja.photo.util.MetadataUtils.getDirectory;
-import static cc.roja.photo.util.MetadataUtils.resolveDescription;
-import static cc.roja.photo.util.MetadataUtils.resolveInteger;
-import static cc.roja.photo.util.MetadataUtils.resolveRational;
-import static cc.roja.photo.util.MetadataUtils.resolveString;
-import static cc.roja.photo.util.TagPair.of;
+import static cc.roja.photo.metadata.MetadataUtils.getDirectory;
+import static cc.roja.photo.metadata.MetadataUtils.resolveDescription;
+import static cc.roja.photo.metadata.MetadataUtils.resolveInteger;
+import static cc.roja.photo.metadata.MetadataUtils.resolveRational;
+import static cc.roja.photo.metadata.MetadataUtils.resolveString;
+import static cc.roja.photo.metadata.TagPair.of;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_APERTURE;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ARTIST;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_EXIF_IMAGE_HEIGHT;
@@ -50,9 +50,6 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
 
-import cc.roja.photo.util.MetadataUtils;
-
-@SuppressWarnings("WeakerAccess")
 public class MetaDataExtractor {
   private static final Logger LOG = Logger.getLogger(MetaDataExtractor.class);
 
@@ -153,8 +150,7 @@ public class MetaDataExtractor {
 
     String date = matcher.group("date");
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-    LocalDateTime createDate = LocalDateTime.parse(date, format);
-    return createDate;
+    return LocalDateTime.parse(date, format);
   }
 
   private static void setGpsInfo(Metadata metadata, ImageInfo meta) {

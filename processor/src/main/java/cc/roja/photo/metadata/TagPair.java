@@ -1,11 +1,10 @@
-package cc.roja.photo.util;
+package cc.roja.photo.metadata;
 
 import com.drew.metadata.Directory;
 
-@SuppressWarnings("WeakerAccess")
-public class TagPair {
-  public final Class<? extends Directory>  directory;
-  public final Integer tag;
+class TagPair {
+  final Class<? extends Directory>  directory;
+  final Integer tag;
 
   private TagPair(Class<? extends Directory>  directory, Integer tag) {
     this.directory = directory;

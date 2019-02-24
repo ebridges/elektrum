@@ -7,6 +7,7 @@ import cc.roja.photo.io.DatabaseManager;
 import cc.roja.photo.io.ImageLoader;
 import cc.roja.photo.io.ImageLoaderFactory;
 import cc.roja.photo.io.PhotoProcessorDAO;
+import cc.roja.photo.metadata.MetaDataExtractor;
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
 import org.skife.jdbi.v2.DBI;

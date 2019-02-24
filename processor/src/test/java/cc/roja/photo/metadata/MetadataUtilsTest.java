@@ -1,17 +1,28 @@
-package cc.roja.photo.util;
+package cc.roja.photo.metadata;
 
 import com.drew.lang.Rational;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.sun.tools.javac.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.TimeZone;
 
-import static cc.roja.photo.util.MetadataUtils.getDirectory;
-import static org.junit.jupiter.api.Assertions.*;
+import static cc.roja.photo.metadata.MetadataUtils.getDateValueFromMetadata;
+import static cc.roja.photo.metadata.MetadataUtils.getDirectory;
+import static cc.roja.photo.util.DateUtils.parseDateWithDefaults;
+import static cc.roja.photo.util.TestUtils.assertTemporalAccessor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -173,5 +184,64 @@ class MetadataUtilsTest {
     return mock;
   }
 
+  @ParameterizedTest
+  @CsvSource({
+      "2020:02:26 12:34:56, yyyy:MM:dd HH:mm:ss",
+      "2020:02:26 12:34, yyyy:MM:dd HH:mm",
+      "2020-02-26 12:34:56, yyyy-MM-dd HH:mm:ss",
+      "2020-02-26 12:34, yyyy-MM-dd HH:mm",
+      "2020.02.26 12:34:56, yyyy.MM.dd HH:mm:ss",
+      "2020.02.26 12:34, yyyy.MM.dd HH:mm",
+      "2020-02-26T12:34:56, yyyy-MM-dd'T'HH:mm:ss",
+      "2020-02-26T12:34, yyyy-MM-dd'T'HH:mm",
+      "2020-02-26, yyyy-MM-dd",
+      "2020-02, yyyy-MM",
+      "20200226, yyyyMMdd",
+      "2020, yyyy",
+  })
+  void getDateValueFromMetadata_Success(String testCase, String pattern) {
+    int tagType = 999;
+    Directory mockDirectory = mock(Directory.class);
+    when(mockDirectory.getObject(tagType)).thenReturn(testCase);
+    TemporalAccessor actual = getDateValueFromMetadata(mockDirectory, tagType);
+    TemporalAccessor expected = parseDateWithDefaults(testCase, pattern);
+    assertTemporalAccessor(expected, actual);
+  }
 
+  @ParameterizedTest
+  @CsvSource({
+      "2020:02:26 12:34:56Z, yyyy:MM:dd HH:mm:ssVV, GMT",
+      "2020-02-26T12:34:56Z, yyyy-MM-dd'T'HH:mm:ssVV, GMT",
+      "2020:02:26 12:34:56+05:00, yyyy:MM:dd HH:mm:ssVV, GMT+05:00",
+      "2020-02-26T12:34:56+05:00, yyyy-MM-dd'T'HH:mm:ssVV, GMT+05:00",
+      "2020:02:26 12:34:56-05:00, yyyy:MM:dd HH:mm:ssVV, GMT-05:00",
+      "2020-02-26T12:34:56-05:00, yyyy-MM-dd'T'HH:mm:ssVV, GMT-05:00",
+  })
+  void getDateValueFromMetadata_WithTZSuccess(String testCase, String pattern, String timeZone) {
+    int tagType = 999;
+    TimeZone tz = TimeZone.getTimeZone(timeZone);
+    Directory mockDirectory = mock(Directory.class);
+    when(mockDirectory.getObject(tagType)).thenReturn(testCase);
+    TemporalAccessor actual = getDateValueFromMetadata(mockDirectory, tagType);
+    TemporalAccessor expected = parseDateWithDefaults(testCase, pattern, Optional.of(tz));
+    assertTemporalAccessor(expected, actual);
+    ZonedDateTime expectedWithZone = ZonedDateTime.from(expected);
+    assert actual != null;
+    ZonedDateTime actualWithZone = ZonedDateTime.from(actual);
+    assertEquals(expectedWithZone.getOffset(), actualWithZone.getOffset());
+  }
+
+  @Test
+  void getDateValueFromMetadata_TagTypeNotFound() {
+    int tagType = 0;
+    Directory mockDirectory = mock(Directory.class);
+    when(mockDirectory.getObject(tagType)).thenReturn(null);
+    TemporalAccessor result = getDateValueFromMetadata(mockDirectory, tagType);
+    assertNull(result);
+  }
+
+  @Test()
+  void getDateValueFromMetadata_DirectoryIsNull() {
+    assertThrows(NullPointerException.class, () -> {getDateValueFromMetadata(null, 0);});
+  }
 }
