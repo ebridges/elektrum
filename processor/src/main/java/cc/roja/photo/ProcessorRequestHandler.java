@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.roja.photo.model.ImageKey;
 import cc.roja.photo.model.ProcessorResult;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -65,26 +66,28 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
     try {
       Processor processor = new Processor();
       ProcessorResult result = new ProcessorResult();
-      List<String> imageKeys = new ArrayList<>();
+      List<String> objectKeys = new ArrayList<>();
 
       for(S3EventNotification.S3EventNotificationRecord record : event.getRecords()) {
         S3EventNotification.S3Entity s3Entity = record.getS3();
-        imageKeys.add(s3Entity.getObject().getKey());
+        objectKeys.add(s3Entity.getObject().getKey());
       }
 
-      for(String imageKey : imageKeys) {
-        if (imageKey == null || imageKey.isEmpty()) {
-          throw new IllegalArgumentException("missing imageKey");
+      for(String objectKey : objectKeys) {
+        if (objectKey == null || objectKey.isEmpty()) {
+          throw new IllegalArgumentException("missing objectKey");
         }
 
-        String imagePath = imageKey.replace("photos/pictures", "");
+        String imagePath = objectKey.replace("photos/pictures", "");
 
-        String imageId = processor.processPhoto(imagePath);
+        ImageKey imageKey = new ImageKey();
+        imageKey.parse(imagePath);
+        String imageId = processor.processPhoto(imageKey);
         result.addImageId(imageId);
       }
 
-      if(imageKeys.size() != result.count()) {
-        LOG.warn(format("result count did not match event count: [%d vs. %d]", result.count(), imageKeys.size()));
+      if(objectKeys.size() != result.count()) {
+        LOG.warn(format("result count did not match event count: [%d vs. %d]", result.count(), objectKeys.size()));
       }
 
       return result;
