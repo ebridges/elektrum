@@ -163,22 +163,23 @@ public class MetaDataExtractor {
     }
 
     Rational altitude = resolveRational(metadata, of(GpsDirectory.class, TAG_ALTITUDE));
-    LOG.debug("altitude: "+altitude);
     if(altitude != null) {
+      LOG.debug("altitude: "+altitude);
       meta.setGpsAlt(altitude.doubleValue());
     }
 
     OffsetDateTime gpsTime = getGpsDate(metadata);
-    LOG.debug("gpsTime: "+gpsTime);
-    meta.setGpsDatetime( gpsTime );
+    if (gpsTime != null) {
+      LOG.debug("gpsTime: " + gpsTime);
+      meta.setGpsDatetime(gpsTime);
+    }
 
     GeoLocation loc = dir.getGeoLocation();
-    if (loc == null) {
-      return;
+    if (loc != null) {
+      LOG.debug("gpsLocation: "+loc.toDMSString());
+      meta.setGpsLat( loc.getLatitude() );
+      meta.setGpsLon( loc.getLongitude() );
     }
-    LOG.debug("gpsLocation: "+loc.toDMSString());
-    meta.setGpsLat( loc.getLatitude() );
-    meta.setGpsLon( loc.getLongitude() );
   }
 
   /**

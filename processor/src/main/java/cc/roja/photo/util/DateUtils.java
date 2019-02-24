@@ -26,6 +26,10 @@ public class DateUtils {
   private static final Logger LOG = Logger.getLogger(DateUtils.class);
 
   public static LocalDateTime stripTimeZone(TemporalAccessor temporalAccessor) {
+    if(temporalAccessor == null){
+      return null;
+    }
+
     return LocalDateTime.of(
         temporalAccessor.get(YEAR),
         temporalAccessor.get(MONTH_OF_YEAR),
