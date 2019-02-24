@@ -22,25 +22,21 @@ public class Processor {
 
   private DBI dbi;
   private ImageLoader imageLoader;
+  private MetaDataExtractor metaDataExtractor;
 
-  public Processor(DBI dbi, ImageLoader imageLoader) {
+  public Processor(DBI dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
     this.dbi = dbi;
     this.imageLoader = imageLoader;
+    this.metaDataExtractor = metaDataExtractor;
   }
 
   public Processor() {
     this.dbi = DatabaseManager.getDBI();
     this.imageLoader = ImageLoaderFactory.getLoader();
+    this.metaDataExtractor = new MetaDataExtractor();
   }
 
-  public String processPhoto(String imageIdentifier) throws IOException {
-    if(imageIdentifier == null || imageIdentifier.isEmpty()) {
-      throw new IllegalArgumentException("image identifier cannot be null/empty");
-    }
-
-    ImageKey imageKey = new ImageKey();
-    imageKey.parse(imageIdentifier);
-
+  public String processPhoto(ImageKey imageKey) throws IOException {
     try (PhotoProcessorDAO dao = dbi.open(PhotoProcessorDAO.class)) {
       String imageId = dao.queryByPath(imageKey);
 
@@ -50,14 +46,12 @@ public class Processor {
       }
 
       LOG.info("Processing: " + imageKey);
-      ImageInfo imageInfo = new ImageInfo(imageKey.getFilePath());
 
       // identify a filesystem location for the media item, which will mean a network op for S3
       File imageFile = imageLoader.load(imageKey.getKey());
 
       // extract and normalize metadata from the media file
-      MetaDataExtractor metaDataExtractor = new MetaDataExtractor();
-      metaDataExtractor.extract(imageFile, imageInfo);
+      ImageInfo imageInfo = metaDataExtractor.extract(imageKey, imageFile);
 
       // store the metadata linked to the media id record
       return dao.updateImageInfo(imageId, imageInfo);

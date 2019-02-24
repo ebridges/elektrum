@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import cc.roja.photo.model.ImageKey;
 import org.apache.log4j.Logger;
 
 import static java.lang.String.format;
@@ -27,7 +28,9 @@ public class ProcessorApp {
 
   private static void processSingleFile(String filename) throws IOException {
     Processor processor = new Processor();
-    String imageId = processor.processPhoto(filename);
+    ImageKey imageKey = new ImageKey();
+    imageKey.parse(filename);
+    String imageId = processor.processPhoto(imageKey);
     printOutput(imageId);
   }
 
@@ -41,7 +44,9 @@ public class ProcessorApp {
     Scanner input = new Scanner(inputStream);
     int cnt = 0;
     while (input.hasNextLine()) {
-      String imageId = processor.processPhoto(input.nextLine());
+      ImageKey imageKey = new ImageKey();
+      imageKey.parse(input.nextLine());
+      String imageId = processor.processPhoto(imageKey);
       cnt++;
       printOutput(imageId);
     }

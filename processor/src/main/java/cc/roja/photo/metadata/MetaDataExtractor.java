@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cc.roja.photo.model.ImageInfo;
+import cc.roja.photo.model.ImageKey;
 import cc.roja.photo.util.DateUtils;
 import com.drew.lang.annotations.Nullable;
 import org.apache.log4j.Logger;
@@ -53,7 +54,9 @@ import com.drew.metadata.file.FileSystemDirectory;
 public class MetaDataExtractor {
   private static final Logger LOG = Logger.getLogger(MetaDataExtractor.class);
 
-  public void extract(File image, ImageInfo imageInfo) throws IOException {
+  public ImageInfo extract(ImageKey imageKey, File image) throws IOException {
+    ImageInfo imageInfo = new ImageInfo(imageKey.getFilePath());
+
     Metadata metadataReader;
     try {
       metadataReader = ImageMetadataReader.readMetadata(image);
@@ -69,6 +72,8 @@ public class MetaDataExtractor {
     if(LOG.isInfoEnabled()) {
       LOG.info(imageInfo.toString());
     }
+
+    return imageInfo;
   }
 
   private static void setExifInfo(Metadata metadata, ImageInfo meta) {
