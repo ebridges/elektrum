@@ -1,4 +1,4 @@
-package cc.roja.photo;
+package cc.roja.photo.io;
 
 import static java.lang.System.getenv;
 

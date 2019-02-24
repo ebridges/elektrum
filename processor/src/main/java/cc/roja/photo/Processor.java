@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cc.roja.photo.io.ImageLoader;
 import cc.roja.photo.model.ImageInfo;
 import org.skife.jdbi.v2.DBI;
 
