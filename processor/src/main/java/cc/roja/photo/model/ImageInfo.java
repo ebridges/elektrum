@@ -21,13 +21,14 @@ public class ImageInfo {
   private Long shutterSpeedNumerator;
   private Long shutterSpeedDenominator;
   private Integer isoSpeed;
-  private Integer focalLength;
   private Double gpsLon;
   private Double gpsLat;
   private Double gpsAlt;
   private OffsetDateTime gpsDatetime;
   private Integer imageWidth;
   private Integer imageHeight;
+  private Long focalLengthNumerator;
+  private Long focalLengthDenominator;
 
   public ImageInfo() {
   }
@@ -96,12 +97,20 @@ public class ImageInfo {
     this.isoSpeed = isoSpeed;
   }
 
-  public Integer getFocalLength() {
-    return focalLength;
+  public void setFocalLengthNumerator(long focalLengthNumerator) {
+    this.focalLengthNumerator = focalLengthNumerator;
   }
 
-  public void setFocalLength(Integer focalLength) {
-    this.focalLength = focalLength;
+  public long getFocalLengthNumerator() {
+    return focalLengthNumerator;
+  }
+
+  public void setFocalLengthDenominator(long focalLengthDenominator) {
+    this.focalLengthDenominator = focalLengthDenominator;
+  }
+
+  public long getFocalLengthDenominator() {
+    return focalLengthDenominator;
   }
 
   public Double getGpsLon() {
@@ -172,13 +181,14 @@ public class ImageInfo {
         ", shutterSpeedNumerator=" + shutterSpeedNumerator +
         ", shutterSpeedDenominator=" + shutterSpeedDenominator +
         ", isoSpeed=" + isoSpeed +
-        ", focalLength=" + focalLength +
         ", gpsLon=" + gpsLon +
         ", gpsLat=" + gpsLat +
         ", gpsAlt=" + gpsAlt +
         ", gpsDatetime=" + gpsDatetime +
         ", imageWidth=" + imageWidth +
         ", imageHeight=" + imageHeight +
+        ", focalLengthNumerator=" + focalLengthNumerator +
+        ", focalLengthDenominator=" + focalLengthDenominator +
         '}';
   }
 }
