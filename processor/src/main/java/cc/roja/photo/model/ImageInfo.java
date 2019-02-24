@@ -3,7 +3,7 @@ package cc.roja.photo.model;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings({"unused"})
 public class ImageInfo {
 
   private String artist;
