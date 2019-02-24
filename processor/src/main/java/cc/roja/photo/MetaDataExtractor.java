@@ -94,7 +94,8 @@ public class MetaDataExtractor {
     Rational focalLength = resolveRational(metadata, of(ExifSubIFDDirectory.class, TAG_FOCAL_LENGTH));
     LOG.debug("focalLength: "+focalLength);
     if(focalLength != null) {
-      meta.setFocalLength(Math.round(focalLength.floatValue()));
+      meta.setFocalLengthNumerator(focalLength.getNumerator());
+      meta.setFocalLengthDenominator(focalLength.getDenominator());
     }
 
     String apertureDescription = resolveDescription(metadata, of(ExifSubIFDDirectory.class, TAG_APERTURE));
