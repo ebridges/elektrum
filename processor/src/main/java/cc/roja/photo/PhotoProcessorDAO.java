@@ -2,6 +2,7 @@ package cc.roja.photo;
 
 import java.io.Closeable;
 
+import cc.roja.photo.model.ImageInfo;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;

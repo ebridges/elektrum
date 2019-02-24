@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.util.DateUtils;
 import com.drew.lang.annotations.Nullable;
 import org.apache.log4j.Logger;

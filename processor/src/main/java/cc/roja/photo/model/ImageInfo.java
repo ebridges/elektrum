@@ -1,4 +1,4 @@
-package cc.roja.photo;
+package cc.roja.photo.model;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

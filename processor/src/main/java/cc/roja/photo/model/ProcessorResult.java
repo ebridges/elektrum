@@ -1,4 +1,4 @@
-package cc.roja.photo;
+package cc.roja.photo.model;
 
 import java.util.ArrayList;
 import java.util.List;
