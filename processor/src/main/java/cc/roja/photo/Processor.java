@@ -31,9 +31,7 @@ public class Processor {
   }
 
   public Processor() {
-    this.dbi = DatabaseManager.getDBI();
-    this.imageLoader = ImageLoaderFactory.getLoader();
-    this.metaDataExtractor = new MetaDataExtractor();
+    this(DatabaseManager.getDBI(), ImageLoaderFactory.getLoader(), new MetaDataExtractor());
   }
 
   public String processPhoto(ImageKey imageKey) throws IOException {
@@ -54,7 +52,9 @@ public class Processor {
       ImageInfo imageInfo = metaDataExtractor.extract(imageKey, imageFile);
 
       // store the metadata linked to the media id record
-      return dao.updateImageInfo(imageId, imageInfo);
+      dao.updateImageInfo(imageId, imageInfo);
+
+      return imageId;
     }
   }
 }

@@ -69,7 +69,7 @@ public interface PhotoProcessorDAO extends Closeable {
   String getOrCreateImage(@BindBean("i") ImageInfo imageInfo);
 
   @SqlUpdate("update media_info set () where id = :imageId")
-  String updateImageInfo(String imageId, @BindBean("i") ImageInfo imageInfo);
+  void updateImageInfo(String imageId, @BindBean("i") ImageInfo imageInfo);
 
   @SqlQuery("select id from image where path = :i.filePath and owner = :i.userId")
   String queryByPath(@Bind("i") ImageKey imageKey);
