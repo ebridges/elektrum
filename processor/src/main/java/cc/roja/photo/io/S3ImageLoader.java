@@ -22,7 +22,7 @@ class S3ImageLoader implements ImageLoader {
   private AmazonS3 s3Client;
 
   S3ImageLoader() {
-    this.s3Client = AmazonS3ClientBuilder.defaultClient();
+    this(AmazonS3ClientBuilder.defaultClient());
   }
 
   // For testing
