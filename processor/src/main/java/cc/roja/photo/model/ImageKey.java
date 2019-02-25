@@ -36,24 +36,9 @@ public class ImageKey {
 
     if(success) {
       String uid = matcher.group("userId");
-      if (uid == null) {
-        throw new IllegalArgumentException(format("unable to parse userId from image identifier [%s]", imageIdentifier));
-      }
-
       String collection = matcher.group("collection");
-      if (collection == null) {
-        throw new IllegalArgumentException(format("unable to parse collection from image identifier [%s]", imageIdentifier));
-      }
-
       String album = matcher.group("album");
-      if (album == null) {
-        throw new IllegalArgumentException(format("unable to parse album from image identifier [%s]", imageIdentifier));
-      }
-
       String filename = matcher.group("filename");
-      if (filename == null) {
-        throw new IllegalArgumentException(format("unable to parse filename from image identifier [%s]", imageIdentifier));
-      }
 
       LOG.debug("UserId: " + userId + ", Collection: "+collection+", Album: "+album+", Filename: "+filename);
 
