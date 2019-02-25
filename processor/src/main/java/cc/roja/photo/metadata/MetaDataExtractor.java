@@ -144,7 +144,7 @@ public class MetaDataExtractor {
     //    @todo add more patterns...
     //    @todo consolidate date parsing logic with DateUtils
     
-    String regex = "^(?<date>[0-9]{4}[0-9]{2}[0-9]{2}T[0-9]{2}[0-9]{2}[0-9]{2})";
+    String regex = "^(?<date>[0-9]{4}-?[0-9]{2}-?[0-9]{2}T[0-9]{2}[0-9]{2}[0-9]{2})";
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(filename);
     boolean success = matcher.find();

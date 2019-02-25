@@ -2,6 +2,7 @@ package cc.roja.photo.model;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @SuppressWarnings({"unused"})
 public class ImageInfo {
@@ -201,5 +202,35 @@ public class ImageInfo {
         ", focalLengthNumerator=" + focalLengthNumerator +
         ", focalLengthDenominator=" + focalLengthDenominator +
         '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ImageInfo imageInfo = (ImageInfo) o;
+    return fileSize == imageInfo.fileSize &&
+        filePath.equals(imageInfo.filePath) &&
+        Objects.equals(artist, imageInfo.artist) &&
+        Objects.equals(createDate, imageInfo.createDate) &&
+        Objects.equals(cameraMake, imageInfo.cameraMake) &&
+        Objects.equals(cameraModel, imageInfo.cameraModel) &&
+        Objects.equals(aperture, imageInfo.aperture) &&
+        Objects.equals(shutterSpeedNumerator, imageInfo.shutterSpeedNumerator) &&
+        Objects.equals(shutterSpeedDenominator, imageInfo.shutterSpeedDenominator) &&
+        Objects.equals(isoSpeed, imageInfo.isoSpeed) &&
+        Objects.equals(gpsLon, imageInfo.gpsLon) &&
+        Objects.equals(gpsLat, imageInfo.gpsLat) &&
+        Objects.equals(gpsAlt, imageInfo.gpsAlt) &&
+        Objects.equals(gpsDatetime, imageInfo.gpsDatetime) &&
+        Objects.equals(imageWidth, imageInfo.imageWidth) &&
+        Objects.equals(imageHeight, imageInfo.imageHeight) &&
+        Objects.equals(focalLengthNumerator, imageInfo.focalLengthNumerator) &&
+        Objects.equals(focalLengthDenominator, imageInfo.focalLengthDenominator);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(filePath, artist, fileSize, createDate, cameraMake, cameraModel, aperture, shutterSpeedNumerator, shutterSpeedDenominator, isoSpeed, gpsLon, gpsLat, gpsAlt, gpsDatetime, imageWidth, imageHeight, focalLengthNumerator, focalLengthDenominator);
   }
 }
