@@ -4,7 +4,8 @@ import cc.roja.photo.util.FilenameUtils;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import static cc.roja.photo.io.ImageLoaderFactory.ENV_BUCKET_NAME;
 import static java.lang.System.getenv;
 
 class S3ImageLoader implements ImageLoader {
-  private static final Logger LOG = Logger.getLogger(S3ImageLoader.class);
+  private static final Logger LOG = LogManager.getLogger(S3ImageLoader.class);
 
   private AmazonS3 s3Client;
 

@@ -12,13 +12,14 @@ import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
 import org.skife.jdbi.v2.DBI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static java.lang.String.format;
 
 @SuppressWarnings({"unused","WeakerAccess"})
 public class Processor {
-  private static final Logger LOG = Logger.getLogger(Processor.class);
+  private static final Logger LOG = LogManager.getLogger(Processor.class);
 
   private DBI dbi;
   private ImageLoader imageLoader;

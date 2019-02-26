@@ -39,7 +39,8 @@ import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
 import cc.roja.photo.util.DateUtils;
 import com.drew.lang.annotations.Nullable;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -52,7 +53,7 @@ import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
 
 public class MetaDataExtractor {
-  private static final Logger LOG = Logger.getLogger(MetaDataExtractor.class);
+  private static final Logger LOG = LogManager.getLogger(MetaDataExtractor.class);
 
   public ImageInfo extract(ImageKey imageKey, File image) throws IOException {
     ImageInfo imageInfo = new ImageInfo(imageKey.getFilePath());

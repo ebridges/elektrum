@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 
 import cc.roja.photo.util.DateUtils;
 import com.drew.metadata.StringValue;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.drew.lang.Rational;
 import com.drew.metadata.Directory;
@@ -24,7 +25,7 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 class MetadataUtils {
-  private static final Logger LOG = Logger.getLogger(MetadataUtils.class);
+  private static final Logger LOG = LogManager.getLogger(MetadataUtils.class);
 
   // try these tags in this order
   static final TagPair[] createDateTags = new TagPair[] {

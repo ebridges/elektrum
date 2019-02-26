@@ -1,6 +1,7 @@
 package cc.roja.photo.model;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -21,7 +22,7 @@ import static java.lang.String.format;
  */
 @SuppressWarnings("unused")
 public class ImageKey {
-  private static final Logger LOG = Logger.getLogger(ImageKey.class);
+  private static final Logger LOG = LogManager.getLogger(ImageKey.class);
 
   private UUID userId;
   private String filePath;

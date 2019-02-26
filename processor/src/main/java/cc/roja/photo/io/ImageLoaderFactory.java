@@ -2,24 +2,12 @@ package cc.roja.photo.io;
 
 import static java.lang.System.getenv;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-
-import org.apache.log4j.Logger;
-
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.S3Object;
-
-import cc.roja.photo.util.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @SuppressWarnings("WeakerAccess")
 public class ImageLoaderFactory {
-  private static final Logger LOG = Logger.getLogger(ImageLoaderFactory.class);
+  private static final Logger LOG = LogManager.getLogger(ImageLoaderFactory.class);
 
   static final String ENV_BUCKET_NAME = "BUCKET_NAME";
   static final String ENV_IMAGE_ROOT = "IMAGE_ROOT";

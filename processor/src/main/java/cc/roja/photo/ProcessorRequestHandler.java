@@ -9,7 +9,8 @@ import cc.roja.photo.model.ProcessorResult;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.event.S3EventNotification;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static java.lang.String.format;
 
@@ -59,7 +60,7 @@ Example event:
 
 @SuppressWarnings("unused")
 public class ProcessorRequestHandler implements RequestHandler<S3EventNotification, ProcessorResult> {
-  private static final Logger LOG = Logger.getLogger(ProcessorRequestHandler.class);
+  private static final Logger LOG = LogManager.getLogger(ProcessorRequestHandler.class);
 
   @Override
   public ProcessorResult handleRequest(S3EventNotification event, Context context) {
@@ -73,6 +74,7 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
         objectKeys.add(s3Entity.getObject().getKey());
       }
 
+      LOG.info("Processing "+objectKeys.size()+"event records.");
       for(String objectKey : objectKeys) {
         if (objectKey == null || objectKey.isEmpty()) {
           throw new IllegalArgumentException("missing objectKey");
@@ -84,6 +86,7 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
         imageKey.parse(imagePath);
         String imageId = processor.processPhoto(imageKey);
         result.addImageId(imageId);
+        LOG.info("> Processed image "+imageKey+" ["+imageId+"]");
       }
 
       if(objectKeys.size() != result.count()) {
@@ -92,6 +95,7 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
 
       return result;
     } catch (IOException e) {
+      LOG.error(format("Caught IOException: %s", e.getMessage()), e);
       throw new IllegalArgumentException(e);
     }
   }

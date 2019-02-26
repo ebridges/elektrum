@@ -6,12 +6,13 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import cc.roja.photo.model.ImageKey;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static java.lang.String.format;
 
 public class ProcessorApp {
-  private static final Logger LOG = Logger.getLogger(ProcessorApp.class);
+  private static final Logger LOG = LogManager.getLogger(ProcessorApp.class);
 
   public static void main(String[] args) throws IOException {
     String arg = args[0];
