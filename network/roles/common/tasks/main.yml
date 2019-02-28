@@ -112,3 +112,14 @@
 - name: set repo hostname as fact
   set_fact:
     repository_uri_host: "{{ repository_info.repository.repositoryUri.split('/')[0] | lower }}"
+
+- name: get iam role facts
+  iam_role_facts:
+    name: 'imageService-photoProcessor'
+  register: photo_processor_role_info
+
+- debug: var=photo_processor_role_info
+
+- name: set photo processor role arn as fact
+  set_fact:
+    photo_processor_role_arn: "{{ photo_processor_role_info.iam_roles[0].arn }}"

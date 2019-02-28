@@ -59,13 +59,11 @@
     path: "{{ config_info }}"
     regexp: "^vpc_id='{{ vpc_id }}'"
     line: "vpc_id='{{ vpc_id }}'"
-  when: elektron_env != 'development'
   tags:
     - cfg
 
 - set_fact:
     sn_ids='{{ public_subnet_ids|join(',') }}'
-  when: elektron_env != 'development'
   tags:
     - cfg
 
@@ -74,7 +72,6 @@
     path: "{{ config_info }}"
     regexp: "^vpc_public_subnet_ids='{{ sn_ids }}'"
     line: "vpc_public_subnet_ids='{{ sn_ids }}'"
-  when: elektron_env != 'development'
   tags:
     - cfg
 
@@ -83,7 +80,6 @@
     path: "{{ config_info }}"
     regexp: "^vpc_security_group_ids='{{ public_security_group_id }}'"
     line: "vpc_security_group_ids='{{ public_security_group_id }}'"
-  when: elektron_env != 'development'
   tags:
     - cfg
 
@@ -92,6 +88,21 @@
     path: "{{ config_info }}"
     regexp: "^ecr_host='{{ repository_uri_host }}'"
     line: "ecr_host='{{ repository_uri_host }}'"
-  when: elektron_env != 'development'
+  tags:
+    - cfg
+
+- name: store photo processor role ARN
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^photo_processor_role_arn='{{ photo_processor_role_arn }}'"
+    line: "photo_processor_role_arn='{{ photo_processor_role_arn }}'"
+  tags:
+    - cfg
+
+- name: store media storage bucket name
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^bucket_name='{{ bucket_name }}'"
+    line: "bucket_name='{{ bucket_name }}'"
   tags:
     - cfg

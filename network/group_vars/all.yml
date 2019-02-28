@@ -14,6 +14,9 @@ org_name: roja
 service_name: elektron
 config_info: "../etc/{{ elektron_env }}.env"
 
+# Storage Facts
+bucket_name: "cc.roja.elektron.media"
+
 # DB Facts
 db_instance_name: elektron-db
 rds_database_name: media_info
