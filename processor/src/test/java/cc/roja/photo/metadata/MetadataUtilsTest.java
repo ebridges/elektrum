@@ -3,7 +3,7 @@ package cc.roja.photo.metadata;
 import com.drew.lang.Rational;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.sun.tools.javac.util.List;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -100,6 +100,7 @@ class MetadataUtilsTest {
     when(mock.directory.getObject(tag)).thenReturn(tagValue);
 
     TemporalAccessor result = MetadataUtils.resolveDate(mock.metadata, TagPair.of(mock.directory.getClass(), tag));
+    assertNotNull(result);
     LocalDateTime actualTagValue = LocalDateTime.from(result);
     assertEquals(expectedTagValue, actualTagValue);
   }
@@ -147,7 +148,6 @@ class MetadataUtilsTest {
     assertEquals(expectedTagValue, actualTagValue);
   }
 
-
   @Test
   void testGetDirectoryFound() {
     Mocks mock = makeMockMetadata(0);
@@ -174,7 +174,7 @@ class MetadataUtilsTest {
     mock.metadata = mock(Metadata.class);
     mock.directory = mock(Directory.class);
 
-    Collection<? extends Directory> mockDirectories = List.of(mock.directory);
+    Collection<? extends Directory> mockDirectories = Lists.list(mock.directory);
 
     when(mock.directory.containsTag(tag)).thenReturn(true);
     doReturn(mockDirectories)
@@ -242,6 +242,7 @@ class MetadataUtilsTest {
 
   @Test()
   void getDateValueFromMetadata_DirectoryIsNull() {
-    assertThrows(NullPointerException.class, () -> {getDateValueFromMetadata(null, 0);});
+    //noinspection ConstantConditions
+    assertThrows(NullPointerException.class, () -> getDateValueFromMetadata(null, 0));
   }
 }
