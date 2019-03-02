@@ -34,3 +34,4 @@ temp-requirements.txt
 
 # pytest
 .pytest_cache/
+.gradle/

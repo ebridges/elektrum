@@ -10,12 +10,12 @@ gunicorn = "*"
 python-dotenv = {extras = ["cli"],version = "*"}
 whitenoise = "*"
 psycopg2-binary = "*"
+boto3 = "*"
 
 [dev-packages]
 pylint = "*"
 ansible = "*"
 ansible-vault = "*"
-"boto3" = "*"
 botocore = "*"
 boto = "*"
 awsebcli = "*"
