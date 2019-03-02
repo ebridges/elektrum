@@ -11,15 +11,15 @@ from media_items.upload_signing import *
 @pytest.mark.django_db
 def test_record_upload_request(user_factory):
     user = user_factory()
-    upload_url = 'https://[BUCKET].s3.amazonaws.com/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[' \
-                 'SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152'
+    upload_url = 'https://[BUCKET].s3.amazonaws.com/%s/2020/2020-02-26/2020-02-26T112343_[' \
+                 'SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152' % user.id
     mime_type = 'image/jpeg'
     item_id = record_upload_request(user, upload_url, mime_type)
     item = MediaItem.objects.get(id=item_id)
 
     user_id, path = split_upload_path(urlparse(upload_url).path)
     assert item.owner.id == user.id
-    assert item.owner.id == user_id
+    assert str(item.owner.id) == user_id
     assert item.media_type == mime_type
     assert item.path == path
 

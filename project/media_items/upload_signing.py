@@ -6,6 +6,7 @@ from pathlib import PurePath
 from urllib.parse import urlparse
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import SuspiciousOperation
 
 from media_items.models import MediaItem
 
