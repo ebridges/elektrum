@@ -15,9 +15,9 @@ ENV PYTHONFAULTHANDLER=1 \
 ## poetry version should agree with version in pyproject.toml
 RUN pip install 'poetry==0.12.11'
 WORKDIR /app
-COPY pyproject.toml poetry.lock /app
+COPY pyproject.toml poetry.lock /app/
 
-RUN poetry config settings.virtualenvs.create false &&
+RUN poetry config settings.virtualenvs.create false && \
     poetry install --no-dev --no-ansi --no-interaction
 
 FROM base AS release
