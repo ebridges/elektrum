@@ -1,10 +1,11 @@
 #!/usr/local/bin/bash
 
 CMD=$1
+ARG=$2
 
 if [ -z "${CMD}" ];
 then
-    echo "Usage: ${0}: [deploy-release|create-environment]"
+    echo "Usage: ${0}: [deploy-release|create-environment] [-f]"
     exit 0
 fi
 
@@ -35,8 +36,11 @@ then
     current_branch=$(git branch | grep \* | cut -d ' ' -f2)
     if [ "${current_branch}" != 'master' ];
     then
-        echo "Current branch is not master: [${current_branch}]."
-        exit 1
+        if [ "${ARG}" != '-f' ];
+        then
+            echo "Current branch is not master: [${current_branch}]."
+            exit 1
+        fi
     fi
     
     echo "Running unit tests in development env."
