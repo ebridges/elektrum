@@ -18,7 +18,7 @@ ${BUILD}/archive/photo-processor.zip:
 zip-all: ${BUILD}/archive/photo-processor.zip
 
 deploy-photo-processor: ${BUILD}/archive/photo-processor.zip
-	$(shell python3 etc/photo-processor-deploy.py ${BUILD}/archive/photo-processor.zip)
+	$(shell python3 scripts/photo-processor-deploy.py ${BUILD}/archive/photo-processor.zip)
 	@echo [photo-processor] DEPLOY: SUCCESSFUL
 
 deploy-all: deploy-photo-processor
