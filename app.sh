@@ -15,7 +15,7 @@ then
     ELEKTRON_ENV=staging
 fi
 
-if [ ! -f "./etc/${ELEKTRON_ENV}.env" ];
+if [ ! -f "./etc/env/${ELEKTRON_ENV}.env" ];
 then
     echo "Generating configuration for ${ELEKTRON_ENV}"
     pushd network
@@ -25,7 +25,7 @@ else
     echo "Configuration already exists for ${ELEKTRON_ENV}"
 fi
 
-source "./etc/${ELEKTRON_ENV}.env" || (echo "Error: config for ${ELEKTRON_ENV} not found" && exit 1)
+source "./etc/env/${ELEKTRON_ENV}.env" || (echo "Error: config for ${ELEKTRON_ENV} not found" && exit 1)
 
 ENV_NAME="${service_name}-${ELEKTRON_ENV}"
 
