@@ -13,6 +13,7 @@ import uuid
 from dotenv import load_dotenv
 from django import setup
 from django.contrib.auth.hashers import make_password
+from boto3 import Session, resource
 
 # start up local django server
 
@@ -51,6 +52,31 @@ def main():
 def assert_upload_request(request):
   assertNotNone('Location', request.headers.get('Location'))
   assertNotNone('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
+def teardown_bucket():
+  debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+  access_key = os.environ['AWS_ACCESS_KEY_ID']
+  access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
+  endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
+  bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
+  s3 = resource('s3', aws_access_key_id=access_key, 
+    aws_secret_access_key=access_secret, 
+    endpoint_url=endpoint_url)
+  bucket = s3.Bucket(bucket_name)
+  bucket.objects.all().delete()
+  bucket.delete()
+  info('Test bucket deleted [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+
+
+def setup_bucket():
+  debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+  access_key = os.environ['AWS_ACCESS_KEY_ID']
+  access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
+  endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
+  bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
+  session = Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
+  s3client = session.client('s3', endpoint_url=endpoint_url)
+  s3client.create_bucket(Bucket=bucket_name)
+  info('Test bucket created [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
 def upload_request(client):
@@ -207,15 +233,17 @@ def initialize_environment():
   ## Elektron env
   os.environ['ELEKTRON_ENV'] = 'development'
   load_dotenv('etc/env/%s.env' % os.environ['ELEKTRON_ENV'])
-  os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'com.example.functional_test'
 
   ## Django env
   sys.path.append('/Users/ebridges/Documents/elektron-working/elektron/project')
   os.environ['DJANGO_SETTINGS_MODULE'] = 'elektron.settings'
 
   ## Localstack env
+  ### AWS_SECRET_ACCESS_KEY & AWS_ACCESS_KEY_ID assumed in runtime env
   os.environ['SERVICES'] = 's3,lambda'
   os.environ['TMPDIR'] = '/private%s' % os.environ['TMPDIR']
+  os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'com.example.functional_test'
+  os.environ['AWS_S3_ENDPOINT_URL'] = 'http://localhost:4572'
 
 
 def assertNotNone(name, value):
