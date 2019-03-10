@@ -23,7 +23,7 @@ def deploy(archive):
 
 def create_function(client, archive):
   env = getenv('ELEKTRON_ENV', 'development')
-  env_file = "etc/%s.env" % env
+  env_file = "etc/env/%s.env" % env
   debug('Loading environment from [%s]' % env_file)
   load_dotenv(dotenv_path=env_file, verbose=True)
 

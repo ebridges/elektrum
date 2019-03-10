@@ -4,7 +4,8 @@ from django.db import connection
 
 
 class Ok(View):
-    def get(self):
+    # noinspection PyUnusedLocal
+    def get(self, request=None):
         time_at = self.db_time()
         response = HttpResponse('<h2>Ok</h2> %s' % time_at[0])
         response['X-Elektron-Now'] = time_at[0]

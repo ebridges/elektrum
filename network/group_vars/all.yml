@@ -12,7 +12,7 @@ home_ip: 98.116.39.58
 
 org_name: roja
 service_name: elektron
-config_info: "../etc/{{ elektron_env }}.env"
+config_info: "../etc/env/{{ elektron_env }}.env"
 
 # Storage Facts
 bucket_name: "cc.roja.elektron.media"

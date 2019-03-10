@@ -1,10 +1,11 @@
 #!/usr/local/bin/bash
 
 CMD=$1
+ARG=$2
 
 if [ -z "${CMD}" ];
 then
-    echo "Usage: ${0}: [deploy-release|create-environment]"
+    echo "Usage: ${0}: [deploy-release|create-environment] [-f]"
     exit 0
 fi
 
@@ -14,7 +15,7 @@ then
     ELEKTRON_ENV=staging
 fi
 
-if [ ! -f "./etc/${ELEKTRON_ENV}.env" ];
+if [ ! -f "./etc/env/${ELEKTRON_ENV}.env" ];
 then
     echo "Generating configuration for ${ELEKTRON_ENV}"
     pushd network
@@ -24,7 +25,7 @@ else
     echo "Configuration already exists for ${ELEKTRON_ENV}"
 fi
 
-source "./etc/${ELEKTRON_ENV}.env" || (echo "Error: config for ${ELEKTRON_ENV} not found" && exit 1)
+source "./etc/env/${ELEKTRON_ENV}.env" || (echo "Error: config for ${ELEKTRON_ENV} not found" && exit 1)
 
 ENV_NAME="${service_name}-${ELEKTRON_ENV}"
 
@@ -35,8 +36,11 @@ then
     current_branch=$(git branch | grep \* | cut -d ' ' -f2)
     if [ "${current_branch}" != 'master' ];
     then
-        echo "Current branch is not master: [${current_branch}]."
-        exit 1
+        if [ "${ARG}" != '-f' ];
+        then
+            echo "Current branch is not master: [${current_branch}]."
+            exit 1
+        fi
     fi
     
     echo "Running unit tests in development env."
@@ -53,7 +57,7 @@ then
     echo "Running integration test in dev environment."
     docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
     docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron_app:latest .
-    ELEKTRON_ENV=development ./integration_test.py
+    ELEKTRON_ENV=development ./scripts/integration_test.py
     result=$?
     if [ "${result}" != "0" ];
     then

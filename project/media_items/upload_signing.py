@@ -6,6 +6,7 @@ from pathlib import PurePath
 from urllib.parse import urlparse
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import SuspiciousOperation
 
 from media_items.models import MediaItem
 
@@ -26,7 +27,7 @@ def record_upload_request(user, upload_url, mime_type):
     :return: id of newly created item
     """
     u = urlparse(upload_url)
-    user_id, file_path = split_upload_path(u.path)
+    bucket, user_id, file_path = split_upload_path(u.path)
     if user_id != str(user.id):
         # This id should correspond to the current logged in user.
         raise SuspiciousOperation('ID in path not found.')
@@ -42,8 +43,9 @@ def record_upload_request(user, upload_url, mime_type):
 def split_upload_path(upload_path):
     """
     Given a path of the form:
-    /[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg
-    Returns a tuple of the form: (user_id, file_path), where:
+    /[BUCKET_NAME]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg
+    Returns a tuple of the form: (bucket_name, user_id, file_path), where:
+    bucket_name: [BUCKET_NAME]
     user_id: [USER_ID]
     file_path: /2020/2020-02-26/2020-02-26T112343_[SLUG].jpg
 
@@ -51,7 +53,7 @@ def split_upload_path(upload_path):
     :return: tuple
     """
     p = PurePath(upload_path.strip('/'))
-    return p.parts[0], os.path.join('/', *p.parts[1:])
+    return p.parts[0], p.parts[1], os.path.join('/', *p.parts[2:])
 
 
 def create_signed_upload_url(user, create_date, mime_type):
@@ -62,8 +64,8 @@ def create_signed_upload_url(user, create_date, mime_type):
     :return: URL used for direct upload to S3
 
     Example returned URL:
-    https://[BUCKET].s3.amazonaws.com/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg
-    ?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152
+    http://localhost:4572/[BUCKET_NAME]/[USER_ID]/2020/2020-01-01/2020-01-01T101010_[SLUG].jpg
+    ?AWSAccessKeyId=[ACCESS_KEY_ID]&Signature=[SIGNATURE]&Expires=[EXPIRY]
     """
     access_credentials = lookup_user_upload_credentials(user)
 
@@ -81,8 +83,9 @@ def create_signed_url(credentials, upload_key):
     :return:
     """
     access_key, access_secret, bucket_name = credentials
+    endpoint_url = os.getenv('AWS_S3_ENDPOINT_URL')
     session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-    s3client = session.client('s3')
+    s3client = session.client('s3', endpoint_url=endpoint_url)
     url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key})
     return url
 
