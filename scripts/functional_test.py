@@ -16,6 +16,9 @@ from django import setup
 from django.contrib.auth.hashers import make_password
 from boto3 import Session, resource
 
+CREATE_DATE = '2020-01-01T10:10:10'
+TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
+
 processes = []
 threads = []
 
@@ -38,6 +41,9 @@ def main(args):
     client = authenticated_client(user)
     request = upload_request(client)
     assert_upload_request(request)
+
+    upload_image(client, request.headers.get('X-Elektron-Media-Id'), request.headers.get('Location'), request.headers.get('X-Elektron-Filename'))
+
   finally:
     teardown_bucket()
     if user:
@@ -51,6 +57,15 @@ def main(args):
   else:
     print('Functional Test: \033[31m[NOT OK]\033[m')
     return 1
+
+
+def upload_image(client, id, url, filename):
+  length = os.path.getsize(TEST_IMAGE)
+  files = {
+    'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg', {'Content-Length': length})
+  }
+  response = client.put(url, files=files)
+  print(response.text)
 
 
 def assert_upload_request(request):
@@ -92,7 +107,7 @@ def upload_request(client):
   debug('Initializing an upload request.')
   url = 'http://localhost:8000/media/request-upload/'
   payload = { 
-    'create_date': '2020-01-01T10:10:10',
+    'create_date': CREATE_DATE,
     'mime_type': 'image/jpeg'
   }
   headers = get_csrf_headers(client)
