@@ -26,8 +26,7 @@ def record_upload_request(user, upload_url, mime_type):
     :param mime_type:
     :return: id of newly created item
     """
-    u = urlparse(upload_url)
-    bucket, user_id, file_path = split_upload_path(u.path)
+    bucket, user_id, file_path = split_upload_path(upload_url)
     if user_id != str(user.id):
         # This id should correspond to the current logged in user.
         raise SuspiciousOperation('ID in path not found.')
@@ -40,20 +39,31 @@ def record_upload_request(user, upload_url, mime_type):
     return item.id
 
 
-def split_upload_path(upload_path):
+def split_upload_path(url):
     """
-    Given a path of the form:
-    /[BUCKET_NAME]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg
+    Given a url of one of the forms:
+    https://[BUCKET_NAME].s3.amazonaws.com/[USER_ID]/2020/2020-02-26/2020-02-26T000000_[SLUG].jpg?[QUERY]
+    or
+    http://localhost:4572/[BUCKET_NAME]/[USER_ID]/2020/2020-01-01/2020-01-01T101010_[SLUG].jpg
+
     Returns a tuple of the form: (bucket_name, user_id, file_path), where:
     bucket_name: [BUCKET_NAME]
     user_id: [USER_ID]
     file_path: /2020/2020-02-26/2020-02-26T112343_[SLUG].jpg
 
-    :param upload_path:
+    :param url:
     :return: tuple
     """
-    p = PurePath(upload_path.strip('/'))
-    return p.parts[0], p.parts[1], os.path.join('/', *p.parts[2:])
+
+    if 'amazonaws' in url.netloc:
+        bucket = url.netloc.split('.')[0]
+        p = PurePath(url.path.strip('/'))
+        user_id = p.parts[0]
+        file_path =  os.path.join('/', *p.parts[1:])
+        return bucket, user_id, file_path
+    else:
+        p = PurePath(url.path.strip('/'))
+        return p.parts[0], p.parts[1], os.path.join('/', *p.parts[2:])
 
 
 def create_signed_upload_url(user, create_date, mime_type):
@@ -87,7 +97,7 @@ def create_signed_url(credentials, upload_key):
     session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
     s3client = session.client('s3', endpoint_url=endpoint_url)
     url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key})
-    return url
+    return urlparse(url)
 
 
 def create_upload_key(user, created, mtype, slug=None):

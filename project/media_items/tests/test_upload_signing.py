@@ -11,13 +11,13 @@ from media_items.upload_signing import *
 @pytest.mark.django_db
 def test_record_upload_request(user_factory):
     user = user_factory()
-    upload_url = 'https://[BUCKET].s3.amazonaws.com/[BUCKET]/%s/2020/2020-02-26/2020-02-26T112343_[' \
-                 'SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152' % user.id
+    upload_url = urlparse('https://[BUCKET].s3.amazonaws.com/%s/2020/2020-02-26/2020-02-26T112343_' \
+                          '[SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152' % user.id)
     mime_type = 'image/jpeg'
     item_id = record_upload_request(user, upload_url, mime_type)
     item = MediaItem.objects.get(id=item_id)
 
-    bucket_id, user_id, path = split_upload_path(urlparse(upload_url).path)
+    bucket_id, user_id, path = split_upload_path(upload_url)
     assert item.owner.id == user.id
     assert str(item.owner.id) == user_id
     assert item.media_type == mime_type
@@ -33,10 +33,9 @@ def test_create_signed_upload_url(user_factory):
     type = 'image/jpeg'
     user = user_factory()
     actual_url = create_signed_upload_url(user, create_date, type)
-    o = urlparse(actual_url)
-    qs = parse_qs(o.query)
-    assert o.scheme == 'https'
-    assert o.hostname == '%s.s3.amazonaws.com' % bucket_name
+    qs = parse_qs(actual_url.query)
+    assert actual_url.scheme == 'https'
+    assert actual_url.hostname == '%s.s3.amazonaws.com' % bucket_name
     assert 'AWSAccessKeyId' in qs
     assert 'Signature' in qs
     assert 'Expires' in qs
@@ -44,7 +43,7 @@ def test_create_signed_upload_url(user_factory):
     expected_key = r'/%s/([0-9]{4})/([0-9]{4}-[0-9]{2}-[0-9]{2})/([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6})_[0-9a-z]{8}\.(' \
                    r'[a-z]{3})' % user.id
 
-    m = re.match(expected_key, o.path)
+    m = re.match(expected_key, actual_url.path)
     assert m is not None
     assert m.group(1) == str(create_date.year)
     assert m.group(2) == f'{create_date.year:04}-{create_date.month:02}-{create_date.day:02}'
@@ -59,11 +58,10 @@ def test_create_signed_url(user_factory):
     credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
     url = create_signed_url(credentials, upload_key)
-    o = urlparse(url)
-    qs = parse_qs(o.query)
-    assert o.scheme == 'https'
-    assert o.hostname == '%s.s3.amazonaws.com' % credentials[2]
-    assert o.path == '/%s' % upload_key
+    qs = parse_qs(url.query)
+    assert url.scheme == 'https'
+    assert url.hostname == '%s.s3.amazonaws.com' % credentials[2]
+    assert url.path == '/%s' % upload_key
     assert qs['AWSAccessKeyId'][0] == credentials[0]
 
 
@@ -117,8 +115,16 @@ def test_extension_from_type():
     assert type == 'jpg'
 
 
-def test_split_upload_path():
-    u = '/[BUCKET]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg'
+def test_split_upload_path_localhost():
+    u = urlparse('http://localhost:4572/[BUCKET]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg')
+    a, b, c = split_upload_path(u)
+    assert a == '[BUCKET]'
+    assert b == '[USER_ID]'
+    assert c == '/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg'
+
+
+def test_split_upload_path_amazonaws():
+    u = urlparse('http://[BUCKET].s3.amazonaws.com/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg')
     a, b, c = split_upload_path(u)
     assert a == '[BUCKET]'
     assert b == '[USER_ID]'
