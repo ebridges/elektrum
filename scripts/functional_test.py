@@ -19,6 +19,8 @@ from boto3 import Session, resource
 processes = []
 threads = []
 
+success = True
+
 def main(args):
   initialize_environment()
   user = None
@@ -43,8 +45,12 @@ def main(args):
       teardown_user(user['id'])
     terminate()
   
-  print('Functional Test: \033[32m[OK]\033[m')
-  return 0
+  if success:
+    print('Functional Test: \033[32m[OK]\033[m')
+    return 0
+  else:
+    print('Functional Test: \033[31m[NOT OK]\033[m')
+    return 1
 
 
 def assert_upload_request(request):
@@ -66,7 +72,7 @@ def teardown_bucket():
   bucket = s3.Bucket(bucket_name)
   bucket.objects.all().delete()
   bucket.delete()
-  info('Test bucket deleted [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+  info('Deleted test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
 def setup_bucket():
@@ -78,7 +84,7 @@ def setup_bucket():
   session = Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
   s3client = session.client('s3', endpoint_url=endpoint_url)
   s3client.create_bucket(Bucket=bucket_name)
-  info('Test bucket created [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+  info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
 def upload_request(client):
@@ -90,7 +96,7 @@ def upload_request(client):
   }
   headers = get_csrf_headers(client)
   r = client.post(url, data=payload, headers=headers)
-  info('Upload request initialized.')
+  info('Initialized upload request.')
   return r
 
 
@@ -105,7 +111,7 @@ def authenticated_client(user):
   }
   headers = get_csrf_headers(client)
   client.post(url, data=payload, headers=headers)
-  info('Client authenticated.')
+  info('Client authenticated: [%s]' % user['email'])
   return client
 
 
@@ -119,7 +125,7 @@ def get_csrf_headers(client):
 def setup_django():
   debug('Initializing Django settings.')
   setup()
-  info('Django settings initialized.')
+  info('Initialized Django settings.')
 
 
 def setup_user():
@@ -149,7 +155,7 @@ def setup_user():
   values ('%s', 'true', 'true', '%s')
   """ % (user['email'], user['id']))
 
-  info('Test user created [%s]' % user['id'])
+  info('Created test user: [%s]' % user['id'])
   return user
 
 
@@ -169,7 +175,7 @@ def teardown_user(id):
   db = records.Database(db_url)
   db.query("delete from account_emailaddress where user_id = '%s'" % id)
   db.query("delete from users_customuser where id = '%s'" % id)
-  info('Test user deleted.')
+  info('Deleted test user: [%s]' % id)
 
 
 def teardown_media_item(username):
@@ -213,6 +219,7 @@ def terminate():
     if thread:
       debug('> Waiting on [%s] thread.' % thread.name)
       thread.join()
+      info('Stopped: [%s]' % thread.name)
 
   info('Test infrastructure stopped.')
 
@@ -250,7 +257,7 @@ def configure_logging(level=None):
   if level == sys.maxsize:
     disable(sys.maxsize)
   basicConfig(
-    format='[%(asctime)s][%(name)s][%(levelname)s] %(message)s',
+    format='[%(asctime)s][%(levelname)s] %(message)s',
     datefmt='%H:%M:%S',
     level=level)
   
@@ -273,15 +280,13 @@ def initialize_environment():
 
 
 def assertNotNone(name, value):
+  global success
   try:
     assert value is not None
   except AssertionError:
-    print('Functional Test: \033[31m[ERROR] %s is None\033[m' % name)
+    print('\033[31m[ERROR] %s is None\033[m' % name)
     error('[%s] is None' % name)
-    try:
-      sys.exit(1)
-    except SystemExit:
-      raise
+    success = False
 
 
 if __name__ == "__main__":
