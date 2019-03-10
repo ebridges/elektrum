@@ -170,12 +170,12 @@ def teardown_user(id):
   info('Test user deleted.')
 
 
-def teardown_media_item(id):
-  debug('Deleting test media item for user [%s]' % id)
+def teardown_media_item(username):
+  debug('Deleting test media item for user [%s]' % username)
   db_url = connect_info()
   db = records.Database(db_url)
-  db.query("delete from media_item where owner_id = '%s'" % id)
-  info('Test media item deleted.')
+  db.query("delete from media_item where owner_id = (select id from users_customuser where username = '%s')" % username)
+  info('Deleted media item for user: [%s]' % username)
 
 
 def connect_info():
