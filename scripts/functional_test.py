@@ -15,18 +15,7 @@ from django import setup
 from django.contrib.auth.hashers import make_password
 from boto3 import Session, resource
 
-# start up local django server
 
-
-# start up localstack
-
-# invoke call to get a presigned upload URL
-
-# upload image to bucket
-
-# assert upload succeeded
-
-# assert metadata properly recorded\
 
 def main():
   initialize_environment()  
