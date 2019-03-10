@@ -82,8 +82,9 @@ def create_signed_url(credentials, upload_key):
     :return:
     """
     access_key, access_secret, bucket_name = credentials
+    endpoint_url = os.getenv('AWS_S3_ENDPOINT_URL')
     session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-    s3client = session.client('s3')
+    s3client = session.client('s3', endpoint_url=endpoint_url)
     url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key})
     return url
 
