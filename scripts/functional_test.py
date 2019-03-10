@@ -296,6 +296,16 @@ def initialize_environment():
   os.environ['AWS_S3_ENDPOINT_URL'] = 'http://localhost:4572'
 
 
+def assertEquals(name, expected, actual):
+  global success
+  try:
+    assert expected == actual
+  except AssertionError:
+    print('\033[31m[ERROR] expected %s for %s but got %s\033[m' % (expected, name, actual))
+    error('Expected %s for %s but got %s' % (expected, name, actual))
+    success = False
+
+
 def assertNotNone(name, value):
   global success
   try:
