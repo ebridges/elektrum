@@ -23,6 +23,7 @@ def main():
     localstack_thread = initiate('localstack', localstack)
     http_server_thread = initiate('http_server', http_server)
 
+    setup_bucket()
     setup_django()
     user = setup_user()
     if not user:
@@ -33,7 +34,9 @@ def main():
     assert_upload_request(request)
     return 1
   finally:
+    teardown_bucket()
     if user:
+      teardown_media_item(user['id'])
       teardown_user(user['id'])
       terminate([http_server_thread])
 
@@ -41,6 +44,10 @@ def main():
 def assert_upload_request(request):
   assertNotNone('Location', request.headers.get('Location'))
   assertNotNone('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
+  media_item_id = request.headers.get('X-Elektron-Media-Id')
+  assertNotNone('Media Item', query_media_item(media_item_id))
+
+
 def teardown_bucket():
   debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
   access_key = os.environ['AWS_ACCESS_KEY_ID']
@@ -139,6 +146,14 @@ def setup_user():
   return user
 
 
+def query_media_item(id):
+  debug('Querying for media_item [%s]' % id)
+  db_url = connect_info()
+  db = records.Database(db_url)
+  rows = db.query("select id from media_item where id = '%s'" % id)
+  return rows.first()
+
+
 def teardown_user(id):
   debug('Deleting test user [%s]' % id)
   db_url = connect_info()
@@ -146,6 +161,14 @@ def teardown_user(id):
   db.query("delete from account_emailaddress where user_id = '%s'" % id)
   db.query("delete from users_customuser where id = '%s'" % id)
   info('Test user deleted.')
+
+
+def teardown_media_item(id):
+  debug('Deleting test media item for user [%s]' % id)
+  db_url = connect_info()
+  db = records.Database(db_url)
+  db.query("delete from media_item where owner_id = '%s'" % id)
+  info('Test media item deleted.')
 
 
 def connect_info():
