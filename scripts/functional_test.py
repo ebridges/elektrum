@@ -154,6 +154,8 @@ def setup_user():
 
 
 def query_media_item(id):
+  if not id:
+    return None
   debug('Querying for media_item [%s]' % id)
   db_url = connect_info()
   db = records.Database(db_url)
