@@ -57,6 +57,7 @@ def assert_upload_request(request):
   assertNotNone('Location', request.headers.get('Location'))
   assertNotNone('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
   media_item_id = request.headers.get('X-Elektron-Media-Id')
+  assertNotNone('X-Elektron-Filename', request.headers.get('X-Elektron-Filename'))
   assertNotNone('Media Item', query_media_item(media_item_id))
 
 
