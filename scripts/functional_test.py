@@ -39,7 +39,7 @@ def main(args):
   finally:
     teardown_bucket()
     if user:
-      teardown_media_item(user['id'])
+      teardown_media_item(user['username'])
       teardown_user(user['id'])
     terminate()
   
