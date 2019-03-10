@@ -15,6 +15,8 @@ from django import setup
 from django.contrib.auth.hashers import make_password
 from boto3 import Session, resource
 
+processes = []
+threads = []
 
 
 def main():
@@ -38,7 +40,7 @@ def main():
     if user:
       teardown_media_item(user['id'])
       teardown_user(user['id'])
-      terminate([http_server_thread])
+    terminate()
 
 
 def assert_upload_request(request):
@@ -182,17 +184,18 @@ def connect_info():
 
 def initiate(name, target):
   debug('Initiating [%s] thread.', name)
+  global threads
   s = Thread(name=name, target=target)
   s.start()
   time.sleep(5)
   info('Started: [%s]' % name)
+  threads.append(s)
   return s
 
 
-def terminate(threads):
+def terminate():
   debug('Shutting down processes for test infrastructure.')
-  # for process in [http_server_process, localstack_process]:
-  for process in [http_server_process]:
+  for process in processes:
     if process:
       debug('> Stopping process [%s]', process.pid)
       os.killpg(os.getpgid(process.pid), signal.SIGTERM)
@@ -208,7 +211,7 @@ def terminate(threads):
 
 
 def http_server():
-  global http_server_process
+  global processes
   http_server_process = subprocess.Popen(
     args='python3 manage.py runserver', 
     stdout=subprocess.PIPE,
@@ -216,17 +219,19 @@ def http_server():
     preexec_fn=os.setsid,
     cwd='./project'
   )
+  processes.append(http_server_process)
   debug('> Django server process: [%s]' % http_server_process.pid)
 
 
 def localstack():
-  global localstack_process
+  global processes
   localstack_process = subprocess.Popen(
     args='docker-compose --file scripts/localstack-compose.yml up', 
     stdout=subprocess.PIPE,
     shell=True,
     preexec_fn=os.setsid
   )
+  processes.append(localstack_process)
   debug('> Mock AWS server process: [%s]' % localstack_process.pid)
 
 
