@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from logging import INFO, DEBUG, basicConfig, info, debug, error
+import argparse
+from logging import INFO, DEBUG, basicConfig, info, debug, error, disable, getLogger
 import subprocess
 import os
 import sys
@@ -18,12 +19,13 @@ from boto3 import Session, resource
 processes = []
 threads = []
 
-
-def main():
-  initialize_environment()  
+def main(args):
+  initialize_environment()
+  user = None
   try:
-    localstack_thread = initiate('localstack', localstack)
-    http_server_thread = initiate('http_server', http_server)
+    initiate('localstack', localstack)
+    if not args.no_http_server:
+      initiate('http_server', http_server)
 
     setup_bucket()
     setup_django()
@@ -34,13 +36,15 @@ def main():
     client = authenticated_client(user)
     request = upload_request(client)
     assert_upload_request(request)
-    return 1
   finally:
     teardown_bucket()
     if user:
       teardown_media_item(user['id'])
       teardown_user(user['id'])
     terminate()
+  
+  print('Functional Test: \033[32m[OK]\033[m')
+  return 0
 
 
 def assert_upload_request(request):
@@ -88,6 +92,7 @@ def upload_request(client):
   r = client.post(url, data=payload, headers=headers)
   info('Upload request initialized.')
   return r
+
 
 def authenticated_client(user):
   debug('Creating an authenticated client.')
@@ -214,10 +219,11 @@ def http_server():
   global processes
   http_server_process = subprocess.Popen(
     args='python3 manage.py runserver', 
-    stdout=subprocess.PIPE,
+    stdout=subprocess.DEVNULL,
     shell=True,
     preexec_fn=os.setsid,
-    cwd='./project'
+    cwd='./project',
+    stderr=subprocess.DEVNULL
   )
   processes.append(http_server_process)
   debug('> Django server process: [%s]' % http_server_process.pid)
@@ -227,24 +233,25 @@ def localstack():
   global processes
   localstack_process = subprocess.Popen(
     args='docker-compose --file scripts/localstack-compose.yml up', 
-    stdout=subprocess.PIPE,
+    stdout=subprocess.DEVNULL,
     shell=True,
-    preexec_fn=os.setsid
+    preexec_fn=os.setsid,
+    stderr=subprocess.DEVNULL
   )
   processes.append(localstack_process)
   debug('> Mock AWS server process: [%s]' % localstack_process.pid)
 
 
-def configure_logging(verbose):
-    if verbose:
-        level = DEBUG
-    else:
-        level = INFO
-    basicConfig(
-        format='[%(asctime)s][%(levelname)s] %(message)s',
-        datefmt='%Y/%m/%d %H:%M:%S',
-        level=level)
-
+def configure_logging(level=None):
+  if not level:
+    level = DEBUG
+  if level == sys.maxsize:
+    disable(sys.maxsize)
+  basicConfig(
+    format='[%(asctime)s][%(name)s][%(levelname)s] %(message)s',
+    datefmt='%H:%M:%S',
+    level=level)
+  
 
 def initialize_environment():
   ## Elektron env
@@ -264,11 +271,21 @@ def initialize_environment():
 
 
 def assertNotNone(name, value):
-  if value is None:
+  try:
+    assert value is not None
+  except AssertionError:
+    print('Functional Test: \033[31m[ERROR] %s is None\033[m' % name)
     error('[%s] is None' % name)
+    try:
+      sys.exit(1)
+    except SystemExit:
+      raise
 
 
 if __name__ == "__main__":
-  verbosity = os.getenv('VERBOSE', 'yes')
-  configure_logging(verbosity)
-  main()
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--no-http-server', action='store_false', required=False, default=False, help='Disable Django server.')
+  parser.add_argument('--level', nargs='?', choices=['INFO', 'DEBUG'], required=False, default=sys.maxsize, help='Log level. Default is "off"')
+  args = parser.parse_args()
+  configure_logging(args.level)
+  main(args)
