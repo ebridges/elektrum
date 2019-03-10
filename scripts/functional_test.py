@@ -69,6 +69,7 @@ def upload_image(client, id, url, filename):
 
 
 def assert_upload_request(request):
+  assertEquals('Status Code', 201, request.status_code)
   assertNotNone('Location', request.headers.get('Location'))
   assertNotNone('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
   media_item_id = request.headers.get('X-Elektron-Media-Id')
