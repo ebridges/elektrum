@@ -6,6 +6,7 @@ import subprocess
 import os
 import sys
 import signal
+from pathlib import PurePath
 from threading import Thread
 import time
 import records
@@ -14,10 +15,11 @@ import uuid
 from dotenv import load_dotenv
 from django import setup
 from django.contrib.auth.hashers import make_password
-from boto3 import Session, resource
+from boto3 import Session, resource, client
 
 CREATE_DATE = '2020-01-01T10:10:10'
 TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
+FILE_SIZE = 150007
 
 processes = []
 threads = []
@@ -42,7 +44,12 @@ def main(args):
     request = upload_request(client)
     assert_upload_request(request)
 
-    upload_image(client, request.headers.get('X-Elektron-Media-Id'), request.headers.get('Location'), request.headers.get('X-Elektron-Filename'))
+    response = upload_image(client, 
+      request.headers.get('X-Elektron-Media-Id'), 
+      request.headers.get('Location'), 
+      request.headers.get('X-Elektron-Filename')
+    )
+    assert_upload(response)
 
   finally:
     teardown_bucket()
@@ -59,13 +66,39 @@ def main(args):
     return 1
 
 
+def assert_upload(response):
+  assertEquals('Status Code', 200, response.status_code)
+  bucket, key = split_path(response.request.path_url)
+  object_size = get_object_size(bucket, key)
+  assertNotNone('Uploaded image', object_size)
+  assertEquals('Uploaded image size', FILE_SIZE, object_size)
+
+
+def split_path(path):
+  p = PurePath(path.strip('/'))
+  return p.parts[0], os.path.join('/', *p.parts[1:])
+
+
+def get_object_size(bucket, key):
+    """return the key's size if it exist, else None"""
+    endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
+    c = client('s3', endpoint_url=endpoint_url)
+    response = c.list_objects_v2(
+        Bucket=bucket,
+        Prefix=key,
+    )
+    for obj in response.get('Contents', []):
+        if obj['Key'] == key:
+            return obj['Size']
+
+
 def upload_image(client, id, url, filename):
   length = os.path.getsize(TEST_IMAGE)
   files = {
     'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg', {'Content-Length': length})
   }
   response = client.put(url, files=files)
-  print(response.text)
+  return response
 
 
 def assert_upload_request(request):
