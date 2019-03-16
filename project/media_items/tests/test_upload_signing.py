@@ -11,7 +11,7 @@ from media_items.upload_signing import *
 @pytest.mark.django_db
 def test_record_upload_request(user_factory):
     user = user_factory()
-    upload_url = urlparse('https://[BUCKET].s3.amazonaws.com/%s/2020/2020-02-26/2020-02-26T112343_' \
+    upload_url = urlparse('https://s3.amazonaws.com/[BUCKET]/%s/2020/2020-02-26/2020-02-26T112343_' \
                           '[SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152' % user.id)
     mime_type = 'image/jpeg'
     item_id = record_upload_request(user, upload_url, mime_type)
@@ -35,13 +35,13 @@ def test_create_signed_upload_url(user_factory):
     actual_url = create_signed_upload_url(user, create_date, type)
     qs = parse_qs(actual_url.query)
     assert actual_url.scheme == 'https'
-    assert actual_url.hostname == '%s.s3.amazonaws.com' % bucket_name
-    assert 'AWSAccessKeyId' in qs
-    assert 'Signature' in qs
-    assert 'Expires' in qs
+    assert actual_url.hostname == 's3.amazonaws.com'
+    assert 'X-Amz-Credential' in qs
+    assert 'X-Amz-Signature' in qs
+    assert 'X-Amz-Expires' in qs
 
-    expected_key = r'/%s/([0-9]{4})/([0-9]{4}-[0-9]{2}-[0-9]{2})/([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6})_[0-9a-z]{8}\.(' \
-                   r'[a-z]{3})' % user.id
+    expected_key = r'/%s/%s/([0-9]{4})/([0-9]{4}-[0-9]{2}-[0-9]{2})/([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6})_[0-9a-z]{' \
+                   r'8}\.([a-z]{3})' % (bucket_name, user.id)
 
     m = re.match(expected_key, actual_url.path)
     assert m is not None
@@ -55,14 +55,15 @@ def test_create_signed_upload_url(user_factory):
 def test_create_signed_url(user_factory):
     os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'opqrstu'
     user = user_factory()
-    credentials = lookup_user_upload_credentials(user)
+    expected_credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
-    url = create_signed_url(credentials, upload_key)
+    url = create_signed_url(expected_credentials, upload_key)
     qs = parse_qs(url.query)
+    actual_credential = qs['X-Amz-Credential'][0].split('/')[0]
     assert url.scheme == 'https'
-    assert url.hostname == '%s.s3.amazonaws.com' % credentials[2]
-    assert url.path == '/%s' % upload_key
-    assert qs['AWSAccessKeyId'][0] == credentials[0]
+    assert url.hostname == 's3.amazonaws.com'
+    assert url.path == '/%s/%s' % (expected_credentials[2], upload_key)
+    assert actual_credential == expected_credentials[0]
 
 
 @pytest.mark.django_db
@@ -124,7 +125,7 @@ def test_split_upload_path_localhost():
 
 
 def test_split_upload_path_amazonaws():
-    u = urlparse('http://[BUCKET].s3.amazonaws.com/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg')
+    u = urlparse('http://s3.amazonaws.com/[BUCKET]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg')
     a, b, c = split_upload_path(u)
     assert a == '[BUCKET]'
     assert b == '[USER_ID]'
