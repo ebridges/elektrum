@@ -19,7 +19,6 @@ from boto3 import Session, resource, client
 
 CREATE_DATE = '2020-01-01T10:10:10'
 TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
-FILE_SIZE = 150007
 TEST_BUCKET_NAME = 'com.example.functionaltest'
 
 processes = []
@@ -46,7 +45,6 @@ def main(args):
         assert_upload_request(request)
 
         response = upload_image(client,
-                                request.headers.get('X-Elektron-Media-Id'),
                                 request.headers.get('Location'),
                                 request.headers.get('X-Elektron-Filename')
                                 )
@@ -92,10 +90,9 @@ def get_object_size(bucket, key):
             return obj['Size']
 
 
-def upload_image(client, id, url, filename):
-    length = os.path.getsize(TEST_IMAGE)
+def upload_image(client, url, filename):
     files = {
-        'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg', {'Content-Length': length})
+        'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg')
     }
     response = client.put(url, files=files)
     return response
