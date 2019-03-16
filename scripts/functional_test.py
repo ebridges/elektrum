@@ -336,7 +336,7 @@ def assert_equals(name, expected, actual):
     try:
         assert expected == actual
     except AssertionError:
-        print('\033[31m[ERROR] expected %s for %s but got %s\033[m' % (expected, name, actual))
+        print('\033[31m[ERROR] Expected %s for %s but got %s\033[m' % (expected, name, actual))
         error('Expected %s for %s but got %s' % (expected, name, actual))
         success = False
 
