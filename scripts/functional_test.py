@@ -196,15 +196,16 @@ def setup_user():
 
     debug('Creating test user [%s]' % user['id'])
     db.query("""
-    insert into users_customuser 
-    (id, username, password, email, first_name, last_name, is_superuser, is_staff, is_active, date_joined)
-    values ('%s', '%s', '%s', '%s', '%s', '%s', 'false', 'false', 'true', '2020-01-01 10:10:10')
+        insert into users_customuser 
+        (id, username, password, email, first_name, last_name, is_superuser, is_staff, is_active, date_joined)
+        values ('%s', '%s', '%s', '%s', '%s', '%s', 'false', 'false', 'true', '2020-01-01 10:10:10')
     """ % (user['id'], user['username'], encoded_password, user['email'], user['first_name'], user['last_name']))
+
     db.query("""
-  insert into account_emailaddress
-  (email, verified, "primary", user_id)
-  values ('%s', 'true', 'true', '%s')
-  """ % (user['email'], user['id']))
+        insert into account_emailaddress
+        (email, verified, "primary", user_id)
+        values ('%s', 'true', 'true', '%s')
+    """ % (user['email'], user['id']))
 
     info('Created test user: [%s]' % user['id'])
     return user
