@@ -12,6 +12,7 @@ import time
 import records
 import requests
 import uuid
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 from django import setup
 from django.contrib.auth.hashers import make_password
@@ -67,10 +68,16 @@ def main(args):
 
 def assert_upload(response):
     assert_equals('Status Code', 200, response.status_code)
-    bucket, key = split_path(response.request.path_url)
-    object_size = get_object_size(bucket, key)
-    assert_not_none('Uploaded image', object_size)
-    assert_equals('Uploaded image size', FILE_SIZE, object_size)
+    request_url = urlparse(response.request.url)
+    bucket, key = split_path(request_url.path)
+
+    actual_size = get_object_size(bucket, key)
+    assert_not_none('Actual image size', actual_size)
+
+    expected_size = response.request.headers['content-length']
+    assert_not_none('Expected image size', expected_size)
+
+    assert_equals('uploaded image size', int(expected_size), actual_size)
 
 
 def split_path(path):
