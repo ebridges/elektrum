@@ -20,6 +20,7 @@ from boto3 import Session, resource, client
 CREATE_DATE = '2020-01-01T10:10:10'
 TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
 FILE_SIZE = 150007
+TEST_BUCKET_NAME = 'com.example.functionaltest'
 
 processes = []
 threads = []
@@ -31,7 +32,6 @@ def main(args):
     initialize_environment()
     user = None
     try:
-        initiate('localstack', localstack)
         if not args.no_http_server:
             initiate('http_server', http_server)
 
@@ -82,7 +82,6 @@ def split_path(path):
 
 def get_object_size(bucket, key):
     """return the key's size if it exist, else None"""
-    endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
     c = client('s3', endpoint_url=endpoint_url)
     response = c.list_objects_v2(
         Bucket=bucket,
@@ -115,11 +114,9 @@ def teardown_bucket():
     debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
     access_key = os.environ['AWS_ACCESS_KEY_ID']
     access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
-    endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
     s3 = resource('s3', aws_access_key_id=access_key,
-                  aws_secret_access_key=access_secret,
-                  endpoint_url=endpoint_url)
+                  aws_secret_access_key=access_secret)
     bucket = s3.Bucket(bucket_name)
     bucket.objects.all().delete()
     bucket.delete()
@@ -130,10 +127,9 @@ def setup_bucket():
     debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
     access_key = os.environ['AWS_ACCESS_KEY_ID']
     access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
-    endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
     session = Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-    s3client = session.client('s3', endpoint_url=endpoint_url)
+    s3client = session.client('s3')
     s3client.create_bucket(Bucket=bucket_name)
     info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
@@ -290,19 +286,6 @@ def http_server():
     debug('> Django server process: [%s]' % http_server_process.pid)
 
 
-def localstack():
-    global processes
-    localstack_process = subprocess.Popen(
-        args='docker-compose --file scripts/localstack-compose.yml up',
-        stdout=subprocess.DEVNULL,
-        shell=True,
-        preexec_fn=os.setsid,
-        stderr=subprocess.DEVNULL
-    )
-    processes.append(localstack_process)
-    debug('> Mock AWS server process: [%s]' % localstack_process.pid)
-
-
 def configure_logging(level=None):
     if not level:
         level = DEBUG
@@ -323,12 +306,8 @@ def initialize_environment():
     sys.path.append('/Users/ebridges/Documents/elektron-working/elektron/project')
     os.environ['DJANGO_SETTINGS_MODULE'] = 'elektron.settings'
 
-    ## Localstack env
-    ### AWS_SECRET_ACCESS_KEY & AWS_ACCESS_KEY_ID assumed in runtime env
-    os.environ['SERVICES'] = 's3,lambda'
-    os.environ['TMPDIR'] = '/private%s' % os.environ['TMPDIR']
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'com.example.functional_test'
-    os.environ['AWS_S3_ENDPOINT_URL'] = 'http://localhost:4572'
+    # AWS_SECRET_ACCESS_KEY & AWS_ACCESS_KEY_ID assumed in runtime env
+    os.environ['AWS_UPLOAD_BUCKET_NAME'] = TEST_BUCKET_NAME
 
 
 def assert_equals(name, expected, actual):
