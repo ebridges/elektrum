@@ -4,6 +4,7 @@ import string
 import random
 from pathlib import PurePath
 from urllib.parse import urlparse
+from botocore.client import Config
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import SuspiciousOperation
@@ -84,9 +85,8 @@ def create_signed_url(credentials, upload_key):
     :return:
     """
     access_key, access_secret, bucket_name = credentials
-    endpoint_url = os.getenv('AWS_S3_ENDPOINT_URL')
     session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-    s3client = session.client('s3', endpoint_url=endpoint_url)
+    s3client = session.client('s3', config=Config(s3={'addressing_style': 'path'}, signature_version='s3v4'))
     url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key})
     return urlparse(url)
 
