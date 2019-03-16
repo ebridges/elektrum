@@ -75,7 +75,9 @@ def assert_upload(response):
 
 def split_path(path):
     p = PurePath(path.strip('/'))
-    return p.parts[0], os.path.join('/', *p.parts[1:])
+    bucket = p.parts[0]
+    key = os.path.join('/', *p.parts[1:]).strip('/')
+    return bucket, key
 
 
 def get_object_size(bucket, key):
