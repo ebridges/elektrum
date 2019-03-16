@@ -315,11 +315,11 @@ def configure_logging(level=None):
 
 
 def initialize_environment():
-    ## Elektron env
+    # Elektron env
     os.environ['ELEKTRON_ENV'] = 'development'
     load_dotenv('etc/env/%s.env' % os.environ['ELEKTRON_ENV'])
 
-    ## Django env
+    # Django env
     sys.path.append('/Users/ebridges/Documents/elektron-working/elektron/project')
     os.environ['DJANGO_SETTINGS_MODULE'] = 'elektron.settings'
 
