@@ -353,7 +353,7 @@ def assert_not_none(name, value):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--no-http-server', action='store_false', required=False, default=False,
+    parser.add_argument('--no-http-server', action='store_true', required=False, default=False,
                         help='Disable Django server.')
     parser.add_argument('--level', nargs='?', choices=['INFO', 'DEBUG'], required=False, default=sys.maxsize,
                         help='Log level. Default is "off"')
