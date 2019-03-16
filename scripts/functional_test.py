@@ -82,14 +82,12 @@ def split_path(path):
 
 def get_object_size(bucket, key):
     """return the key's size if it exist, else None"""
-    c = client('s3', endpoint_url=endpoint_url)
-    response = c.list_objects_v2(
-        Bucket=bucket,
-        Prefix=key,
-    )
-    for obj in response.get('Contents', []):
-        if obj['Key'] == key:
-            return obj['Size']
+    s3 = resource('s3')
+    bucket = s3.Bucket(bucket)
+
+    for o in bucket.objects.all():
+        if key == o.key:
+            return o.size
 
 
 def upload_image(client, url, filename):
