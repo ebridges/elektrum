@@ -26,57 +26,58 @@ threads = []
 
 success = True
 
+
 def main(args):
-  initialize_environment()
-  user = None
-  try:
-    initiate('localstack', localstack)
-    if not args.no_http_server:
-      initiate('http_server', http_server)
+    initialize_environment()
+    user = None
+    try:
+        initiate('localstack', localstack)
+        if not args.no_http_server:
+            initiate('http_server', http_server)
 
-    setup_bucket()
-    setup_django()
-    user = setup_user()
-    if not user:
-      raise ValueError('no user created')
-    
-    client = authenticated_client(user)
-    request = upload_request(client)
-    assert_upload_request(request)
+        setup_bucket()
+        setup_django()
+        user = setup_user()
+        if not user:
+            raise ValueError('no user created')
 
-    response = upload_image(client, 
-      request.headers.get('X-Elektron-Media-Id'), 
-      request.headers.get('Location'), 
-      request.headers.get('X-Elektron-Filename')
-    )
-    assert_upload(response)
+        client = authenticated_client(user)
+        request = upload_request(client)
+        assert_upload_request(request)
 
-  finally:
-    teardown_bucket()
-    if user:
-      teardown_media_item(user['username'])
-      teardown_user(user['id'])
-    terminate()
-  
-  if success:
-    print('Functional Test: \033[32m[OK]\033[m')
-    return 0
-  else:
-    print('Functional Test: \033[31m[NOT OK]\033[m')
-    return 1
+        response = upload_image(client,
+                                request.headers.get('X-Elektron-Media-Id'),
+                                request.headers.get('Location'),
+                                request.headers.get('X-Elektron-Filename')
+                                )
+        assert_upload(response)
+
+    finally:
+        teardown_bucket()
+        if user:
+            teardown_media_item(user['username'])
+            teardown_user(user['id'])
+        terminate()
+
+    if success:
+        print('Functional Test: \033[32m[OK]\033[m')
+        return 0
+    else:
+        print('Functional Test: \033[31m[NOT OK]\033[m')
+        return 1
 
 
 def assert_upload(response):
-  assertEquals('Status Code', 200, response.status_code)
-  bucket, key = split_path(response.request.path_url)
-  object_size = get_object_size(bucket, key)
-  assertNotNone('Uploaded image', object_size)
-  assertEquals('Uploaded image size', FILE_SIZE, object_size)
+    assert_equals('Status Code', 200, response.status_code)
+    bucket, key = split_path(response.request.path_url)
+    object_size = get_object_size(bucket, key)
+    assert_not_none('Uploaded image', object_size)
+    assert_equals('Uploaded image size', FILE_SIZE, object_size)
 
 
 def split_path(path):
-  p = PurePath(path.strip('/'))
-  return p.parts[0], os.path.join('/', *p.parts[1:])
+    p = PurePath(path.strip('/'))
+    return p.parts[0], os.path.join('/', *p.parts[1:])
 
 
 def get_object_size(bucket, key):
@@ -93,266 +94,269 @@ def get_object_size(bucket, key):
 
 
 def upload_image(client, id, url, filename):
-  length = os.path.getsize(TEST_IMAGE)
-  files = {
-    'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg', {'Content-Length': length})
-  }
-  response = client.put(url, files=files)
-  return response
+    length = os.path.getsize(TEST_IMAGE)
+    files = {
+        'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg', {'Content-Length': length})
+    }
+    response = client.put(url, files=files)
+    return response
 
 
 def assert_upload_request(request):
-  assertEquals('Status Code', 201, request.status_code)
-  assertNotNone('Location', request.headers.get('Location'))
-  assertNotNone('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
-  media_item_id = request.headers.get('X-Elektron-Media-Id')
-  assertNotNone('X-Elektron-Filename', request.headers.get('X-Elektron-Filename'))
-  assertNotNone('Media Item', query_media_item(media_item_id))
+    assert_equals('Status Code', 201, request.status_code)
+    assert_not_none('Location', request.headers.get('Location'))
+    assert_not_none('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
+    media_item_id = request.headers.get('X-Elektron-Media-Id')
+    assert_not_none('X-Elektron-Filename', request.headers.get('X-Elektron-Filename'))
+    assert_not_none('Media Item', query_media_item(media_item_id))
 
 
 def teardown_bucket():
-  debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
-  access_key = os.environ['AWS_ACCESS_KEY_ID']
-  access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
-  endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
-  bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-  s3 = resource('s3', aws_access_key_id=access_key, 
-    aws_secret_access_key=access_secret, 
-    endpoint_url=endpoint_url)
-  bucket = s3.Bucket(bucket_name)
-  bucket.objects.all().delete()
-  bucket.delete()
-  info('Deleted test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+    debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+    access_key = os.environ['AWS_ACCESS_KEY_ID']
+    access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
+    endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
+    bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
+    s3 = resource('s3', aws_access_key_id=access_key,
+                  aws_secret_access_key=access_secret,
+                  endpoint_url=endpoint_url)
+    bucket = s3.Bucket(bucket_name)
+    bucket.objects.all().delete()
+    bucket.delete()
+    info('Deleted test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
 def setup_bucket():
-  debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
-  access_key = os.environ['AWS_ACCESS_KEY_ID']
-  access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
-  endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
-  bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-  session = Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-  s3client = session.client('s3', endpoint_url=endpoint_url)
-  s3client.create_bucket(Bucket=bucket_name)
-  info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+    debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+    access_key = os.environ['AWS_ACCESS_KEY_ID']
+    access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
+    endpoint_url = os.environ['AWS_S3_ENDPOINT_URL']
+    bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
+    session = Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
+    s3client = session.client('s3', endpoint_url=endpoint_url)
+    s3client.create_bucket(Bucket=bucket_name)
+    info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
 def upload_request(client):
-  debug('Initializing an upload request.')
-  url = 'http://localhost:8000/media/request-upload/'
-  payload = { 
-    'create_date': CREATE_DATE,
-    'mime_type': 'image/jpeg'
-  }
-  headers = get_csrf_headers(client)
-  r = client.post(url, data=payload, headers=headers)
-  info('Initialized upload request.')
-  return r
+    debug('Initializing an upload request.')
+    url = 'http://localhost:8000/media/request-upload/'
+    payload = {
+        'create_date': CREATE_DATE,
+        'mime_type': 'image/jpeg'
+    }
+    headers = get_csrf_headers(client)
+    r = client.post(url, data=payload, headers=headers)
+    info('Initialized upload request.')
+    return r
 
 
 def authenticated_client(user):
-  debug('Creating an authenticated client.')
-  client = requests.session()
-  r = client.get('http://localhost:8000/')
-  url = 'http://localhost:8000/account/login/'
-  payload = {
-    'login': user['email'],
-    'password': user['password']
-  }
-  headers = get_csrf_headers(client)
-  client.post(url, data=payload, headers=headers)
-  info('Client authenticated: [%s]' % user['email'])
-  return client
+    debug('Creating an authenticated client.')
+    client = requests.session()
+    r = client.get('http://localhost:8000/')
+    url = 'http://localhost:8000/account/login/'
+    payload = {
+        'login': user['email'],
+        'password': user['password']
+    }
+    headers = get_csrf_headers(client)
+    client.post(url, data=payload, headers=headers)
+    info('Client authenticated: [%s]' % user['email'])
+    return client
 
 
 def get_csrf_headers(client):
-  csrftoken = client.cookies.get('csrftoken')
-  return {
-    'X-CSRFToken': csrftoken
-  }
+    csrftoken = client.cookies.get('csrftoken')
+    return {
+        'X-CSRFToken': csrftoken
+    }
 
 
 def setup_django():
-  debug('Initializing Django settings.')
-  setup()
-  info('Initialized Django settings.')
+    debug('Initializing Django settings.')
+    setup()
+    info('Initialized Django settings.')
 
 
 def setup_user():
-  db_url = connect_info()
-  db = records.Database(db_url)
+    db_url = connect_info()
+    db = records.Database(db_url)
 
-  user = {
-    'id': uuid.uuid4(),
-    'username': 'abcdefg_username',
-    'password': 'abcdefg_password',
-    'first_name': 'abcdefg_fname',
-    'last_name': 'abcdefg_lname',
-    'email': 'abcdefg@example.com'
-  }
+    user = {
+        'id': uuid.uuid4(),
+        'username': 'abcdefg_username',
+        'password': 'abcdefg_password',
+        'first_name': 'abcdefg_fname',
+        'last_name': 'abcdefg_lname',
+        'email': 'abcdefg@example.com'
+    }
 
-  encoded_password = make_password(user['password'])
+    encoded_password = make_password(user['password'])
 
-  debug('Creating test user [%s]' % user['id'])
-  db.query("""
+    debug('Creating test user [%s]' % user['id'])
+    db.query("""
     insert into users_customuser 
     (id, username, password, email, first_name, last_name, is_superuser, is_staff, is_active, date_joined)
     values ('%s', '%s', '%s', '%s', '%s', '%s', 'false', 'false', 'true', '2020-01-01 10:10:10')
-    """ %  (user['id'], user['username'], encoded_password, user['email'], user['first_name'], user['last_name']))
-  db.query("""
+    """ % (user['id'], user['username'], encoded_password, user['email'], user['first_name'], user['last_name']))
+    db.query("""
   insert into account_emailaddress
   (email, verified, "primary", user_id)
   values ('%s', 'true', 'true', '%s')
   """ % (user['email'], user['id']))
 
-  info('Created test user: [%s]' % user['id'])
-  return user
+    info('Created test user: [%s]' % user['id'])
+    return user
 
 
 def query_media_item(id):
-  if not id:
-    return None
-  debug('Querying for media_item [%s]' % id)
-  db_url = connect_info()
-  db = records.Database(db_url)
-  rows = db.query("select id from media_item where id = '%s'" % id)
-  return rows.first()
+    if not id:
+        return None
+    debug('Querying for media_item [%s]' % id)
+    db_url = connect_info()
+    db = records.Database(db_url)
+    rows = db.query("select id from media_item where id = '%s'" % id)
+    return rows.first()
 
 
 def teardown_user(id):
-  debug('Deleting test user [%s]' % id)
-  db_url = connect_info()
-  db = records.Database(db_url)
-  db.query("delete from account_emailaddress where user_id = '%s'" % id)
-  db.query("delete from users_customuser where id = '%s'" % id)
-  info('Deleted test user: [%s]' % id)
+    debug('Deleting test user [%s]' % id)
+    db_url = connect_info()
+    db = records.Database(db_url)
+    db.query("delete from account_emailaddress where user_id = '%s'" % id)
+    db.query("delete from users_customuser where id = '%s'" % id)
+    info('Deleted test user: [%s]' % id)
 
 
 def teardown_media_item(username):
-  debug('Deleting test media item for user [%s]' % username)
-  db_url = connect_info()
-  db = records.Database(db_url)
-  db.query("delete from media_item where owner_id = (select id from users_customuser where username = '%s')" % username)
-  info('Deleted media item for user: [%s]' % username)
+    debug('Deleting test media item for user [%s]' % username)
+    db_url = connect_info()
+    db = records.Database(db_url)
+    db.query(
+        "delete from media_item where owner_id = (select id from users_customuser where username = '%s')" % username)
+    info('Deleted media item for user: [%s]' % username)
 
 
 def connect_info():
-  return 'postgresql://%s:%s@%s:%s/%s' % (
-    os.getenv('db_username'), 
-    os.getenv('db_password'),
-    os.getenv('db_hostname'),
-    os.getenv('db_port_num'),
-    os.getenv('db_name'))
+    return 'postgresql://%s:%s@%s:%s/%s' % (
+        os.getenv('db_username'),
+        os.getenv('db_password'),
+        os.getenv('db_hostname'),
+        os.getenv('db_port_num'),
+        os.getenv('db_name'))
 
 
 def initiate(name, target):
-  debug('Initiating [%s] thread.', name)
-  global threads
-  s = Thread(name=name, target=target)
-  s.start()
-  time.sleep(5)
-  info('Started: [%s]' % name)
-  threads.append(s)
-  return s
+    debug('Initiating [%s] thread.', name)
+    global threads
+    s = Thread(name=name, target=target)
+    s.start()
+    time.sleep(5)
+    info('Started: [%s]' % name)
+    threads.append(s)
+    return s
 
 
 def terminate():
-  debug('Shutting down processes for test infrastructure.')
-  for process in processes:
-    if process:
-      debug('> Stopping process [%s]', process.pid)
-      os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+    debug('Shutting down processes for test infrastructure.')
+    for process in processes:
+        if process:
+            debug('> Stopping process [%s]', process.pid)
+            os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
-  time.sleep(5)
+    time.sleep(5)
 
-  for thread in threads:
-    if thread:
-      debug('> Waiting on [%s] thread.' % thread.name)
-      thread.join()
-      info('Stopped: [%s]' % thread.name)
+    for thread in threads:
+        if thread:
+            debug('> Waiting on [%s] thread.' % thread.name)
+            thread.join()
+            info('Stopped: [%s]' % thread.name)
 
-  info('Test infrastructure stopped.')
+    info('Test infrastructure stopped.')
 
 
 def http_server():
-  global processes
-  http_server_process = subprocess.Popen(
-    args='python3 manage.py runserver', 
-    stdout=subprocess.DEVNULL,
-    shell=True,
-    preexec_fn=os.setsid,
-    cwd='./project',
-    stderr=subprocess.DEVNULL
-  )
-  processes.append(http_server_process)
-  debug('> Django server process: [%s]' % http_server_process.pid)
+    global processes
+    http_server_process = subprocess.Popen(
+        args='python3 manage.py runserver',
+        stdout=subprocess.DEVNULL,
+        shell=True,
+        preexec_fn=os.setsid,
+        cwd='./project',
+        stderr=subprocess.DEVNULL
+    )
+    processes.append(http_server_process)
+    debug('> Django server process: [%s]' % http_server_process.pid)
 
 
 def localstack():
-  global processes
-  localstack_process = subprocess.Popen(
-    args='docker-compose --file scripts/localstack-compose.yml up', 
-    stdout=subprocess.DEVNULL,
-    shell=True,
-    preexec_fn=os.setsid,
-    stderr=subprocess.DEVNULL
-  )
-  processes.append(localstack_process)
-  debug('> Mock AWS server process: [%s]' % localstack_process.pid)
+    global processes
+    localstack_process = subprocess.Popen(
+        args='docker-compose --file scripts/localstack-compose.yml up',
+        stdout=subprocess.DEVNULL,
+        shell=True,
+        preexec_fn=os.setsid,
+        stderr=subprocess.DEVNULL
+    )
+    processes.append(localstack_process)
+    debug('> Mock AWS server process: [%s]' % localstack_process.pid)
 
 
 def configure_logging(level=None):
-  if not level:
-    level = DEBUG
-  if level == sys.maxsize:
-    disable(sys.maxsize)
-  basicConfig(
-    format='[%(asctime)s][%(levelname)s] %(message)s',
-    datefmt='%H:%M:%S',
-    level=level)
-  
+    if not level:
+        level = DEBUG
+    if level == sys.maxsize:
+        disable(sys.maxsize)
+    basicConfig(
+        format='[%(asctime)s][%(levelname)s] %(message)s',
+        datefmt='%H:%M:%S',
+        level=level)
+
 
 def initialize_environment():
-  ## Elektron env
-  os.environ['ELEKTRON_ENV'] = 'development'
-  load_dotenv('etc/env/%s.env' % os.environ['ELEKTRON_ENV'])
+    ## Elektron env
+    os.environ['ELEKTRON_ENV'] = 'development'
+    load_dotenv('etc/env/%s.env' % os.environ['ELEKTRON_ENV'])
 
-  ## Django env
-  sys.path.append('/Users/ebridges/Documents/elektron-working/elektron/project')
-  os.environ['DJANGO_SETTINGS_MODULE'] = 'elektron.settings'
+    ## Django env
+    sys.path.append('/Users/ebridges/Documents/elektron-working/elektron/project')
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'elektron.settings'
 
-  ## Localstack env
-  ### AWS_SECRET_ACCESS_KEY & AWS_ACCESS_KEY_ID assumed in runtime env
-  os.environ['SERVICES'] = 's3,lambda'
-  os.environ['TMPDIR'] = '/private%s' % os.environ['TMPDIR']
-  os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'com.example.functional_test'
-  os.environ['AWS_S3_ENDPOINT_URL'] = 'http://localhost:4572'
-
-
-def assertEquals(name, expected, actual):
-  global success
-  try:
-    assert expected == actual
-  except AssertionError:
-    print('\033[31m[ERROR] expected %s for %s but got %s\033[m' % (expected, name, actual))
-    error('Expected %s for %s but got %s' % (expected, name, actual))
-    success = False
+    ## Localstack env
+    ### AWS_SECRET_ACCESS_KEY & AWS_ACCESS_KEY_ID assumed in runtime env
+    os.environ['SERVICES'] = 's3,lambda'
+    os.environ['TMPDIR'] = '/private%s' % os.environ['TMPDIR']
+    os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'com.example.functional_test'
+    os.environ['AWS_S3_ENDPOINT_URL'] = 'http://localhost:4572'
 
 
-def assertNotNone(name, value):
-  global success
-  try:
-    assert value is not None
-  except AssertionError:
-    print('\033[31m[ERROR] %s is None\033[m' % name)
-    error('[%s] is None' % name)
-    success = False
+def assert_equals(name, expected, actual):
+    global success
+    try:
+        assert expected == actual
+    except AssertionError:
+        print('\033[31m[ERROR] expected %s for %s but got %s\033[m' % (expected, name, actual))
+        error('Expected %s for %s but got %s' % (expected, name, actual))
+        success = False
+
+
+def assert_not_none(name, value):
+    global success
+    try:
+        assert value is not None
+    except AssertionError:
+        print('\033[31m[ERROR] %s is None\033[m' % name)
+        error('[%s] is None' % name)
+        success = False
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--no-http-server', action='store_false', required=False, default=False, help='Disable Django server.')
-  parser.add_argument('--level', nargs='?', choices=['INFO', 'DEBUG'], required=False, default=sys.maxsize, help='Log level. Default is "off"')
-  args = parser.parse_args()
-  configure_logging(args.level)
-  main(args)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--no-http-server', action='store_false', required=False, default=False,
+                        help='Disable Django server.')
+    parser.add_argument('--level', nargs='?', choices=['INFO', 'DEBUG'], required=False, default=sys.maxsize,
+                        help='Log level. Default is "off"')
+    args = parser.parse_args()
+    configure_logging(args.level)
+    main(args)
