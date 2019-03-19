@@ -65,7 +65,7 @@ public class ProcessorApp {
             "\t-f\tProcess named file.\n" +
             "\t-F\tProcess list of files from given file.\n" +
             "\tElse reads a list of filenames from stdin.\n" +
-        "Environment Variables:\n"
+        "Environment Variables:\n" +
             "\tDB_JDBC_URL - URL of metadata database.\n" +
             "\tDB_USERNAME - Username for metadata database access.\n" +
             "\tDB_PASSWORD - Password for metadata database access.\n"
