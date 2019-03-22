@@ -24,7 +24,6 @@ TEST_BUCKET_NAME = 'com.example.functionaltest'
 
 processes = []
 threads = []
-
 success = True
 
 
@@ -98,10 +97,12 @@ def get_object_size(bucket, key):
 
 
 def upload_image(client, url, filename):
+    debug('Uploading image [%s] to [%s]' % (filename, url))
     files = {
         'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg')
     }
     response = client.put(url, files=files)
+    info('Image uploaded [%s] to [%s]' % (filename, url))
     return response
 
 
@@ -279,6 +280,7 @@ def terminate():
 
 def http_server():
     global processes
+    info('Starting Django server process')
     http_server_process = subprocess.Popen(
         args='python3 manage.py runserver',
         stdout=subprocess.DEVNULL,
