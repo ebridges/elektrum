@@ -12,15 +12,23 @@ import time
 import records
 import requests
 import uuid
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 from dotenv import load_dotenv
 from django import setup
 from django.contrib.auth.hashers import make_password
 from boto3 import Session, resource, client
+from tempfile import mkdtemp
+from shutil import rmtree
 
 CREATE_DATE = '2020-01-01T10:10:10'
 TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
 TEST_BUCKET_NAME = 'com.example.functionaltest'
+TEST_BUCKET_LOCATION = '%s/mnt' % os.getcwd()
+MOCK_S3_DOCKER_IMAGE = 'scireum/s3-ninja:5.2'
+MOCK_S3_ACCESS_KEY = 'AKIAIOSFODNN7EXAMPLE'
+MOCK_S3_SECRET_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
+MOCK_S3_ENDPOINT_PORT = 9444
+MOCK_S3_ENDPOINT = 'http://localhost:%d' % 9444
 
 processes = []
 threads = []
@@ -31,6 +39,7 @@ def main(args):
     initialize_environment()
     user = None
     try:
+        initiate('s3_service', s3_service)
         if not args.no_http_server:
             initiate('http_server', http_server)
 
@@ -88,7 +97,7 @@ def split_path(path):
 
 def get_object_size(bucket, key):
     """return the key's size if it exist, else None"""
-    s3 = resource('s3')
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT)
     bucket = s3.Bucket(bucket)
 
     for o in bucket.objects.all():
@@ -117,25 +126,20 @@ def assert_upload_request(request):
 
 def teardown_bucket():
     debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
-    access_key = os.environ['AWS_ACCESS_KEY_ID']
-    access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', aws_access_key_id=access_key,
-                  aws_secret_access_key=access_secret)
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT)
     bucket = s3.Bucket(bucket_name)
     bucket.objects.all().delete()
     bucket.delete()
+    rmtree(TEST_BUCKET_LOCATION)
     info('Deleted test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
 def setup_bucket():
     debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
-    access_key = os.environ['AWS_ACCESS_KEY_ID']
-    access_secret = os.environ['AWS_SECRET_ACCESS_KEY']
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    session = Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-    s3client = session.client('s3')
-    s3client.create_bucket(Bucket=bucket_name)
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT)
+    s3.create_bucket(Bucket=bucket_name)
     info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
 
@@ -278,6 +282,25 @@ def terminate():
     info('Test infrastructure stopped.')
 
 
+def s3_service():
+    global processes
+
+    info('Starting an S3 server process')
+    os.makedirs(TEST_BUCKET_LOCATION)
+
+    command = 'docker run -p %d:80 -v %s:/var/s3/data %s' % (MOCK_S3_ENDPOINT_PORT, TEST_BUCKET_LOCATION, MOCK_S3_DOCKER_IMAGE)
+
+    info('running command: %s' % command)
+
+    s3_service_process = subprocess.Popen(
+        args=command,
+        shell=True,
+        preexec_fn=os.setsid
+    )
+    processes.append(s3_service_process)
+    debug('> S3 server process: [%s]' % s3_service_process.pid)
+
+
 def http_server():
     global processes
     info('Starting Django server process')
@@ -324,6 +347,8 @@ def initialize_environment():
     os.environ['DJANGO_SETTINGS_MODULE'] = 'elektron.settings'
 
     # AWS_SECRET_ACCESS_KEY & AWS_ACCESS_KEY_ID assumed in runtime env
+    os.environ['AWS_ACCESS_KEY_ID'] = MOCK_S3_ACCESS_KEY
+    os.environ['AWS_SECRET_ACCESS_KEY'] = MOCK_S3_SECRET_KEY
     os.environ['AWS_UPLOAD_BUCKET_NAME'] = TEST_BUCKET_NAME
 
 
