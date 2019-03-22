@@ -27,7 +27,7 @@ TEST_BUCKET_LOCATION = '%s/mnt' % os.getcwd()
 MOCK_S3_DOCKER_IMAGE = 'scireum/s3-ninja:5.2'
 MOCK_S3_ACCESS_KEY = 'AKIAIOSFODNN7EXAMPLE'
 MOCK_S3_SECRET_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
-MOCK_S3_ENDPOINT = urlparse(os.getenv(AWS_ENDPOINT_URL, 'http://localhost:9444'))
+MOCK_S3_ENDPOINT = urlparse(os.getenv('AWS_ENDPOINT_URL', 'http://localhost:9444'))
 
 processes = []
 threads = []
