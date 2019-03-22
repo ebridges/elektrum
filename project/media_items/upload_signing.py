@@ -4,6 +4,7 @@ import string
 import random
 from pathlib import PurePath
 from urllib.parse import urlparse
+from botocore.client import Config
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import SuspiciousOperation
@@ -42,9 +43,7 @@ def record_upload_request(user, upload_url, mime_type):
 def split_upload_path(url):
     """
     Given a url of one of the forms:
-    https://[BUCKET_NAME].s3.amazonaws.com/[USER_ID]/2020/2020-02-26/2020-02-26T000000_[SLUG].jpg?[QUERY]
-    or
-    http://localhost:4572/[BUCKET_NAME]/[USER_ID]/2020/2020-01-01/2020-01-01T101010_[SLUG].jpg
+    http://[HOSTNAME:PORT]/[BUCKET_NAME]/[USER_ID]/2020/2020-01-01/2020-01-01T101010_[SLUG].jpg
 
     Returns a tuple of the form: (bucket_name, user_id, file_path), where:
     bucket_name: [BUCKET_NAME]
@@ -55,15 +54,8 @@ def split_upload_path(url):
     :return: tuple
     """
 
-    if 'amazonaws' in url.netloc:
-        bucket = url.netloc.split('.')[0]
-        p = PurePath(url.path.strip('/'))
-        user_id = p.parts[0]
-        file_path =  os.path.join('/', *p.parts[1:])
-        return bucket, user_id, file_path
-    else:
-        p = PurePath(url.path.strip('/'))
-        return p.parts[0], p.parts[1], os.path.join('/', *p.parts[2:])
+    p = PurePath(url.path.strip('/'))
+    return p.parts[0], p.parts[1], os.path.join('/', *p.parts[2:])
 
 
 def create_signed_upload_url(user, create_date, mime_type):
@@ -93,9 +85,14 @@ def create_signed_url(credentials, upload_key):
     :return:
     """
     access_key, access_secret, bucket_name = credentials
-    endpoint_url = os.getenv('AWS_S3_ENDPOINT_URL')
     session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
-    s3client = session.client('s3', endpoint_url=endpoint_url)
+
+    if os.getenv('AWS_ENDPOINT_URL'):
+        s3client = session.client('s3', endpoint_url=os.getenv('AWS_ENDPOINT_URL'),
+                                  config=Config(s3={'addressing_style': 'path'}, signature_version='s3v4'))
+    else:
+        s3client = session.client('s3', config=Config(s3={'addressing_style': 'path'}, signature_version='s3v4'))
+
     url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key})
     return urlparse(url)
 
