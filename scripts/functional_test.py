@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from logging import INFO, DEBUG, basicConfig, info, debug, error, disable, getLogger
+from logging import INFO, DEBUG, CRITICAL, basicConfig, info, debug, error, disable, getLogger
 import subprocess
 import os
 import sys
@@ -294,10 +294,20 @@ def http_server():
 def configure_logging(level=None):
     if not level:
         level = DEBUG
+
     if level == sys.maxsize:
         disable(sys.maxsize)
+
+    if level == 'VERBOSE':
+        getLogger('botocore').setLevel(DEBUG)
+        getLogger('boto3').setLevel(DEBUG)
+        level = DEBUG
+    else:
+        getLogger('botocore').setLevel(CRITICAL)
+        getLogger('boto3').setLevel(CRITICAL)
+
     basicConfig(
-        format='[%(asctime)s][%(levelname)s] %(message)s',
+        format='[%(asctime)s][%(name)s][%(levelname)s] %(message)s',
         datefmt='%H:%M:%S',
         level=level)
 
@@ -339,7 +349,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-http-server', action='store_true', required=False, default=False,
                         help='Disable Django server.')
-    parser.add_argument('--level', nargs='?', choices=['INFO', 'DEBUG'], required=False, default=sys.maxsize,
+    parser.add_argument('--level', nargs='?', choices=['INFO', 'DEBUG', 'VERBOSE'], required=False, default=sys.maxsize,
                         help='Log level. Default is "off"')
     args = parser.parse_args()
     configure_logging(args.level)
