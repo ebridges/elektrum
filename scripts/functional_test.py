@@ -27,8 +27,7 @@ TEST_BUCKET_LOCATION = '%s/mnt' % os.getcwd()
 MOCK_S3_DOCKER_IMAGE = 'scireum/s3-ninja:5.2'
 MOCK_S3_ACCESS_KEY = 'AKIAIOSFODNN7EXAMPLE'
 MOCK_S3_SECRET_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
-MOCK_S3_ENDPOINT_PORT = 9444
-MOCK_S3_ENDPOINT = 'http://localhost:%d' % 9444
+MOCK_S3_ENDPOINT = urlparse(os.getenv(AWS_ENDPOINT_URL, 'http://localhost:9444'))
 
 processes = []
 threads = []
@@ -97,7 +96,7 @@ def split_path(path):
 
 def get_object_size(bucket, key):
     """return the key's size if it exist, else None"""
-    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT)
+    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
     bucket = s3.Bucket(bucket)
 
     for o in bucket.objects.all():
@@ -127,7 +126,7 @@ def assert_upload_request(request):
 def teardown_bucket():
     debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT)
+    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
     bucket = s3.Bucket(bucket_name)
     bucket.objects.all().delete()
     bucket.delete()
@@ -138,7 +137,7 @@ def teardown_bucket():
 def setup_bucket():
     debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT)
+    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
     s3.create_bucket(Bucket=bucket_name)
     info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
@@ -288,7 +287,8 @@ def s3_service():
     info('Starting an S3 server process')
     os.makedirs(TEST_BUCKET_LOCATION)
 
-    command = 'docker run -p %d:80 -v %s:/var/s3/data %s' % (MOCK_S3_ENDPOINT_PORT, TEST_BUCKET_LOCATION, MOCK_S3_DOCKER_IMAGE)
+    command = 'docker run -p %d:80 -v %s:/var/s3/data %s' % (MOCK_S3_ENDPOINT.port, TEST_BUCKET_LOCATION,
+                                                             MOCK_S3_DOCKER_IMAGE)
 
     info('running command: %s' % command)
 
