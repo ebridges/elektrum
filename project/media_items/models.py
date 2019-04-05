@@ -36,7 +36,7 @@ class MediaItem(BaseModel):
         on_delete=models.CASCADE,
     )
 
-    path = models.CharField(
+    file_path = models.CharField(
         _('file path'),
         help_text=_('Required. Path to media item from the root of users archive.'),
         null=False,
@@ -53,17 +53,116 @@ class MediaItem(BaseModel):
         max_length=64,
     )
 
+    file_size = models.BigIntegerField(
+        _('artist'),
+        help_text=_('Required. The size in bytes of the media item.'),
+        null=False
+    )
+
+    image_width = models.IntegerField(
+        _('image width'),
+        help_text=_('Required. The width of this media item.'),
+        null=False
+    )
+
+    image_height = models.IntegerField(
+        _('image height'),
+        help_text=_('Required. The height of this media item.'),
+        null=False
+    )
+
+    create_date = models.DateTimeField(
+        _('artist'),
+        help_text=_('Required. The date and time this media item was created.'),
+        null=False
+    )
+
+    camera_make = models.CharField(
+        _('camera make'),
+        help_text=_('Optional. Name of the camera used for creating this media item.'),
+        null=True,
+        max_length=64,
+    )
+
+    camera_model = models.CharField(
+        _('camera model'),
+        help_text=_('Optional. Model of the camera used for creating this media item.'),
+        null=True,
+        max_length=64,
+    )
+
+    aperture = models.CharField(
+        _('aperture'),
+        help_text=_('Optional. The lens aperture setting used when this media item was created.'),
+        null=True,
+        max_length=64,
+    )
+
+    shutter_speed_numerator = models.IntegerField(
+        _('shutter speed (numerator)'),
+        help_text=_('Optional. The shutter speed (numerator) setting used when this media item was created.'),
+        null=True
+    )
+
+    shutter_speed_denominator = models.IntegerField(
+        _('shutter speed (denominator)'),
+        help_text=_('Optional. The shutter speed (denominator) setting used when this media item was created.'),
+        null=True
+    )
+
+    focal_length_numerator = models.IntegerField(
+        _('focal length (numerator)'),
+        help_text=_('Optional. The focal length (numerator) setting used when this media item was created.'),
+        null=True
+    )
+
+    focal_length_denominator = models.IntegerField(
+        _('focal length (denominator)'),
+        help_text=_('Optional. The focal length (denominator) setting used when this media item was created.'),
+        null=True
+    )
+
+    iso_speed = models.IntegerField(
+        _('iso speed'),
+        help_text=_('Optional. The ISO speed of the exposure used to create this media item.'),
+        null=True
+    )
+
+    gps_lon = models.FloatField(
+        _('gps longitude'),
+        help_text=_('Optional. The longitude of the GPS location of where this media item was created.'),
+        null=True,
+    )
+
+    gps_lat = models.FloatField(
+        _('gps latitude'),
+        help_text=_('Optional. The latitude of the GPS location of where this media item was created.'),
+        null=True,
+    )
+
+    gps_alt = models.FloatField(
+        _('gps altitude'),
+        help_text=_('Optional. The altitude of the GPS location of where this media item was created.'),
+        null=True,
+    )
+
+    gps_date_time = models.DateTimeField(
+        _('gps date time'),
+        help_text=_('Optional. The date and time in UTC at the GPS location of where this media item was created.'),
+        null=True,
+    )
+
     def validate_unique(self, exclude=None):
-        o = MediaItem.objects.filter(path=self.path, owner=self.owner)
+        o = MediaItem.objects.filter(path=self.file_path, owner=self.owner)
         if o.exists():
-            raise ValidationError({'path': _(
-                'There already exists a media item named [%s] for user [%s]' % (self.path, self.owner.username))})
+            raise validators.ValidationError({'path': _(
+                'There already exists a media item named [%s] for user [%s]' % (self.file_path, self.owner.username))})
 
     def __str__(self):
-        return self.path
+        return self.file_path
 
     class Meta:
         db_table = 'media_item'
         unique_together = (
-            ('path', 'owner'),
+            ('file_path', 'owner'),
         )

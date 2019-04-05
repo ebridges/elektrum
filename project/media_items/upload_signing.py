@@ -33,7 +33,7 @@ def record_upload_request(user, upload_url, mime_type):
         raise SuspiciousOperation('ID in path not found.')
     item = MediaItem.objects.create(
         owner=user,
-        path=file_path,
+        file_path=file_path,
         media_type=mime_type
     )
     item.save()

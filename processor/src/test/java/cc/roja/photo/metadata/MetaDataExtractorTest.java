@@ -33,7 +33,7 @@ class MetaDataExtractorTest {
     expected.setGpsLon(-73.9626138888889);
     expected.setGpsLat(40.718075);
     expected.setGpsAlt(0.0);
-    expected.setGpsDatetime(OffsetDateTime.parse("2019-02-25T01:51:08Z"));
+    expected.setGpsDateTime(OffsetDateTime.parse("2019-02-25T01:51:08Z"));
     expected.setImageWidth(4032);
     expected.setImageHeight(3024);
     expected.setFocalLengthNumerator(4440L);

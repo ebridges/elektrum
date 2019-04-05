@@ -174,7 +174,7 @@ public class MetaDataExtractor {
     OffsetDateTime gpsTime = getGpsDate(metadata);
     if (gpsTime != null) {
       LOG.debug("gpsTime: " + gpsTime);
-      meta.setGpsDatetime(gpsTime);
+      meta.setGpsDateTime(gpsTime);
     }
 
     GeoLocation loc = dir.getGeoLocation();
