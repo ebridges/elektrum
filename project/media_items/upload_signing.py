@@ -118,6 +118,7 @@ def create_upload_key(user, created, mtype, slug=None):
     return '%s/%s/%s/%s_%s.%s' % (user.id, year, date, iso_date, slug, extension)
 
 
+# noinspection PyUnusedLocal
 def lookup_user_upload_credentials(user):
     """
     Obtains the upload credentials and bucket for the given user.
