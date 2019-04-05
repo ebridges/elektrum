@@ -57,6 +57,7 @@ public class MetaDataExtractor {
 
   public ImageInfo extract(ImageKey imageKey, File image) throws IOException {
     ImageInfo imageInfo = new ImageInfo(imageKey.getFilePath());
+    imageInfo.setOwner(imageKey.getUserId());
 
     Metadata metadataReader;
     try {

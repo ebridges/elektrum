@@ -22,6 +22,7 @@ class MetaDataExtractorTest {
     imageKey.parse(imageIdentifier);
 
     ImageInfo expected = new ImageInfo(imageKey.getFilePath());
+    expected.setOwner(imageKey.getUserId());
     expected.setFileSize(3954388);
     expected.setCreateDate(LocalDateTime.parse("2019-02-24T20:51:15"));
     expected.setCameraMake("Google");
