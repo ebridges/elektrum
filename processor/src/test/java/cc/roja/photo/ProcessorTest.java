@@ -55,6 +55,6 @@ class ProcessorTest {
     Processor underTest = new Processor(this.mockDbi, this.mockImageLoader, this.mockMetaDataExtractor);
     ImageKey imageKey = new ImageKey();
     when(this.mockDao.queryByPath(imageKey)).thenReturn(null);
-    assertThrows(IllegalArgumentException.class, () -> underTest.processPhoto(imageKey));
+    assertThrows(IllegalStateException.class, () -> underTest.processPhoto(imageKey));
   }
 }

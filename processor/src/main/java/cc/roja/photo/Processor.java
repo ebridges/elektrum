@@ -15,8 +15,6 @@ import org.skife.jdbi.v2.DBI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static java.lang.String.format;
-
 @SuppressWarnings({"unused","WeakerAccess"})
 public class Processor {
   private static final Logger LOG = LogManager.getLogger(Processor.class);
@@ -37,13 +35,6 @@ public class Processor {
 
   public String processPhoto(ImageKey imageKey) throws IOException {
     try (PhotoProcessorDAO dao = dbi.open(PhotoProcessorDAO.class)) {
-      String imageId = dao.queryByPath(imageKey);
-
-      if(imageId == null) {
-        LOG.warn(format("No image record found for: [%s]", imageKey));
-        throw new IllegalArgumentException(format("No image record found for: [%s]", imageKey));
-      }
-
       LOG.info("Processing: " + imageKey);
 
       // identify a filesystem location for the media item, which will mean a network op for S3
@@ -53,8 +44,17 @@ public class Processor {
       ImageInfo imageInfo = metaDataExtractor.extract(imageKey, imageFile);
 
       // store the metadata linked to the media id record
-      dao.updateImageInfo(imageId, imageInfo);
+      Integer count = dao.updateImage(imageInfo);
 
+      if(count != 1) {
+        LOG.warn("Image at path [%s] could not be updated.", imageKey.getKey());
+      }
+
+      String imageId = dao.queryByPath(imageKey);
+
+      if(imageId == null || imageId.isEmpty()) {
+        throw new IllegalStateException("No image found in database with path: "+ imageKey);
+      }
       return imageId;
     }
   }
