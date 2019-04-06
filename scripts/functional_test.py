@@ -290,7 +290,7 @@ def s3_service():
     global processes
 
     info('Starting an S3 server process')
-    os.makedirs(TEST_BUCKET_LOCATION)
+    os.makedirs(TEST_BUCKET_LOCATION, exist_ok=True)
 
     command = 'docker run -p %d:80 -v %s:/var/s3/data %s' % (MOCK_S3_ENDPOINT.port, TEST_BUCKET_LOCATION,
                                                              MOCK_S3_DOCKER_IMAGE)
