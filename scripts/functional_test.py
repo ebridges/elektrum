@@ -130,7 +130,7 @@ def assert_upload_request(request):
 def teardown_bucket():
     debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT.geturl())
     bucket = s3.Bucket(bucket_name)
     bucket.objects.all().delete()
     bucket.delete()
@@ -139,9 +139,10 @@ def teardown_bucket():
 
 
 def setup_bucket():
-    debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+    debug('Creating test bucket [%s] using S3 endpoint [%s]' % (os.environ['AWS_UPLOAD_BUCKET_NAME'],
+                                                                MOCK_S3_ENDPOINT.geturl()))
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT.geturl())
     s3.create_bucket(Bucket=bucket_name)
     info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
