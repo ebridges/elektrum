@@ -53,28 +53,28 @@ class MediaItem(BaseModel):
         max_length=64,
     )
 
+    create_date = models.DateTimeField(
+        _('create date'),
+        help_text=_('Required. The date and time this media item was created.'),
+        null=False
+    )
+
     file_size = models.BigIntegerField(
         _('artist'),
         help_text=_('Required. The size in bytes of the media item.'),
-        null=False
+        null=True
     )
 
     image_width = models.IntegerField(
         _('image width'),
         help_text=_('Required. The width of this media item.'),
-        null=False
+        null=True
     )
 
     image_height = models.IntegerField(
         _('image height'),
         help_text=_('Required. The height of this media item.'),
-        null=False
-    )
-
-    create_date = models.DateTimeField(
-        _('artist'),
-        help_text=_('Required. The date and time this media item was created.'),
-        null=False
+        null=True
     )
 
     camera_make = models.CharField(

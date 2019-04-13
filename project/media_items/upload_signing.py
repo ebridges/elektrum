@@ -17,13 +17,14 @@ supported_upload_types = {
 }
 
 
-def record_upload_request(user, upload_url, mime_type):
+def record_upload_request(user, upload_url, create_date, mime_type):
     """
     Records an upload request so that after the upload has been completed, the media processing pipeline
     can enrich this record with metadata about the media_item.
 
     :param user:
     :param upload_url:
+    :param create_date:
     :param mime_type:
     :return: id of newly created item
     """
@@ -34,7 +35,8 @@ def record_upload_request(user, upload_url, mime_type):
     item = MediaItem.objects.create(
         owner=user,
         file_path=file_path,
-        media_type=mime_type
+        media_type=mime_type,
+        create_date=create_date
     )
     item.save()
     return item.id
@@ -93,7 +95,8 @@ def create_signed_url(credentials, upload_key):
     else:
         s3client = session.client('s3', config=Config(s3={'addressing_style': 'path'}, signature_version='s3v4'))
 
-    url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key})
+    url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key},
+                                          ExpiresIn=36000, HttpMethod='PUT')
     return urlparse(url)
 
 
@@ -127,8 +130,8 @@ def lookup_user_upload_credentials(user):
     :return:
     """
     # @todo: update this to retrieve these values from the user's profile.
-    aws_access_key = os.environ['AWS_ACCESS_KEY_ID']
-    aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
+    aws_access_key = 'AKIAIOSFODNN7EXAMPLE' # os.environ['AWS_ACCESS_KEY_ID']
+    aws_secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY' # os.environ['AWS_SECRET_ACCESS_KEY']
     aws_upload_bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
     return aws_access_key, aws_secret_access_key, aws_upload_bucket_name
 
