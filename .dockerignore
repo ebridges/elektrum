@@ -13,7 +13,7 @@ network
 *.sublime-project
 *.sublime-workspace
 *.retry
-integration_test.py
+scripts/
 *.md
 app.sh
 etc/env/*.tmpl
