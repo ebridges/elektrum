@@ -11,7 +11,6 @@ import static java.lang.System.getenv;
 class FileSystemImageLoader implements ImageLoader {
   private static final Logger LOG = LogManager.getLogger(FileSystemImageLoader.class);
 
-  @SuppressWarnings("RedundantThrows")
   @Override
   public File load(String imageKey) throws IOException {
     if(imageKey == null || imageKey.isEmpty()) {

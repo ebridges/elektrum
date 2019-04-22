@@ -65,6 +65,6 @@ class MetaDataExtractorTest {
     ImageKey imageKey = new ImageKey();
     File file = new File("/not/found");
     MetaDataExtractor underTest = new MetaDataExtractor();
-    assertThrows(IOException.class, () -> { underTest.extract(imageKey, file); });
+    assertThrows(IOException.class, () -> underTest.extract(imageKey, file));
   }
 }
