@@ -25,6 +25,7 @@ public interface PhotoProcessorDAO extends Closeable {
   + "  aperture = :i.aperture,\n"
   + "  shutter_speed_numerator = :i.shutterSpeedNumerator,\n"
   + "  shutter_speed_denominator = :i.shutterSpeedDenominator,\n"
+  + "  shutter_speed = :i.shutterSpeed,\n"
   + "  focal_length_numerator = :i.focalLengthNumerator,\n"
   + "  focal_length_denominator = :i.focalLengthDenominator,\n"
   + "  iso_speed = :i.isoSpeed,\n"

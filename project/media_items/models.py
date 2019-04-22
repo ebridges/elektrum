@@ -117,6 +117,13 @@ class MediaItem(BaseModel):
         null=True
     )
 
+    shutter_speed = models.CharField(
+        _('shutter speed'),
+        help_text=_('Optional. The shutter speed setting used when this media item was created.'),
+        null=True,
+        max_length=16,
+    )
+
     focal_length_numerator = models.IntegerField(
         _('focal length (numerator)'),
         help_text=_('Optional. The focal length (numerator) setting used when this media item was created.'),

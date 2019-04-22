@@ -29,6 +29,7 @@ public class ImageInfo {
   private String aperture;
   private Long shutterSpeedNumerator;
   private Long shutterSpeedDenominator;
+  private String shutterSpeed;
   private Long focalLengthNumerator;
   private Long focalLengthDenominator;
   private Integer isoSpeed;
@@ -133,6 +134,14 @@ public class ImageInfo {
 
   public void setShutterSpeedDenominator(Long shutterSpeedDenominator) {
     this.shutterSpeedDenominator = shutterSpeedDenominator;
+  }
+
+  public void setShutterSpeed(String shutterSpeed) {
+    this.shutterSpeed = shutterSpeed;
+  }
+
+  public String getShutterSpeed() {
+    return shutterSpeed;
   }
 
   public Long getFocalLengthNumerator() {
