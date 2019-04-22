@@ -22,7 +22,7 @@ from shutil import rmtree
 from assertpy import assert_that
 
 CREATE_DATE = '2020-01-01T10:10:10'
-TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
+TEST_IMAGE = 'scripts/tests/resources/test-file-upload.jpg'
 TEST_BUCKET_NAME = 'com.example.functionaltest'
 TEST_BUCKET_LOCATION = '%s/mnt' % os.getcwd()
 MOCK_S3_DOCKER_IMAGE = 'scireum/s3-ninja:5.2.2'
