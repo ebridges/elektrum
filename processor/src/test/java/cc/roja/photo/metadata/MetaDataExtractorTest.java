@@ -26,8 +26,9 @@ class MetaDataExtractorTest {
     expected.setCameraMake("Google");
     expected.setCameraModel("Pixel 3");
     expected.setAperture("f/1.8");
-    expected.setShutterSpeedNumerator(66683L);
-    expected.setShutterSpeedDenominator(1000000L);
+    expected.setShutterSpeedNumerator(391L);
+    expected.setShutterSpeedDenominator(100L);
+    expected.setShutterSpeed("1/15 sec");
     expected.setIsoSpeed(1514);
     expected.setGpsLon(-73.9626138888889);
     expected.setGpsLat(40.718075);
