@@ -50,7 +50,7 @@ public class Processor {
       Integer count = dao.updateImage(imageInfo);
 
       if(count != 1) {
-        LOG.warn("Image at path [%s] could not be updated.", imageKey.getKey());
+        LOG.warn("Image at path [{}] could not be updated.", imageKey.getKey());
       }
 
       String imageId = dao.queryByPath(imageKey);
