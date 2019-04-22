@@ -3,6 +3,8 @@ from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.contrib.gis.db import models
+from django.db.models import Field
 
 from base.models import BaseModel
 
@@ -23,6 +25,11 @@ MIME_TYPE_CHOICES = (
     (JPG, "image/jpeg"),
     (PNG, "image/png"),
 )
+
+
+class DateTimeNoTZField(Field):
+    def db_type(self, connection):
+        return 'TIMESTAMP WITHOUT TIME ZONE'
 
 
 class MediaItem(BaseModel):
@@ -53,7 +60,7 @@ class MediaItem(BaseModel):
         max_length=64,
     )
 
-    create_date = models.DateTimeField(
+    create_date = DateTimeNoTZField(
         _('create date'),
         help_text=_('Required. The date and time this media item was created.'),
         null=False
@@ -150,6 +157,13 @@ class MediaItem(BaseModel):
         _('gps date time'),
         help_text=_('Optional. The date and time in UTC at the GPS location of where this media item was created.'),
         null=True,
+    )
+
+    gps_location = models.PointField(
+        _('gps coordinate'),
+        help_text=_('Optional. The coordinate for the GPS location of where this media item was created.'),
+        null=True,
+        dim=3
     )
 
     def validate_unique(self, exclude=None):
