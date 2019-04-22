@@ -68,6 +68,17 @@ dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.500'
 }
 
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes "Main-Class": "cc.roja.photo.ProcessorApp"
+    }
+    baseName = 'elektron-processor'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
 task buildZip(type: Zip) {
     destinationDir=new File('out/production/archive')
     from compileJava
