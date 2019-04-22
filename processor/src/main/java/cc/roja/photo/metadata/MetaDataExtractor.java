@@ -10,11 +10,11 @@ import static com.drew.metadata.exif.ExifDirectoryBase.TAG_APERTURE;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ARTIST;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_EXIF_IMAGE_HEIGHT;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_EXIF_IMAGE_WIDTH;
-import static com.drew.metadata.exif.ExifDirectoryBase.TAG_EXPOSURE_TIME;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_FOCAL_LENGTH;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ISO_EQUIVALENT;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_MAKE;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_MODEL;
+import static com.drew.metadata.exif.ExifDirectoryBase.TAG_SHUTTER_SPEED;
 import static com.drew.metadata.exif.GpsDirectory.TAG_ALTITUDE;
 import static com.drew.metadata.exif.GpsDirectory.TAG_DATE_STAMP;
 import static com.drew.metadata.exif.GpsDirectory.TAG_TIME_STAMP;
@@ -110,11 +110,17 @@ public class MetaDataExtractor {
     LOG.debug("isoSpeed: "+isoSpeed);
     meta.setIsoSpeed( isoSpeed );
 
-    Rational shutterSpeed = resolveRational(metadata, of(ExifSubIFDDirectory.class, TAG_EXPOSURE_TIME));
+    Rational shutterSpeed = resolveRational(metadata, of(ExifSubIFDDirectory.class, TAG_SHUTTER_SPEED));
     LOG.debug("shutterSpeed: "+shutterSpeed);
     if (shutterSpeed != null) {
       meta.setShutterSpeedNumerator(shutterSpeed.getNumerator());
       meta.setShutterSpeedDenominator(shutterSpeed.getDenominator());
+    }
+
+    String shutterSpeedString = resolveDescription(metadata, of(ExifSubIFDDirectory.class, TAG_SHUTTER_SPEED));
+    LOG.debug("shutterSpeed: "+shutterSpeed);
+    if (shutterSpeed != null) {
+      meta.setShutterSpeed(shutterSpeedString);
     }
 
     Integer imageHeight = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_HEIGHT));
