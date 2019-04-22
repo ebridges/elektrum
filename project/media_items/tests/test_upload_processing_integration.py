@@ -97,8 +97,6 @@ def build_clean_processor():
 
 
 def run_processor(path):
-    print('path: %s' % path)
-    print('image path: %s%s' % (os.environ['IMAGE_ROOT'], path))
     cwd = os.getcwd()
     jar = '%s/processor/build/libs/elektron-processor.jar' % cwd
     cmd = [

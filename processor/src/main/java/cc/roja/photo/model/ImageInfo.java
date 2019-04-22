@@ -70,8 +70,6 @@ public class ImageInfo {
     this.createDateTime = createDateTime;
   }
 
-  }
-
   public Integer getImageWidth() {
     return this.imageWidth;
   }

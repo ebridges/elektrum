@@ -1,3 +1,4 @@
+from users.tests.factories import *
 import pytest
 import os
 
