@@ -15,7 +15,6 @@ public interface PhotoProcessorDAO extends Closeable {
   @SqlUpdate(
     "update media_info \n"
   + "set\n"
-  + "  media_type = :i.mediaType,\n"
   + "  file_size = :i.fileSize,\n"
   + "  create_date = :i.createDate,\n"
   + "  image_width = :i. = :i.imageWidth,\n"

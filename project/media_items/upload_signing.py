@@ -35,7 +35,7 @@ def record_upload_request(user, upload_url, create_date, mime_type):
     item = MediaItem.objects.create(
         owner=user,
         file_path=file_path,
-        media_type=mime_type,
+        mime_type=mime_type,
         create_date=create_date
     )
     item.save()

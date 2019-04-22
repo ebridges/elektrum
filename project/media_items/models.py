@@ -51,7 +51,7 @@ class MediaItem(BaseModel):
         max_length=4096,
     )
 
-    media_type = models.CharField(
+    mime_type = models.CharField(
         _('mime type'),
         help_text=_('Required. Mime type of the media item. Default: image/jpeg'),
         null=False,

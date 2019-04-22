@@ -27,7 +27,7 @@ def test_sign_upload_request_success(authenticated_client):
     pattern = expected.strftime('/%Y/%Y-%m-%d/%Y-%m-%dT%H%M%S_[a-z0-9]{8}.jpg')
 
     actual = MediaItem.objects.get(owner_id=u.id)
-    assert actual.media_type == mime_type
+    assert actual.mime_type == mime_type
     assert re.match(pattern, actual.path)
 
 

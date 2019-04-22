@@ -10,7 +10,6 @@ public class ImageInfo {
 
   private UUID owner;
   private String filePath;
-  private String mediaType;
 
   private long fileSize;
   private LocalDateTime createDate;
@@ -52,14 +51,6 @@ public class ImageInfo {
 
   public String getFilePath() {
     return this.filePath;
-  }
-
-  public String getMediaType() {
-    return this.mediaType;
-  }
-
-  public void setMediaType(String mediaType) {
-    this.mediaType = mediaType;
   }
 
   public long getFileSize() {
