@@ -67,7 +67,7 @@ class MediaItem(BaseModel):
     )
 
     file_size = models.BigIntegerField(
-        _('artist'),
+        _('file size'),
         help_text=_('Required. The size in bytes of the media item.'),
         null=True
     )
@@ -171,6 +171,13 @@ class MediaItem(BaseModel):
         help_text=_('Optional. The coordinate for the GPS location of where this media item was created.'),
         null=True,
         dim=3
+    )
+
+    artist = models.CharField(
+        _('artist'),
+        help_text=_('Optional. Artist responsible for creating this media item.'),
+        null=True,
+        max_length=64
     )
 
     def validate_unique(self, exclude=None):

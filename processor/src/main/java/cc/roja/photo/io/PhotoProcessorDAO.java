@@ -4,7 +4,6 @@ import java.io.Closeable;
 
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
-import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 
@@ -13,7 +12,7 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
 public interface PhotoProcessorDAO extends Closeable {
   @SqlUpdate(
-    "update media_info \n"
+    "update media_item \n"
   + "set\n"
   + "  file_size = :i.fileSize,\n"
   + "  create_date = :i.createDateTime,\n"
@@ -36,10 +35,10 @@ public interface PhotoProcessorDAO extends Closeable {
   + "  gps_location = ST_SetSRID(ST_MakePoint(:i.gpsLon, :i.gpsLat, :i.gpsAlt), "+ Constants.SRID+") \n"
   + "where\n"
   + "  file_path = :i.filePath\n"
-  + "  and owner = :i.owner\n")
+  + "  and owner_id = :i.owner\n")
   // http://postgis.refractions.net/documentation/manual-1.5SVN/ST_MakePointM.html
   Integer updateImage(@BindBean("i") ImageInfo imageInfo);
 
-  @SqlQuery("select id from image where file_path = :i.filePath and owner = :i.owner")
-  String queryByPath(@Bind("i") ImageKey imageKey);
+  @SqlQuery("select id from media_item where file_path = :i.filePath and owner_id = :i.userId")
+  String queryByPath(@BindBean("i") ImageKey imageKey);
 }

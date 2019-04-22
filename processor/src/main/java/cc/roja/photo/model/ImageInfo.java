@@ -208,25 +208,25 @@ public class ImageInfo {
         return false;
       }
       ImageInfo imageInfo = (ImageInfo) o;
-      return Objects.equals(owner, imageInfo.owner) 
-      && Objects.equals(filePath, imageInfo.filePath) 
-      && Objects.equals(mediaType, imageInfo.mediaType) 
-      && fileSize == imageInfo.fileSize 
-      && Objects.equals(createDate, imageInfo.createDate) 
-      && Objects.equals(imageWidth, imageInfo.imageWidth) 
-      && Objects.equals(imageHeight, imageInfo.imageHeight) 
-      && Objects.equals(artist, imageInfo.artist) 
-      && Objects.equals(cameraMake, imageInfo.cameraMake) 
-      && Objects.equals(cameraModel, imageInfo.cameraModel) 
-      && Objects.equals(aperture, imageInfo.aperture) 
-      && Objects.equals(shutterSpeedNumerator, imageInfo.shutterSpeedNumerator) 
-      && Objects.equals(shutterSpeedDenominator, imageInfo.shutterSpeedDenominator) 
-      && Objects.equals(focalLengthNumerator, imageInfo.focalLengthNumerator) 
-      && Objects.equals(focalLengthDenominator, imageInfo.focalLengthDenominator) 
-      && Objects.equals(isoSpeed, imageInfo.isoSpeed) 
-      && Objects.equals(gpsLon, imageInfo.gpsLon) 
-      && Objects.equals(gpsLat, imageInfo.gpsLat) 
-      && Objects.equals(gpsAlt, imageInfo.gpsAlt) 
+      return Objects.equals(owner, imageInfo.owner)
+      && Objects.equals(filePath, imageInfo.filePath)
+      && fileSize == imageInfo.fileSize
+      && Objects.equals(createDateTime, imageInfo.createDateTime)
+      && Objects.equals(imageWidth, imageInfo.imageWidth)
+      && Objects.equals(imageHeight, imageInfo.imageHeight)
+      && Objects.equals(artist, imageInfo.artist)
+      && Objects.equals(cameraMake, imageInfo.cameraMake)
+      && Objects.equals(cameraModel, imageInfo.cameraModel)
+      && Objects.equals(aperture, imageInfo.aperture)
+      && Objects.equals(shutterSpeedNumerator, imageInfo.shutterSpeedNumerator)
+      && Objects.equals(shutterSpeedDenominator, imageInfo.shutterSpeedDenominator)
+      && Objects.equals(shutterSpeed, imageInfo.shutterSpeed)
+      && Objects.equals(focalLengthNumerator, imageInfo.focalLengthNumerator)
+      && Objects.equals(focalLengthDenominator, imageInfo.focalLengthDenominator)
+      && Objects.equals(isoSpeed, imageInfo.isoSpeed)
+      && Objects.equals(gpsLon, imageInfo.gpsLon)
+      && Objects.equals(gpsLat, imageInfo.gpsLat)
+      && Objects.equals(gpsAlt, imageInfo.gpsAlt)
       && Objects.equals(gpsDateTime, imageInfo.gpsDateTime
     );
   }
@@ -234,25 +234,25 @@ public class ImageInfo {
   @Override
   public int hashCode() {
     return Objects.hash(
-      owner, 
-      filePath, 
-      mediaType, 
-      fileSize, 
-      createDate, 
-      imageWidth, 
-      imageHeight, 
-      artist, 
-      cameraMake, 
-      cameraModel, 
-      aperture, 
-      shutterSpeedNumerator, 
-      shutterSpeedDenominator, 
-      focalLengthNumerator, 
-      focalLengthDenominator, 
-      isoSpeed, 
-      gpsLon, 
-      gpsLat, 
-      gpsAlt, 
+      owner,
+      filePath,
+      fileSize,
+        createDateTime,
+      imageWidth,
+      imageHeight,
+      artist,
+      cameraMake,
+      cameraModel,
+      aperture,
+      shutterSpeedNumerator,
+      shutterSpeedDenominator,
+      shutterSpeed,
+      focalLengthNumerator,
+      focalLengthDenominator,
+      isoSpeed,
+      gpsLon,
+      gpsLat,
+      gpsAlt,
       gpsDateTime
     );
   }
@@ -262,7 +262,6 @@ public class ImageInfo {
     return "{" +
       " owner='" + owner + "'" +
       ", filePath='" + filePath + "'" +
-      ", mediaType='" + mediaType + "'" +
       ", fileSize='" + fileSize + "'" +
       ", createDateTime='" + createDateTime + "'" +
       ", imageWidth='" + imageWidth + "'" +
@@ -273,6 +272,7 @@ public class ImageInfo {
       ", aperture='" + aperture + "'" +
       ", shutterSpeedNumerator='" + shutterSpeedNumerator + "'" +
       ", shutterSpeedDenominator='" + shutterSpeedDenominator + "'" +
+      ", shutterSpeed='" + shutterSpeed + "'" +
       ", focalLengthNumerator='" + focalLengthNumerator + "'" +
       ", focalLengthDenominator='" + focalLengthDenominator + "'" +
       ", isoSpeed='" + isoSpeed + "'" +
@@ -281,5 +281,5 @@ public class ImageInfo {
       ", gpsAlt='" + gpsAlt + "'" +
       ", gpsDatetime='" + gpsDateTime + "'" +
       "}";
-  }  
+  }
 }
