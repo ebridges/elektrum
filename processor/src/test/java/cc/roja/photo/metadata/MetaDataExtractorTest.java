@@ -2,7 +2,6 @@ package cc.roja.photo.metadata;
 
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static javafx.scene.input.KeyCode.Z;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MetaDataExtractorTest {
