@@ -4,11 +4,11 @@ import java.io.Closeable;
 
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
-import org.skife.jdbi.v2.sqlobject.BindBean;
-import org.skife.jdbi.v2.sqlobject.SqlQuery;
 
 import cc.roja.photo.util.Constants;
-import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface PhotoProcessorDAO extends Closeable {
   @SqlUpdate(

@@ -10,7 +10,8 @@ import cc.roja.photo.io.PhotoProcessorDAO;
 import cc.roja.photo.metadata.MetaDataExtractor;
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
-import org.skife.jdbi.v2.DBI;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,11 +20,11 @@ import org.apache.logging.log4j.Logger;
 public class Processor {
   private static final Logger LOG = LogManager.getLogger(Processor.class);
 
-  private DBI dbi;
+  private Jdbi dbi;
   private ImageLoader imageLoader;
   private MetaDataExtractor metaDataExtractor;
 
-  public Processor(DBI dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
+  public Processor(Jdbi dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
     this.dbi = dbi;
     this.imageLoader = imageLoader;
     this.metaDataExtractor = metaDataExtractor;
@@ -34,7 +35,9 @@ public class Processor {
   }
 
   public String processPhoto(ImageKey imageKey) throws IOException {
-    try (PhotoProcessorDAO dao = dbi.open(PhotoProcessorDAO.class)) {
+    try (Handle handle = dbi.open()) {
+      PhotoProcessorDAO dao = handle.attach(PhotoProcessorDAO.class);
+
       LOG.info("Processing: " + imageKey);
 
       // identify a filesystem location for the media item, which will mean a network op for S3
