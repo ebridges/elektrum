@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
 public class ProcessorResult {
 
   @JsonProperty("image_ids")
@@ -15,10 +14,12 @@ public class ProcessorResult {
     this.imageIds = new ArrayList<>();
   }
 
+  @SuppressWarnings("unused")
   public List<String> getImageIds() {
     return imageIds;
   }
 
+  @SuppressWarnings("unused")
   public void setImageIds(List<String> imageIds) {
     this.imageIds = imageIds;
   }

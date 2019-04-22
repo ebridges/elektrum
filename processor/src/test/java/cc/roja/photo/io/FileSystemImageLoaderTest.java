@@ -46,12 +46,12 @@ class FileSystemImageLoaderTest {
   @Test
   void testLoad_Null() {
     FileSystemImageLoader underTest = new FileSystemImageLoader();
-    assertThrows(IOException.class, () -> { underTest.load(null); });
+    assertThrows(IOException.class, () -> underTest.load(null));
   }
 
   @Test
   void testLoad_Empty() {
     FileSystemImageLoader underTest = new FileSystemImageLoader();
-    assertThrows(IOException.class, () -> { underTest.load(""); });
+    assertThrows(IOException.class, () -> underTest.load(""));
   }
 }

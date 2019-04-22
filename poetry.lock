@@ -19,6 +19,14 @@ ansible = "*"
 
 [[package]]
 category = "dev"
+description = "Assertion library for python unit testing with a fluent API"
+name = "assertpy"
+optional = false
+python-versions = "*"
+version = "0.14"
+
+[[package]]
+category = "dev"
 description = "An abstract syntax tree for Python with inference support."
 name = "astroid"
 optional = false
@@ -944,12 +952,13 @@ six = "*"
 twine = ">=1.6.0"
 
 [metadata]
-content-hash = "e5b5afda44af0da3e99641ee8ad6391f5b3dd6717107fe1306de3bfd3011615a"
+content-hash = "ebfb7db1357b9630771febd9a4a169a6759fc981301d5980a86ed8ee5dc693eb"
 python-versions = "^3.7"
 
 [metadata.hashes]
 ansible = ["3d67db258b492f3c8828c68dcb92438e67cb5b20c12924089eafdc0ada3edd87"]
 ansible-vault = ["984c5fe1a875d55669c9c167fd4265cf5c6446de4a6a478e0a057a4d43e6608c"]
+assertpy = ["1b7e591f490616e3f2707b6e511b91b188a8c6facb3a4ff0db2339b0a41d73c4"]
 astroid = ["39183aecc01d6f74eb54edc6739992e842f3bf3068bdfaaba30b5a1742f44091", "62bd1d8d2ace3e812b3a22eb3c4b7856536d8cc0cdb37466f6a53cf881dbad1f"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]

@@ -5,7 +5,6 @@ import static java.lang.System.getenv;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings("WeakerAccess")
 public class ImageLoaderFactory {
   private static final Logger LOG = LogManager.getLogger(ImageLoaderFactory.class);
 

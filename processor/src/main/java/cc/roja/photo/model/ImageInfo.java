@@ -3,14 +3,20 @@ package cc.roja.photo.model;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @SuppressWarnings({"unused"})
 public class ImageInfo {
 
+  private UUID owner;
   private String filePath;
-  private String artist;
+
   private long fileSize;
-  private LocalDateTime createDate;
+  private LocalDateTime createDateTime;
+  private Integer imageWidth;
+  private Integer imageHeight;
+
+  private String artist;
   private String cameraMake;
   private String cameraModel;
   /**
@@ -23,30 +29,49 @@ public class ImageInfo {
   private String aperture;
   private Long shutterSpeedNumerator;
   private Long shutterSpeedDenominator;
+  private String shutterSpeed;
+  private Long focalLengthNumerator;
+  private Long focalLengthDenominator;
   private Integer isoSpeed;
   private Double gpsLon;
   private Double gpsLat;
   private Double gpsAlt;
-  private OffsetDateTime gpsDatetime;
-  private Integer imageWidth;
-  private Integer imageHeight;
-  private Long focalLengthNumerator;
-  private Long focalLengthDenominator;
+  private OffsetDateTime gpsDateTime;
 
   public ImageInfo(String filePath) {
     this.filePath = filePath;
   }
 
-  public String getFilePath() {
-    return filePath;
+  public UUID getOwner() {
+    return this.owner;
   }
 
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
+  public void setOwner(UUID owner) {
+    this.owner = owner;
+  }
+
+  public String getFilePath() {
+    return this.filePath;
+  }
+
+  public long getFileSize() {
+    return this.fileSize;
+  }
+
+  public void setFileSize(long fileSize) {
+    this.fileSize = fileSize;
+  }
+
+  public LocalDateTime getCreateDateTime() {
+    return this.createDateTime;
+  }
+
+  public void setCreateDateTime(LocalDateTime createDateTime) {
+    this.createDateTime = createDateTime;
   }
 
   public Integer getImageWidth() {
-    return imageWidth;
+    return this.imageWidth;
   }
 
   public void setImageWidth(Integer imageWidth) {
@@ -54,7 +79,7 @@ public class ImageInfo {
   }
 
   public Integer getImageHeight() {
-    return imageHeight;
+    return this.imageHeight;
   }
 
   public void setImageHeight(Integer imageHeight) {
@@ -62,111 +87,39 @@ public class ImageInfo {
   }
 
   public String getArtist() {
-    return artist;
+    return this.artist;
   }
 
   public void setArtist(String artist) {
     this.artist = artist;
   }
 
-  public long getFileSize() {
-    return fileSize;
-  }
-
-  public void setFileSize(long fileSize) {
-    this.fileSize = fileSize;
-  }
-
-  public LocalDateTime getCreateDate() {
-    return createDate;
-  }
-
-  public void setCreateDate(LocalDateTime createDate) {
-    this.createDate = createDate;
-  }
-
   public String getCameraMake() {
-    return cameraMake;
+    return this.cameraMake;
   }
 
   public void setCameraMake(String cameraMake) {
     this.cameraMake = cameraMake;
   }
 
-  public String getAperture() {
-    return aperture;
-  }
-
-  public void setAperture(String aperture) {
-    this.aperture = aperture;
-  }
-
-  public Integer getIsoSpeed() {
-    return isoSpeed;
-  }
-
-  public void setIsoSpeed(Integer isoSpeed) {
-    this.isoSpeed = isoSpeed;
-  }
-
-  public void setFocalLengthNumerator(Long focalLengthNumerator) {
-    this.focalLengthNumerator = focalLengthNumerator;
-  }
-
-  public Long getFocalLengthNumerator() {
-    return focalLengthNumerator;
-  }
-
-  public void setFocalLengthDenominator(Long focalLengthDenominator) {
-    this.focalLengthDenominator = focalLengthDenominator;
-  }
-
-  public Long getFocalLengthDenominator() {
-    return focalLengthDenominator;
-  }
-
-  public Double getGpsLon() {
-    return gpsLon;
-  }
-
-  public void setGpsLon(Double gpsLon) {
-    this.gpsLon = gpsLon;
-  }
-
-  public Double getGpsLat() {
-    return gpsLat;
-  }
-
-  public void setGpsLat(Double gpsLat) {
-    this.gpsLat = gpsLat;
-  }
-
-  public void setGpsAlt(Double gpsAlt) {
-    this.gpsAlt = gpsAlt;
-  }
-
-  public Double getGpsAlt() {
-    return gpsAlt;
-  }
-
-  public OffsetDateTime getGpsDatetime() {
-    return gpsDatetime;
-  }
-
-  public void setGpsDatetime(OffsetDateTime gpsDatetime) {
-    this.gpsDatetime = gpsDatetime;
-  }
-
   public String getCameraModel() {
-    return cameraModel;
+    return this.cameraModel;
   }
 
   public void setCameraModel(String cameraModel) {
     this.cameraModel = cameraModel;
   }
 
+  public String getAperture() {
+    return this.aperture;
+  }
+
+  public void setAperture(String aperture) {
+    this.aperture = aperture;
+  }
+
   public Long getShutterSpeedNumerator() {
-    return shutterSpeedNumerator;
+    return this.shutterSpeedNumerator;
   }
 
   public void setShutterSpeedNumerator(Long shutterSpeedNumerator) {
@@ -174,63 +127,157 @@ public class ImageInfo {
   }
 
   public Long getShutterSpeedDenominator() {
-    return shutterSpeedDenominator;
+    return this.shutterSpeedDenominator;
   }
 
   public void setShutterSpeedDenominator(Long shutterSpeedDenominator) {
     this.shutterSpeedDenominator = shutterSpeedDenominator;
   }
 
-  @Override
-  public String toString() {
-    return "ImageInfo{" +
-        "artist='" + artist + '\'' +
-        ", fileSize=" + fileSize +
-        ", createDate=" + createDate +
-        ", cameraMake='" + cameraMake + '\'' +
-        ", cameraModel='" + cameraModel + '\'' +
-        ", aperture='" + aperture + '\'' +
-        ", shutterSpeedNumerator=" + shutterSpeedNumerator +
-        ", shutterSpeedDenominator=" + shutterSpeedDenominator +
-        ", isoSpeed=" + isoSpeed +
-        ", gpsLon=" + gpsLon +
-        ", gpsLat=" + gpsLat +
-        ", gpsAlt=" + gpsAlt +
-        ", gpsDatetime=" + gpsDatetime +
-        ", imageWidth=" + imageWidth +
-        ", imageHeight=" + imageHeight +
-        ", focalLengthNumerator=" + focalLengthNumerator +
-        ", focalLengthDenominator=" + focalLengthDenominator +
-        '}';
+  public void setShutterSpeed(String shutterSpeed) {
+    this.shutterSpeed = shutterSpeed;
+  }
+
+  public String getShutterSpeed() {
+    return shutterSpeed;
+  }
+
+  public Long getFocalLengthNumerator() {
+    return this.focalLengthNumerator;
+  }
+
+  public void setFocalLengthNumerator(Long focalLengthNumerator) {
+    this.focalLengthNumerator = focalLengthNumerator;
+  }
+
+  public Long getFocalLengthDenominator() {
+    return this.focalLengthDenominator;
+  }
+
+  public void setFocalLengthDenominator(Long focalLengthDenominator) {
+    this.focalLengthDenominator = focalLengthDenominator;
+  }
+
+  public Integer getIsoSpeed() {
+    return this.isoSpeed;
+  }
+
+  public void setIsoSpeed(Integer isoSpeed) {
+    this.isoSpeed = isoSpeed;
+  }
+
+  public Double getGpsLon() {
+    return this.gpsLon;
+  }
+
+  public void setGpsLon(Double gpsLon) {
+    this.gpsLon = gpsLon;
+  }
+
+  public Double getGpsLat() {
+    return this.gpsLat;
+  }
+
+  public void setGpsLat(Double gpsLat) {
+    this.gpsLat = gpsLat;
+  }
+
+  public Double getGpsAlt() {
+    return this.gpsAlt;
+  }
+
+  public void setGpsAlt(Double gpsAlt) {
+    this.gpsAlt = gpsAlt;
+  }
+
+  public OffsetDateTime getGpsDateTime() {
+    return this.gpsDateTime;
+  }
+
+  public void setGpsDateTime(OffsetDateTime gpsDateTime) {
+    this.gpsDateTime = gpsDateTime;
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ImageInfo imageInfo = (ImageInfo) o;
-    return fileSize == imageInfo.fileSize &&
-        filePath.equals(imageInfo.filePath) &&
-        Objects.equals(artist, imageInfo.artist) &&
-        Objects.equals(createDate, imageInfo.createDate) &&
-        Objects.equals(cameraMake, imageInfo.cameraMake) &&
-        Objects.equals(cameraModel, imageInfo.cameraModel) &&
-        Objects.equals(aperture, imageInfo.aperture) &&
-        Objects.equals(shutterSpeedNumerator, imageInfo.shutterSpeedNumerator) &&
-        Objects.equals(shutterSpeedDenominator, imageInfo.shutterSpeedDenominator) &&
-        Objects.equals(isoSpeed, imageInfo.isoSpeed) &&
-        Objects.equals(gpsLon, imageInfo.gpsLon) &&
-        Objects.equals(gpsLat, imageInfo.gpsLat) &&
-        Objects.equals(gpsAlt, imageInfo.gpsAlt) &&
-        Objects.equals(gpsDatetime, imageInfo.gpsDatetime) &&
-        Objects.equals(imageWidth, imageInfo.imageWidth) &&
-        Objects.equals(imageHeight, imageInfo.imageHeight) &&
-        Objects.equals(focalLengthNumerator, imageInfo.focalLengthNumerator) &&
-        Objects.equals(focalLengthDenominator, imageInfo.focalLengthDenominator);
+    public boolean equals(Object o) {
+      if (o == this)
+        return true;
+      if (!(o instanceof ImageInfo)) {
+        return false;
+      }
+      ImageInfo imageInfo = (ImageInfo) o;
+      return Objects.equals(owner, imageInfo.owner)
+      && Objects.equals(filePath, imageInfo.filePath)
+      && fileSize == imageInfo.fileSize
+      && Objects.equals(createDateTime, imageInfo.createDateTime)
+      && Objects.equals(imageWidth, imageInfo.imageWidth)
+      && Objects.equals(imageHeight, imageInfo.imageHeight)
+      && Objects.equals(artist, imageInfo.artist)
+      && Objects.equals(cameraMake, imageInfo.cameraMake)
+      && Objects.equals(cameraModel, imageInfo.cameraModel)
+      && Objects.equals(aperture, imageInfo.aperture)
+      && Objects.equals(shutterSpeedNumerator, imageInfo.shutterSpeedNumerator)
+      && Objects.equals(shutterSpeedDenominator, imageInfo.shutterSpeedDenominator)
+      && Objects.equals(shutterSpeed, imageInfo.shutterSpeed)
+      && Objects.equals(focalLengthNumerator, imageInfo.focalLengthNumerator)
+      && Objects.equals(focalLengthDenominator, imageInfo.focalLengthDenominator)
+      && Objects.equals(isoSpeed, imageInfo.isoSpeed)
+      && Objects.equals(gpsLon, imageInfo.gpsLon)
+      && Objects.equals(gpsLat, imageInfo.gpsLat)
+      && Objects.equals(gpsAlt, imageInfo.gpsAlt)
+      && Objects.equals(gpsDateTime, imageInfo.gpsDateTime
+    );
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(filePath, artist, fileSize, createDate, cameraMake, cameraModel, aperture, shutterSpeedNumerator, shutterSpeedDenominator, isoSpeed, gpsLon, gpsLat, gpsAlt, gpsDatetime, imageWidth, imageHeight, focalLengthNumerator, focalLengthDenominator);
+    return Objects.hash(
+      owner,
+      filePath,
+      fileSize,
+        createDateTime,
+      imageWidth,
+      imageHeight,
+      artist,
+      cameraMake,
+      cameraModel,
+      aperture,
+      shutterSpeedNumerator,
+      shutterSpeedDenominator,
+      shutterSpeed,
+      focalLengthNumerator,
+      focalLengthDenominator,
+      isoSpeed,
+      gpsLon,
+      gpsLat,
+      gpsAlt,
+      gpsDateTime
+    );
+  }
+
+  @Override
+  public String toString() {
+    return "{" +
+      " owner='" + owner + "'" +
+      ", filePath='" + filePath + "'" +
+      ", fileSize='" + fileSize + "'" +
+      ", createDateTime='" + createDateTime + "'" +
+      ", imageWidth='" + imageWidth + "'" +
+      ", imageHeight='" + imageHeight + "'" +
+      ", artist='" + artist + "'" +
+      ", cameraMake='" + cameraMake + "'" +
+      ", cameraModel='" + cameraModel + "'" +
+      ", aperture='" + aperture + "'" +
+      ", shutterSpeedNumerator='" + shutterSpeedNumerator + "'" +
+      ", shutterSpeedDenominator='" + shutterSpeedDenominator + "'" +
+      ", shutterSpeed='" + shutterSpeed + "'" +
+      ", focalLengthNumerator='" + focalLengthNumerator + "'" +
+      ", focalLengthDenominator='" + focalLengthDenominator + "'" +
+      ", isoSpeed='" + isoSpeed + "'" +
+      ", gpsLon='" + gpsLon + "'" +
+      ", gpsLat='" + gpsLat + "'" +
+      ", gpsAlt='" + gpsAlt + "'" +
+      ", gpsDatetime='" + gpsDateTime + "'" +
+      "}";
   }
 }

@@ -10,22 +10,21 @@ import cc.roja.photo.io.PhotoProcessorDAO;
 import cc.roja.photo.metadata.MetaDataExtractor;
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
-import org.skife.jdbi.v2.DBI;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import static java.lang.String.format;
 
 @SuppressWarnings({"unused","WeakerAccess"})
 public class Processor {
   private static final Logger LOG = LogManager.getLogger(Processor.class);
 
-  private DBI dbi;
+  private Jdbi dbi;
   private ImageLoader imageLoader;
   private MetaDataExtractor metaDataExtractor;
 
-  public Processor(DBI dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
+  public Processor(Jdbi dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
     this.dbi = dbi;
     this.imageLoader = imageLoader;
     this.metaDataExtractor = metaDataExtractor;
@@ -36,13 +35,8 @@ public class Processor {
   }
 
   public String processPhoto(ImageKey imageKey) throws IOException {
-    try (PhotoProcessorDAO dao = dbi.open(PhotoProcessorDAO.class)) {
-      String imageId = dao.queryByPath(imageKey);
-
-      if(imageId == null) {
-        LOG.warn(format("No image record found for: [%s]", imageKey));
-        throw new IllegalArgumentException(format("No image record found for: [%s]", imageKey));
-      }
+    try (Handle handle = dbi.open()) {
+      PhotoProcessorDAO dao = handle.attach(PhotoProcessorDAO.class);
 
       LOG.info("Processing: " + imageKey);
 
@@ -53,8 +47,17 @@ public class Processor {
       ImageInfo imageInfo = metaDataExtractor.extract(imageKey, imageFile);
 
       // store the metadata linked to the media id record
-      dao.updateImageInfo(imageId, imageInfo);
+      Integer count = dao.updateImage(imageInfo);
 
+      if(count != 1) {
+        LOG.warn("Image at path [{}] could not be updated.", imageKey.getKey());
+      }
+
+      String imageId = dao.queryByPath(imageKey);
+
+      if(imageId == null || imageId.isEmpty()) {
+        throw new IllegalStateException("No image found in database with path: "+ imageKey);
+      }
       return imageId;
     }
   }

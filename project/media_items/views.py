@@ -37,7 +37,7 @@ class SignRequest(View):
 
         signed_url = create_signed_upload_url(user, create_date, mime_type)
 
-        item_id = record_upload_request(user, signed_url, mime_type)
+        item_id = record_upload_request(user, signed_url, create_date, mime_type)
 
         response = HttpResponse(status=201)
         response['Location'] = signed_url.geturl()

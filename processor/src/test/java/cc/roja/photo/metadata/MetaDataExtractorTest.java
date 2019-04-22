@@ -2,7 +2,6 @@ package cc.roja.photo.metadata;
 
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static javafx.scene.input.KeyCode.Z;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MetaDataExtractorTest {
@@ -22,18 +20,20 @@ class MetaDataExtractorTest {
     imageKey.parse(imageIdentifier);
 
     ImageInfo expected = new ImageInfo(imageKey.getFilePath());
+    expected.setOwner(imageKey.getUserId());
     expected.setFileSize(3954388);
-    expected.setCreateDate(LocalDateTime.parse("2019-02-24T20:51:15"));
+    expected.setCreateDateTime(LocalDateTime.parse("2019-02-24T20:51:15"));
     expected.setCameraMake("Google");
     expected.setCameraModel("Pixel 3");
     expected.setAperture("f/1.8");
-    expected.setShutterSpeedNumerator(66683L);
-    expected.setShutterSpeedDenominator(1000000L);
+    expected.setShutterSpeedNumerator(391L);
+    expected.setShutterSpeedDenominator(100L);
+    expected.setShutterSpeed("1/15 sec");
     expected.setIsoSpeed(1514);
     expected.setGpsLon(-73.9626138888889);
     expected.setGpsLat(40.718075);
     expected.setGpsAlt(0.0);
-    expected.setGpsDatetime(OffsetDateTime.parse("2019-02-25T01:51:08Z"));
+    expected.setGpsDateTime(OffsetDateTime.parse("2019-02-25T01:51:08Z"));
     expected.setImageWidth(4032);
     expected.setImageHeight(3024);
     expected.setFocalLengthNumerator(4440L);
@@ -55,7 +55,7 @@ class MetaDataExtractorTest {
     ImageInfo actual = underTest.extract(imageKey, file);
 
     LocalDateTime expectedCreateDate = LocalDateTime.parse("2019-02-24T20:51:15");
-    LocalDateTime actualCreateDate = actual.getCreateDate();
+    LocalDateTime actualCreateDate = actual.getCreateDateTime();
 
     assertEquals(expectedCreateDate, actualCreateDate);
   }
@@ -65,6 +65,6 @@ class MetaDataExtractorTest {
     ImageKey imageKey = new ImageKey();
     File file = new File("/not/found");
     MetaDataExtractor underTest = new MetaDataExtractor();
-    assertThrows(IOException.class, () -> { underTest.extract(imageKey, file); });
+    assertThrows(IOException.class, () -> underTest.extract(imageKey, file));
   }
 }

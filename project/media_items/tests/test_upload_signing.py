@@ -20,7 +20,7 @@ def test_record_upload_request(user_factory):
     bucket_id, user_id, path = split_upload_path(upload_url)
     assert item.owner.id == user.id
     assert str(item.owner.id) == user_id
-    assert item.media_type == mime_type
+    assert item.mime_type == mime_type
     assert item.path == path
 
 

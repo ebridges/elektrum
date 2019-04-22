@@ -19,12 +19,13 @@ from django.contrib.auth.hashers import make_password
 from boto3 import Session, resource, client
 from tempfile import mkdtemp
 from shutil import rmtree
+from assertpy import assert_that
 
 CREATE_DATE = '2020-01-01T10:10:10'
-TEST_IMAGE = 'scripts/resources/test-file-upload.jpg'
+TEST_IMAGE = 'scripts/tests/resources/test-file-upload.jpg'
 TEST_BUCKET_NAME = 'com.example.functionaltest'
 TEST_BUCKET_LOCATION = '%s/mnt' % os.getcwd()
-MOCK_S3_DOCKER_IMAGE = 'scireum/s3-ninja:5.2'
+MOCK_S3_DOCKER_IMAGE = 'scireum/s3-ninja:5.2.2'
 MOCK_S3_ACCESS_KEY = 'AKIAIOSFODNN7EXAMPLE'
 MOCK_S3_SECRET_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
 MOCK_S3_ENDPOINT = urlparse(os.getenv('AWS_ENDPOINT_URL', 'http://localhost:9444'))
@@ -74,17 +75,18 @@ def main(args):
 
 
 def assert_upload(response):
-    assert_equals('Status Code', 200, response.status_code)
+    assert_that(response.status_code).is_equal_to(200)
+
     request_url = urlparse(response.request.url)
     bucket, key = split_path(request_url.path)
 
     actual_size = get_object_size(bucket, key)
-    assert_not_none('Actual image size', actual_size)
+    assert_that(actual_size).is_not_none()
 
     expected_size = response.request.headers['content-length']
-    assert_not_none('Expected image size', expected_size)
+    assert_that(expected_size).is_not_none()
 
-    assert_equals('uploaded image size', int(expected_size), actual_size)
+    assert_that(actual_size).is_equal_to(int(expected_size))
 
 
 def split_path(path):
@@ -115,18 +117,20 @@ def upload_image(client, url, filename):
 
 
 def assert_upload_request(request):
-    assert_equals('Status Code', 201, request.status_code)
-    assert_not_none('Location', request.headers.get('Location'))
-    assert_not_none('X-Elektron-Media-Id', request.headers.get('X-Elektron-Media-Id'))
+    assert_that(request.status_code).is_equal_to(201)
+
+    assert_that(request.headers.get('Location')).is_not_none()
+    assert_that(request.headers.get('X-Elektron-Media-Id')).is_not_none()
+    assert_that(request.headers.get('X-Elektron-Filename')).is_not_none()
+
     media_item_id = request.headers.get('X-Elektron-Media-Id')
-    assert_not_none('X-Elektron-Filename', request.headers.get('X-Elektron-Filename'))
-    assert_not_none('Media Item', query_media_item(media_item_id))
+    assert_that(query_media_item(media_item_id)).is_not_none()
 
 
 def teardown_bucket():
     debug('Deleting test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT.geturl())
     bucket = s3.Bucket(bucket_name)
     bucket.objects.all().delete()
     bucket.delete()
@@ -135,9 +139,10 @@ def teardown_bucket():
 
 
 def setup_bucket():
-    debug('Creating test bucket [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
+    debug('Creating test bucket [%s] using S3 endpoint [%s]' % (os.environ['AWS_UPLOAD_BUCKET_NAME'],
+                                                                MOCK_S3_ENDPOINT.geturl()))
     bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
-    s3 = resource('s3', endpoint_url=str(MOCK_S3_ENDPOINT))
+    s3 = resource('s3', endpoint_url=MOCK_S3_ENDPOINT.geturl())
     s3.create_bucket(Bucket=bucket_name)
     info('Created test bucket: [%s]' % os.environ['AWS_UPLOAD_BUCKET_NAME'])
 
@@ -285,7 +290,7 @@ def s3_service():
     global processes
 
     info('Starting an S3 server process')
-    os.makedirs(TEST_BUCKET_LOCATION)
+    os.makedirs(TEST_BUCKET_LOCATION, exist_ok=True)
 
     command = 'docker run -p %d:80 -v %s:/var/s3/data %s' % (MOCK_S3_ENDPOINT.port, TEST_BUCKET_LOCATION,
                                                              MOCK_S3_DOCKER_IMAGE)
@@ -350,26 +355,6 @@ def initialize_environment():
     os.environ['AWS_ACCESS_KEY_ID'] = MOCK_S3_ACCESS_KEY
     os.environ['AWS_SECRET_ACCESS_KEY'] = MOCK_S3_SECRET_KEY
     os.environ['AWS_UPLOAD_BUCKET_NAME'] = TEST_BUCKET_NAME
-
-
-def assert_equals(name, expected, actual):
-    global success
-    try:
-        assert expected == actual
-    except AssertionError:
-        print('\033[31m[ERROR] Expected %s for %s but got %s\033[m' % (expected, name, actual))
-        error('Expected %s for %s but got %s' % (expected, name, actual))
-        success = False
-
-
-def assert_not_none(name, value):
-    global success
-    try:
-        assert value is not None
-    except AssertionError:
-        print('\033[31m[ERROR] %s is None\033[m' % name)
-        error('[%s] is None' % name)
-        success = False
 
 
 if __name__ == "__main__":
