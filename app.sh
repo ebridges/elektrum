@@ -57,7 +57,7 @@ then
     echo "Running smoke test in dev environment."
     docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
     docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron_app:latest .
-    ELEKTRON_ENV=development ./scripts/smoke_test.py
+    ELEKTRON_ENV=development ./scripts/tests/smoke_test.py
     result=$?
     if [ "${result}" != "0" ];
     then
