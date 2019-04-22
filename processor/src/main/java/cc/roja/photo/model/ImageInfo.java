@@ -12,7 +12,7 @@ public class ImageInfo {
   private String filePath;
 
   private long fileSize;
-  private LocalDateTime createDate;
+  private LocalDateTime createDateTime;
   private Integer imageWidth;
   private Integer imageHeight;
 
@@ -61,12 +61,14 @@ public class ImageInfo {
     this.fileSize = fileSize;
   }
 
-  public LocalDateTime getCreateDate() {
-    return this.createDate;
+  public LocalDateTime getCreateDateTime() {
+    return this.createDateTime;
   }
 
-  public void setCreateDate(LocalDateTime createDate) {
-    this.createDate = createDate;
+  public void setCreateDateTime(LocalDateTime createDateTime) {
+    this.createDateTime = createDateTime;
+  }
+
   }
 
   public Integer getImageWidth() {
@@ -253,7 +255,7 @@ public class ImageInfo {
       ", filePath='" + filePath + "'" +
       ", mediaType='" + mediaType + "'" +
       ", fileSize='" + fileSize + "'" +
-      ", createDate='" + createDate + "'" +
+      ", createDateTime='" + createDateTime + "'" +
       ", imageWidth='" + imageWidth + "'" +
       ", imageHeight='" + imageHeight + "'" +
       ", artist='" + artist + "'" +

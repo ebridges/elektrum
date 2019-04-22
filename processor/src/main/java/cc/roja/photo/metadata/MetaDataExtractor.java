@@ -80,7 +80,7 @@ public class MetaDataExtractor {
 
   private static void setExifInfo(Metadata metadata, ImageInfo meta) {
     LocalDateTime createDate = getCreateDate(metadata);
-    meta.setCreateDate(createDate);
+    meta.setCreateDateTime(createDate);
     LOG.debug("createDate: "+createDate);
 
     String artist = resolveString(metadata, of(ExifIFD0Directory.class, TAG_ARTIST));

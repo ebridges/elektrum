@@ -22,7 +22,7 @@ class MetaDataExtractorTest {
     ImageInfo expected = new ImageInfo(imageKey.getFilePath());
     expected.setOwner(imageKey.getUserId());
     expected.setFileSize(3954388);
-    expected.setCreateDate(LocalDateTime.parse("2019-02-24T20:51:15"));
+    expected.setCreateDateTime(LocalDateTime.parse("2019-02-24T20:51:15"));
     expected.setCameraMake("Google");
     expected.setCameraModel("Pixel 3");
     expected.setAperture("f/1.8");
@@ -54,7 +54,7 @@ class MetaDataExtractorTest {
     ImageInfo actual = underTest.extract(imageKey, file);
 
     LocalDateTime expectedCreateDate = LocalDateTime.parse("2019-02-24T20:51:15");
-    LocalDateTime actualCreateDate = actual.getCreateDate();
+    LocalDateTime actualCreateDate = actual.getCreateDateTime();
 
     assertEquals(expectedCreateDate, actualCreateDate);
   }
