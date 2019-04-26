@@ -91,14 +91,14 @@ def invoke_processor(image_key):
 
 
 def build_clean_processor():
+    cwd = processor_project_dir()
     cmd = ['./gradlew', '--quiet', 'clean', 'fatJar']
-    cwd = '%s/processor' % os.getcwd()
     exec(cwd, cmd)
 
 
 def run_processor(path):
-    cwd = os.getcwd()
-    jar = '%s/processor/build/libs/elektron-processor.jar' % cwd
+    cwd = processor_project_dir()
+    jar = '%s/build/libs/elektron-processor.jar' % cwd
     cmd = [
         'java',
         '-Dlog4j.configurationFile=log4j.properties',
@@ -117,3 +117,7 @@ def exec(cwd, cmd):
         #stdout=subprocess.DEVNULL,
         #stderr=subprocess.DEVNULL
     )
+
+
+def processor_project_dir():
+    return os.path.realpath( '%s/../processor' % os.getcwd() )

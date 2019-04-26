@@ -23,7 +23,7 @@ def image_info():
         'image_height': 3024,
         'image_width': 4032,
         'iso_speed': 55,
-        'local_path': 'project/media_items/tests/resources/test-file-upload.jpg',
+        'local_path': 'media_items/tests/resources/test-file-upload.jpg',
         'mime_type': 'image/jpeg',
         'shutter_speed_denominator': 100,
         'shutter_speed_numerator': 783,
