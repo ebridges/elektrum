@@ -16,9 +16,13 @@ class FileSystemImageLoader implements ImageLoader {
     if(imageKey == null || imageKey.isEmpty()) {
       throw new IOException("imageKey cannot be empty or null.");
     }
-    String parentPath = getenv(ImageLoaderFactory.ENV_IMAGE_ROOT);
+    String parentPath = getImageRoot();
     File imagePath = new File(parentPath, imageKey);
     LOG.info("imagePath: "+imagePath);
     return imagePath;
+  }
+
+  public String getImageRoot() {
+    return getenv(ImageLoaderFactory.ENV_IMAGE_ROOT);
   }
 }
