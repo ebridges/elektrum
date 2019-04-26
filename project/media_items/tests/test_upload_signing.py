@@ -14,7 +14,8 @@ def test_record_upload_request(user_factory):
     upload_url = urlparse('https://s3.amazonaws.com/[BUCKET]/%s/2020/2020-02-26/2020-02-26T112343_' \
                           '[SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152' % user.id)
     mime_type = 'image/jpeg'
-    item_id = record_upload_request(user, upload_url, mime_type)
+    create_date = datetime.fromisoformat('2020-02-26T01:02:03')
+    item_id = record_upload_request(user, upload_url, create_date, mime_type)
     item = MediaItem.objects.get(id=item_id)
 
     bucket_id, user_id, path = split_upload_path(upload_url)
