@@ -43,7 +43,7 @@ def get_db_connect_info(live_server):
     bucket_name = 'processing_integration_test'
     remote_path = TemporaryDirectory(suffix='.%s' % bucket_name)
 
-    # used by upload url request
+    # used by upload url request & image processor
     os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
 
     # used by image processor
