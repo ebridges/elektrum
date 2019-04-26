@@ -3,6 +3,10 @@ name = "elektron"
 version = "0.24.dev0"
 description = "Media archiving & management system."
 authors = ["Edward Q. Bridges <ebridges@roja.cc>"]
+readme = "README.md"
+homepage = "https://elektron.photos"
+repository = "https://bitbucket.org/roja-cc/elektron"
+license = "CC-BY-NC-ND-4.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
