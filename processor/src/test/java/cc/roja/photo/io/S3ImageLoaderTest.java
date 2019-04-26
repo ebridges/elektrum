@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,8 @@ class S3ImageLoaderTest {
   }
 
   @Test
+  // disabled when running integration tests, as the env var is necessary for that
+  @DisabledIfEnvironmentVariable(named = ENV_BUCKET_NAME, matches = ".*integration.*")
   void testLoad_MissingEnvVar() {
     environmentVariables.clear(ENV_BUCKET_NAME);
     S3ImageLoader underTest = new S3ImageLoader();
