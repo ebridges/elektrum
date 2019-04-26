@@ -21,7 +21,7 @@ def test_record_upload_request(user_factory):
     assert item.owner.id == user.id
     assert str(item.owner.id) == user_id
     assert item.mime_type == mime_type
-    assert item.path == path
+    assert item.file_path == path
 
 
 @pytest.mark.django_db

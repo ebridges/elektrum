@@ -28,7 +28,7 @@ def test_sign_upload_request_success(authenticated_client):
 
     actual = MediaItem.objects.get(owner_id=u.id)
     assert actual.mime_type == mime_type
-    assert re.match(pattern, actual.path)
+    assert re.match(pattern, actual.file_path)
 
 
 @pytest.mark.django_db
