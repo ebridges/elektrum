@@ -147,11 +147,8 @@ class MetadataUtils {
    *
    * @param dir Directory
    * @param tagType int
-   * @param String subsecond
-   * @param TimeZone timeZone
    * @return TemporalAccessor
    */
-  @SuppressWarnings({"SameParameterValue", "JavadocReference"})
   static TemporalAccessor getDateValueFromMetadata(Directory dir, int tagType) {
     Object o = dir.getObject(tagType);
 

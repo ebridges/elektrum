@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings("unused")
 public class ImageInfo {
 
   private UUID owner;

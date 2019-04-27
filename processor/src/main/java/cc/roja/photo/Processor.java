@@ -16,7 +16,6 @@ import org.jdbi.v3.core.Jdbi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings({"unused","WeakerAccess"})
 public class Processor {
   private static final Logger LOG = LogManager.getLogger(Processor.class);
 
@@ -24,13 +23,13 @@ public class Processor {
   private ImageLoader imageLoader;
   private MetaDataExtractor metaDataExtractor;
 
-  public Processor(Jdbi dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
+  Processor(Jdbi dbi, ImageLoader imageLoader, MetaDataExtractor metaDataExtractor) {
     this.dbi = dbi;
     this.imageLoader = imageLoader;
     this.metaDataExtractor = metaDataExtractor;
   }
 
-  public Processor() {
+  Processor() {
     this(DatabaseManager.getDBI(), ImageLoaderFactory.getLoader(), new MetaDataExtractor());
   }
 
