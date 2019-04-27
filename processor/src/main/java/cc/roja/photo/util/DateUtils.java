@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
@@ -34,11 +33,10 @@ public class DateUtils {
   }
 
   public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern) {
-    return parseDateWithDefaults(dateString, pattern, Optional.empty());
+    return parseDateWithDefaults(dateString, pattern, null);
   }
 
-  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern, Optional<TimeZone> timeZone) {
+    public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern, TimeZone timeZone) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(pattern)
         .parseDefaulting(MONTH_OF_YEAR, 1)
         .parseDefaulting(DAY_OF_MONTH, 1)
@@ -48,8 +46,8 @@ public class DateUtils {
         .parseDefaulting(MILLI_OF_SECOND, 0)
         .toFormatter();
 
-    if(timeZone.isPresent()) {
-      formatter = formatter.withZone(timeZone.get().toZoneId());
+    if(timeZone != null) {
+      formatter = formatter.withZone(timeZone.toZoneId());
     }
 
     return formatter.parse(dateString);
