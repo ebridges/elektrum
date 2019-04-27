@@ -235,7 +235,7 @@ public class ImageInfo {
       owner,
       filePath,
       fileSize,
-        createDateTime,
+      createDateTime,
       imageWidth,
       imageHeight,
       artist,
