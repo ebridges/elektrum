@@ -2,6 +2,7 @@ import email
 import json
 import os
 import re
+import pytest
 
 from urllib.parse import urljoin, urlsplit
 
