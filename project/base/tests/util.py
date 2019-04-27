@@ -2,6 +2,7 @@ import email
 import json
 import os
 import re
+import pytest
 
 from urllib.parse import urljoin, urlsplit
 
@@ -52,19 +53,13 @@ def assert_signup_mail(email_to, email_log, email_subject_substr='Confirm'):
     return confirm_url
 
 
-def assert_account_redirects(response, expected_url='/collections/', expected_redirect_sc=302,
+def assert_account_redirects(response, expected_url='/account/confirm-email/', expected_redirect_sc=302,
                                   expected_target_sc=200):
     assert_redirects(response, expected_url, expected_redirect_sc, expected_target_sc)
 
 
-def create_collection(client, colln_path='/3030'):
-    response = client.post('/collections/new', {'path': colln_path})
-    assert response is not None
-    return response
-
-
 # Not used!
-def assert_redirect_contains(response, text, path='/collections/'):
+def assert_redirect_contains(response, text, path='/account/confirm-email/'):
     redirect_response = response.client.get(path, QueryDict())
     assert_contains(redirect_response, text)
 

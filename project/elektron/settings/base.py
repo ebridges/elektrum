@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'base',
     'users',
     'pages',
-    'collection',
     'media_items',
 ]
 
@@ -89,7 +88,6 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'pages/templates'),
             os.path.join(BASE_DIR, 'users/templates'),
-            os.path.join(BASE_DIR, 'collection/templates'),
             os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
