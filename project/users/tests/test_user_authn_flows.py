@@ -30,7 +30,7 @@ def test_login_via_post(client, user_factory):
     """
     u = user_factory()
     response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
-    util.assert_account_redirects(response, expected_url='/account/confirm-email/')
+    util.assert_account_redirects(response)
     user = CustomUser.objects.get(username=u.username)
     assert user is not None, 'could not locate user with username %s' % u.username
     assert response.context['user'].email == user.email
@@ -87,7 +87,7 @@ def test_signup_flow(client, mock_email_log):
     response = client.post('/account/signup/',
                   {'email': expected_email, 'username': expected_username, 'first_name': 'first',
                    'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
-    util.assert_account_redirects(response, expected_url='/account/confirm-email/')
+    util.assert_account_redirects(response)
     confirm_url = util.assert_signup_mail(expected_email, mock_email_log)
     assert confirm_url is not None
     confirm_response = client.post(confirm_url)
@@ -114,7 +114,7 @@ def test_signup_flow_multiple(client, mock_email_log):
     response = client.post('/account/signup/',
                       {'username': 'newuser2', 'email': 'newuser2@example.com', 'first_name': 'first2',
                        'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
-    util.assert_account_redirects(response, expected_url='/account/confirm-email/')
+    util.assert_account_redirects(response)
     util.assert_signup_mail('newuser2@example.com', mock_email_log)
 
     util.trunc_file(mock_email_log)
@@ -122,5 +122,5 @@ def test_signup_flow_multiple(client, mock_email_log):
     response = client.post('/account/signup/',
                       {'username': 'newuser3', 'email': 'newuser3@example.com', 'first_name': 'first3',
                        'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
-    util.assert_account_redirects(response, expected_url='/account/confirm-email/')
+    util.assert_account_redirects(response)
     util.assert_signup_mail('newuser3@example.com', mock_email_log)
