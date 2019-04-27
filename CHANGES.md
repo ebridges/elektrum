@@ -5,8 +5,13 @@ Elektron Change Log
 -----------------
 - [#24] Enhance internal structure of templates to handle showing authenticated content.
 - [#25] Simplify signup/login UX by putting both forms on the home page, rather than two separate pages.
-- [#23] Model collections.
+- [#23] Model & test collections
 - [#27] Fix syntax error in collection templates.
+- [#28] Migration to pytest, add testing coverage.
+- [#31] Model & upload media items.
+- [#33] Remove 'collection' model.
+- Testing of upload signing, upload processing.
+- Switch to use Poetry for dependency management.
 
 0.23 (2019-01-15)
 -----------------
