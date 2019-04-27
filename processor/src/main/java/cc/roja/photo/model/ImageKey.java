@@ -20,7 +20,6 @@ import static java.lang.String.format;
  * For example:
  *     /2d249780-7fe9-4c49-aa31-0a30d56afa0f/2020/2020-02-26/2020-02-26T000000_4y5k48k7.jpg
  */
-@SuppressWarnings("unused")
 public class ImageKey {
   private static final Logger LOG = LogManager.getLogger(ImageKey.class);
 

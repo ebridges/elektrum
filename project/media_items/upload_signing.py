@@ -130,8 +130,8 @@ def lookup_user_upload_credentials(user):
     :return:
     """
     # @todo: update this to retrieve these values from the user's profile.
-    aws_access_key = 'AKIAIOSFODNN7EXAMPLE' # os.environ['AWS_ACCESS_KEY_ID']
-    aws_secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY' # os.environ['AWS_SECRET_ACCESS_KEY']
+    aws_access_key = os.environ['AWS_ACCESS_KEY_ID']
+    aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
     aws_upload_bucket_name = os.environ['AWS_UPLOAD_BUCKET_NAME']
     return aws_access_key, aws_secret_access_key, aws_upload_bucket_name
 

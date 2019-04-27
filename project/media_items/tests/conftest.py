@@ -23,7 +23,7 @@ def image_info():
         'image_height': 3024,
         'image_width': 4032,
         'iso_speed': 55,
-        'local_path': 'project/media_items/tests/resources/test-file-upload.jpg',
+        'local_path': 'media_items/tests/resources/test-file-upload.jpg',
         'mime_type': 'image/jpeg',
         'shutter_speed_denominator': 100,
         'shutter_speed_numerator': 783,
@@ -39,10 +39,11 @@ def get_db_connect_info(live_server):
     db_user = live_server._live_server_modified_settings.wrapped.DATABASES['default']['USER']
     db_pass = live_server._live_server_modified_settings.wrapped.DATABASES['default']['PASSWORD']
 
-    bucket_name = 'my-mock-bucket'
+    # bucket name is used to disable some tests in the Java processing code
+    bucket_name = 'processing_integration_test'
     remote_path = TemporaryDirectory(suffix='.%s' % bucket_name)
 
-    # used by upload url request
+    # used by upload url request & image processor
     os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
 
     # used by image processor

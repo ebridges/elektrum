@@ -8,7 +8,6 @@ import static com.drew.metadata.exif.ExifDirectoryBase.TAG_DATETIME_ORIGINAL;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -148,11 +147,8 @@ class MetadataUtils {
    *
    * @param dir Directory
    * @param tagType int
-   * @param String subsecond
-   * @param TimeZone timeZone
    * @return TemporalAccessor
    */
-  @SuppressWarnings({"SameParameterValue", "JavadocReference"})
   static TemporalAccessor getDateValueFromMetadata(Directory dir, int tagType) {
     Object o = dir.getObject(tagType);
 
@@ -194,7 +190,7 @@ class MetadataUtils {
       for (String datePattern : datePatterns) {
         //noinspection CatchMayIgnoreException
         try {
-          date = DateUtils.parseDateWithDefaults(dateString, datePattern, Optional.ofNullable(timeZone));
+          date = DateUtils.parseDateWithDefaults(dateString, datePattern, timeZone);
           break;
         } catch (DateTimeParseException ignored) {
           // simply try the next pattern

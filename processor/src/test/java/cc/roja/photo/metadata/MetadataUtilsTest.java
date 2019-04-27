@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static cc.roja.photo.metadata.MetadataUtils.getDateValueFromMetadata;
@@ -223,7 +222,7 @@ class MetadataUtilsTest {
     Directory mockDirectory = mock(Directory.class);
     when(mockDirectory.getObject(tagType)).thenReturn(testCase);
     TemporalAccessor actual = getDateValueFromMetadata(mockDirectory, tagType);
-    TemporalAccessor expected = parseDateWithDefaults(testCase, pattern, Optional.of(tz));
+    TemporalAccessor expected = parseDateWithDefaults(testCase, pattern, tz);
     assertTemporalAccessor(expected, actual);
     ZonedDateTime expectedWithZone = ZonedDateTime.from(expected);
     assert actual != null;

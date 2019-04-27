@@ -42,16 +42,17 @@ public class ProcessorApp {
 
   private static void processFilesFromInput(InputStream inputStream) throws IOException {
     Processor processor = new Processor();
-    Scanner input = new Scanner(inputStream);
-    int cnt = 0;
-    while (input.hasNextLine()) {
-      ImageKey imageKey = new ImageKey();
-      imageKey.parse(input.nextLine());
-      String imageId = processor.processPhoto(imageKey);
-      cnt++;
-      printOutput(imageId);
+    try (Scanner input = new Scanner(inputStream)) {
+      int cnt = 0;
+      while (input.hasNextLine()) {
+        ImageKey imageKey = new ImageKey();
+        imageKey.parse(input.nextLine());
+        String imageId = processor.processPhoto(imageKey);
+        cnt++;
+        printOutput(imageId);
+      }
+      LOG.info(format("Processed %d files.", cnt));
     }
-    LOG.info(format("Processed %d files.", cnt));
   }
 
   private static void printOutput(String imageId) {

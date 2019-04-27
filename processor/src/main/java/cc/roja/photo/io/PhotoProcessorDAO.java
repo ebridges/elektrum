@@ -1,7 +1,5 @@
 package cc.roja.photo.io;
 
-import java.io.Closeable;
-
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
 
@@ -10,7 +8,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-public interface PhotoProcessorDAO extends Closeable {
+public interface PhotoProcessorDAO {
   @SqlUpdate(
     "update media_item \n"
   + "set\n"
