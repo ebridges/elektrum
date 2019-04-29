@@ -71,13 +71,14 @@ dependencies {
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 }
 
+project.version project.findProperty('projVersion')?.trim() ?: 'DEV'
+
 
 task fatJar(type: Jar) {
     zip64 true
     manifest {
         attributes "Main-Class": "cc.roja.photo.ProcessorApp"
     }
-    archiveBaseName = 'elektron-processor'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
