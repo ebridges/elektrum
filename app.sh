@@ -72,7 +72,7 @@ then
         version=$(cat ./version.txt | sed 's/\.dev0//')
         fullrelease --verbose --no-input
         result=$?
-        if [ ${result} ];
+        if [ "${result}" -ne "0" ];
         then
             echo "Error bundling release."
             exit ${result}
