@@ -11,14 +11,16 @@ clean:
 	mkdir -p ${BUILD}
 	@echo [all] CLEAN: SUCCESSFUL
 
-${BUILD}/archive/photo-processor.zip:
-	cd ${CODE} && ./gradlew build
+%.zip:
+	cd ${CODE} && ./gradlew -PprojVersion=$(VERSION) buildZip
 	@echo [photo-processor] BUILD: SUCCESSFUL
 
-zip-all: ${BUILD}/archive/photo-processor.zip
+zip-all: processor.zip
 
-deploy-photo-processor: ${BUILD}/archive/photo-processor.zip
-	$(shell python3 scripts/photo-processor-deploy.py ${BUILD}/archive/photo-processor.zip)
+processor.zip: $(shell find $(BUILD) -name elektron-processor*.zip)
+
+deploy-photo-processor: processor.zip
+	$(shell python3 scripts/photo-processor-deploy.py ${BUILD}/archive/elektron-processor*.zip)
 	@echo [photo-processor] DEPLOY: SUCCESSFUL
 
 deploy-all: deploy-photo-processor

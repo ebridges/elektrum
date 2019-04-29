@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 from shutil import copyfile
+from glob import glob
 from urllib.parse import urlparse
 from uuid import UUID
 from datetime import datetime
@@ -98,7 +99,10 @@ def build_clean_processor():
 
 def run_processor(path):
     cwd = processor_project_dir()
-    jar = '%s/build/libs/elektron-processor.jar' % cwd
+    jar = '%s/build/libs/elektron-processor*.jar' % cwd
+    jar = next(iter(glob(jar)), None)
+    if not jar:
+        raise FileNotFoundError('jarfile not found')
     cmd = [
         'java',
         '-Dlog4j.configurationFile=log4j.properties',
