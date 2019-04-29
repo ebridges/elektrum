@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.25 (unreleased)
+0.25 (2019-04-29)
 -----------------
 
 - [#34] Deploy versioned lambda function for the image processor.
