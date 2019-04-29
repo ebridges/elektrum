@@ -1,6 +1,12 @@
 Elektron Change Log
 ================
 
+0.25 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 0.24 (2019-04-29)
 -----------------
 - [#24] Enhance internal structure of templates to handle showing authenticated content.
