@@ -100,6 +100,9 @@ then
 
         $(aws ecr get-login --no-include-email --region us-east-1)
 
+        echo "Deploying new version of image processor at version ${version}"
+        make clean deploy-all VERSION=${version}
+
         echo "Building a fresh image of Dockerfile-Proxy for ${ELEKTRON_ENV} at version ${version}"
         docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:${version} .
         docker tag roja/elektron_proxy:${version} ${ecr_host}/roja/elektron_proxy:${version}

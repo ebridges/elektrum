@@ -15,4 +15,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'photo-processor'
+rootProject.name = 'elektron-processor'
