@@ -9,9 +9,24 @@ import boto3
 
 APP_NAME='elektron-processor'
 
+
 def deploy(archive):
   debug('Deploying lambda function for [%s]' % APP_NAME)
+  load_env()
+  add_function(archive)
+  info('Function created [%s]' % APP_NAME)
+
+
+def load_env():
+  env = getenv('ELEKTRON_ENV', 'development')
+  env_file = "etc/env/%s.env" % env
+  debug('Loading environment from [%s]' % env_file)
+  load_dotenv(dotenv_path=env_file, verbose=True)
+
+
+def add_function(archive):
   client = boto3.client('lambda')
+
   response = client.list_functions()
   for f in response['Functions']:
     if f['FunctionName'] == APP_NAME:
@@ -19,15 +34,6 @@ def deploy(archive):
       client.delete_function(FunctionName=APP_NAME)
       debug('Existing function [%s] deleted.' % f['FunctionName'])
       break
-  create_function(client, archive)
-  info('Function created [%s]' % APP_NAME)
-
-
-def create_function(client, archive):
-  env = getenv('ELEKTRON_ENV', 'development')
-  env_file = "etc/env/%s.env" % env
-  debug('Loading environment from [%s]' % env_file)
-  load_dotenv(dotenv_path=env_file, verbose=True)
 
   db_jdbc_url = 'jdbc:postgresql://%s:%s/%s' % (getenv('db_hostname'), getenv("db_port_num"), getenv('db_name'))
 
