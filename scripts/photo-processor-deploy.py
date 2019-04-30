@@ -1,60 +1,84 @@
 from logging import Logger, basicConfig, INFO, DEBUG, CRITICAL, debug, info, getLogger
-from json import dumps
-from os import getenv
+from os import getenv, path
 from sys import argv
 from dotenv import load_dotenv
 import boto3
+from boto3.s3.transfer import S3Transfer
 
 # Presumed to be run from the root of the project
 
+APP_NAME='elektron-processor'
+ROOT_FOLDER='elektron-processor-artifacts'
+
 def deploy(archive):
-  debug('Deploying lambda function for [photo-processor]')
-  client = boto3.client('lambda')
-  response = client.list_functions()
-  for f in response['Functions']:
-    if f['FunctionName'] == 'photo-processor':
-      debug('Found existing function [%s].' % f['FunctionName'])
-      client.delete_function(FunctionName='photo-processor')
-      debug('Existing function [%s] deleted.' % f['FunctionName'])
-      break
-  create_function(client, archive)
-  info('Function created [photo-processor]')
+  debug('Deploying lambda function for [%s]' % APP_NAME)
+  load_env()
+
+  archive_bucket = getenv('media_processor_artifact_bucket_name')
+  artifact_name = '%s/%s' % (ROOT_FOLDER, path.basename(archive))
+
+  upload_archive(archive_bucket, artifact_name, archive)
+  add_function(archive_bucket, artifact_name, APP_NAME)
+
+  info('Function created [%s]' % APP_NAME)
 
 
-def create_function(client, archive):
+def load_env():
   env = getenv('ELEKTRON_ENV', 'development')
   env_file = "etc/env/%s.env" % env
   debug('Loading environment from [%s]' % env_file)
   load_dotenv(dotenv_path=env_file, verbose=True)
 
+
+def upload_archive(archive_bucket, artifact_name, archive):
+  s3 = boto3.client('s3')
+  client = S3Transfer(client=s3)
+  debug('Uploading function to [%s] as [%s].' % (archive_bucket, artifact_name))
+  client.upload_file(archive, archive_bucket, artifact_name)
+  info('Function archive uploaded [%s]' % APP_NAME)
+
+
+def add_function(bucket, artifact_name, function_name):
+  client = boto3.client('lambda')
+
+  response = client.list_functions()
+  for f in response['Functions']:
+    if f['FunctionName'] == function_name:
+      debug('Found existing function [%s].' % f['FunctionName'])
+      client.delete_function(FunctionName=function_name)
+      debug('Existing function [%s] deleted.' % f['FunctionName'])
+      break
+
   db_jdbc_url = 'jdbc:postgresql://%s:%s/%s' % (getenv('db_hostname'), getenv("db_port_num"), getenv('db_name'))
 
-  debug('Uploading archive [%s]' % archive)
-  with open(archive, "rb") as binaryfile :
-    zipfile = bytearray(binaryfile.read())
-    client.create_function(
-      FunctionName='photo-processor', 
-      Runtime='java8', 
-      Role=getenv('photo_processor_role_arn'),
-      Handler='cc.roja.photo.ProcessoreRequestHandler',
-      Code={ 'ZipFile': zipfile },
-      Description='Processes photos.',
-      Timeout=int(getenv('connection_timeout')),
-      MemorySize=int(getenv('memory_size')),
-      Publish=True,
-      VpcConfig={
-          'SubnetIds': getenv('vpc_public_subnet_ids').split(','),
-          'SecurityGroupIds': getenv('vpc_security_group_ids').split(',')
-      },
-      Environment={
-        'Variables': {
-            'DB_JDBC_URL': db_jdbc_url,
-            'DB_USERNAME': getenv('db_username'),
-            'DB_PASSWORD': getenv('db_password'),
-            'BUCKET_NAME': getenv('bucket_name')
-        }
+  debug('Creating function for artifact [%s]' % artifact_name)
+  client.create_function(
+    FunctionName=function_name,
+    Runtime='java8',
+    Role=getenv('photo_processor_role_arn'),
+    Handler='cc.roja.photo.ProcessorRequestHandler',
+    Code={
+      "S3Bucket": bucket,
+      "S3Key": artifact_name
+    },
+    Description='Processes media.',
+    Timeout=int(getenv('connection_timeout')),
+    MemorySize=int(getenv('memory_size')),
+    Publish=True,
+    VpcConfig={
+        'SubnetIds': getenv('vpc_public_subnet_ids').split(','),
+        'SecurityGroupIds': getenv('vpc_security_group_ids').split(',')
+    },
+    Environment={
+      'Variables': {
+          'DB_JDBC_URL': db_jdbc_url,
+          'DB_USERNAME': getenv('db_username'),
+          'DB_PASSWORD': getenv('db_password'),
+          'BUCKET_NAME': getenv('media_upload_bucket_name')
       }
-    )
+    }
+  )
+
 
 def configure_logging(threshold=INFO):
   basicConfig(
@@ -62,6 +86,7 @@ def configure_logging(threshold=INFO):
       datefmt='%Y/%m/%d %H:%M:%S',
       level=threshold)
   getLogger('botocore.credentials').setLevel(CRITICAL)
+
 
 if __name__ == "__main__":
   if len(argv) > 2:
