@@ -58,12 +58,14 @@ def create_function(client, archive):
       }
     )
 
+
 def configure_logging(threshold=INFO):
   basicConfig(
       format='[%(asctime)s][%(levelname)s] [%(name)s] %(message)s',
       datefmt='%Y/%m/%d %H:%M:%S',
       level=threshold)
   getLogger('botocore.credentials').setLevel(CRITICAL)
+
 
 if __name__ == "__main__":
   if len(argv) > 2:
