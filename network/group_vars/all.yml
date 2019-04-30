@@ -16,7 +16,7 @@ config_info: "../etc/env/{{ elektron_env }}.env"
 
 # Storage Facts
 media_upload_bucket_name: "cc.roja.elektron.media"
-
+media_processor_artifact_bucket_name: "cc.roja.elektron.media.archive"
 
 # DB Facts
 db_instance_name: elektron-db

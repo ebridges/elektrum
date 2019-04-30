@@ -106,3 +106,11 @@
     line: "media_upload_bucket_name='{{ media_upload_bucket_name }}'"
   tags:
     - cfg
+
+- name: lambda function artifact storage bucket name
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^media_processor_artifact_bucket_name='{{ media_processor_artifact_bucket_name }}'"
+    line: "media_processor_artifact_bucket_name='{{ media_processor_artifact_bucket_name }}'"
+  tags:
+    - cfg
