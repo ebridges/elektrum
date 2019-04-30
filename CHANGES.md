@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.26 (unreleased)
+0.26 (2019-04-30)
 -----------------
 
 - [#35] Upload lambda binary to S3 before deploy.
