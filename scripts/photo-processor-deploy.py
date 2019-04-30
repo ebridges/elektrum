@@ -3,6 +3,7 @@ from os import getenv, path
 from sys import argv
 from dotenv import load_dotenv
 import boto3
+from boto3.s3.transfer import S3Transfer
 
 # Presumed to be run from the root of the project
 
@@ -15,6 +16,8 @@ def deploy(archive):
 
   archive_bucket = getenv('media_processor_artifact_bucket_name')
   artifact_name = '%s/%s' % (ROOT_FOLDER, path.basename(archive))
+
+  upload_archive(archive_bucket, artifact_name, archive)
   add_function(archive_bucket, artifact_name, APP_NAME)
 
   info('Function created [%s]' % APP_NAME)
@@ -27,7 +30,14 @@ def load_env():
   load_dotenv(dotenv_path=env_file, verbose=True)
 
 
-def add_function(archive):
+def upload_archive(archive_bucket, artifact_name, archive):
+  s3 = boto3.client('s3')
+  client = S3Transfer(client=s3)
+  debug('Uploading function to [%s] as [%s].' % (archive_bucket, artifact_name))
+  client.upload_file(archive, archive_bucket, artifact_name)
+  info('Function archive uploaded [%s]' % APP_NAME)
+
+
 def add_function(bucket, artifact_name, function_name):
   client = boto3.client('lambda')
 
