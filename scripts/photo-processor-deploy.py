@@ -7,18 +7,20 @@ import boto3
 
 # Presumed to be run from the root of the project
 
+APP_NAME='elektron-processor'
+
 def deploy(archive):
-  debug('Deploying lambda function for [photo-processor]')
+  debug('Deploying lambda function for [%s]' % APP_NAME)
   client = boto3.client('lambda')
   response = client.list_functions()
   for f in response['Functions']:
-    if f['FunctionName'] == 'photo-processor':
+    if f['FunctionName'] == APP_NAME:
       debug('Found existing function [%s].' % f['FunctionName'])
-      client.delete_function(FunctionName='photo-processor')
+      client.delete_function(FunctionName=APP_NAME)
       debug('Existing function [%s] deleted.' % f['FunctionName'])
       break
   create_function(client, archive)
-  info('Function created [photo-processor]')
+  info('Function created [%s]' % APP_NAME)
 
 
 def create_function(client, archive):
@@ -33,7 +35,7 @@ def create_function(client, archive):
   with open(archive, "rb") as binaryfile :
     zipfile = bytearray(binaryfile.read())
     client.create_function(
-      FunctionName='photo-processor', 
+      FunctionName=APP_NAME, 
       Runtime='java8', 
       Role=getenv('photo_processor_role_arn'),
       Handler='cc.roja.photo.ProcessorRequestHandler',
