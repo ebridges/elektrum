@@ -36,7 +36,7 @@ def create_function(client, archive):
       FunctionName='photo-processor', 
       Runtime='java8', 
       Role=getenv('photo_processor_role_arn'),
-      Handler='cc.roja.photo.ProcessoreRequestHandler',
+      Handler='cc.roja.photo.ProcessorRequestHandler',
       Code={ 'ZipFile': zipfile },
       Description='Processes photos.',
       Timeout=int(getenv('connection_timeout')),
