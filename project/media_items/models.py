@@ -180,17 +180,8 @@ class MediaItem(BaseModel):
         max_length=64
     )
 
-    def validate_unique(self, exclude=None):
-        o = MediaItem.objects.filter(path=self.file_path, owner=self.owner)
-        if o.exists():
-            raise validators.ValidationError({'path': _(
-                'There already exists a media item named [%s] for user [%s]' % (self.file_path, self.owner.username))})
-
     def __str__(self):
         return self.file_path
 
     class Meta:
         db_table = 'media_item'
-        unique_together = (
-            ('file_path', 'owner'),
-        )
