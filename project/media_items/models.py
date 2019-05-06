@@ -69,19 +69,19 @@ class MediaItem(BaseModel):
     file_size = models.BigIntegerField(
         _('file size'),
         help_text=_('Required. The size in bytes of the media item.'),
-        null=True
+        null=False
     )
 
     image_width = models.IntegerField(
         _('image width'),
         help_text=_('Required. The width of this media item.'),
-        null=True
+        null=False
     )
 
     image_height = models.IntegerField(
         _('image height'),
         help_text=_('Required. The height of this media item.'),
-        null=True
+        null=False
     )
 
     camera_make = models.CharField(
