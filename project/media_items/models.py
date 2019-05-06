@@ -11,9 +11,9 @@ from base.models import BaseModel
 
 @deconstructible
 class MediaItemPathValidator(validators.RegexValidator):
-    regex = r'^\/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}_[0-9a-z]{8}\.[a-z]{3}$'
+    regex = r'^\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\.[a-z]{3}$'
     message = _(
-        'Enter a valid media item path. Should be like this: `/yyyy/yyyy-mm-dd/yyyy-mm-ddThhmmss_slug.ext`'
+        'Enter a valid media item path. Should be like this: `/uuid/uuid.ext`'
     )
     flags = 0
 
