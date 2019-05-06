@@ -41,9 +41,9 @@ class ProcessorTest {
     String expectedImageId = "abcd";
 
     ImageKey mockImageKey = mock(ImageKey.class);
-    when(mockImageKey.getFilePath()).thenReturn("defg");
+    when(mockImageKey.getKey()).thenReturn("defg");
     File mockFile = mock(File.class);
-    ImageInfo imageInfo = new ImageInfo(mockImageKey.getFilePath());
+    ImageInfo imageInfo = new ImageInfo(mockImageKey);
 
     when(this.mockDao.queryByPath(mockImageKey)).thenReturn(expectedImageId);
     when(this.mockImageLoader.load(mockImageKey.getKey())).thenReturn(mockFile);
@@ -57,7 +57,7 @@ class ProcessorTest {
   @Test
   void testProcessPhoto_NoRecordForImageKey() {
     Processor underTest = new Processor(this.mockDbi, this.mockImageLoader, this.mockMetaDataExtractor);
-    ImageKey imageKey = new ImageKey();
+    ImageKey imageKey = ImageKey.parse("/57f738b8-700f-11e9-90ab-320017981ea0/5e60fb4e-700f-11e9-9abd-320017981ea0.jpg");
     when(this.mockDao.queryByPath(imageKey)).thenReturn(null);
     assertThrows(IllegalStateException.class, () -> underTest.processPhoto(imageKey));
   }

@@ -29,8 +29,7 @@ public class ProcessorApp {
 
   private static void processSingleFile(String filename) throws IOException {
     Processor processor = new Processor();
-    ImageKey imageKey = new ImageKey();
-    imageKey.parse(filename);
+    ImageKey imageKey = ImageKey.parse(filename);
     String imageId = processor.processPhoto(imageKey);
     printOutput(imageId);
   }
@@ -45,8 +44,7 @@ public class ProcessorApp {
     try (Scanner input = new Scanner(inputStream)) {
       int cnt = 0;
       while (input.hasNextLine()) {
-        ImageKey imageKey = new ImageKey();
-        imageKey.parse(input.nextLine());
+        ImageKey imageKey = ImageKey.parse(input.nextLine());
         String imageId = processor.processPhoto(imageKey);
         cnt++;
         printOutput(imageId);

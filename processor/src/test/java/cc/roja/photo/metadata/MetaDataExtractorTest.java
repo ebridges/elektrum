@@ -15,12 +15,10 @@ class MetaDataExtractorTest {
 
   @Test
   void testExtractMetadata() throws IOException {
-    String imageIdentifier = "/2d249780-7fe9-4c49-aa31-0a30d56afa0f/2019/2019-02-24/2019-02-24T205115_4y5k48k7.jpg";
-    ImageKey imageKey = new ImageKey();
-    imageKey.parse(imageIdentifier);
+    String imageIdentifier = "/2d249780-7fe9-4c49-aa31-0a30d56afa0f/13e16670-7010-11e9-b5c4-320017981ea0.jpg";
+    ImageKey imageKey = ImageKey.parse(imageIdentifier);
 
-    ImageInfo expected = new ImageInfo(imageKey.getFilePath());
-    expected.setOwner(imageKey.getUserId());
+    ImageInfo expected = new ImageInfo(imageKey);
     expected.setFileSize(3954388);
     expected.setCreateDateTime(LocalDateTime.parse("2019-02-24T20:51:15"));
     expected.setCameraMake("Google");
@@ -49,7 +47,7 @@ class MetaDataExtractorTest {
   @Test
   void testExtractMetadata_CreateDateFromFilename() throws IOException {
     File file = new File("src/test/resources/cc.roja.photo.metadata/testExtractMetadata_CreateDateFromFilename/20190224T205115.jpg");
-    ImageKey imageKey = new ImageKey();
+    ImageKey imageKey = ImageKey.parse("/57f738b8-700f-11e9-90ab-320017981ea0/5e60fb4e-700f-11e9-9abd-320017981ea0.jpg");
 
     MetaDataExtractor underTest = new MetaDataExtractor();
     ImageInfo actual = underTest.extract(imageKey, file);
@@ -62,7 +60,7 @@ class MetaDataExtractorTest {
 
   @Test
   void testExtractMetadata_NotFound() {
-    ImageKey imageKey = new ImageKey();
+    ImageKey imageKey = ImageKey.parse("/57f738b8-700f-11e9-90ab-320017981ea0/5e60fb4e-700f-11e9-9abd-320017981ea0.jpg");
     File file = new File("/not/found");
     MetaDataExtractor underTest = new MetaDataExtractor();
     assertThrows(IOException.class, () -> underTest.extract(imageKey, file));
