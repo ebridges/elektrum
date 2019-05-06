@@ -6,55 +6,33 @@ from urllib.parse import urlparse, parse_qs
 import pytest
 
 from media_items.upload_signing import *
-
-
-@pytest.mark.django_db
-def test_record_upload_request(user_factory):
-    user = user_factory()
-    upload_url = urlparse('https://s3.amazonaws.com/[BUCKET]/%s/2020/2020-02-26/2020-02-26T112343_' \
-                          '[SLUG].jpg?AWSAccessKeyId=[KEY]&Signature=[SIG]&Expires=1550426152' % user.id)
-    mime_type = 'image/jpeg'
-    create_date = datetime.fromisoformat('2020-02-26T01:02:03')
-    item_id = record_upload_request(user, upload_url, create_date, mime_type)
-    item = MediaItem.objects.get(id=item_id)
-
-    bucket_id, user_id, path = split_upload_path(upload_url)
-    assert item.owner.id == user.id
-    assert str(item.owner.id) == user_id
-    assert item.mime_type == mime_type
-    assert item.file_path == path
-
+from base.tests.util import match_image_key
 
 @pytest.mark.django_db
 def test_create_signed_upload_url(user_factory):
     bucket_name = 'opqrstu'
     os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
-    create_iso = '2020-02-26T11:23:43'
-    create_date = datetime.fromisoformat(create_iso)
     type = 'image/jpeg'
     user = user_factory()
-    actual_url = create_signed_upload_url(user, create_date, type)
+    actual_url = create_signed_upload_url(user, type)
     qs = parse_qs(actual_url.query)
     assert actual_url.scheme == 'https'
-    assert actual_url.hostname == 's3.amazonaws.com'
+    assert actual_url.hostname == '%s.s3.amazonaws.com' % bucket_name
     assert 'X-Amz-Credential' in qs
     assert 'X-Amz-Signature' in qs
     assert 'X-Amz-Expires' in qs
 
-    expected_key = r'/%s/%s/([0-9]{4})/([0-9]{4}-[0-9]{2}-[0-9]{2})/([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6})_[0-9a-z]{' \
-                   r'8}\.([a-z]{3})' % (bucket_name, user.id)
-
-    m = re.match(expected_key, actual_url.path)
+    m = match_image_key(user.id, actual_url.path)
     assert m is not None
-    assert m.group(1) == str(create_date.year)
-    assert m.group(2) == f'{create_date.year:04}-{create_date.month:02}-{create_date.day:02}'
-    assert m.group(3) == create_date.strftime('%Y-%m-%d''T''%H%M%S')
-    assert m.group(4) == supported_upload_types[type]
+    assert m.group('user_id') == str(user.id)
+    assert m.group('image_id') is not None
+    assert m.group('extension') == supported_upload_types[type]
 
 
 @pytest.mark.django_db
 def test_create_signed_url(user_factory):
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'opqrstu'
+    bucket_name = 'opqrstu'
+    os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
     user = user_factory()
     expected_credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
@@ -62,31 +40,21 @@ def test_create_signed_url(user_factory):
     qs = parse_qs(url.query)
     actual_credential = qs['X-Amz-Credential'][0].split('/')[0]
     assert url.scheme == 'https'
-    assert url.hostname == 's3.amazonaws.com'
-    assert url.path == '/%s/%s' % (expected_credentials[2], upload_key)
+    assert url.hostname == '%s.s3.amazonaws.com' % bucket_name
+    assert url.path == '/%s' % upload_key
     assert actual_credential == expected_credentials[0]
-
-
-@pytest.mark.django_db
-def test_create_upload_key_with_slug(user_factory):
-    user = user_factory()
-    dt = datetime(year=2018, month=7, day=12, hour=7, minute=9, second=33)
-    slug = 'abcdefgh'
-    mtype = 'image/jpeg'
-    key = create_upload_key(user, dt, mtype, slug)
-    assert key == '%s/%s/%s/%s_%s.%s' % (user.id, '2018', '2018-07-12', '2018-07-12T070933', slug,
-                                         supported_upload_types[mtype])
 
 
 @pytest.mark.django_db
 def test_create_upload_key(user_factory):
     user = user_factory()
-    dt = datetime(year=2018, month=7, day=12, hour=7, minute=9, second=33)
     mtype = 'image/jpeg'
-    actual_key = create_upload_key(user, dt, mtype)
-    expected_key = '%s/%s/%s/%s_[a-z0-9]{8}.%s' % (user.id, '2018', '2018-07-12', '2018-07-12T070933',
-                                                   supported_upload_types[mtype])
-    assert re.match(expected_key, actual_key)
+    key = create_upload_key(user, mtype)
+    m = match_image_key(user.id, key)
+    assert m is not None
+    assert m.group('user_id') == str(user.id)
+    assert m.group('image_id') is not None
+    assert m.group('extension') == supported_upload_types[mtype]
 
 
 @pytest.mark.django_db
@@ -101,33 +69,11 @@ def test_lookup_user_upload_credentials(user_factory):
     assert credentials[2] == 'opqrstu'
 
 
-def test_generate_slug():
-    slug_3 = generate_slug(3)
-    assert len(slug_3) == 3
-
-    slug_8 = generate_slug()
-    assert len(slug_8) == 8
-
-
-def test_extension_from_type():
+def test_extension_from_type_failure():
     with pytest.raises(KeyError):
         extension_from_type('foobar')
 
+
+def test_extension_from_type():
     type = extension_from_type('image/jpeg')
     assert type == 'jpg'
-
-
-def test_split_upload_path_localhost():
-    u = urlparse('http://localhost:4572/[BUCKET]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg')
-    a, b, c = split_upload_path(u)
-    assert a == '[BUCKET]'
-    assert b == '[USER_ID]'
-    assert c == '/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg'
-
-
-def test_split_upload_path_amazonaws():
-    u = urlparse('http://s3.amazonaws.com/[BUCKET]/[USER_ID]/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg')
-    a, b, c = split_upload_path(u)
-    assert a == '[BUCKET]'
-    assert b == '[USER_ID]'
-    assert c == '/2020/2020-02-26/2020-02-26T112343_[SLUG].jpg'
