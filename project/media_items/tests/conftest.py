@@ -40,7 +40,7 @@ def get_db_connect_info(live_server):
     db_pass = live_server._live_server_modified_settings.wrapped.DATABASES['default']['PASSWORD']
 
     # bucket name is used to disable some tests in the Java processing code
-    bucket_name = 'processing_integration_test'
+    bucket_name = 'processing-integration-test'
     remote_path = TemporaryDirectory(suffix='.%s' % bucket_name)
 
     # used by upload url request & image processor
