@@ -31,6 +31,7 @@ public interface PhotoProcessorDAO {
       "image_height,\n" +
       "image_width,\n" +
       "iso_speed,\n" +
+      "mime_type,\n" +
       "shutter_speed,\n" +
       "shutter_speed_denominator,\n" +
       "shutter_speed_numerator\n" +
@@ -54,13 +55,11 @@ public interface PhotoProcessorDAO {
       ":i.imageHeight,\n" +
       ":i.imageWidth,\n" +
       ":i.isoSpeed,\n" +
+      ":i.mimeType,\n" +
       ":i.shutterSpeed,\n" +
       ":i.shutterSpeedDenominator,\n" +
       ":i.shutterSpeedNumerator\n" +
    ")")
     // http://postgis.refractions.net/documentation/manual-1.5SVN/ST_MakePointM.html
   Integer insertImage(@BindBean("i") ImageInfo imageInfo);
-
-  @SqlQuery("select id from media_item where file_path = :i.filePath and owner_id = :i.userId")
-  String queryByPath(@BindBean("i") ImageKey imageKey);
 }
