@@ -1,5 +1,8 @@
 package cc.roja.photo.model;
 
+import cc.roja.photo.util.Constants;
+import cc.roja.photo.util.FilenameUtils;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -7,7 +10,7 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class ImageInfo {
-
+  private UUID id;
   private UUID owner;
   private String filePath;
 
@@ -38,20 +41,22 @@ public class ImageInfo {
   private Double gpsAlt;
   private OffsetDateTime gpsDateTime;
 
-  public ImageInfo(String filePath) {
-    this.filePath = filePath;
+  public ImageInfo(ImageKey imageKey) {
+    this.owner = imageKey.getUserId();
+    this.id = imageKey.getImageId();
+    this.filePath = imageKey.getKey();
   }
 
   public UUID getOwner() {
     return this.owner;
   }
 
-  public void setOwner(UUID owner) {
-    this.owner = owner;
-  }
-
   public String getFilePath() {
     return this.filePath;
+  }
+
+  public UUID getId() {
+    return id;
   }
 
   public long getFileSize() {
@@ -196,6 +201,11 @@ public class ImageInfo {
 
   public void setGpsDateTime(OffsetDateTime gpsDateTime) {
     this.gpsDateTime = gpsDateTime;
+  }
+
+  public String getMimeType() {
+    String extension = FilenameUtils.getExtension(this.filePath);
+    return Constants.MIME_TYPES.get(extension);
   }
 
   @Override

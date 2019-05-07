@@ -46,18 +46,13 @@ public class Processor {
       ImageInfo imageInfo = metaDataExtractor.extract(imageKey, imageFile);
 
       // store the metadata linked to the media id record
-      Integer count = dao.updateImage(imageInfo);
+      Integer count = dao.insertImage(imageInfo);
 
       if(count != 1) {
         LOG.warn("Image at path [{}] could not be updated.", imageKey.getKey());
       }
 
-      String imageId = dao.queryByPath(imageKey);
-
-      if(imageId == null || imageId.isEmpty()) {
-        throw new IllegalStateException("No image found in database with path: "+ imageKey);
-      }
-      return imageId;
+      return imageKey.getImageId().toString();
     }
   }
 }

@@ -82,8 +82,7 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
 
         String imagePath = objectKey.replace("photos/pictures", "");
 
-        ImageKey imageKey = new ImageKey();
-        imageKey.parse(imagePath);
+        ImageKey imageKey = ImageKey.parse(imagePath);
         String imageId = processor.processPhoto(imageKey);
         result.addImageId(imageId);
         LOG.info("> Processed image "+imageKey+" ["+imageId+"]");

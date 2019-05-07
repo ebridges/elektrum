@@ -14,10 +14,16 @@ from django.http.request import split_domain_port, validate_host
 from django.test import Client, TestCase
 from django.test.html import HTMLParseError, parse_html
 
+UUID_REGEX = '[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}'
 
 USER_PASSWORD = 'temporary'
 email_file_path = os.path.join(settings.BASE_DIR, 'sent_emails')
 email_log = os.path.join(email_file_path, 'test_authn_user_flows.log')
+
+
+def match_image_key(user_id, to_match):
+    pattern = r'[/]?(?P<user_id>%s)/(?P<image_id>%s)\.(?P<extension>[a-z]{3})' % (user_id, UUID_REGEX)
+    return re.match(pattern, to_match)
 
 
 def util_login_user(driver, live_server_url, user_email, password):

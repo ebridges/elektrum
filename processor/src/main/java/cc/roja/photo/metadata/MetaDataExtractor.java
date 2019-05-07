@@ -56,8 +56,7 @@ public class MetaDataExtractor {
   private static final Logger LOG = LogManager.getLogger(MetaDataExtractor.class);
 
   public ImageInfo extract(ImageKey imageKey, File image) throws IOException {
-    ImageInfo imageInfo = new ImageInfo(imageKey.getFilePath());
-    imageInfo.setOwner(imageKey.getUserId());
+    ImageInfo imageInfo = new ImageInfo(imageKey);
 
     Metadata metadataReader;
     try {
