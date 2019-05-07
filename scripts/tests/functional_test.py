@@ -53,10 +53,7 @@ def main(args):
         request = upload_request(client)
         assert_upload_request(request)
 
-        response = upload_image(client,
-                                request.headers.get('Location'),
-                                request.headers.get('X-Elektron-Filename')
-                                )
+        response = upload_image(client, request.headers.get('Location') )
         assert_upload(response)
 
     finally:
@@ -106,7 +103,9 @@ def get_object_size(bucket, key):
             return o.size
 
 
-def upload_image(client, url, filename):
+def upload_image(client, url):
+    p = PurePath(url.strip('/'))
+    filename = p.parts[1]
     debug('Uploading image [%s] to [%s]' % (filename, url))
     files = {
         'file': (filename, open(TEST_IMAGE, 'rb'), 'image/jpeg')
@@ -120,11 +119,6 @@ def assert_upload_request(request):
     assert_that(request.status_code).is_equal_to(201)
 
     assert_that(request.headers.get('Location')).is_not_none()
-    assert_that(request.headers.get('X-Elektron-Media-Id')).is_not_none()
-    assert_that(request.headers.get('X-Elektron-Filename')).is_not_none()
-
-    media_item_id = request.headers.get('X-Elektron-Media-Id')
-    assert_that(query_media_item(media_item_id)).is_not_none()
 
 
 def teardown_bucket():
@@ -151,7 +145,6 @@ def upload_request(client):
     debug('Initializing an upload request.')
     url = 'http://localhost:8000/media/request-upload/'
     payload = {
-        'create_date': CREATE_DATE,
         'mime_type': 'image/jpeg'
     }
     headers = get_csrf_headers(client)
