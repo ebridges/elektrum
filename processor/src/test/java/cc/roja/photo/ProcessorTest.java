@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -38,19 +39,20 @@ class ProcessorTest {
   @Test
   void testProcessPhoto_Success() throws IOException {
     Processor underTest = new Processor(this.mockDbi, this.mockImageLoader, this.mockMetaDataExtractor);
-    String expectedImageId = "abcd";
+    UUID expectedImageId = UUID.randomUUID();
 
     ImageKey mockImageKey = mock(ImageKey.class);
     when(mockImageKey.getKey()).thenReturn("defg");
+    when(mockImageKey.getImageId()).thenReturn(expectedImageId);
     File mockFile = mock(File.class);
     ImageInfo imageInfo = new ImageInfo(mockImageKey);
 
-    when(this.mockDao.queryByPath(mockImageKey)).thenReturn(expectedImageId);
+    when(this.mockDao.insertImage(imageInfo)).thenReturn(1);
     when(this.mockImageLoader.load(mockImageKey.getKey())).thenReturn(mockFile);
     when(this.mockMetaDataExtractor.extract(mockImageKey, mockFile)).thenReturn(imageInfo);
 
     String actualImageId = underTest.processPhoto(mockImageKey);
 
-    assertEquals(expectedImageId, actualImageId);
+    assertEquals(expectedImageId.toString(), actualImageId);
   }
 }
