@@ -1,5 +1,8 @@
 package cc.roja.photo.model;
 
+import cc.roja.photo.util.Constants;
+import cc.roja.photo.util.FilenameUtils;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -198,6 +201,11 @@ public class ImageInfo {
 
   public void setGpsDateTime(OffsetDateTime gpsDateTime) {
     this.gpsDateTime = gpsDateTime;
+  }
+
+  public String getMimeType() {
+    String extension = FilenameUtils.getExtension(this.filePath);
+    return Constants.MIME_TYPES.get(extension);
   }
 
   @Override
