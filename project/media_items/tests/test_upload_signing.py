@@ -11,10 +11,10 @@ from base.tests.util import match_image_key
 @pytest.mark.django_db
 def test_create_signed_upload_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    type = 'image/jpeg'
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
+    mime_type = 'image/jpeg'
     user = user_factory()
-    actual_url = create_signed_upload_url(user, type)
+    actual_url = create_signed_upload_url(user, mime_type)
     qs = parse_qs(actual_url.query)
     assert actual_url.scheme == 'https'
     assert actual_url.hostname == '%s.s3.amazonaws.com' % bucket_name
@@ -26,7 +26,7 @@ def test_create_signed_upload_url(user_factory, monkeypatch):
     assert m is not None
     assert m.group('user_id') == str(user.id)
     assert m.group('image_id') is not None
-    assert m.group('extension') == supported_upload_types[type]
+    assert m.group('extension') == supported_upload_types[mime_type]
 
 
 @pytest.mark.django_db
@@ -76,5 +76,5 @@ def test_extension_from_type_failure():
 
 
 def test_extension_from_type():
-    type = extension_from_type('image/jpeg')
-    assert type == 'jpg'
+    extension = extension_from_type('image/jpeg')
+    assert extension == 'jpg'

@@ -33,9 +33,9 @@ def test_sign_upload_request_success(authenticated_client, img, env):
 def parse_id_from_key(user_id, key):
     m = match_image_key(str(user_id), key)
     assert m is not None
-    id = m.group('image_id')
-    assert id is not None
-    return id
+    image_id = m.group('image_id')
+    assert image_id is not None
+    return image_id
 
 
 def assert_processing(e, a):
@@ -98,7 +98,7 @@ def invoke_processor(image_key):
 def build_clean_processor():
     cwd = processor_project_dir()
     cmd = ['./gradlew', '--quiet', 'clean', 'fatJar']
-    exec(cwd, cmd)
+    exec_cmd(cwd, cmd)
 
 
 def run_processor(path):
@@ -115,17 +115,17 @@ def run_processor(path):
         '-f',
         path
     ]
-    exec(cwd, cmd)
+    exec_cmd(cwd, cmd)
 
 
-def exec(cwd, cmd):
+def exec_cmd(cwd, cmd):
     subprocess.run(
         args=cmd,
         cwd=cwd,
-        #stdout=subprocess.DEVNULL,
-        #stderr=subprocess.DEVNULL
+        # stdout=subprocess.DEVNULL,
+        # stderr=subprocess.DEVNULL
     )
 
 
 def processor_project_dir():
-    return os.path.realpath( '%s/../processor' % os.getcwd() )
+    return os.path.realpath('%s/../processor' % os.getcwd())

@@ -8,15 +8,17 @@ import pytest
 from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 
+
 @pytest.mark.django_db
 def test_sign_upload_request_success(authenticated_client, monkeypatch):
     c, u = authenticated_client
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', 'abcdefgh')
     mime_type = 'image/jpeg'
-    response = c.post('/media/request-upload/', {'mime_type': 'image/jpeg'})
+    response = c.post('/media/request-upload/', {'mime_type': mime_type})
     assert response.status_code == 201
     assert 'Location' in response
     assert urlparse(response['Location']) is not None
+
 
 @pytest.mark.django_db
 def test_sign_upload_request_logged_out(client):
