@@ -1,4 +1,5 @@
 from users.tests.factories import *
+from media_items.tests.factories import *
 import pytest
 import os
 
