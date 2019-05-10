@@ -7,6 +7,7 @@ from django.contrib.gis.db import models
 from django.db.models import Field
 
 from base.models import BaseModel
+from date_dimension.models import DateDimension
 
 
 @deconstructible
@@ -64,6 +65,13 @@ class MediaItem(BaseModel):
         _('create date'),
         help_text=_('Required. The date and time this media item was created.'),
         null=False
+    )
+
+    create_day = models.ForeignKey(
+        DateDimension,
+        help_text=_('The date the media item was created.'),
+        on_delete=models.DO_NOTHING,
+        null=False,
     )
 
     file_size = models.BigIntegerField(
@@ -179,6 +187,11 @@ class MediaItem(BaseModel):
         null=True,
         max_length=64
     )
+
+    def save(self, *args, **kwargs):
+        created = int(self.create_date.strftime('%Y%m%d'))
+        self.create_day = DateDimension.objects.get(yyyymmdd=created)
+        super(MediaItem, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.file_path
