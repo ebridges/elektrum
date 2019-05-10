@@ -1,4 +1,3 @@
-import os
 import re
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs
@@ -10,10 +9,10 @@ from base.tests.util import match_image_key
 
 
 @pytest.mark.django_db
-def test_create_signed_upload_url(user_factory):
+def test_create_signed_upload_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
     type = 'image/jpeg'
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
     user = user_factory()
     actual_url = create_signed_upload_url(user, type)
     qs = parse_qs(actual_url.query)
@@ -31,9 +30,9 @@ def test_create_signed_upload_url(user_factory):
 
 
 @pytest.mark.django_db
-def test_create_signed_url(user_factory):
+def test_create_signed_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
     user = user_factory()
     expected_credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
@@ -59,10 +58,11 @@ def test_create_upload_key(user_factory):
 
 
 @pytest.mark.django_db
-def test_lookup_user_upload_credentials(user_factory):
-    os.environ['AWS_ACCESS_KEY_ID'] = 'abcdefg'
-    os.environ['AWS_SECRET_ACCESS_KEY'] = 'hijklmn'
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'opqrstu'
+def test_lookup_user_upload_credentials(user_factory, monkeypatch):
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'abcdefg')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', 'hijklmn')
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', 'opqrstu')
+
     user = user_factory()
     credentials = lookup_user_upload_credentials(user)
     assert credentials[0] == 'abcdefg'

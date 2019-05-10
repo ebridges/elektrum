@@ -1,4 +1,3 @@
-import os
 import re
 from urllib.parse import urlparse
 from uuid import UUID
@@ -10,9 +9,9 @@ from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 
 @pytest.mark.django_db
-def test_sign_upload_request_success(authenticated_client):
+def test_sign_upload_request_success(authenticated_client, monkeypatch):
     c, u = authenticated_client
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'abcdefgh'
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', 'abcdefgh')
     mime_type = 'image/jpeg'
     response = c.post('/media/request-upload/', {'mime_type': 'image/jpeg'})
     assert response.status_code == 201
