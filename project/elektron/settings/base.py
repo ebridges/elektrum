@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'users',
     'pages',
     'media_items',
+    'date_dimension',
 ]
 
 MIDDLEWARE = [
