@@ -1,4 +1,4 @@
-from users.tests.factories import *
+from users.tests.factories import UserFactory
 import pytest
 import os
 
