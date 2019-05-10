@@ -8,6 +8,7 @@ import pytest
 from media_items.upload_signing import *
 from base.tests.util import match_image_key
 
+
 @pytest.mark.django_db
 def test_create_signed_upload_url(user_factory):
     bucket_name = 'opqrstu'
