@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.views import View
 from django.utils.dateparse import parse_datetime
+from django.views.generic.list import ListView
 
 from media_items.upload_signing import create_signed_upload_url, supported_upload_types
 
@@ -11,10 +12,13 @@ class SignRequest(View):
     http_method_names = ['post']
 
     @staticmethod
-    def post(request):
+    def post(request, owner_id):
         user = request.user
         if not user.is_authenticated:
             return HttpResponseForbidden(content='Authentication is required.')
+
+        if owner_id != user.id:
+            return HttpResponseBadRequest('User is not authenticated properly')
 
         if 'mime_type' not in request.POST:
             return HttpResponseBadRequest('"mime_type" is a required parameter. It should be parsed from media\'s '

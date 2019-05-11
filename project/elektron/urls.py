@@ -33,5 +33,5 @@ urlpatterns = [
     path('account/', include('allauth.urls')),
     path('admin/', admin.site.urls),
     path('status/', include('status.urls')),
-    path('media/', include('media_items.urls')),
+    path('media/<uuid:owner_id>/', include('media_items.urls')),  # capture owner id here via path param?
 ]
