@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
@@ -60,6 +62,20 @@ class DateDimension(Model):
         help_text=_('Required. Ordinal count of day in the year. From 1-36[56]'),
         null=False,
     )
+
+    @classmethod
+    def create_from(cls, from_date: datetime.date):
+        return cls(
+            yyyymmdd=int(from_date.strftime('%Y%m%d')),
+            iso_date=from_date.strftime('%Y-%m-%d'),
+            this_date=from_date,
+            year=from_date.year,
+            month=from_date.month,
+            day=from_date.day,
+            week_num=from_date.isocalendar()[1],
+            week_day=from_date.isoweekday(),
+            day_in_year=from_date.timetuple().tm_yday
+        )
 
     class Meta:
         db_table = 'date_dim'
