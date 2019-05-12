@@ -11,6 +11,13 @@ class DateDimension(Model):
         primary_key=True,
     )
 
+    iso_date = models.CharField(
+        _('This date formatted as an ISO date (i.e. yyyy-mm-dd)'),
+        help_text=_('Required. YYYY-MM-DD as a string.'),
+        null=False,
+        max_length=16,
+    )
+
     this_date = models.DateField(
         _('This date as a typed date field.'),
         help_text=_('Required. This date as a date-type.'),
