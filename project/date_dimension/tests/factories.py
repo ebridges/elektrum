@@ -12,14 +12,12 @@ class DateDimensionFactory(DjangoModelFactory):
     class Meta:
         model = DateDimension
 
-    this_date = FuzzyDate(start_date=date(2010, 2, 26)).fuzz()
-    yyyymmdd = int(this_date.strftime('%Y%m%d'))
-    year = this_date.year
-    month = this_date.month
-    day = this_date.day
-    week_num = this_date.isocalendar()[1]
-    week_day = this_date.isoweekday()
-    day_in_year = this_date.timetuple().tm_yday
+    from_date = FuzzyDate(start_date=date(2010, 2, 26)).fuzz()
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create`` with our custom call."""
+        return model_class.create_from(*args, **kwargs)
 
 
 register(DateDimensionFactory)
