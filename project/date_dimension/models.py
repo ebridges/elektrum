@@ -65,7 +65,7 @@ class DateDimension(Model):
 
     @classmethod
     def create_from(cls, from_date: datetime.date):
-        return cls(
+        return cls.objects.create(
             yyyymmdd=int(from_date.strftime('%Y%m%d')),
             iso_date=from_date.strftime('%Y-%m-%d'),
             this_date=from_date,
