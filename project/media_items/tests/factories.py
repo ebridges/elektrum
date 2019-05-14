@@ -5,7 +5,7 @@ from uuid import uuid4
 import pytest
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyNaiveDateTime, FuzzyText
-from factory import Sequence, SubFactory, LazyAttribute, SelfAttribute
+from factory import Sequence, SubFactory, LazyAttribute, SelfAttribute, LazyFunction
 from pytest_factoryboy import register
 
 from media_items.models import MediaItem
@@ -17,8 +17,9 @@ class MediaItemFactory(DjangoModelFactory):
     class Meta:
         model = MediaItem
 
+    id = LazyFunction(uuid4)
     owner = SubFactory(UserFactory)
-    file_path = LazyAttribute(lambda o: '/%s/%s.jpg' % (o.owner.id, uuid4()))
+    file_path = LazyAttribute(lambda o: '/%s/%s.jpg' % (o.owner.id, o.id))
     mime_type = 'image/jpeg'
     create_day = SubFactory(DateDimensionFactory)
     create_date = LazyAttribute(lambda o: datetime(year=o.create_day.year,
