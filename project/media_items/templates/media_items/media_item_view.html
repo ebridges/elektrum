@@ -1,0 +1,30 @@
+{% extends 'base_protected.html' %}
+
+{% block title %}Collections{% endblock %}
+
+{% block logged_in_content %}
+
+<h2>Media Item for {{ user.username }} date: {{ media_item.create_day.iso_date }}</h2>
+
+<table>
+  <thead>
+      <tr>
+          <th>Path</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>{{ media_item.id }}</td>
+      </tr>
+  </tbody>
+  </table>
+{% endblock %}
+
+
+{% block logged_out_content_top %}
+  <h2>Please sign in!</h2>
+{% endblock %}
+
+{% block logged_out_content_bottom %}
+  <p>You must be logged in to view this content.</p>
+{% endblock %}

@@ -5,8 +5,12 @@ from media_items.models import MediaItem
 from date_dimension.models import DateDimension
 
 
-def media_item_view():
-    pass
+@exceptions_to_http_status
+def media_item_view(request, owner_id, image_id, template_name='media_items/media_item_view.html'):
+    assert_owner_id(owner_id, request.user.id)
+    media_item = get_object_or_404(MediaItem, id=image_id)
+    data = {'media_item': media_item}
+    return render(request, template_name, data)
 
 
 @exceptions_to_http_status
