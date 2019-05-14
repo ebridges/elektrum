@@ -9,8 +9,13 @@ def media_item_view():
     pass
 
 
-def media_list_view():
-    pass
+@exceptions_to_http_status
+def media_list_view(request, owner_id, year, date, template_name='media_items/media_list_view.html'):
+    assert_owner_id(owner_id, request.user.id)
+    dates = DateDimension.objects.filter(mediaitem__owner_id__exact=owner_id, year__exact=year, iso_date__exact=date)
+    media_items = MediaItem.objects.filter(owner_id__exact=owner_id, create_day__iso_date__exact=date)
+    data = {'object_list': media_items, 'collection_year': year, 'album_dates': dates}
+    return render(request, template_name, data)
 
 
 @exceptions_to_http_status
