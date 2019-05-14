@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from base.views.errors import *
+from base.views.errors import exceptions_to_http_status, BadRequestException
 from media_items.models import MediaItem
 from date_dimension.models import DateDimension
 
