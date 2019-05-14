@@ -38,7 +38,7 @@ def test_media_item_albums_view(media_item_factory, authenticated_client):
 @pytest.mark.django_db
 def test_media_item_albums_view_bad_request(media_item_factory, authenticated_client):
     c, u = authenticated_client
-    media_item_factory(owner=u)
-    request_url = '/media/%s/' % uuid4()
+    mi = media_item_factory(owner=u)
+    request_url = '/media/%s/%s/' % (uuid4(), mi.create_day.year)
     response = c.get(request_url)
     assert response.status_code == 400
