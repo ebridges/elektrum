@@ -1,22 +1,68 @@
 {% extends 'base_protected.html' %}
+{% load i18n %}
 
 {% block title %}Collections{% endblock %}
 
 {% block logged_in_content %}
 
-<h2>Media Item for {{ user.username }} date: {{ media_item.create_day.iso_date }}</h2>
+<h2>
+    {% blocktrans with u=user.username|title d=media_item.create_day.iso_date %}
+        Media Item for {{ u }} date: {{ d }}
+    {% endblocktrans %}
+</h2>
 
-<table>
+<div class="media_item_container">
+    <img class="media_item" src="{{ media_item.file_path }}" width="{{ media_item.width }}" height="{{ media_item
+    .height }}"/>
+</div>
+
+
+<table class="media_metadata">
   <thead>
       <tr>
-          <th>Path</th>
+          <th colspan="2">Photo Information</th>
       </tr>
   </thead>
   <tbody>
-      <tr>
-          <td>{{ media_item.id }}</td>
-      </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "Date & Time Created" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.create_day.this_date }}</td>
+    </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "File Size" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.file_size }}</td>
+    </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "Dimensions (WxH)" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.image_width }}x{{ media_item.image_height }}x</td>
+    </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "Camera Make & Model" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.camera_make }} {{ media_item.camera_model }}</td>
+    </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "Exposure" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.aperture }} at {{ media_item.shutter_speed }}s
+            (iso {{ media_item.iso_speed }})</td>
+    </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "GPS Location (lat/lon/alt [time])" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.gps_lat }}/{{ media_item.gps_lon }}/{{ media_item.gps_alt }}
+            [{{ media_item.gps_date_time }}]</td>
+    </tr>
+    <tr class="media_metadata_item">
+        <td class="media_metadata_item_key">{% trans "Photographer" %}</td>
+        <td class="media_metadata_item_val">{{ media_item.artist }}</td>
+    </tr>
   </tbody>
+  <tfoot>
+    <tr>
+        <th colspan="2">{% trans "Location" %}</th>
+    </tr>
+    <tr>
+        <td colspan="2"><a href="{{ media_item.file_path }}">{{ media_item.file_path }}</a> ({{ media_item.mime_type }})</td>
+    </tr>
+  </tfoot>
   </table>
 {% endblock %}
 
