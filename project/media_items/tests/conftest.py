@@ -1,6 +1,8 @@
 from users.tests.factories import *
+from media_items.tests.factories import *
+from date_dimension.tests.factories import *
+
 import pytest
-import os
 
 from tempfile import TemporaryDirectory
 
@@ -32,7 +34,7 @@ def image_info():
 
 
 @pytest.fixture(name='env')
-def get_db_connect_info(live_server):
+def get_db_connect_info(live_server, monkeypatch):
     db_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['NAME']
     db_host = live_server._live_server_modified_settings.wrapped.DATABASES['default']['HOST']
     db_port = live_server._live_server_modified_settings.wrapped.DATABASES['default']['PORT']
@@ -44,13 +46,13 @@ def get_db_connect_info(live_server):
     remote_path = TemporaryDirectory(suffix='.%s' % bucket_name)
 
     # used by upload url request & image processor
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
 
     # used by image processor
-    os.environ['DB_JDBC_URL'] = 'jdbc:postgresql://%s:%s/%s' % (db_host, db_port, db_name)
-    os.environ['DB_USERNAME'] = db_user
-    os.environ['DB_PASSWORD'] = db_pass
-    os.environ['IMAGE_ROOT'] = remote_path.name
+    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:postgresql://%s:%s/%s' % (db_host, db_port, db_name))
+    monkeypatch.setenv('DB_USERNAME', db_user)
+    monkeypatch.setenv('DB_PASSWORD', db_pass)
+    monkeypatch.setenv('IMAGE_ROOT', remote_path.name)
 
     return {
         'bucket_name': bucket_name,

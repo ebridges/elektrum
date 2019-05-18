@@ -1,0 +1,13 @@
+.media_metadata thead, tfoot {
+    font: 10px Helvetica, Arial, sans-serif;
+    text-align: left;
+}
+
+.media_metadata_item {
+    font: 8px Helvetica, Arial, sans-serif;
+}
+
+.media_metadata_item_key {
+    font-weight: bolder;
+    padding-left: 10px;
+}

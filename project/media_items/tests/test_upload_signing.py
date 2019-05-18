@@ -1,4 +1,3 @@
-import os
 import re
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs
@@ -8,13 +7,14 @@ import pytest
 from media_items.upload_signing import *
 from base.tests.util import match_image_key
 
+
 @pytest.mark.django_db
-def test_create_signed_upload_url(user_factory):
+def test_create_signed_upload_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
-    type = 'image/jpeg'
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
+    mime_type = 'image/jpeg'
     user = user_factory()
-    actual_url = create_signed_upload_url(user, type)
+    actual_url = create_signed_upload_url(user, mime_type)
     qs = parse_qs(actual_url.query)
     assert actual_url.scheme == 'https'
     assert actual_url.hostname == '%s.s3.amazonaws.com' % bucket_name
@@ -26,13 +26,13 @@ def test_create_signed_upload_url(user_factory):
     assert m is not None
     assert m.group('user_id') == str(user.id)
     assert m.group('image_id') is not None
-    assert m.group('extension') == supported_upload_types[type]
+    assert m.group('extension') == supported_upload_types[mime_type]
 
 
 @pytest.mark.django_db
-def test_create_signed_url(user_factory):
+def test_create_signed_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = bucket_name
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
     user = user_factory()
     expected_credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
@@ -58,10 +58,11 @@ def test_create_upload_key(user_factory):
 
 
 @pytest.mark.django_db
-def test_lookup_user_upload_credentials(user_factory):
-    os.environ['AWS_ACCESS_KEY_ID'] = 'abcdefg'
-    os.environ['AWS_SECRET_ACCESS_KEY'] = 'hijklmn'
-    os.environ['AWS_UPLOAD_BUCKET_NAME'] = 'opqrstu'
+def test_lookup_user_upload_credentials(user_factory, monkeypatch):
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'abcdefg')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', 'hijklmn')
+    monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', 'opqrstu')
+
     user = user_factory()
     credentials = lookup_user_upload_credentials(user)
     assert credentials[0] == 'abcdefg'
@@ -75,5 +76,5 @@ def test_extension_from_type_failure():
 
 
 def test_extension_from_type():
-    type = extension_from_type('image/jpeg')
-    assert type == 'jpg'
+    extension = extension_from_type('image/jpeg')
+    assert extension == 'jpg'

@@ -1,6 +1,7 @@
 class PytestTestRunner(object):
     """Runs pytest to discover and run tests."""
 
+    # noinspection PyUnusedLocal
     def __init__(self, verbosity=1, failfast=False, keepdb=False, **kwargs):
         self.verbosity = verbosity
         self.failfast = failfast
