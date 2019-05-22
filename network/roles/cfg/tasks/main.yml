@@ -114,3 +114,19 @@
     line: "media_processor_artifact_bucket_name='{{ media_processor_artifact_bucket_name }}'"
   tags:
     - cfg
+
+- name: store application domain name
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^application_domain_name='{{ application_domain_name }}'"
+    line: "application_domain_name='{{ application_domain_name }}'"
+  tags:
+    - cfg
+
+- name: store cname for media storage
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^media_storage_cname='{{ media_cname }}'"
+    line: "media_storage_cname='{{ media_cname }}'"
+  tags:
+    - cfg
