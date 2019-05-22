@@ -123,3 +123,14 @@
 - name: set photo processor role arn as fact
   set_fact:
     photo_processor_role_arn: "{{ photo_processor_role_info.iam_roles[0].arn }}"
+
+- name: obtain acm facts for "{{ application_domain_name }}"
+  aws_acm_facts:
+    domain_name: "{{ application_domain_name }}"
+  register: acm_facts
+
+- debug: var=acm_facts
+
+- name: set ARN of HTTPS certificate as fact
+  set_fact:
+     https_certificate_arn: "{{ acm_facts.certificates[0].certificate_arn }}"
