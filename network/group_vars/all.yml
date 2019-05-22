@@ -14,8 +14,9 @@ org_name: roja
 service_name: elektron
 config_info: "../etc/env/{{ elektron_env }}.env"
 
-# Storage Facts
-media_upload_bucket_name: "cc.roja.elektron.media"
+application_domain_name: elektron.photos
+media_cname: "media.{{ application_domain_name }}"
+media_upload_bucket_name: "{{ media_cname }}"
 media_processor_artifact_bucket_name: "cc.roja.elektron.media.archive"
 
 # DB Facts
