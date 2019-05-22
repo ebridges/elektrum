@@ -1,0 +1,14 @@
+- name: Create bucket for uploading media
+  s3_bucket:
+    name: "{{ media_upload_bucket_name }}"
+    policy: "{{ lookup('template','s3-media_upload_bucket_name-policy.json') }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ media_upload_bucket_name }}-bucket"  
+
+- name: Create bucket to archive photo-processor executables.  
+  s3_bucket:
+    name: "{{ media_processor_artifact_bucket_name }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ media_processor_artifact_bucket_name }}-bucket"  
