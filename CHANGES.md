@@ -6,6 +6,7 @@ Elektron Change Log
 
 - [#36] Eliminate requirement to include create date when requesting image upload.
 - [#37] Views and model for date-based views of media (collections, albums, items).
+- [#10] Configure CDN, HTTPS, and bucket setup.
 
 
 0.26 (2019-04-30)

@@ -1,0 +1,51 @@
+## BEGIN
+## Using the `cdn_facts` fact registered in the `common` role, 
+## queries the CNAME hosts and the CDN domain names from in
+## order to provide a simplified map of cname : domain name.
+query: '{dn: ansible_facts.cloudfront.summary.distributions[*].Aliases[*], cdn: ansible_facts.cloudfront.summary.distributions[*].DomainName}'
+lists: '{{ cdn_facts | json_query(query) }}'
+
+# {
+#     "dicts": {
+#         "d321f26luq1ktv.cloudfront.net": [
+#             "elektron.photos",
+#             "www.elektron.photos"
+#         ],
+#         "dccm9m7oagekp.cloudfront.net": [
+#             "media.elektron.photos"
+#         ]
+#     }
+# }
+dicts: '{{ dict( lists.cdn | zip_longest(lists.dn) ) }}'
+
+# {
+#     "dns_info": [
+#         {
+#             "cdn": "dccm9m7oagekp.cloudfront.net",
+#             "dn": "media.elektron.photos"
+#         },
+#         {
+#             "cdn": "d321f26luq1ktv.cloudfront.net",
+#             "dn": "elektron.photos"
+#         },
+#         {
+#             "cdn": "d321f26luq1ktv.cloudfront.net",
+#             "dn": "www.elektron.photos"
+#         }
+#     ]
+# }
+dns_info: |
+    {% set res = [] -%}
+    {%- for (key,values) in dicts.items() -%}
+      {%- for item in values -%}
+
+      {% set ignored = res.extend([{
+        "dn": item,
+        "cdn": key
+        }]) -%}
+
+      {%- endfor %}
+    {%- endfor %}
+    {{ res }}
+
+## END

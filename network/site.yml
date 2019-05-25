@@ -10,3 +10,6 @@
     - { role: vpc, tags: vpc }
     - { role: rds, tags: rds }
     - { role: cfg, tags: cfg }
+    - { role: sss, tags: sss }
+    - { role: cdn, tags: cdn }
+    - { role: dns, tags: dns }
