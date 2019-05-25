@@ -16,3 +16,25 @@
     viewer_certificate:
         acm_certificate_arn: "{{ https_certificate_arn }}"
         ssl_support_method: sni-only
+
+- name: Configure CDN distribution for serving application over HTTPS
+  cloudfront_distribution:
+    aliases: [
+      "{{ application_domain_name }}",
+      "{{ application_domain_name_alt }}"
+    ]
+    default_root_object: index.html
+    enabled: yes
+    http_version: http2
+    origins:
+      - id: "ELB-{{ application_domain_name }}"
+        domain_name: "{{ application_service_name }}"
+        origin_path: 
+    purge_tags: yes
+    state: present
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ application_domain_name }}-cdn"
+    viewer_certificate:
+        acm_certificate_arn: "{{ https_certificate_arn }}"
+        ssl_support_method: sni-only

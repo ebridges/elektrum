@@ -130,3 +130,12 @@
     line: "media_storage_cname='{{ media_cname }}'"
   tags:
     - cfg
+
+- name: store internal dns name for application cdn
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^application_cdn_host='{{ application_cdn_host }}'"
+    line: "application_cdn_host='{{ application_cdn_host }}'"
+  tags:
+    - cfg
+

@@ -11,3 +11,4 @@
     - { role: rds, tags: rds }
     - { role: cfg, tags: cfg }
     - { role: sss, tags: sss }
+    - { role: cdn, tags: cdn }

@@ -134,3 +134,19 @@
 - name: set ARN of HTTPS certificate as fact
   set_fact:
      https_certificate_arn: "{{ acm_facts.certificates[0].certificate_arn }}"
+
+- name: obtain cdn facts for application server
+  cloudfront_facts:
+    summary: true
+  register: cdn_facts
+  tags: debug
+
+- debug: var=cdn_facts
+  tags: debug
+
+- set_fact:
+    domain_name_query: "ansible_facts.cloudfront.summary.distributions[?Aliases[0] == `{{ application_domain_name }}`]|[0].DomainName"
+
+- name: set domain name of CDN distribution as a fact
+  set_fact:
+     application_cdn_host: "{{ cdn_facts|json_query(domain_name_query) }}"
