@@ -10,3 +10,4 @@
     - { role: vpc, tags: vpc }
     - { role: rds, tags: rds }
     - { role: cfg, tags: cfg }
+    - { role: sss, tags: sss }
