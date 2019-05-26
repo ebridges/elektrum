@@ -3,15 +3,6 @@ from datetime import date
 from date_dimension.scripts.generate_date_dimensions import date_range
 
 
-class Migration(migrations.Migration):
-
-    dependencies = [
-        ('date_dimension', '0002_datedimension_iso_date'),
-    ]
-
-    operations = create_date_dimension_rows()
-
-
 def create_date_dimension_rows():
     start_date = date(1970, 1, 1)
     end_date = date(2050, 12, 31)
@@ -23,3 +14,12 @@ def create_date_dimension_rows():
                    d['day_in_year'],d['iso_date']])],
                 [("DELETE FROM date_dim where yyyymmdd=%s;", [d['yyyymmdd']])],
             )
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('date_dimension', '0002_datedimension_iso_date'),
+    ]
+
+    operations = create_date_dimension_rows()
