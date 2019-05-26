@@ -1,6 +1,7 @@
 package cc.roja.photo.model;
 
 import cc.roja.photo.util.Constants;
+import cc.roja.photo.util.DateUtils;
 import cc.roja.photo.util.FilenameUtils;
 
 import java.time.LocalDateTime;
@@ -73,6 +74,10 @@ public class ImageInfo {
 
   public void setCreateDateTime(LocalDateTime createDateTime) {
     this.createDateTime = createDateTime;
+  }
+
+  public int getCreateDayId() {
+    return DateUtils.formatAsInt(this.createDateTime);
   }
 
   public Integer getImageWidth() {
