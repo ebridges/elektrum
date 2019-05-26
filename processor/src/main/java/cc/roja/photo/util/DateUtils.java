@@ -36,7 +36,7 @@ public class DateUtils {
     return parseDateWithDefaults(dateString, pattern, null);
   }
 
-    public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern, TimeZone timeZone) {
+  public static TemporalAccessor parseDateWithDefaults(String dateString, String pattern, TimeZone timeZone) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(pattern)
         .parseDefaulting(MONTH_OF_YEAR, 1)
         .parseDefaulting(DAY_OF_MONTH, 1)
