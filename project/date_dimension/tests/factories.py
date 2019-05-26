@@ -12,7 +12,7 @@ class DateDimensionFactory(DjangoModelFactory):
     class Meta:
         model = DateDimension
 
-    from_date = FuzzyDate(start_date=date(2010, 2, 26)).fuzz()
+    from_date = FuzzyDate(start_date=date(1966, 2, 26), end_date=date(1969, 12, 31)).fuzz()
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
