@@ -6,7 +6,7 @@
 {% block logged_in_content %}
 
 <h2>
-    {% blocktrans with u=user.username|title d=media_item.create_day.iso_date %}
+    {% blocktrans with u=user.username d=media_item.create_day.iso_date %}
         Media Item for {{ u }} date: {{ d }}
     {% endblocktrans %}
 </h2>
