@@ -1,11 +1,9 @@
 package cc.roja.photo.io;
 
 import cc.roja.photo.model.ImageInfo;
-import cc.roja.photo.model.ImageKey;
 
 import cc.roja.photo.util.Constants;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface PhotoProcessorDAO {
