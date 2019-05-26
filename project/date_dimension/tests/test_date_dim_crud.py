@@ -2,6 +2,7 @@ from datetime import date
 from date_dimension.models import DateDimension
 import pytest
 
+
 @pytest.mark.django_db
 def test_date_dim_create():
     d = date(2001, 9, 11)
