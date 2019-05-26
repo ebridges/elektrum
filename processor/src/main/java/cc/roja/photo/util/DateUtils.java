@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 import java.util.TimeZone;
 
+import static java.lang.Integer.parseInt;
+import static java.lang.String.format;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
@@ -53,4 +55,14 @@ public class DateUtils {
     return formatter.parse(dateString);
   }
 
+  public static int formatAsInt(LocalDateTime dateTime) {
+    if(dateTime == null) {
+      throw new IllegalArgumentException("dateTime argument cannot be null.");
+    }
+    String result =
+        format("%04d", dateTime.getYear()) +
+        format("%02d", dateTime.getMonthValue()) +
+        format("%02d", dateTime.getDayOfMonth());
+    return parseInt(result);
+  }
 }
