@@ -81,7 +81,7 @@ def test_media_item_view(authenticated_client, media_item_factory):
 
     assert response.status_code == 200
     assert 'Media Item for %s date: %s' % (u.username, mi.create_day.iso_date) in content
-    assert '<td>%s</td>' % mi.id in content
+    assert '<td colspan="2">%s</td>' % mi.id in content
 
 
 @pytest.mark.django_db

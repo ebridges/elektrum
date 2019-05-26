@@ -6,14 +6,16 @@
 {% block logged_in_content %}
 
 <h2>
-    {% blocktrans with u=user.username|title d=media_item.create_day.iso_date %}
+    {% blocktrans with u=user.username d=media_item.create_day.iso_date %}
         Media Item for {{ u }} date: {{ d }}
     {% endblocktrans %}
 </h2>
 
 <div class="media_item_container">
-    <img class="media_item" src="{{ media_item.file_path }}" width="{{ media_item.width }}" height="{{ media_item
-    .height }}"/>
+    <img class="media_item"
+         src="{{ media_item.file_path }}"
+         width="{{ media_item.width }}"
+         height="{{ media_item.height }}"/>
 </div>
 
 
@@ -61,6 +63,9 @@
     </tr>
     <tr>
         <td colspan="2"><a href="{{ media_item.file_path }}">{{ media_item.file_path }}</a> ({{ media_item.mime_type }})</td>
+    </tr>
+    <tr>
+        <td colspan="2">{{ media_item.id }}</td>
     </tr>
   </tfoot>
   </table>

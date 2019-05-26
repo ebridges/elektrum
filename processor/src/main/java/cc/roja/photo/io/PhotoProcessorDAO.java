@@ -1,11 +1,9 @@
 package cc.roja.photo.io;
 
 import cc.roja.photo.model.ImageInfo;
-import cc.roja.photo.model.ImageKey;
 
 import cc.roja.photo.util.Constants;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface PhotoProcessorDAO {
@@ -19,6 +17,7 @@ public interface PhotoProcessorDAO {
       "camera_make,\n" +
       "camera_model,\n" +
       "create_date,\n" +
+      "create_day_id,\n" +
       "file_path,\n" +
       "file_size,\n" +
       "focal_length_denominator,\n" +
@@ -43,6 +42,7 @@ public interface PhotoProcessorDAO {
       ":i.cameraMake,\n" +
       ":i.cameraModel,\n" +
       ":i.createDateTime,\n" +
+      ":i.createDayId,\n" +
       ":i.filePath,\n" +
       ":i.fileSize,\n" +
       ":i.focalLengthDenominator,\n" +
