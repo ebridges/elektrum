@@ -235,8 +235,7 @@ public class ImageInfo {
       && Objects.equals(gpsLon, imageInfo.gpsLon)
       && Objects.equals(gpsLat, imageInfo.gpsLat)
       && Objects.equals(gpsAlt, imageInfo.gpsAlt)
-      && Objects.equals(gpsDateTime, imageInfo.gpsDateTime
-    );
+      && Objects.equals(gpsDateTime, imageInfo.gpsDateTime);
   }
 
   @Override
