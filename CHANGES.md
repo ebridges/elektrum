@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.27 (unreleased)
+0.27 (2019-05-27)
 -----------------
 
 - [#36] Eliminate requirement to include create date when requesting image upload.
