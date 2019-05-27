@@ -52,7 +52,7 @@ def test_url(url, header=None):
 def main():
   s = Thread(name='http-server', target=start_docker_compose)
   s.start()
-  time.sleep(5)
+  time.sleep(10)
   result = 0
   message = 'Test Completed'
 
