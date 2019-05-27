@@ -96,7 +96,7 @@ task fatJar(type: Jar) {
 
 
 task buildZip(type: Zip) {
-    destinationDirectory=new File('out/production/archive')
+    destinationDirectory=new File('build/archives')
     from compileJava
     from processResources
     into('lib') {

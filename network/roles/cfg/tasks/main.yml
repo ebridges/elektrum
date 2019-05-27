@@ -139,3 +139,18 @@
   tags:
     - cfg
 
+- name: store photo processor connection timeout
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^connection_timeout='{{ photo_processor_connection_timeout }}'"
+    line: "connection_timeout='{{ photo_processor_connection_timeout }}'"
+  tags:
+    - cfg
+
+- name: store photo processor connection timeout
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^memory_size='{{ photo_processor_memory_size }}'"
+    line: "memory_size='{{ photo_processor_memory_size }}'"
+  tags:
+    - cfg

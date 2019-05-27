@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 CMD=$1
 ARG=$2
@@ -100,8 +100,16 @@ then
 
         $(aws ecr get-login --no-include-email --region us-east-1)
 
-        echo "Deploying new version of image processor at version ${version}"
-        make clean deploy-all VERSION=${version}
+        make all VERSION=${version}
+        processor_archive=`find processor -name 'elektron-processor*.zip'`
+        echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
+        python3 scripts/photo-processor-deploy.py ${processor_archive}
+        result=$?
+        if [ "${result}" -ne "0" ];
+        then
+            echo "Error building/deploying photo processor archive."
+            exit ${result}
+        fi
 
         echo "Building a fresh image of Dockerfile-Proxy for ${ELEKTRON_ENV} at version ${version}"
         docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:${version} .
