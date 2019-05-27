@@ -103,11 +103,11 @@ then
         make all VERSION=${version}
         processor_archive=`find processor -name 'elektron-processor*.zip'`
         echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
-        python3 scripts/photo-processor-deploy.py ${processor_archive}
+        python3 scripts/photo-processor-deploy.py --archive=${processor_archive}
         result=$?
         if [ "${result}" -ne "0" ];
         then
-            echo "Error building/deploying photo processor archive."
+            echo "ERROR: building/deploying photo processor archive was unsuccessful."
             exit ${result}
         fi
 
