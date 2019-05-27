@@ -1,26 +1,17 @@
 CODE=./processor
-BUILD=${CODE}/out/production
+BUILD=${CODE}/build
 
 .PHONY: all clean
 
-all: zip-all deploy-all
-
-clean:
-	/bin/rm -rf ${BUILD}
-	cd ${CODE} && ./gradlew clean
-	mkdir -p ${BUILD}
-	@echo [all] CLEAN: SUCCESSFUL
-
-%.zip:
+elektron-processor%.zip:
 	cd ${CODE} && ./gradlew -PprojVersion=$(VERSION) buildZip
 	@echo [photo-processor] BUILD: SUCCESSFUL
 
-zip-all: processor.zip
+processor.zip: elektron-processor%.zip
 
-processor.zip: $(shell find $(BUILD) -name elektron-processor*.zip)
+clean:
+	/bin/rm -rf ${BUILD}
+	mkdir -p ${BUILD}
+	@echo [all] CLEAN: SUCCESSFUL
 
-deploy-photo-processor: processor.zip
-	$(shell python3 scripts/photo-processor-deploy.py ${BUILD}/archive/elektron-processor*.zip)
-	@echo [photo-processor] DEPLOY: SUCCESSFUL
-
-deploy-all: deploy-photo-processor
+all: clean processor.zip
