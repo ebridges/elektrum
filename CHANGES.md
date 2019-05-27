@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.28 (unreleased)
+0.28 (2019-05-27)
 -----------------
 
 - [#41] Improve robustness of photo processor deployment.
