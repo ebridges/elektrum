@@ -1,9 +1,11 @@
-from logging import Logger, basicConfig, INFO, DEBUG, CRITICAL, debug, info, getLogger
+from logging import Logger, basicConfig, INFO, DEBUG, CRITICAL, debug, info, error, getLogger
 from os import getenv, path
-from sys import argv
+from sys import argv, exit, exc_info
 from dotenv import load_dotenv
 import boto3
 from boto3.s3.transfer import S3Transfer
+import argparse
+from traceback import format_exc
 
 # Presumed to be run from the root of the project
 
@@ -20,25 +22,25 @@ def deploy(archive):
   upload_archive(archive_bucket, artifact_name, archive)
   add_function(archive_bucket, artifact_name, APP_NAME)
 
-  info('Function created [%s]' % APP_NAME)
-
 
 def load_env():
   env = getenv('ELEKTRON_ENV', 'development')
   env_file = "etc/env/%s.env" % env
   debug('Loading environment from [%s]' % env_file)
   load_dotenv(dotenv_path=env_file, verbose=True)
+  info('Loaded environment from [%s]' % env_file)
 
 
 def upload_archive(archive_bucket, artifact_name, archive):
+  debug('Uploading artifact [%s] to bucket [%s] using archive [%s]' % (artifact_name, archive_bucket, archive))
   s3 = boto3.client('s3')
   client = S3Transfer(client=s3)
-  debug('Uploading function to [%s] as [%s].' % (archive_bucket, artifact_name))
   client.upload_file(archive, archive_bucket, artifact_name)
-  info('Function archive uploaded [%s]' % APP_NAME)
+  info('Function archive [%s] uploaded to bucket [%s]' % (artifact_name, archive_bucket))
 
 
 def add_function(bucket, artifact_name, function_name):
+  debug('adding function [%s] from artifact [%s]' % (function_name, artifact_name))
   client = boto3.client('lambda')
 
   response = client.list_functions()
@@ -78,19 +80,34 @@ def add_function(bucket, artifact_name, function_name):
       }
     }
   )
+  info('Function [%s] created from artifact [%s]' % (function_name, artifact_name))
 
 
 def configure_logging(threshold=INFO):
+  print('level: %s' % threshold)
   basicConfig(
-      format='[%(asctime)s][%(levelname)s] [%(name)s] %(message)s',
+      format='[%(asctime)s] [%(levelname)s] %(message)s',
       datefmt='%Y/%m/%d %H:%M:%S',
       level=threshold)
-  getLogger('botocore.credentials').setLevel(CRITICAL)
+  getLogger('botocore').setLevel(CRITICAL)
+  getLogger('urllib3').setLevel(CRITICAL)
+  getLogger('s3transfer').setLevel(CRITICAL)
+
 
 
 if __name__ == "__main__":
-  if len(argv) > 2:
-    configure_logging(DEBUG)
+  parser = argparse.ArgumentParser(description='Deploy Elektron Photo Processor')
+  parser.add_argument('--verbose', action="store_true", dest="verbose", default=False)
+  parser.add_argument('--archive', action="store", dest="archive", required=True)
+  args = parser.parse_args()
+
+  try:
+    level = DEBUG if args.verbose else INFO
+    configure_logging(level)
+    deploy(args.archive)
+  except:
+    error('%s: %s' % (exc_info()[0].__name__, exc_info()[1]))
+    debug(format_exc())
+    exit(1)
   else:
-    configure_logging()
-  deploy(argv[1])
+    exit(0)
