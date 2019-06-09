@@ -1,8 +1,9 @@
+from .base import *
 import os
 import requests
 
 DEBUG = True
-ALLOWED_HOSTS = ['elektron-staging.us-east-1.elasticbeanstalk.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['.execute-api.us-east-1.amazonaws.com', '127.0.0.1', 'localhost']
 
 STATIC_HOST = os.environ.get('application_cdn_host', '')
 STATIC_URL = STATIC_HOST + '/static/'

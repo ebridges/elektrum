@@ -35,3 +35,4 @@ temp-requirements.txt
 # pytest
 .pytest_cache/
 .gradle/
+project/zappa_settings.json

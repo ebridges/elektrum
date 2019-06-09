@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import sys
-from dotenv import load_dotenv
-from . import elektron_env
+from elektron.env_util import locate_env_file
+import dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,14 +36,15 @@ ALLOWED_HOSTS = []
 ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
 
 # read version number for display in the app
-with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
-    APP_VERSION_NUMBER = v_file.read()
+version_file = '%s/version.txt' % ELEKTRON_PROJECT_DIR
+if os.path.isfile(version_file):
+    with open(version_file) as v_file:
+        APP_VERSION_NUMBER = v_file.read()
+else:
+    APP_VERSION_NUMBER = os.getenv('APP_VERSION', 'no-version')
 
-# declare location of environment file
-ELEKTRON_ENV_PATH = '%s/etc/env/%s.env' % (ELEKTRON_PROJECT_DIR, elektron_env)
-
-# import project environment
-load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
+env_file = locate_env_file(BASE_DIR)
+dotenv.read_dotenv(env_file)
 
 # END Initialize environment
 
@@ -58,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'django.contrib.gis',
+#    'django.contrib.gis',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -112,7 +113,9 @@ WSGI_APPLICATION = 'elektron.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # See issue #45
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('db_name'),
         'USER': os.getenv('db_username'),
         'PASSWORD': os.getenv('db_password'),
@@ -127,7 +130,11 @@ if [s for s in sys.argv if 'pytest' in s]:
         # see #14 - SQLite backend is not working for some tests
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # 
+        # see issue #45
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': "media_info",
         'USER': "ebridges",
         'PASSWORD': "ebridges",

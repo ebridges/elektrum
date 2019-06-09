@@ -5,7 +5,7 @@ ARG=$2
 
 if [ -z "${CMD}" ];
 then
-    echo "Usage: ${0}: [deploy-release|create-environment] [-f]"
+    echo "Usage: ${0}: deploy-release [-f]"
     exit 0
 fi
 
@@ -111,23 +111,37 @@ then
             exit ${result}
         fi
 
-        echo "Building a fresh image of Dockerfile-Proxy for ${ELEKTRON_ENV} at version ${version}"
-        docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:${version} .
-        docker tag roja/elektron_proxy:${version} ${ecr_host}/roja/elektron_proxy:${version}
-        docker push ${ecr_host}/roja/elektron_proxy:${version}
-        tmp=$(mktemp)
-        cat Dockerrun.aws.json | sed "s/roja\/elektron_proxy:latest/${ecr_host}\/roja\/elektron_proxy:${version}/" > "$tmp" && mv "$tmp" Dockerrun.aws.json
+        echo "Building a fresh image of elektron_zappa for ${ELEKTRON_ENV} at version ${version}"
+        docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag roja/elektron_zappa:${version} .
+            
+        cat <<- EOF > project/zappa_settings.json
+		{
+			"${ELEKTRON_ENV}": {
+				"aws_region": "${aws_region}",
+				"django_settings": "${service_name}.settings",
+				"project_name": "${service_name}",
+				"runtime": "python3.6",
+				"s3_bucket": "${media_processor_artifact_bucket_name}",
+				"slim_handler": true,
+				"environment_variables": {
+					"ELEKTRON_ENV": "${ELEKTRON_ENV}",
+					"APP_VERSION": "${version}"
+				}
+			}
+		}
+		EOF
 
-        echo "Building a fresh image of Dockerfile-App for ${ELEKTRON_ENV} at version ${version}"
-        docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}" --tag roja/elektron_app:${version} .
-        docker tag roja/elektron_app:${version} ${ecr_host}/roja/elektron_app:${version}
-        docker push ${ecr_host}/roja/elektron_app:${version}
-        tmp=$(mktemp)
-        cat Dockerrun.aws.json | sed "s/roja\/elektron_app:latest/${ecr_host}\/roja\/elektron_app:${version}/" > "$tmp" && mv "$tmp" Dockerrun.aws.json
+        cat project/zappa_settings.json
 
-        eb deploy "${ENV_NAME}"
+        docker run \
+            --env AWS_SECRET_ACCESS_KEY \
+            --env AWS_ACCESS_KEY_ID \
+            --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+            roja/elektron_zappa:${version} \
+            bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV} && zappa deploy ${ELEKTRON_ENV}"
 
-        git checkout -- Dockerrun.aws.json
+        rm project/zappa_settings.json
+
         git checkout master
         exit $?
     else
@@ -136,28 +150,4 @@ then
         echo 'Deploy cancelled.'
         exit 0
     fi
-fi
-   
-if [ 'create-environment' == "${CMD}" ];
-then
-    ## TODO: raise error if environment already exists
-    
-    ## create environment
-    echo "Creating new environment: ${ENV_NAME}"
-    eb create --verbose \
-       --tags "Service=${service_name}" \
-       --platform "multi-container-docker-18.06.1-ce-(generic)" \
-       --cname "${ENV_NAME}" \
-       --vpc \
-       --vpc.id "${vpc_id}" \
-       --vpc.elbpublic \
-       --vpc.publicip \
-       --vpc.ec2subnets "${vpc_public_subnet_ids}" \
-       --vpc.elbsubnets "${vpc_public_subnet_ids}" \
-       --vpc.securitygroups "${vpc_security_group_ids}" \
-       --elb-type application \
-       --envvars "ELEKTRON_ENV=${ELEKTRON_ENV}" \
-       "${ENV_NAME}"
-
-    exit $?
 fi

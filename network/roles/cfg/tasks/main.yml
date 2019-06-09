@@ -83,14 +83,6 @@
   tags:
     - cfg
 
-- name: store ecr repository host info
-  lineinfile:
-    path: "{{ config_info }}"
-    regexp: "^ecr_host='{{ repository_uri_host }}'"
-    line: "ecr_host='{{ repository_uri_host }}'"
-  tags:
-    - cfg
-
 - name: store photo processor role ARN
   lineinfile:
     path: "{{ config_info }}"
