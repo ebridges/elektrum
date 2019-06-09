@@ -111,7 +111,8 @@ then
 
         echo "Building a fresh image of elektron_zappa for ${ELEKTRON_ENV} at version ${version}"
         docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag roja/elektron_zappa:${version} .
-            
+
+	echo "Deploying ${version} to ${ELEKTRON_ENV} using the following settings:"
         cat <<- EOF > project/zappa_settings.json
 		{
 			"${ELEKTRON_ENV}": {
