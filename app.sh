@@ -98,8 +98,6 @@ then
         echo "Release tagging successful, deploying application version ${version}"
         git checkout ${version}
 
-        $(aws ecr get-login --no-include-email --region us-east-1)
-
         make all VERSION=${version}
         processor_archive=`find processor -name 'elektron-processor*.zip'`
         echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
