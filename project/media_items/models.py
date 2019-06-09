@@ -3,7 +3,7 @@ from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from django.contrib.gis.db import models
+# from django.contrib.gis.db import models
 from django.db.models import Field
 
 from base.models import BaseModel
@@ -174,12 +174,12 @@ class MediaItem(BaseModel):
         null=True,
     )
 
-    gps_location = models.PointField(
-        _('gps coordinate'),
-        help_text=_('Optional. The coordinate for the GPS location of where this media item was created.'),
-        null=True,
-        dim=3
-    )
+    # gps_location = models.PointField(
+    #     _('gps coordinate'),
+    #     help_text=_('Optional. The coordinate for the GPS location of where this media item was created.'),
+    #     null=True,
+    #     dim=3
+    # )
 
     artist = models.CharField(
         _('artist'),

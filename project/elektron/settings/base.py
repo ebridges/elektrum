@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'django.contrib.gis',
+#    'django.contrib.gis',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -112,7 +112,9 @@ WSGI_APPLICATION = 'elektron.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # See issue #45
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('db_name'),
         'USER': os.getenv('db_username'),
         'PASSWORD': os.getenv('db_password'),
@@ -127,7 +129,11 @@ if [s for s in sys.argv if 'pytest' in s]:
         # see #14 - SQLite backend is not working for some tests
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # 
+        # see issue #45
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': "media_info",
         'USER': "ebridges",
         'PASSWORD': "ebridges",

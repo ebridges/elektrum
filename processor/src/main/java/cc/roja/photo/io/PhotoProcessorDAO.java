@@ -2,7 +2,6 @@ package cc.roja.photo.io;
 
 import cc.roja.photo.model.ImageInfo;
 
-import cc.roja.photo.util.Constants;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
@@ -26,7 +25,6 @@ public interface PhotoProcessorDAO {
       "gps_date_time,\n" +
       "gps_lat,\n" +
       "gps_lon,\n" +
-      "gps_location,\n" +
       "image_height,\n" +
       "image_width,\n" +
       "iso_speed,\n" +
@@ -51,7 +49,6 @@ public interface PhotoProcessorDAO {
       ":i.gpsDateTime,\n" +
       ":i.gpsLat,\n" +
       ":i.gpsLon,\n" +
-      "ST_SetSRID(ST_MakePoint(:i.gpsLon, :i.gpsLat, :i.gpsAlt), "+ Constants.SRID+"),\n" +
       ":i.imageHeight,\n" +
       ":i.imageWidth,\n" +
       ":i.isoSpeed,\n" +
