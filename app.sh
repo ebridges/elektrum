@@ -134,13 +134,21 @@ then
             --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  \
             --tag roja/elektron_zappa:${version} .
 
+        echo "Running 'zappa undeploy ${ELEKTRON_ENV}' for v${version}'"
+        docker run \
+            --env AWS_SECRET_ACCESS_KEY \
+            --env AWS_ACCESS_KEY_ID \
+            --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+            roja/elektron_zappa:${version} \
+            bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV}"
+
         echo "Running 'zappa deploy ${ELEKTRON_ENV}' for v${version}'"
         docker run \
             --env AWS_SECRET_ACCESS_KEY \
             --env AWS_ACCESS_KEY_ID \
             --env ELEKTRON_ENV=${ELEKTRON_ENV} \
             roja/elektron_zappa:${version} \
-            bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV} && zappa deploy ${ELEKTRON_ENV}"
+            bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV}"
 
         rm project/zappa_settings.json
 
