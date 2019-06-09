@@ -146,3 +146,11 @@
     line: "memory_size='{{ photo_processor_memory_size }}'"
   tags:
     - cfg
+
+- name: store region name
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^aws_region='{{ aws_region }}'"
+    regexp: "aws_region='{{ aws_region }}'"
+  tags:
+    - cfg
