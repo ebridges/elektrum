@@ -96,23 +96,6 @@
 
 - debug: var=db_instance
 
-- name: Create repository for app
-  ecs_ecr: 
-    name: '{{ org_name }}/{{ service_name }}_app'
-    state: present
-
-- name: Create repository for proxy
-  ecs_ecr: 
-    name: '{{ org_name }}/{{ service_name }}_proxy'
-    state: present
-  register: repository_info
-
-- debug: var=repository_info
-
-- name: set repo hostname as fact
-  set_fact:
-    repository_uri_host: "{{ repository_info.repository.repositoryUri.split('/')[0] | lower }}"
-
 - name: get iam role facts
   iam_role_facts:
     name: 'imageService-photoProcessor'
