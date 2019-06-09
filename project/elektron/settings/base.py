@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import sys
-from dotenv import load_dotenv
-from . import elektron_env
+from elektron.env_util import locate_env_file
+import dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,14 +36,15 @@ ALLOWED_HOSTS = []
 ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
 
 # read version number for display in the app
-with open('%s/version.txt' % ELEKTRON_PROJECT_DIR) as v_file:
-    APP_VERSION_NUMBER = v_file.read()
+version_file = '%s/version.txt' % ELEKTRON_PROJECT_DIR
+if os.path.isfile(version_file):
+    with open(version_file) as v_file:
+        APP_VERSION_NUMBER = v_file.read()
+else:
+    APP_VERSION_NUMBER = os.getenv('APP_VERSION', 'no-version')
 
-# declare location of environment file
-ELEKTRON_ENV_PATH = '%s/etc/env/%s.env' % (ELEKTRON_PROJECT_DIR, elektron_env)
-
-# import project environment
-load_dotenv(dotenv_path=ELEKTRON_ENV_PATH, verbose=True)
+env_file = locate_env_file(BASE_DIR)
+dotenv.read_dotenv(env_file)
 
 # END Initialize environment
 
