@@ -1,7 +1,7 @@
 from logging import Logger, basicConfig, INFO, DEBUG, CRITICAL, debug, info, error, getLogger
 from os import getenv, path
 from sys import argv, exit, exc_info
-from dotenv import load_dotenv
+from dotenv import read_dotenv
 import boto3
 from boto3.s3.transfer import S3Transfer
 import argparse
@@ -28,7 +28,7 @@ def load_env():
     env = getenv('ELEKTRON_ENV', 'development')
     env_file = "etc/env/%s.env" % env
     debug('Loading environment from [%s]' % env_file)
-    load_dotenv(dotenv_path=env_file, verbose=True)
+    read_dotenv(env_file)
     info('Loaded environment from [%s]' % env_file)
 
 
