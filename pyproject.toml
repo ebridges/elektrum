@@ -36,6 +36,8 @@ pytest-factoryboy = "^2.0.2"
 records = "^0.5.3"
 virtualenvwrapper = "^4.8.4"
 assertpy = "^0.14.0"
+jinja2 = "^2.10"
+cryptography = "^2.7"
 
 [build-system]
 ## poetry version should agree with version in Dockerfile-App
