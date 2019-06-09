@@ -151,6 +151,6 @@
   lineinfile:
     path: "{{ config_info }}"
     regexp: "^aws_region='{{ aws_region }}'"
-    regexp: "aws_region='{{ aws_region }}'"
+    line: "aws_region='{{ aws_region }}'"
   tags:
     - cfg
