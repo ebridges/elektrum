@@ -109,10 +109,7 @@ then
             exit ${result}
         fi
 
-        echo "Building a fresh image of elektron_zappa for ${ELEKTRON_ENV} at version ${version}"
-        docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag roja/elektron_zappa:${version} .
-
-	echo "Deploying ${version} to ${ELEKTRON_ENV} using the following settings:"
+	    echo "Deploying ${version} to ${ELEKTRON_ENV} using the following settings:"
         cat <<- EOF > project/zappa_settings.json
 		{
 			"${ELEKTRON_ENV}": {
@@ -132,6 +129,12 @@ then
 
         cat project/zappa_settings.json
 
+        echo "Building a fresh image of elektron_zappa for ${ELEKTRON_ENV} at version ${version}"
+        docker build \
+            --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  \
+            --tag roja/elektron_zappa:${version} .
+
+        echo "Running 'zappa deploy ${ELEKTRON_ENV}' for v${version}'"
         docker run \
             --env AWS_SECRET_ACCESS_KEY \
             --env AWS_ACCESS_KEY_ID \
