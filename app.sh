@@ -109,6 +109,30 @@ then
             exit ${result}
         fi
 
+        IFS=', ' read -r -a subnets <<< ${vpc_public_subnet_ids}
+        subnet_list=''
+        for element in "${subnets[@]}"
+        do
+            if [ -z "${subnet_list}" ];
+            then
+                subnet_list="\"${element}\""
+            else
+                subnet_list="${subnet_list}, \"${element}\""
+            fi
+        done
+
+        IFS=', ' read -r -a secgroups <<< ${vpc_security_group_ids}
+        secgrp_list=''
+        for element in "${secgroups[@]}"
+        do
+            if [ -z "${secgrp_list}" ];
+            then
+                secgrp_list="\"${element}\""
+            else
+                secgrp_list="${secgrp_list}, \"${element}\""
+            fi
+        done
+
 	    echo "Deploying ${version} to ${ELEKTRON_ENV} using the following settings:"
         cat <<- EOF > project/zappa_settings.json
 		{
@@ -122,7 +146,11 @@ then
 				"environment_variables": {
 					"ELEKTRON_ENV": "${ELEKTRON_ENV}",
 					"APP_VERSION": "${version}"
-				}
+				},
+				"vpc_config": {
+					"SubnetIds": [ ${subnet_list} ],
+					"SecurityGroupIds": [ ${secgrp_list} ]
+				},
 			}
 		}
 		EOF
