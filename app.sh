@@ -134,21 +134,27 @@ then
             --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  \
             --tag roja/elektron_zappa:${version} .
 
-        echo "Running 'zappa undeploy ${ELEKTRON_ENV}' for v${version}'"
-        docker run \
-            --env AWS_SECRET_ACCESS_KEY \
-            --env AWS_ACCESS_KEY_ID \
-            --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-            roja/elektron_zappa:${version} \
-            bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV}"
 
-        echo "Running 'zappa deploy ${ELEKTRON_ENV}' for v${version}'"
-        docker run \
-            --env AWS_SECRET_ACCESS_KEY \
-            --env AWS_ACCESS_KEY_ID \
-            --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-            roja/elektron_zappa:${version} \
-            bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV}"
+        `aws --output text lambda list-functions | grep ${service_name}-${ELEKTRON_ENV} > /dev/null 2>&1`
+
+        if [ $? == 0 ];
+        then
+            echo "Running 'zappa update ${ELEKTRON_ENV}' for v${version}'"
+            docker run \
+                --env AWS_SECRET_ACCESS_KEY \
+                --env AWS_ACCESS_KEY_ID \
+                --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+                roja/elektron_zappa:${version} \
+                bash --login -c "cd project && zappa update ${ELEKTRON_ENV}"
+        else
+            echo "Running 'zappa deploy ${ELEKTRON_ENV}' for v${version}'"
+            docker run \
+                --env AWS_SECRET_ACCESS_KEY \
+                --env AWS_ACCESS_KEY_ID \
+                --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+                roja/elektron_zappa:${version} \
+                bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV}"
+        fi
 
         rm project/zappa_settings.json
 
