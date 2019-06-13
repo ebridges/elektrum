@@ -1,8 +1,56 @@
-### Installing & Configuring Elektron Network
+# Elektron Network
 
-These scripts configure a VPC network and a database instance on AWS for use by the Elektron app.
+These scripts configure a VPC network and database instance on AWS for use by the Elektron app.
 
-#### Usage
+## Architecture
+
+```
+                                                    ┌─────────┐                                              
+                                                    │Internet │                                              
+                                                    └─────────┘                                                
+                                                         ▲                                                     
+                                                         │                                                     
+                 ┌────────────────────────────────────┬─────┬──────────────────────────────────┐               
+                 │                                    │ IGW │                                  │               
+                 │    ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ └─────┘┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─     │               
+                 │                                       ▲                                │    │               
+                 │ ┌──┼─────────────────────────────┼────┼───┼───────────────────────────────┐ │               
+                 │ │                                     │                                │  │ │               
+                 │ │  │  ┌──────────────────────┐   │┌──────┐│   ┌──────────────────────┐    │ │               
+                 │ │     │  ┌─────────────┬──┐  │    │router│    │  ┌──┬──────────────┐ │ │  │ │               
+                 │ │  │  │  │     NAT     │E │  │   │└──────┘│   │  │E │     NAT      │ │    │ │               
+                 │ │     │  │   Instance  │I │  │                │  │I │   Instance   │ │ │  │ │               
+public-01 subnet │ │  │  │  │    [EC2]    │P │  │   │        │   │  │P │    [EC2]     │ │    │ │ public-02 subnet 
+  10.0.2.0/24   ─┼─┼────▶│  └─────────────┴──┘  │                │  └──┴──────────────┘ │◀┼──┼─┼─ 10.0.4.0/24  
+                 │ │  │  └──────────────────────┘   │        │   └──────────────────────┘    │ │               
+                 │ │                                                                      │  │ │               
+                 │ │  │  ┌──────────────────────┐   │        │   ┌──────────────────────┐    │ │               
+private-01 subnet│ │     │ ┌──────────────────┐ │                │ ┌──────────────────┐ │ │  │ │ private-02 subnet
+  10.0.1.0/24   ─┼─┼──┼─▶│ │   elektron_app   │ │   │        │   │ │   elektron_app   │ │◀───┼─┼─ 10.0.3.0/24  
+                 │ │     │ │     [Lambda]     │ │                │ │     [Lambda]     │ │ │  │ │               
+                 │ │  │  │ └──────────────────┘ │   │        │   │ └──────────────────┘ │    │ │               
+                 │ │     └───────────┬──────────┘                └───────────┬──────────┘ │  │ │               
+ elektron-vpc    │ │  │              │              │        │               │               │ │               
+ 10.0.0.0/16  ───┼▶│                 │                                       │            │  │ │               
+                 │ └──┼──────────────┼──────────────┼────────┼───────────────┼───────────────┘ │               
+                 │                   └───────────────────┬───────────────────┘            │    │               
+                 │    │                             │    │   │                                 │               
+                 │                                       │                                │    │               
+                 │    │ az: us-east-1a              │    │   │              az: us-east-1b     │               
+                 │     ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─     ▼    ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │               
+                 │                                ┌────────────┐                               │               
+                 │                                │elektron_db │                               │               
+                 │                                │   [RDS]    │                               │               
+                 │                                └────────────┘                               │               
+                 │                           ┌──────────────────────┐                          │               
+                 │                           │media.elektron.photos │                          │               
+                 │                           │         [S3]         │                          │               
+                 | Region: us-east           └──────────────────────┘                          │               
+                 └─────────────────────────────────────────────────────────────────────────────┘               
+```
+
+## Usage
 
 * Place the Ansible vault passphrase in a file named `vault-password.txt` in this directory. Password should be by itself on one line.
 * Execute `run.sh` to run the playbook in order to configure the network components.
+
