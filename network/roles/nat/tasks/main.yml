@@ -1,1 +1,7 @@
 # nat/tasks/main.yml
+
+# Configure and launch NAT instances for each public subnet
+- include_tasks: create_nat_instance.yml
+  loop: "{{ vpc_subnet_ids | dict2items | selectattr('key', 'match', '^public') | list }}"
+  loop_control:
+    loop_var: item
