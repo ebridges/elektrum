@@ -109,7 +109,7 @@ then
             exit ${result}
         fi
 
-        IFS=', ' read -r -a subnets <<< ${vpc_public_subnet_ids}
+        IFS=', ' read -r -a subnets <<< ${vpc_private_subnet_ids}
         subnet_list=''
         for element in "${subnets[@]}"
         do
@@ -121,7 +121,7 @@ then
             fi
         done
 
-        IFS=', ' read -r -a secgroups <<< ${vpc_security_group_ids}
+        IFS=', ' read -r -a secgroups <<< ${vpc_nat_security_group_ids}
         secgrp_list=''
         for element in "${secgroups[@]}"
         do
