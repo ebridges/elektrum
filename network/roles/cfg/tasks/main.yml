@@ -63,15 +63,28 @@
     - cfg
 
 - set_fact:
-    sn_ids='{{ public_subnet_ids|join(',') }}'
+    public_sn_ids='{{ public_subnet_ids|join(',') }}'
   tags:
     - cfg
 
-- name: store vpc info (subnet ids)
+- name: store vpc info (public subnet ids)
   lineinfile:
     path: "{{ config_info }}"
-    regexp: "^vpc_public_subnet_ids='{{ sn_ids }}'"
-    line: "vpc_public_subnet_ids='{{ sn_ids }}'"
+    regexp: "^vpc_public_subnet_ids='{{ public_sn_ids }}'"
+    line: "vpc_public_subnet_ids='{{ public_sn_ids }}'"
+  tags:
+    - cfg
+
+- set_fact:
+    private_sn_ids='{{ private_subnet_ids|join(',') }}'
+  tags:
+    - cfg
+
+- name: store vpc info (private subnet ids)
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^vpc_private_subnet_ids='{{ private_sn_ids }}'"
+    line: "vpc_private_subnet_ids='{{ private_sn_ids }}'"
   tags:
     - cfg
 
@@ -80,6 +93,14 @@
     path: "{{ config_info }}"
     regexp: "^vpc_security_group_ids='{{ public_security_group_id }}'"
     line: "vpc_security_group_ids='{{ public_security_group_id }}'"
+  tags:
+    - cfg
+
+- name: store vpc info (NAT security group id)
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^vpc_nat_security_group_ids='{{ nat_security_group_id }}'"
+    line: "vpc_nat_security_group_ids='{{ nat_security_group_id }}'"
   tags:
     - cfg
 
