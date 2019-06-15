@@ -19,7 +19,8 @@ application_domain_name_alt: "www.{{ application_domain_name }}"
 #application_service_name: "{{ service_name }}-{{ elektron_env }}.{{ aws_region }}.elasticbeanstalk.com"
 media_cname: "media.{{ application_domain_name }}"
 media_upload_bucket_name: "{{ media_cname }}"
-media_processor_artifact_bucket_name: "archive.{{ media_cname }}"
+media_processor_artifact_bucket_name: "{{service_name}}.artifact.archive"
+
 # EC2 Facts
 nat_instance_ami: ami-0422d936d535c63b1
 nat_instance_type: t2.micro
