@@ -76,7 +76,7 @@
     <td>10.0.1.0/24</td>
     <td rowspan="2">HTTP/S</td>
     <td rowspan="2">80 & 443</td>
-    <td rowspan="2">Allow inbound HTTP/S traffic from private subnet</td>
+    <td rowspan="2">Allow inbound HTTP/S traffic for private subnet</td>
   </tr>
   <tr>
     <td>10.0.3.0/24</td>
