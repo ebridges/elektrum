@@ -42,7 +42,13 @@
     vpc_subnet_ids: "{{ vpc_subnet_ids | default({}) | combine({ item.subnet.tags.Name: item.subnet.id }) }}"
   loop: "{{ create_vpc_subnets.results }}"
 
-# create a set of security groups
+# register a dictionary of subnet-name -> subnet-cidr
+- name: "set fact: VPC subnet CIDRs"
+  set_fact:
+    vpc_subnet_cidrs: "{{ vpc_subnet_cidrs | default({}) | combine({ item.subnet.tags.Name: item.subnet.cidr_block }) }}"
+  loop: "{{ create_vpc_subnets.results }}"
+
+  # create a set of security groups
 - name: create VPC security groups
   ec2_group:
     name: "{{ item.name }}"

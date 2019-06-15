@@ -55,3 +55,24 @@ vpc_security_groups:
         ports:
           - 5432
         rule_desc: "Access to PostgreSQL from app servers."
+  - name: "{{ vpc_name }}-nat-sg"
+    description: "Configure access rules for NAT instance."
+    rules:
+      - proto: tcp
+        cidr_ip:  "{{ vpc_subnet_cidrs['private-01'] }}"
+        ports:
+          - 80
+          - 443
+        rule_desc: "Access to HTTP/S from private subnet."
+      - proto: tcp
+        cidr_ip:  "{{ vpc_subnet_cidrs['private-02'] }}"
+        ports:
+          - 80
+          - 443
+        rule_desc: "Access to HTTP/S from private subnet."
+      - proto: tcp
+        cidr_ip: "{{ home_ip }}/32"
+        ports:
+          - 22
+        rule_desc: "SSH access from Home"
+
