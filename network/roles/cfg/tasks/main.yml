@@ -175,3 +175,11 @@
     line: "aws_region='{{ aws_region }}'"
   tags:
     - cfg
+
+- name: store https certificate arn
+  lineinfile:
+    path: "{{ config_info }}"
+    regexp: "^https_certificate_arn='{{ https_certificate_arn }}'"
+    line: "https_certificate_arn='{{ https_certificate_arn }}'"
+  tags:
+    - cfg
