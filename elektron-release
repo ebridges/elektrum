@@ -54,16 +54,16 @@ then
         exit ${result}
     fi
 
-    echo "Running smoke test in dev environment."
-    docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
-    docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron_app:latest .
-    ELEKTRON_ENV=development ./scripts/tests/smoke_test.py
-    result=$?
-    if [ "${result}" != "0" ];
-    then
-        echo "Error running smoke test."
-        exit ${result}
-    fi
+    # echo "Running smoke test in dev environment."
+    # docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
+    # docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron_app:latest .
+    # ELEKTRON_ENV=development ./scripts/tests/smoke_test.py
+    # result=$?
+    # if [ "${result}" != "0" ];
+    # then
+    #     echo "Error running smoke test."
+    #     exit ${result}
+    # fi
 
     read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
     
