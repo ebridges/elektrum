@@ -1,0 +1,116 @@
+#!/bin/sh
+
+CMD=$1
+
+if [ -z "${CMD}" ];
+then
+  echo "USAGE: $0 [deploy|update|undeploy|shell]"
+  exit 1
+fi
+
+if [ -z "${ELEKTRON_ENV}" ];
+then
+    # default environment
+    ELEKTRON_ENV=staging
+fi
+source etc/env/${ELEKTRON_ENV}.env
+
+
+if [ -z "${VERSION}" ];
+then
+  VERSION=$(cat version.txt | tr -d '\n')
+fi
+docker_tag="roja/elektron_zappa:${VERSION}"
+
+
+IFS=', ' read -r -a subnets <<< ${vpc_private_subnet_ids}
+subnet_list=''
+for element in "${subnets[@]}"
+do
+    if [ -z "${subnet_list}" ];
+    then
+        subnet_list="\"${element}\""
+    else
+        subnet_list="${subnet_list}, \"${element}\""
+    fi
+done
+
+
+cat << EOF > project/zappa_settings.json
+{
+  "${ELEKTRON_ENV}": {
+    "aws_region": "${aws_region}",
+    "django_settings": "${service_name}.settings",
+    "project_name": "${service_name}",
+    "runtime": "python3.6",
+    "s3_bucket": "${media_processor_artifact_bucket_name}",
+    "slim_handler": true,
+    "certificate_arn": "${https_certificate_arn}",
+    "domain": "${application_domain_name}",
+    "route53_enabled": false,
+    "environment_variables": {
+        "ELEKTRON_ENV": "${ELEKTRON_ENV}",
+        "APP_VERSION": "${VERSION}"
+    },
+    "vpc_config": {
+      "SubnetIds": [
+          ${subnet_list}
+      ],
+      "SecurityGroupIds": [
+        ${vpc_nat_security_group_ids}
+      ]
+    }
+  }
+}
+EOF
+
+
+if [ "${CMD}" == 'shell' ];
+then
+  docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag roja/elektron_zappa .
+  docker run \
+    --tty \
+    --interactive \
+    --env AWS_SECRET_ACCESS_KEY \
+    --env AWS_ACCESS_KEY_ID \
+    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    roja/elektron_zappa:latest
+elif [ "${CMD}" == 'deploy' ];
+then
+  echo "Running zappa deploy & certify"
+  docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag ${docker_tag} .
+  docker run \
+    --env AWS_SECRET_ACCESS_KEY \
+    --env AWS_ACCESS_KEY_ID \
+    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    roja/elektron_zappa:latest \
+    bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV} && zappa certify --yes ${ELEKTRON_ENV}"
+elif [ "${CMD}" == 'update' ];
+then
+  docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag ${docker_tag} .
+  echo "Running zappa ${CMD}"
+  docker run \
+    --env AWS_SECRET_ACCESS_KEY \
+    --env AWS_ACCESS_KEY_ID \
+    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    roja/elektron_zappa:latest \
+    bash --login -c "cd project && zappa update ${ELEKTRON_ENV}"
+elif [ "${CMD}" == 'undeploy' ];
+then
+  if [ -f project/zappa_settings.json ];
+  then
+    echo "Running zappa ${CMD} using local settings file"
+    cd project
+    zappa undeploy --yes ${ELEKTRON_ENV}
+  else
+    echo "Running zappa ${CMD} via docker"
+    docker run \
+      --env AWS_SECRET_ACCESS_KEY \
+      --env AWS_ACCESS_KEY_ID \
+      --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+      roja/elektron_zappa:latest \
+      bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV}"
+  fi
+else
+  echo "ERROR: command '${CMD}' not recognized."
+fi

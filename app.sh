@@ -109,79 +109,13 @@ then
             exit ${result}
         fi
 
-        IFS=', ' read -r -a subnets <<< ${vpc_private_subnet_ids}
-        subnet_list=''
-        for element in "${subnets[@]}"
-        do
-            if [ -z "${subnet_list}" ];
-            then
-                subnet_list="\"${element}\""
-            else
-                subnet_list="${subnet_list}, \"${element}\""
-            fi
-        done
-
-        IFS=', ' read -r -a secgroups <<< ${vpc_nat_security_group_ids}
-        secgrp_list=''
-        for element in "${secgroups[@]}"
-        do
-            if [ -z "${secgrp_list}" ];
-            then
-                secgrp_list="\"${element}\""
-            else
-                secgrp_list="${secgrp_list}, \"${element}\""
-            fi
-        done
-
-	    echo "Deploying ${version} to ${ELEKTRON_ENV} using the following settings:"
-        cat <<- EOF > project/zappa_settings.json
-		{
-			"${ELEKTRON_ENV}": {
-				"aws_region": "${aws_region}",
-				"django_settings": "${service_name}.settings",
-				"project_name": "${service_name}",
-				"runtime": "python3.6",
-				"s3_bucket": "${media_processor_artifact_bucket_name}",
-				"slim_handler": true,
-				"environment_variables": {
-					"ELEKTRON_ENV": "${ELEKTRON_ENV}",
-					"APP_VERSION": "${version}"
-				},
-				"vpc_config": {
-					"SubnetIds": [ ${subnet_list} ],
-					"SecurityGroupIds": [ ${secgrp_list} ]
-				},
-			}
-		}
-		EOF
-
-        cat project/zappa_settings.json
-
-        echo "Building a fresh image of elektron_zappa for ${ELEKTRON_ENV} at version ${version}"
-        docker build \
-            --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  \
-            --tag roja/elektron_zappa:${version} .
-
-
         `aws --output text lambda list-functions | grep ${service_name}-${ELEKTRON_ENV} > /dev/null 2>&1`
 
         if [ $? == 0 ];
         then
-            echo "Running 'zappa update ${ELEKTRON_ENV}' for v${version}'"
-            docker run \
-                --env AWS_SECRET_ACCESS_KEY \
-                --env AWS_ACCESS_KEY_ID \
-                --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-                roja/elektron_zappa:${version} \
-                bash --login -c "cd project && zappa update ${ELEKTRON_ENV}"
+            ./elektron-deploy update
         else
-            echo "Running 'zappa deploy ${ELEKTRON_ENV}' for v${version}'"
-            docker run \
-                --env AWS_SECRET_ACCESS_KEY \
-                --env AWS_ACCESS_KEY_ID \
-                --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-                roja/elektron_zappa:${version} \
-                bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV}"
+            ./elektron-deploy deploy
         fi
 
         rm project/zappa_settings.json
