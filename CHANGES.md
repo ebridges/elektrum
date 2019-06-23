@@ -5,7 +5,7 @@ Elektron Change Log
 -----------------
 
 - [#45] Switch from Elastic Beanstalk to use Zappa for deployment as a Lambda.
-
+- [#49] Configuration of a NAT instance to allow for DB access from a Lambda.
 
 0.28 (2019-05-27)
 -----------------
