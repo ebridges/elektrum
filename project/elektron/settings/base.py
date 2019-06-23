@@ -28,7 +28,7 @@ SECRET_KEY = '%&*mqp(4_@ec9ih9gqekms8%-^0uvdau^1*i^r)d+-z)1*h$o1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['elektron.photos', '*.execute-api.us-east-1.amazonaws.com', '127.0.0.1', 'localhost']
 
 # BEGIN Initialize environment
 
