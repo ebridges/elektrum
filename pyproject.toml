@@ -38,6 +38,7 @@ virtualenvwrapper = "^4.8.4"
 assertpy = "^0.14.0"
 jinja2 = "^2.10"
 cryptography = "^2.7"
+jmespath-terminal = "^0.2.1"
 
 [build-system]
 ## poetry version should agree with version in Dockerfile-App

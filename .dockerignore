@@ -15,5 +15,6 @@ network
 *.retry
 scripts/
 *.md
-app.sh
+elektron-deploy
+elektron-release
 etc/env/*.tmpl

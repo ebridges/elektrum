@@ -3,7 +3,7 @@ import os
 import requests
 
 DEBUG = False
-ALLOWED_HOSTS = ['elektron-production.us-east-1.elasticbeanstalk.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['elektron.photos']
 SECRET_KEY = os.getenv('secret_key')
 
 try:

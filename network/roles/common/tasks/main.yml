@@ -64,6 +64,17 @@
 
 - debug: var=public_security_group_id
 
+- name: look up the nat security group id
+  ec2_group_facts:
+    filters:
+      "tag:Name": "{{ vpc_name }}-nat-sg"
+  register: nat_security_group
+
+- debug: var=nat_security_group
+
+- set_fact:
+    nat_security_group_id: "{{ nat_security_group.security_groups[0].group_id }}"
+
 - name: look up rds info
   rds_instance_facts:
     db_instance_identifier: "{{ db_instance_name }}"
