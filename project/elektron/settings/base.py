@@ -40,8 +40,7 @@ version_file = '%s/version.txt' % ELEKTRON_PROJECT_DIR
 if os.path.isfile(version_file):
     with open(version_file) as v_file:
         APP_VERSION_NUMBER = v_file.read()
-else:
-    APP_VERSION_NUMBER = os.getenv('APP_VERSION', 'no-version')
+print('Running Elektron v%s' % APP_VERSION_NUMBER)
 
 env_file = locate_env_file(BASE_DIR)
 dotenv.read_dotenv(env_file)

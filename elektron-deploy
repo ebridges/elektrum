@@ -16,10 +16,7 @@ fi
 source etc/env/${ELEKTRON_ENV}.env
 
 
-if [ -z "${VERSION}" ];
-then
-  VERSION=$(cat version.txt | tr -d '\n')
-fi
+VERSION=$(cat version.txt | tr -d '\n')
 docker_tag="roja/elektron_zappa:${VERSION}"
 
 
@@ -49,8 +46,7 @@ cat << EOF > project/zappa_settings.json
     "domain": "${application_domain_name}",
     "route53_enabled": false,
     "environment_variables": {
-        "ELEKTRON_ENV": "${ELEKTRON_ENV}",
-        "APP_VERSION": "${VERSION}"
+        "ELEKTRON_ENV": "${ELEKTRON_ENV}"
     },
     "vpc_config": {
       "SubnetIds": [
@@ -67,14 +63,13 @@ EOF
 
 if [ "${CMD}" == 'shell' ];
 then
-  docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag roja/elektron_zappa .
   docker run \
     --tty \
     --interactive \
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
     --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-    roja/elektron_zappa:latest
+    ${docker_tag}
 elif [ "${CMD}" == 'deploy' ];
 then
   echo "Running zappa deploy & certify"
@@ -83,7 +78,7 @@ then
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
     --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-    roja/elektron_zappa:latest \
+    ${docker_tag} \
     bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV} && zappa certify --yes ${ELEKTRON_ENV}"
 elif [ "${CMD}" == 'update' ];
 then
@@ -93,7 +88,7 @@ then
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
     --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-    roja/elektron_zappa:latest \
+    ${docker_tag} \
     bash --login -c "cd project && zappa update ${ELEKTRON_ENV}"
 elif [ "${CMD}" == 'undeploy' ];
 then
@@ -108,7 +103,7 @@ then
       --env AWS_SECRET_ACCESS_KEY \
       --env AWS_ACCESS_KEY_ID \
       --env ELEKTRON_ENV=${ELEKTRON_ENV} \
-      roja/elektron_zappa:latest \
+      ${docker_tag} \
       bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV}"
   fi
 else
