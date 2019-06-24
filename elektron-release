@@ -113,9 +113,9 @@ then
 
         if [ $? == 0 ];
         then
-            ./elektron-deploy update
+            ELEKTRON_ENV=${ELEKTRON_ENV} ./elektron-deploy update
         else
-            ./elektron-deploy deploy
+            ELEKTRON_ENV=${ELEKTRON_ENV} ./elektron-deploy deploy
         fi
 
         rm project/zappa_settings.json
