@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.29 (unreleased)
+0.29 (2019-06-25)
 -----------------
 
 - [#45] Switch from Elastic Beanstalk to use Zappa for deployment as a Lambda.
