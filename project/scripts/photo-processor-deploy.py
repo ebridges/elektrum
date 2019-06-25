@@ -26,7 +26,7 @@ def deploy(archive):
 
 def load_env():
     env = getenv('ELEKTRON_ENV', 'development')
-    env_file = "etc/env/%s.env" % env
+    env_file = "../etc/env/%s.env" % env
     debug('Loading environment from [%s]' % env_file)
     read_dotenv(env_file)
     info('Loaded environment from [%s]' % env_file)
