@@ -69,6 +69,7 @@ then
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
     --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    --publish 8000:8000 \
     ${docker_tag}
 elif [ "${CMD}" == 'deploy' ];
 then
