@@ -27,3 +27,21 @@ def locate_env_file(start_dir):
     return location
   
   raise FileNotFoundError('Unable to locate env configuration file.')
+
+
+def resolve_version(start_dir):
+#  print('version start_dir: %s' % start_dir)
+
+  location = os.path.join(start_dir, 'version.txt')
+#  print('[DEBUG] Looking for version file in %s' % location)
+  if os.path.isfile(location):
+    print('[INFO] Located version file in %s' % location)
+    return location
+
+  location = os.path.join(os.path.dirname(start_dir), 'version.txt')
+#  print('[DEBUG] Looking for version file in %s' % location)
+  if os.path.isfile(location):
+    print('[INFO] Located version file in %s' % location)
+    return location
+
+  raise FileNotFoundError('Unable to locate version file.')

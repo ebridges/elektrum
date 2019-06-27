@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import sys
-from elektron.env_util import locate_env_file
+from elektron.env_util import locate_env_file, resolve_version
 import dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ['elektron.photos', '*.execute-api.us-east-1.amazonaws.com', '12
 ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
 
 # read version number for display in the app
-version_file = '%s/version.txt' % ELEKTRON_PROJECT_DIR
+version_file = resolve_version(BASE_DIR)
 if os.path.isfile(version_file):
     with open(version_file) as v_file:
         APP_VERSION_NUMBER = v_file.read()
