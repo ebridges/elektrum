@@ -26,7 +26,7 @@ BASE_DIR = os.path.abspath('%s/../..' % os.path.dirname(os.path.abspath(__file__
 SECRET_KEY = '%&*mqp(4_@ec9ih9gqekms8%-^0uvdau^1*i^r)d+-z)1*h$o1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.environ.get('django_debug_enabled') else False
 
 ALLOWED_HOSTS = ['elektron.photos', '*.execute-api.us-east-1.amazonaws.com', '127.0.0.1', 'localhost']
 
@@ -129,10 +129,10 @@ if [s for s in sys.argv if 'pytest' in s]:
         # see #14 - SQLite backend is not working for some tests
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
-        # 
+        #
         # see issue #45
         # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        
+
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': "media_info",
         'USER': "ebridges",
@@ -174,8 +174,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-STATIC_URL = '/static/'
+STATIC_HOST = os.environ.get('application_cdn_host', '')
+STATIC_URL = STATIC_HOST + '/static/'
 STATIC_ROOT = os.path.join(ELEKTRON_PROJECT_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
