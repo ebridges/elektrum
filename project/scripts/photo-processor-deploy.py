@@ -1,11 +1,12 @@
 from logging import Logger, basicConfig, INFO, DEBUG, CRITICAL, debug, info, error, getLogger
 from os import getenv, path
 from sys import argv, exit, exc_info
-from dotenv import read_dotenv
+import dotenv
 import boto3
 from boto3.s3.transfer import S3Transfer
 import argparse
 from traceback import format_exc
+from elektron.env_util import locate_env_file
 
 # Presumed to be run from the root of the project
 
@@ -25,10 +26,8 @@ def deploy(archive):
 
 
 def load_env():
-    env = getenv('ELEKTRON_ENV', 'development')
-    env_file = "../etc/env/%s.env" % env
-    debug('Loading environment from [%s]' % env_file)
-    read_dotenv(env_file)
+    env_file = locate_env_file()
+    dotenv.read_dotenv(env_file)
     info('Loaded environment from [%s]' % env_file)
 
 
