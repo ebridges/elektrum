@@ -49,8 +49,8 @@ RUN source $venv/bin/activate && \
     pip3 install 'poetry==0.12.11' && \
     poetry install --no-dev
 
-COPY version.txt $wkdir
 COPY project $wkdir/project
+COPY version.txt $wkdir/project/version.txt
 COPY etc/env/${ELEKTRON_ENV}.env $wkdir/project/.env
 
 RUN echo "source $venv/bin/activate" > $HOME/.profile
