@@ -19,6 +19,9 @@ import dotenv
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.abspath('%s/../..' % os.path.dirname(os.path.abspath(__file__)))
 
+env_file = locate_env_file(BASE_DIR)
+dotenv.read_dotenv(env_file)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -41,9 +44,6 @@ if os.path.isfile(version_file):
     with open(version_file) as v_file:
         APP_VERSION_NUMBER = v_file.read()
 print('Running Elektron v%s' % APP_VERSION_NUMBER)
-
-env_file = locate_env_file(BASE_DIR)
-dotenv.read_dotenv(env_file)
 
 # END Initialize environment
 
