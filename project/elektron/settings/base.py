@@ -26,12 +26,13 @@ dotenv.read_dotenv(env_file)
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%&*mqp(4_@ec9ih9gqekms8%-^0uvdau^1*i^r)d+-z)1*h$o1'
+SECRET_KEY = os.environ.get('django_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get('django_debug_enabled') else False
 
-ALLOWED_HOSTS = ['elektron.photos', '*.execute-api.us-east-1.amazonaws.com', '127.0.0.1', 'localhost']
+allowed_hosts = os.getenv('django_allowed_hosts', 'elektron.photos')
+ALLOWED_HOSTS = allowed_hosts.split(',')
 
 # establish project root directory as a variable
 ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
@@ -200,4 +201,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = os.getenv('django_email_backend')
+EMAIL_FILE_PATH = './sent_emails'
+
+TEST_RUNNER = 'elektron.test_runner.PytestTestRunner'
