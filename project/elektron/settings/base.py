@@ -33,8 +33,6 @@ DEBUG = True if os.environ.get('django_debug_enabled') else False
 
 ALLOWED_HOSTS = ['elektron.photos', '*.execute-api.us-east-1.amazonaws.com', '127.0.0.1', 'localhost']
 
-# BEGIN Initialize environment
-
 # establish project root directory as a variable
 ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
 
@@ -44,8 +42,6 @@ if os.path.isfile(version_file):
     with open(version_file) as v_file:
         APP_VERSION_NUMBER = v_file.read()
 print('Running Elektron v%s' % APP_VERSION_NUMBER)
-
-# END Initialize environment
 
 # Application definition
 
