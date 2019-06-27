@@ -1,12 +1,6 @@
 Elektron Change Log
 ================
 
-0.30 (unreleased)
------------------
-
-- Nothing changed yet.
-
-
 0.29 (2019-06-25)
 -----------------
 
