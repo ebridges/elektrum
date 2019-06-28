@@ -133,10 +133,6 @@
   cloudfront_facts:
     summary: true
   register: cdn_facts
-  tags: debug
-
-- debug: var=cdn_facts
-  tags: debug
 
 - set_fact:
     domain_name_query: "ansible_facts.cloudfront.summary.distributions[?Aliases[0] == `{{ application_domain_name }}`]|[0].DomainName"
