@@ -99,10 +99,14 @@ then
         git checkout ${version}
 
         make all VERSION=${version}
-        processor_archive=`find processor -name 'elektron-processor*.zip'`
+        cwd=`pwd`
+        processor_archive=`find ${cwd}/processor -name 'elektron-processor*.zip'`
         echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
+        export PYTHONPATH=${PYTHONPATH}:${cwd}/project
+        pushd ${cwd}/project
         ELEKTRON_ENV=${ELEKTRON_ENV} python3 scripts/photo-processor-deploy.py --archive=${processor_archive}
         result=$?
+        popd
         if [ "${result}" -ne "0" ];
         then
             echo "ERROR: building/deploying photo processor archive was unsuccessful."
