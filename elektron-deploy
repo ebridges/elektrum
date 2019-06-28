@@ -4,7 +4,7 @@ CMD=$1
 
 if [ -z "${CMD}" ];
 then
-  echo "USAGE: $0 [deploy|update|undeploy|shell]"
+  echo "USAGE: $0 [deploy|update|undeploy|shell|build]"
   exit 1
 fi
 
@@ -71,6 +71,11 @@ then
     --env ELEKTRON_ENV=${ELEKTRON_ENV} \
     --publish 8000:8000 \
     ${docker_tag}
+elif [ "${CMD}" == 'build' ];
+then
+  docker build \
+    --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  \
+    --tag ${docker_tag} .
 elif [ "${CMD}" == 'deploy' ];
 then
   echo "Running zappa deploy & certify"

@@ -54,6 +54,7 @@ COPY version.txt $wkdir/project/version.txt
 COPY etc/env/${ELEKTRON_ENV}.env $wkdir/project/.env
 
 RUN echo "source $venv/bin/activate" > $HOME/.profile
+RUN echo "alias dj='cd $wkdir/project && python manage.py runserver'" >> $HOME/.profile
 ENV PS1="\[$(tput setaf 2)\]zappa\[$(tput sgr0)\]> "
 ENV AWS_SECRET_ACCESS_KEY=
 ENV AWS_ACCESS_KEY_ID=
