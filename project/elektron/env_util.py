@@ -2,7 +2,7 @@ import os
 
 DEFAULT_ENV='development'
 
-def locate_env_file(start_dir):
+def locate_env_file(start_dir=os.getcwd()):
   #print('start_dir: %s' % start_dir)
 
   # check in current directory for `.env`
@@ -29,7 +29,7 @@ def locate_env_file(start_dir):
   raise FileNotFoundError('Unable to locate env configuration file.')
 
 
-def resolve_version(start_dir):
+def resolve_version(start_dir=os.getcwd()):
 #  print('version start_dir: %s' % start_dir)
 
   location = os.path.join(start_dir, 'version.txt')
