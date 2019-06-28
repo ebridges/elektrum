@@ -1,4 +1,17 @@
-# Usage Examples
+# Usage
+
+## Setup VSCode
+
+* To run vscode from root of project and still have project setup work correctly, change `python.envFile` in VSCode settings (CMD-,) to `${workspaceFolder}/vscode.env`
+
+## Setup Project
+
+1. Install Poetry
+  `curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python`
+1. Invoke poetry shell:
+  `source  "$(dirname $(poetry run which python))/activate`
+1. Install project dependencies
+  `poetry install`
 
 ## Running Locally with Remote DB
 
