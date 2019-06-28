@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.30 (unreleased)
+0.30 (2019-06-28)
 -----------------
 
 - [#48] Minimize dependency on ELEKTRON_ENV environment variable.
