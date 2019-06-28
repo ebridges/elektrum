@@ -84,7 +84,6 @@ def add_function(bucket, artifact_name, function_name):
 
 
 def configure_logging(threshold=INFO):
-    print('level: %s' % threshold)
     basicConfig(
         format='[%(asctime)s] [%(levelname)s] %(message)s',
         datefmt='%Y/%m/%d %H:%M:%S',
