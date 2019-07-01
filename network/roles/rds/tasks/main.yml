@@ -22,6 +22,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ rds_parameter_group_name }}"
+      Environment: "{{ elektron_env }}"
 
 - name: establish the RDS instance
   rds:
@@ -46,6 +47,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ db_instance_name }}"
+      Environment: "{{ elektron_env }}"
   register: rds
 
 - name: create non-privileged user

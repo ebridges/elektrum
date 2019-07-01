@@ -7,9 +7,11 @@
     instance_tags:
       Service: "{{ service_name }}"
       Name: "ec2-nat-{{ item.key }}"
+      Environment: "{{ elektron_env }}"
     exact_count: 1
     count_tag: 
       Name: "ec2-nat-{{ item.key }}"
+      Environment: "{{ elektron_env }}" # necessary?
     instance_type: "{{ nat_instance_type }}"
     key_name: "{{ aws_ssh_key }}"
     source_dest_check: no
@@ -30,6 +32,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ vpc_name }}-nat-private"
+      Environment: "{{ elektron_env }}"
     subnets:
       - "{{ vpc_subnet_ids['private-01'] }}"
       - "{{ vpc_subnet_ids['private-02'] }}"

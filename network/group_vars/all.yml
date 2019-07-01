@@ -14,8 +14,10 @@ org_name: roja
 service_name: elektron
 config_info: "../etc/env/{{ elektron_env }}.env"
 
-application_domain_name: "{{service_name}}.photos"
-media_cname: "media.{{ application_domain_name }}"
+subdomain: "{{ '' if elektron_env == 'production' else elektron_env ~ '.' }}"
+application_domain_name: "{{ subdomain }}{{service_name}}.photos"
+
+media_cname: "{{ subdomain }}media.{{ application_domain_name }}"
 media_upload_bucket_name: "{{ media_cname }}"
 media_processor_artifact_bucket_name: "{{service_name}}.artifact.archive"
 
@@ -24,7 +26,8 @@ nat_instance_ami: ami-0422d936d535c63b1
 nat_instance_type: t2.micro
 
 # DB Facts
-db_instance_name: elektron-db
+db_instance_prefix: "{{ '' if elektron_env == 'production' else elektron_env ~ '-' }}"
+db_instance_name: "{{ db_instance_prefix }}elektron-db"
 rds_database_name: media_info
 rds_master_username: elektrondba
 rds_master_password: !vault |

@@ -21,6 +21,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ media_cname }}-cdn"
+      Environment: "{{ elektron_env }}"
     viewer_certificate:
         acm_certificate_arn: "{{ https_certificate_arn }}"
         ssl_support_method: sni-only

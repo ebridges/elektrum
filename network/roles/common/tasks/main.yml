@@ -1,6 +1,7 @@
 - ec2_vpc_net_facts:
     filters:
       "tag:Service": "{{ service_name }}"
+      "tag:Environment": "{{ elektron_env }}"
   register: vpc_facts
 
 - debug: var=vpc_facts
@@ -15,6 +16,7 @@
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
         "tag:Visibility": "private"
+        "tag:Environment": "{{ elektron_env }}"
   register: private_subnet_facts
 
 - debug: var=private_subnet_facts
@@ -29,6 +31,7 @@
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
         "tag:Visibility": "public"
+        "tag:Environment": "{{ elektron_env }}"
   register: public_subnet_facts
 
 - debug: var=public_subnet_facts
@@ -42,6 +45,7 @@
   ec2_group_facts:
     filters:
       "tag:Name": "{{ vpc_name }}-private-sg"
+      "tag:Environment": "{{ elektron_env }}"
   register: private_security_group
 
 - debug: var=private_security_group
@@ -55,6 +59,7 @@
   ec2_group_facts:
     filters:
       "tag:Name": "{{ vpc_name }}-public-sg"
+      "tag:Environment": "{{ elektron_env }}"
   register: public_security_group
 
 - debug: var=public_security_group
@@ -68,6 +73,7 @@
   ec2_group_facts:
     filters:
       "tag:Name": "{{ vpc_name }}-nat-sg"
+      "tag:Environment": "{{ elektron_env }}"
   register: nat_security_group
 
 - debug: var=nat_security_group
