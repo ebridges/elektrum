@@ -1,0 +1,16 @@
+---
+# confirm existence of auth key
+- name: create EC2 key
+  ec2_key:
+    name: "{{ aws_ssh_key }}"
+
+- name: get iam role facts
+  iam_role_facts:
+    name: 'imageService-photoProcessor' # move this to a variable
+  register: photo_processor_role_info
+
+- debug: var=photo_processor_role_info
+
+- name: set photo processor role arn as fact
+  set_fact:
+    photo_processor_role_arn: "{{ photo_processor_role_info.iam_roles[0].arn }}"

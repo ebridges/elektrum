@@ -1,0 +1,9 @@
+---
+dependencies:
+- role: iam
+- role: vpc
+- role: rds
+- role: sss
+- role: cdn
+- role: dns
+- role: acm
