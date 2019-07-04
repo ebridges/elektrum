@@ -1,0 +1,17 @@
+---
+# create our VPC saving the output into `vpc_facts`
+- name: "create a new vpc named [{{ vpc_name }}]"
+  ec2_vpc_net:
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    region: "{{ aws_region }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ vpc_name }}"
+      Environment: "{{ elektron_env }}"
+  register: vpc_facts
+
+# parse the output of creating the VPC to extract the VPC ID -- we need to specify this in the subsequent tasks
+- name: "collect id of newly created vpc [{{ vpc_name }}]"
+  set_fact:
+    vpc_id: "{{ vpc_facts.vpc.id }}"

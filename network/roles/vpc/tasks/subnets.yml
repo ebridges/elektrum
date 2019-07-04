@@ -1,0 +1,58 @@
+---
+# iterate over our dictionary of subnets with `with_dict`, and create each one with the Ansible module
+- name: "create a set of subnets within the vpc [{{ vpc_name }}]"
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_id }}"
+    cidr: "{{ item.value.cidr }}"
+    az: "{{ item.value.az }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ item.key }}"
+      Visibility: "{{ item.value.visibility }}"
+      Environment: "{{ elektron_env }}"
+  with_dict: "{{ vpc_subnets }}"
+  register: vpc_facts_subnets
+
+# register a dictionary of subnet-name -> subnet-id
+- name: "set fact: VPC subnet IDs"
+  set_fact:
+    vpc_subnet_ids: "{{ vpc_subnet_ids | default({}) | combine({ item.subnet.tags.Name: item.subnet.id }) }}"
+  loop: "{{ vpc_facts_subnets.results }}"
+
+# register a dictionary of subnet-name -> subnet-cidr
+- name: "set fact: VPC subnet CIDRs"
+  set_fact:
+    vpc_subnet_cidrs: "{{ vpc_subnet_cidrs | default({}) | combine({ item.subnet.tags.Name: item.subnet.cidr_block }) }}"
+  loop: "{{ vpc_facts_subnets.results }}"
+
+# register a fact with private subnet ids
+- ec2_vpc_subnet_facts:
+    filters:
+        vpc-id: "{{ vpc_id }}"
+        "tag:Service": "{{ service_name }}"
+        "tag:Visibility": "private"
+        "tag:Environment": "{{ elektron_env }}"
+  register: private_subnet_facts
+
+- debug: var=private_subnet_facts
+
+- set_fact:
+    private_subnet_ids: "{{ private_subnet_facts.subnets|map(attribute='subnet_id')|list }}"
+
+- debug: var=private_subnet_ids
+
+# register a fact with public subnet ids
+- ec2_vpc_subnet_facts:
+    filters:
+        vpc-id: "{{ vpc_id }}"
+        "tag:Service": "{{ service_name }}"
+        "tag:Visibility": "public"
+        "tag:Environment": "{{ elektron_env }}"
+  register: public_subnet_facts
+
+- debug: var=public_subnet_facts
+
+- set_fact:
+    public_subnet_ids: "{{ public_subnet_facts.subnets|map(attribute='subnet_id')|list }}"
+
+- debug: var=public_subnet_ids

@@ -1,27 +1,5 @@
 # host_vars/elektron.vpc.yml
 
-vpc_name: "{{elektron-env}}-elektron-vpc"
-
-vpc_cidr_block: 10.0.0.0/16
-
-vpc_subnets:
-  private-01:
-    cidr: 10.0.1.0/24
-    az: "{{ aws_region }}a"
-    visibility: private
-  public-01:
-    cidr: 10.0.2.0/24
-    az: "{{ aws_region }}a"
-    visibility: public
-  private-02:
-    cidr: 10.0.3.0/24
-    az: "{{ aws_region }}b"
-    visibility: private
-  public-02:
-    cidr: 10.0.4.0/24
-    az: "{{ aws_region }}b"
-    visibility: public
-
 # a list defining the security groups for our VPC
 vpc_security_groups:
   - name: "{{ vpc_name }}-public-sg"
@@ -32,16 +10,6 @@ vpc_security_groups:
         ports:
           - 22
         rule_desc: "Home"
-      - proto: tcp
-        cidr_ip: "152.179.78.138/32"
-        ports:
-          - 22
-        rule_desc: "Work"
-      - proto: tcp
-        cidr_ip: "72.69.147.155/32"
-        ports:
-          - 22
-        rule_desc: "Cafe"
       - proto: tcp
         cidr_ip: 0.0.0.0/0
         ports:

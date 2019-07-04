@@ -8,7 +8,6 @@
   roles:
     - { role: common, tags: common }
     - { role: vpc, tags: vpc }
-    - { role: nat, tags: nat }
     - { role: rds, tags: rds }
     - { role: cfg, tags: cfg }
     - { role: sss, tags: sss }
