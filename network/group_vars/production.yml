@@ -1,0 +1,7 @@
+---
+# group_vars/production
+
+elektron_env: production
+config_info: "../etc/env/production.env"
+
+vpc_name: "elektron-vpc"

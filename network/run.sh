@@ -1,13 +1,16 @@
 #!/bin/sh
 
-if [ -z "${ELEKTRON_ENV}" ];
+if [ -z "${1}" ];
 then
-  ELEKTRON_ENV=staging
+  echo "Usage: $0 [production|staging]"
+  exit 1
 fi
 
+ENV=${1}
+shift
+
 ansible-playbook \
-  --inventory hosts.ini \
-  --vault-password-file ./vault-password.txt \
-  --extra-vars="elektron_env=${ELEKTRON_ENV}" \
-  $@ \
+  --inventory environments/${ENV} \
+  --vault-password-file environments/${ENV}-vault-password.txt \
+  ${@} \
   site.yml

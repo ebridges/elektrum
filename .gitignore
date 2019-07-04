@@ -23,8 +23,7 @@ temp-requirements.txt
 
 # ansible
 **/*.retry
-*/vault-password.txt
-**/roles/ecs-cluster/
+**/*vault-password.txt
 
 # Elastic Beanstalk Files
 #.elasticbeanstalk/*
@@ -35,4 +34,6 @@ temp-requirements.txt
 # pytest
 .pytest_cache/
 .gradle/
+
+# deployment
 project/zappa_settings.json
