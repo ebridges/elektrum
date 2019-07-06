@@ -2,7 +2,7 @@
 # group_vars/staging
 
 elektron_env: staging
-config_info: "../etc/env/staging.env"
+config_info: ../etc/env/staging.env
 
 application_domain_name: "staging.{{service_name}}.photos"
 media_cname: "staging.media.{{service_name}}.photos"
@@ -28,8 +28,8 @@ rds_app_password: !vault |
           3938393631396562390a333164383135356530623635366333363739363065363831643163363262
           61343933363739656232653538346363313837313534333431613766353433643062
 
-django_debug_enabled: 'True'
-django_email_backend: 'django.core.mail.backends.filebased.EmailBackend'
+django_debug_enabled: True
+django_email_backend: django.core.mail.backends.filebased.EmailBackend
 django_allowed_hosts: '{{ application_domain_name }},*.execute-api.us-east-1.amazonaws.com,127.0.0.1,localhost'
 django_secret_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -41,7 +41,7 @@ django_secret_key: !vault |
           66636236623662626130323132316536303132396561383961653031623363353232343362323539
           376563313963646361346635313465363736
 
-vpc_name: "staging-elektron-vpc"
+vpc_name: staging-elektron-vpc
 
 vpc_cidr_block: 10.64.0.0/16
 
