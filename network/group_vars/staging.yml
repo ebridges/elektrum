@@ -5,9 +5,7 @@ elektron_env: staging
 config_info: ../etc/env/staging.env
 
 application_domain_name: "staging.{{service_name}}.photos"
-media_cname: "staging.media.{{service_name}}.photos"
-
-aws_ssh_key: staging-roja-llc
+media_cname: "staging-media.{{service_name}}.photos"
 
 rds_instance_name: staging-elektron-db
 rds_master_username: staging_elektrondba
