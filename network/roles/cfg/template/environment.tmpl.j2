@@ -25,7 +25,7 @@ db_password='{{ rds_master_password }}'
 ## Used for deployment purposes
 vpc_public_subnet_ids='{{ public_subnet_ids|join(',') }}' # only used by photo processor...maybe it should use private subnet?
 vpc_private_subnet_ids='{{ private_subnet_ids|join(',') }}'
-vpc_security_group_ids='{{ public_security_group_id }}
+vpc_security_group_ids='{{ public_security_group_id }}'
 vpc_nat_security_group_ids='{{ nat_security_group_id }}'
 
 ## Lambda deployment & config
