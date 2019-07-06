@@ -17,7 +17,7 @@ media_upload_bucket_name: "{{ media_cname }}"
 media_processor_artifact_bucket_name: "{{service_name}}.artifact.archive"
 
 # EC2 Facts
-nat_instance_ami: ami-0422d936d535c63b1
+nat_instance_ami: ami-035b3c7efe6d061d5
 nat_instance_type: t2.micro
 
 ## Lambda deployment & config
@@ -101,3 +101,10 @@ vpc_subnets:
     cidr: 10.0.96.0/19
     az: "{{ aws_region }}b"
     visibility: public
+
+vpc_subnets_private: 
+  - "{{vpc_subnets['private-01']['cidr']}}"
+  - "{{vpc_subnets['private-02']['cidr']}}"
+vpc_subnets_public: 
+  - "{{vpc_subnets['public-01']['cidr']}}"
+  - "{{vpc_subnets['public-02']['cidr']}}"

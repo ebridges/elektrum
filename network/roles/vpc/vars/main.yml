@@ -19,36 +19,20 @@ vpc_security_groups:
     description: "Allow traffic to PSQL from NAT (in public subnets) & Lambdas (in private subnets)"
     rules:
       - proto: tcp
-        cidr_ip:  "{{ vpc_subnet_cidrs['public-01'] }}"
+        cidr_ip: "{{ vpc_subnets_public }}"
         ports:
           - 5432
         rule_desc: "Access PSQL from public subnet."
       - proto: tcp
-        cidr_ip:  "{{ vpc_subnet_cidrs['public-02'] }}"
-        ports:
-          - 5432
-        rule_desc: "Access to PSQL from public subnet."
-      - proto: tcp
-        cidr_ip:  "{{ vpc_subnet_cidrs['private-01'] }}"
+        cidr_ip: "{{ vpc_subnets_private }}"
         ports:
           - 5432
         rule_desc: "Access PSQL from private subnet."
-      - proto: tcp
-        cidr_ip:  "{{ vpc_subnet_cidrs['private-02'] }}"
-        ports:
-          - 5432
-        rule_desc: "Access to PSQL from private subnet."
   - name: "{{ vpc_name }}-nat-sg"
     description: "Configure access rules for NAT instance & Lambda."
     rules:
       - proto: tcp
-        cidr_ip:  "{{ vpc_subnet_cidrs['private-01'] }}"
-        ports:
-          - 80
-          - 443
-        rule_desc: "Access to HTTP/S from private subnet."
-      - proto: tcp
-        cidr_ip:  "{{ vpc_subnet_cidrs['private-02'] }}"
+        cidr_ip:  "{{ vpc_subnets_private }}"
         ports:
           - 80
           - 443

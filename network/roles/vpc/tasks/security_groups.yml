@@ -1,5 +1,13 @@
 ---
 # create a set of security groups
+- debug: var=vpc_subnets_private
+
+- debug: var=vpc_subnets_public
+
+- debug: var=vpc_subnets['private-01']['cidr']
+
+- debug: var=vpc_subnets['private-02']['cidr']
+
 - name: create VPC security groups
   ec2_group:
     name: "{{ item.name }}"
