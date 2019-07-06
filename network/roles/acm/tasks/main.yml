@@ -1,7 +1,7 @@
 ---
-- name: obtain acm facts for "{{ application_domain_name }}"
+- name: obtain acm facts for "{{ https_domain_name }}"
   aws_acm_facts:
-    domain_name: "{{ application_domain_name }}"
+    domain_name: "{{ https_domain_name }}"
   register: acm_facts
 
 - debug: var=acm_facts

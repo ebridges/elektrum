@@ -10,7 +10,8 @@ home_ip: 98.116.39.58
 org_name: roja
 service_name: elektron
 
-application_domain_name: "{{service_name}}.photos"
+https_domain_name: "{{service_name}}.photos"
+application_domain_name: "{{https_domain_name}}"
 media_cname: "media.{{service_name}}.photos"
 media_upload_bucket_name: "{{ media_cname }}"
 media_processor_artifact_bucket_name: "{{service_name}}.artifact.archive"

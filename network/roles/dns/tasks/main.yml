@@ -1,9 +1,11 @@
 ---
-- name: 'create a public zone for {{ application_domain_name }}'
+- name: 'create a public zone for {{ https_domain_name }}'
   route53_zone:
-    zone: '{{ application_domain_name }}'
-    comment: '{{ application_domain_name }} public zone'
+    zone: '{{ https_domain_name }}'
+    comment: '{{ https_domain_name }} public zone'
   register: hosted
+
+- debug: var=hosted
 
 # The value for `alias_hosted_zone_id` is hardcoded to that specific value, for reference see docs on this here:
 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/route53.html#Route53.Client.change_resource_record_sets
@@ -17,6 +19,6 @@
     overwrite: True
     type: A
     value: "{{ item.cdn }}"
-    zone: '{{ application_domain_name }}'
+    zone: '{{ https_domain_name }}'
   with_items:
     - "{{ dns_info }}"
