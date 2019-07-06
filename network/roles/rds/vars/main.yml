@@ -1,9 +1,9 @@
 # RDS / PostgreSQL Facts
 
-rds_subnet_group_name: "{{ db_instance_name }}-sg"
-rds_parameter_group_name: "{{ db_instance_name }}-pg"
+rds_subnet_group_name: "{{ rds_instance_name }}-sg"
+rds_parameter_group_name: "{{ rds_instance_name }}-pg"
 
-rds_instance_type: db.m3.medium
+rds_instance_type: db.t2.micro
 
 rds_listen_port: 5432
 rds_max_connections: 100
@@ -11,3 +11,9 @@ rds_shared_buffers: 55706 # '{DBInstanceClassMemory/32768}'
 rds_effective_cache_size: 167117 # '{DBInstanceClassMemory*75/819200}'
 rds_work_mem: 17826 # '{DBInstanceClassMemory/102400}' # rds_max_connections * 1024 = 102400
 rds_storage_size: 100
+rds_storage_type: gp2
+rds_wait_timeout: 3000 # 50 minutes
+rds_multi_zone: False
+rds_publicly_accessible: False
+rds_upgrade_instance: True
+rds_wait_for_creation: True

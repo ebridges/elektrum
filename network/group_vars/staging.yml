@@ -7,11 +7,10 @@ config_info: "../etc/env/staging.env"
 application_domain_name: "staging.{{service_name}}.photos"
 media_cname: "staging.media.{{service_name}}.photos"
 
-db_instance_name: "staging-elektron-db"
-
 aws_ssh_key: staging-roja-llc
 
-rds_master_username: staging-elektrondba
+rds_instance_name: staging-elektron-db
+rds_master_username: staging_elektrondba
 rds_master_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           35356561616438653732626161626437353165323939656431323963303839303736636336636265

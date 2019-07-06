@@ -18,9 +18,9 @@ https_certificate_arn='{{ https_certificate_arn }}'
 ### Database Connect Info
 db_hostname='{{ db_endpoint_url }}'
 db_port_num='{{ db_port_number }}'
-db_name='{{ db_name }}'
-db_username='{{ rds_app_username }}'
-db_password='{{ rds_app_password | replace('\n', '') }}'
+db_name='{{ rds_database_name }}'
+db_username='{{ rds_master_username }}'
+db_password='{{ rds_master_password }}'
 
 ## Used for deployment purposes
 vpc_public_subnet_ids='{{ public_subnet_ids|join(',') }}' # only used by photo processor...maybe it should use private subnet?

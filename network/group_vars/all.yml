@@ -24,7 +24,7 @@ photo_processor_connection_timeout: 5
 photo_processor_memory_size: 256
 
 # DB Facts
-db_instance_name: "elektron-db"
+rds_instance_name: elektron-db
 rds_database_name: media_info
 rds_master_username: elektrondba
 rds_master_password: !vault |

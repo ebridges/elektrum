@@ -1,39 +1,6 @@
 ---
-- name: look up rds info
-  rds_instance_facts:
-    db_instance_identifier: "{{ db_instance_name }}"
-  register: rds
-
-- debug: var=rds
-
-- set_fact:
-    db_endpoint_url: "{{ rds.instances[0].endpoint.address }}"
-
-- debug: var=db_endpoint_url
-
-- set_fact:
-    db_port_number: "{{ rds.instances[0].endpoint.port }}"
-
-- debug: var=db_port_number
-
-- set_fact:
-    db_name: "{{ rds.instances[0].db_name }}"
-
-- debug: var=db_name
-
-- set_fact:
-    db_username: "{{ rds.instances[0].master_username }}"
-
-- debug: var=db_username
-
-- set_fact:
-    db_instance: "{{ rds.instances[0].db_instance_identifier }}"
-
-- debug: var=db_instance
-
-
 - name: Generate an env-specific configuration
   template:
-    src="{{ lookup('template','environment.tmpl') }}"
+    src=template/environment.tmpl.j2
     dest="{{config_info}}"
   delegate_to: localhost
