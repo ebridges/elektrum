@@ -61,33 +61,6 @@
   
 - debug: var=rds
 
-# - name: establish the RDS instance
-#   rds:
-#     command: create
-#     db_engine: postgres
-#     db_name: "{{ rds_database_name }}"
-#     instance_name: "{{ rds_instance_name }}"
-#     instance_type: "{{ rds_instance_type }}"
-#     iops: "{{ rds_storage_type | int }}"
-#     multi_zone: "{{ rds_multi_zone | bool }}"
-#     parameter_group: "{{ rds_parameter_group_name }}"
-#     port: "{{ rds_listen_port | int }}"
-#     publicly_accessible: "{{ rds_publicly_accessible | bool }}"
-#     region: "{{ aws_region }}"
-#     size: "{{ rds_storage_size | int }}"
-#     subnet: "{{ rds_subnet_group_name }}"
-#     upgrade: "{{ rds_upgrade_instance | bool }}"
-#     username: "{{ rds_master_username }}"
-#     password: "{{ rds_master_password }}"
-#     vpc_security_groups: "{{ private_security_group_id }}"
-#     wait_timeout: "{{ rds_wait_timeout | int }}"
-#     wait: "{{ rds_wait_for_creation | bool }}"
-#     tags:
-#       Service: "{{ service_name }}"
-#       Name: "{{ rds_instance_name }}/{{ rds_database_name }}"
-#       Environment: "{{ elektron_env }}"
-#   register: rds
-
 # - name: enable iam authentication
 #   rds_instance:
 #     db_instance_identifier: "{{ rds.instance.endpoint }}"
