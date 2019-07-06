@@ -4,6 +4,6 @@ dependencies:
 - role: vpc
 - role: rds
 - role: sss
+- role: acm
 - role: cdn
 - role: dns
-- role: acm
