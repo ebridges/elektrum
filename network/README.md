@@ -107,6 +107,8 @@ Subnet 8    10.128.224.0/19  00001010.10100000.11100000.00000000 *
 
 ### Notes
 
+[Calculating a subnet](https://networkengineering.stackexchange.com/questions/7106/how-do-you-calculate-the-prefix-network-subnet-and-host-numbers/53994#53994)
+
 "`*`" indicates these are reserved to scale into a secondary region.
 
 8 Subnets = 2^3
