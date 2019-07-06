@@ -67,8 +67,8 @@ aws_secret_key: !vault |
           3339356131373634616263373564303963613562386639366431
 
 ## Django Configuration
-django_debug_enabled: 'False'
-django_email_backend: 'django.core.mail.backends.filebased.EmailBackend'
+django_debug_enabled: False
+django_email_backend: django.core.mail.backends.filebased.EmailBackend
 django_allowed_hosts: "{{ application_domain_name }}"
 django_secret_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
