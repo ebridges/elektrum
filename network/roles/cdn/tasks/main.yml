@@ -32,8 +32,8 @@
   register: cdn_facts
 
 - set_fact:
-    domain_name_query: "ansible_facts.cloudfront.summary.distributions[?Aliases[0] == `{{ application_domain_name }}`]|[0].DomainName"
+    media_domain_name_query: "ansible_facts.cloudfront.summary.distributions[?Aliases[0] == `{{ media_cname }}`]|[0].DomainName"
 
-- name: set domain name of CDN distribution as a fact
+- name: set domain name of media CDN distribution as a fact
   set_fact:
-     application_cdn_host: "{{ cdn_facts|json_query(domain_name_query) }}"
+     application_cdn_host: "{{ cdn_facts|json_query(media_domain_name_query) }}"
