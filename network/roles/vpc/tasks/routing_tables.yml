@@ -1,5 +1,5 @@
 ---
-# public route table that routes through the internet gateway -- attach it to our three public subnets
+# public route table that routes through the internet gateway -- attach it to our public subnets
 - name: create route table for public subnets
   ec2_vpc_route_table:
     vpc_id: "{{ vpc_id }}"
