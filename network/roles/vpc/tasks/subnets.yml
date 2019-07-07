@@ -20,10 +20,10 @@
   loop: "{{ vpc_facts_subnets.results }}"
 
 # register a dictionary of subnet-name -> subnet-cidr
-- name: "set fact: VPC subnet CIDRs"
-  set_fact:
-    vpc_subnet_cidrs: "{{ vpc_subnet_cidrs | default({}) | combine({ item.subnet.tags.Name: item.subnet.cidr_block }) }}"
-  loop: "{{ vpc_facts_subnets.results }}"
+# - name: "set fact: VPC subnet CIDRs"
+#   set_fact:
+#     vpc_subnet_cidrs: "{{ vpc_subnet_cidrs | default({}) | combine({ item.subnet.tags.Name: item.subnet.cidr_block }) }}"
+#   loop: "{{ vpc_facts_subnets.results }}"
 
 # register a fact with private subnet ids
 - ec2_vpc_subnet_facts:
