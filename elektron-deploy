@@ -85,7 +85,18 @@ then
     --env AWS_ACCESS_KEY_ID \
     --env ELEKTRON_ENV=${ELEKTRON_ENV} \
     ${docker_tag} \
-    bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV} && zappa certify --yes ${ELEKTRON_ENV}"
+    bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV}"
+
+  echo "waiting on deploy to settle..."
+  sleep 10
+
+  docker run \
+    --env AWS_SECRET_ACCESS_KEY \
+    --env AWS_ACCESS_KEY_ID \
+    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    ${docker_tag} \
+    bash --login -c "cd project && zappa certify --yes ${ELEKTRON_ENV}"
+
 elif [ "${CMD}" == 'update' ];
 then
   docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag ${docker_tag} .
