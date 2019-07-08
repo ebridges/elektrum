@@ -44,7 +44,7 @@ cat << EOF > project/zappa_settings.json
     "slim_handler": true,
     "certificate_arn": "${https_certificate_arn}",
     "domain": "${application_domain_name}",
-    "route53_enabled": false,
+    "route53_enabled": true,
     "environment_variables": {
         "ELEKTRON_ENV": "${ELEKTRON_ENV}"
     },
