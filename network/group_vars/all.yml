@@ -14,7 +14,7 @@ https_domain_name: "{{service_name}}.photos"
 application_domain_name: "{{https_domain_name}}"
 media_cname: "media.{{service_name}}.photos"
 media_upload_bucket_name: "{{ media_cname }}"
-media_processor_artifact_bucket_name: "{{service_name}}.artifact.archive"
+media_processor_artifact_bucket_name: "archive.{{service_name}}.photos"
 
 # EC2 Facts
 nat_instance_ami: ami-035b3c7efe6d061d5
