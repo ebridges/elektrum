@@ -90,3 +90,7 @@
         fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to create instance: Invalid master user name"}
 
 -[x] cannot create db user because instance is not reachable
+
+-[x] AMI is not amzn-ami-vpc-nat
+      - missing /etc/sysctl.d/10-nat-settings per https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#basics
+
