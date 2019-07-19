@@ -94,3 +94,5 @@
 -[x] AMI is not amzn-ami-vpc-nat
       - missing /etc/sysctl.d/10-nat-settings per https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#basics
 
+-[x] split staging-elektron-vpc-public routing table into two: one per public subnet
+
