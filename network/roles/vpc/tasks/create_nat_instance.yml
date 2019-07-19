@@ -1,40 +1,47 @@
 ---
-- name: "Create NAT instance for {{ item.key }}"
+- name: "Create NAT instance for {{ item.value.name }}"
   ec2:
     assign_public_ip: yes
     group: "{{ vpc_name }}-nat-sg"
     image: "{{ nat_instance_ami }}"
     instance_tags:
       Service: "{{ service_name }}"
-      Name: "ec2-nat-{{ item.key }}"
+      Name: "ec2-nat-{{ item.value.name }}"
       Environment: "{{ elektron_env }}"
     exact_count: 1
     count_tag: 
-      Name: "ec2-nat-{{ item.key }}"
+      Name: "ec2-nat-{{ item.value.name }}"
     instance_type: "{{ nat_instance_type }}"
     key_name: "{{ aws_ssh_key }}"
     source_dest_check: no
-    vpc_subnet_id: "{{ item.value }}"
+    vpc_subnet_id: "{{ item.value.id }}"
     wait: yes
+    zone: "{{ item.value.az }}"
   register: ec2
 
+# get the instance id of the ec2 instance we just created above
 - set_fact:
-    ec2_query: "tagged_instances[?tags.Name == 'ec2-nat-{{ item.key }}'].id"
+    ec2_query: "tagged_instances[?tags.Name == 'ec2-nat-{{ item.value.name }}'].id"
 
-- debug:
-    var: ec2_query
+- set_fact:
+    lookup: { 'public-01': 'private-01', 'public-02': 'private-02' }
 
-- name: "Create NAT routing table entry for {{ item.key }}"
+- set_fact:
+    route_table_name: "{{ vpc_name }}-nat-{{ lookup[item.value.name] }}"
+
+- set_fact:
+    private_subnet_id: "{{ vpc_subnet_ids[lookup[item.value.name]].id }}"
+
+- name: "Create NAT routing table entry for {{ item.value.name }}"
   ec2_vpc_route_table:
     vpc_id: "{{ vpc_id }}"
     region: "{{ aws_region }}"
     tags:
       Service: "{{ service_name }}"
-      Name: "{{ vpc_name }}-nat-private"
+      Name: "{{ route_table_name }}"
       Environment: "{{ elektron_env }}"
     subnets:
-      - "{{ vpc_subnet_ids['private-01'] }}"
-      - "{{ vpc_subnet_ids['private-02'] }}"
+      - "{{ private_subnet_id }}"
     routes:
       - dest: 0.0.0.0/0
         # this json_query returns a one element array that needs to be converted to a string

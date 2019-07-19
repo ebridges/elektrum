@@ -96,3 +96,6 @@
 
 -[x] split staging-elektron-vpc-public routing table into two: one per public subnet
 
+-[x] split staging-elektron-vpc-nat-private routing table into two: one per private subnet
+
+-[x] nat instances are not getting created in different availability zones

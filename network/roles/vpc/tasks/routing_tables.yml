@@ -9,7 +9,7 @@
       Name: "{{ vpc_name }}-public-01"
       Environment: "{{ elektron_env }}"
     subnets:
-      - "{{ vpc_subnet_ids['public-01'] }}"
+      - "{{ vpc_subnet_ids['public-01']['id'] }}"
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ vpc_gateway_id }}"
@@ -23,7 +23,7 @@
       Name: "{{ vpc_name }}-public-02"
       Environment: "{{ elektron_env }}"
     subnets:
-      - "{{ vpc_subnet_ids['public-02'] }}"
+      - "{{ vpc_subnet_ids['public-02']['id'] }}"
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ vpc_gateway_id }}"
