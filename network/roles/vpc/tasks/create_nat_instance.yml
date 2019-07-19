@@ -24,13 +24,13 @@
     ec2_query: "tagged_instances[?tags.Name == 'ec2-nat-{{ item.value.name }}'].id"
 
 - set_fact:
-    lookup: { 'public-01': 'private-01', 'public-02': 'private-02' }
+    local_name_lookup: { 'public-01': 'private-01', 'public-02': 'private-02' }
 
 - set_fact:
-    route_table_name: "{{ vpc_name }}-nat-{{ lookup[item.value.name] }}"
+    route_table_name: "{{ vpc_name }}-nat-{{ local_name_lookup[item.value.name] }}"
 
 - set_fact:
-    private_subnet_id: "{{ vpc_subnet_ids[lookup[item.value.name]].id }}"
+    private_subnet_id: "{{ vpc_subnet_ids[local_name_lookup[item.value.name]].id }}"
 
 - name: "Create NAT routing table entry for {{ item.value.name }}"
   ec2_vpc_route_table:
