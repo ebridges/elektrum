@@ -13,7 +13,33 @@
         sudo rpm -ivh --force https://yum.postgresql.org/testing/10/redhat/rhel-6-x86_64/postgresql10-libs-10.9-1PGDG.rhel6.x86_64.rpm
         sudo rpm -ivh --force https://yum.postgresql.org/testing/10/redhat/rhel-6-x86_64/postgresql10-10.9-1PGDG.rhel6.x86_64.rpm
 
--[ ] Lambda unable to download app archive from S3 bucket:
+
+# Closed Issues
+
+-[x] ensure nat instance names are unique across envs
+-[x] hardcoded names `public-0x` and `private-0x` when creating security groups
+-[x] issue creating rds instance
+
+        TASK [rds : establish the RDS instance] *******************************************************************************************
+        [WARNING]: The value False (type bool) in a string field was converted to 'False' (type string). If this does not look like what
+        you expect, quote the entire value to ensure it does not change.
+
+-[x] issue creating rds instance
+
+        fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to create instance: Invalid master user name"}
+
+-[x] cannot create db user because instance is not reachable
+
+-[x] AMI is not amzn-ami-vpc-nat
+      - missing /etc/sysctl.d/10-nat-settings per https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#basics
+
+-[x] split staging-elektron-vpc-public routing table into two: one per public subnet
+
+-[x] split staging-elektron-vpc-nat-private routing table into two: one per private subnet
+
+-[x] nat instances are not getting created in different availability zones
+
+-[x] Lambda unable to download app archive from S3 bucket:
 
         [DEBUG]	2019-07-08T09:56:39.191Z	b17e-a8a4-4316-9c7a-7db6e4377469	Checking for DNS compatible bucket for: https://s3.amazonaws.com/archive.elektron.photos/staging_elektron_current_project.tar.gz
         [DEBUG]	2019-07-08T09:56:39.191Z	9c44b17e-a8a4-4316-9c7a-7db6e4377469	Not changing URI, bucket is not DNS compatible: archive.elektron.photos
@@ -41,7 +67,6 @@
         END RequestId: 9c44b17e-a8a4-4316-9c7a-7db6e4377469
         REPORT RequestId: 9c44b17e-a8a4-4316-9c7a-7db6e4377469	Duration: 30031.11 ms	Billed Duration: 30000 ms 	Memory Size: 512 MB	Max Memory Used: 47 MB	
         2019-07-08T09:57:08.839Z 9c44b17e-a8a4-4316-9c7a-7db6e4377469 Task timed out after 30.03 seconds
-
 
       WGET doesn't work either
         ```
@@ -75,28 +100,3 @@
                 }
             ]
         }
-
-# Closed Issues
-
--[x] ensure nat instance names are unique across envs
--[x] hardcoded names `public-0x` and `private-0x` when creating security groups
--[x] issue creating rds instance
-
-        TASK [rds : establish the RDS instance] *******************************************************************************************
-        [WARNING]: The value False (type bool) in a string field was converted to 'False' (type string). If this does not look like what
-        you expect, quote the entire value to ensure it does not change.
-
--[x] issue creating rds instance
-
-        fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to create instance: Invalid master user name"}
-
--[x] cannot create db user because instance is not reachable
-
--[x] AMI is not amzn-ami-vpc-nat
-      - missing /etc/sysctl.d/10-nat-settings per https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#basics
-
--[x] split staging-elektron-vpc-public routing table into two: one per public subnet
-
--[x] split staging-elektron-vpc-nat-private routing table into two: one per private subnet
-
--[x] nat instances are not getting created in different availability zones
