@@ -4,6 +4,7 @@
 -[ ] when creating an ec2 key pair register `key.private_key` as a var and save it to a file.
 
 -[ ] generate and import an https certificate separately
+
         https://blog.confirm.ch/deploying-ssl-private-keys-with-ansible/
         https://vittegleo.com/post/letsencrypt-lambda-ssl/
 
