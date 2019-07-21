@@ -7,6 +7,8 @@ config_info: ../etc/env/staging.env
 application_domain_name: "staging.{{service_name}}.photos"
 media_cname: "staging-media.{{service_name}}.photos"
 
+photo_processor_rolename: elektron-staging-photoProcessorRole
+
 rds_instance_name: staging-elektron-db
 rds_master_username: staging_elektrondba
 rds_master_password: !vault |
