@@ -5,6 +5,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ media_upload_bucket_name }}-bucket"  
+      Environment: "{{ elektron_env }}"
 
 - name: Create bucket to archive photo-processor executables.  
   s3_bucket:
@@ -12,3 +13,4 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ media_processor_artifact_bucket_name }}-bucket"  
+      Environment: "{{ elektron_env }}"

@@ -1,20 +1,21 @@
 #!/bin/sh
 
 CMD=$1
+ENV=$2
 
 if [ -z "${CMD}" ];
 then
-  echo "USAGE: $0 [deploy|update|undeploy|shell|build]"
+  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [staging|production]"
   exit 1
 fi
 
-if [ -z "${ELEKTRON_ENV}" ];
+if [ -z "${ENV}" ];
 then
-    # default environment
-    ELEKTRON_ENV=staging
+  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [staging|production]"
+  exit 1
 fi
-source etc/env/${ELEKTRON_ENV}.env
 
+source etc/env/${ENV}.env
 
 VERSION=$(cat version.txt | tr -d '\n')
 docker_tag="roja/elektron_zappa:${VERSION}"
@@ -35,7 +36,7 @@ done
 
 cat << EOF > project/zappa_settings.json
 {
-  "${ELEKTRON_ENV}": {
+  "${ENV}": {
     "aws_region": "${aws_region}",
     "django_settings": "${service_name}.settings",
     "project_name": "${service_name}",
@@ -44,9 +45,9 @@ cat << EOF > project/zappa_settings.json
     "slim_handler": true,
     "certificate_arn": "${https_certificate_arn}",
     "domain": "${application_domain_name}",
-    "route53_enabled": false,
+    "route53_enabled": true,
     "environment_variables": {
-        "ELEKTRON_ENV": "${ELEKTRON_ENV}"
+        "ELEKTRON_ENV": "${ENV}"
     },
     "vpc_config": {
       "SubnetIds": [
@@ -68,49 +69,60 @@ then
     --interactive \
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
-    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    --env ELEKTRON_ENV=${ENV} \
     --publish 8000:8000 \
     ${docker_tag}
 elif [ "${CMD}" == 'build' ];
 then
   docker build \
-    --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  \
+    --build-arg="ELEKTRON_ENV=${ENV}"  \
     --tag ${docker_tag} .
 elif [ "${CMD}" == 'deploy' ];
 then
   echo "Running zappa deploy & certify"
-  docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag ${docker_tag} .
+
   docker run \
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
-    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
-    bash --login -c "cd project && zappa deploy ${ELEKTRON_ENV} && zappa certify --yes ${ELEKTRON_ENV}"
+    bash --login -c "cd project && zappa deploy ${ENV}"
+
+  echo "waiting on deploy to settle..."
+  sleep 10
+
+  docker run \
+    --env AWS_SECRET_ACCESS_KEY \
+    --env AWS_ACCESS_KEY_ID \
+    --env ELEKTRON_ENV=${ENV} \
+    ${docker_tag} \
+    bash --login -c "cd project && zappa certify --yes ${ENV}"
+
 elif [ "${CMD}" == 'update' ];
 then
-  docker build --build-arg="ELEKTRON_ENV=${ELEKTRON_ENV}"  --tag ${docker_tag} .
+  docker build --build-arg="ELEKTRON_ENV=${ENV}"  --tag ${docker_tag} .
   echo "Running zappa ${CMD}"
   docker run \
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
-    --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+    --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
-    bash --login -c "cd project && zappa update ${ELEKTRON_ENV}"
+    bash --login -c "cd project && zappa update ${ENV}"
 elif [ "${CMD}" == 'undeploy' ];
 then
   if [ -f project/zappa_settings.json ];
   then
     echo "Running zappa ${CMD} using local settings file"
     cd project
-    zappa undeploy --yes ${ELEKTRON_ENV}
+    zappa undeploy --yes ${ENV}
   else
     echo "Running zappa ${CMD} via docker"
     docker run \
       --env AWS_SECRET_ACCESS_KEY \
       --env AWS_ACCESS_KEY_ID \
-      --env ELEKTRON_ENV=${ELEKTRON_ENV} \
+      --env ELEKTRON_ENV=${ENV} \
       ${docker_tag} \
-      bash --login -c "cd project && zappa undeploy --yes ${ELEKTRON_ENV}"
+      bash --login -c "cd project && zappa undeploy --yes ${ENV}"
   fi
 else
   echo "ERROR: command '${CMD}' not recognized."

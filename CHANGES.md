@@ -4,8 +4,9 @@ Elektron Change Log
 0.31 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- [#50] Refactor network into separate, but identical environments.
+- [#38] Multistage deployment environments
+- [#43] Provide capability to reset a release to previous version.
 
 0.30 (2019-06-28)
 -----------------

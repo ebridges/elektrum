@@ -1,0 +1,29 @@
+---
+# public route table that routes through the internet gateway -- attach it to our public subnets
+- name: create first public route table for public subnets
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ vpc_name }}-public-01"
+      Environment: "{{ elektron_env }}"
+    subnets:
+      - "{{ vpc_subnet_ids['public-01']['id'] }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ vpc_gateway_id }}"
+
+- name: create second public route table for public subnets
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ vpc_name }}-public-02"
+      Environment: "{{ elektron_env }}"
+    subnets:
+      - "{{ vpc_subnet_ids['public-02']['id'] }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ vpc_gateway_id }}"

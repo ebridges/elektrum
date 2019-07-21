@@ -1,0 +1,11 @@
+---
+- name: obtain acm facts for "{{ https_domain_name }}"
+  aws_acm_facts:
+    domain_name: "{{ https_domain_name }}"
+  register: acm_facts
+
+- debug: var=acm_facts
+
+- name: set ARN of HTTPS certificate as fact
+  set_fact:
+     https_certificate_arn: "{{ acm_facts.certificates[0].certificate_arn }}"

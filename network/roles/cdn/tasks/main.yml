@@ -21,6 +21,19 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ media_cname }}-cdn"
+      Environment: "{{ elektron_env }}"
     viewer_certificate:
         acm_certificate_arn: "{{ https_certificate_arn }}"
         ssl_support_method: sni-only
+
+- name: obtain cdn facts for application server
+  cloudfront_facts:
+    summary: true
+  register: cdn_facts
+
+- set_fact:
+    media_domain_name_query: "ansible_facts.cloudfront.summary.distributions[?Aliases[0] == `{{ media_cname }}`]|[0].DomainName"
+
+- name: set domain name of media CDN distribution as a fact
+  set_fact:
+     application_cdn_host: "{{ cdn_facts|json_query(media_domain_name_query) }}"

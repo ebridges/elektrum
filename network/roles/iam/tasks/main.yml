@@ -1,0 +1,43 @@
+---
+# confirm existence of auth key
+- name: create EC2 key
+  ec2_key:
+    name: "{{ aws_ssh_key }}"
+
+- name: Create a photo processor role with description
+  iam_role:
+    name: "{{ photo_processor_rolename }}"
+    assume_role_policy_document:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - lambda.amazonaws.com
+        Action:
+        - sts:AssumeRole
+    description: Photo processor role
+  register: photo_processor_role_info
+
+- name: Associate r/o media bucket permissions with photo processor role
+  iam_policy:
+    iam_type: role
+    iam_name: "{{ photo_processor_rolename }}"
+    policy_name: elektronPhotoProcessorPolicy
+    policy_json:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Action:
+        - s3:Get*
+        - s3:List*
+        - logs:*
+        Resource:
+        - arn:aws:s3:::{{media_upload_bucket_name}}
+        - arn:aws:s3:::{{media_upload_bucket_name}}/*
+    state: present
+  register: result
+
+- name: set photo processor role arn as fact
+  set_fact:
+    photo_processor_role_arn: "{{ photo_processor_role_info.iam_role.arn }}"

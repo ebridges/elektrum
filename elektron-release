@@ -5,7 +5,7 @@ ARG=$2
 
 if [ -z "${CMD}" ];
 then
-    echo "Usage: ${0}: deploy-release [-f]"
+    echo "Usage: ${0}: deploy-release [-f] | reset-release <version>"
     exit 0
 fi
 
@@ -132,4 +132,20 @@ then
         echo 'Deploy cancelled.'
         exit 0
     fi
+elif [ 'reset-release' == "${CMD}" ];
+then
+    version=${ARG}
+
+    if [ -z "${version}" ];
+    then
+        echo "Usage: $0 reset-release <version>"
+        exit 1
+    fi
+
+    git checkout master
+    git tag --delete ${version}
+    git push origin :refs/tags/${version}
+    git reset HEAD~2
+    git checkout -- ./CHANGES.md ./version.txt
+    git push --force
 fi

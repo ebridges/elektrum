@@ -6,11 +6,11 @@
     AWS_REGION: "{{ aws_region }}"
 
   roles:
-    - { role: common, tags: common }
+    - { role: iam, tags: iam }
     - { role: vpc, tags: vpc }
-    - { role: nat, tags: nat }
     - { role: rds, tags: rds }
-    - { role: cfg, tags: cfg }
     - { role: sss, tags: sss }
+    - { role: acm, tags: acm }
     - { role: cdn, tags: cdn }
     - { role: dns, tags: dns }
+    - { role: cfg, tags: cfg }

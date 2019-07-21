@@ -4,7 +4,7 @@
     state: present
     region: "{{ aws_region }}"
     name: "{{ rds_subnet_group_name }}"
-    description: '{{ db_instance_name }} RDS subnet group'
+    description: '{{ rds_instance_name }} RDS subnet group'
     subnets: "{{ private_subnet_ids }}"
 
 - name: create a parameter group
@@ -12,48 +12,83 @@
     state: present
     name: "{{ rds_parameter_group_name }}"
     description: "Parameters for {{ service_name }}"
-    engine: "postgres10"
+    engine: postgres11
     region: "{{ aws_region }}"
     params:
-      max_connections: "{{ rds_max_connections }}"
-      shared_buffers: "{{ rds_shared_buffers }}"
-      effective_cache_size: "{{ rds_effective_cache_size }}"
-      work_mem: "{{ rds_work_mem }}"
+      max_connections: "{{ rds_max_connections | int }}"
+      shared_buffers: "{{ rds_shared_buffers | int }}"
+      effective_cache_size: "{{ rds_effective_cache_size | int }}"
+      work_mem: "{{ rds_work_mem | int }}"
     tags:
       Service: "{{ service_name }}"
       Name: "{{ rds_parameter_group_name }}"
+      Environment: "{{ elektron_env }}"
 
-- name: establish the RDS instance
+- name: Create Postgresql RDS instance using SSD storage
+  command: "aws rds create-db-instance
+            --db-instance-identifier {{ rds_instance_name }}
+            --db-name {{ rds_database_name }}
+            --storage-type {{ rds_storage_type }}
+            --allocated-storage {{ rds_storage_size }}
+            --db-instance-class {{ rds_instance_type }}
+            --engine postgres
+            --engine-version 11
+            --master-username {{ rds_master_username }}
+            --master-user-password {{ rds_master_password }}
+            --vpc-security-group-ids {{ private_security_group_id }}
+            --db-subnet-group-name {{ rds_subnet_group_name }}
+            --db-parameter-group-name {{ rds_parameter_group_name }}
+            --port 5432
+            --no-multi-az"
+  register: result
+  failed_when: >
+    result.rc != 0 and ('DBInstanceAlreadyExists' not in result.stderr)
+  changed_when: "result.rc == 0"
+
+- name: Wait for Postgresql RDS to be available
   rds:
-    command: create
-    db_engine: postgres
-    db_name: "{{ rds_database_name }}"
-    port: "{{ rds_listen_port }}"
-    size: "{{ rds_storage_size }}"
-    iops: 1000 # determines ssd vs. magnetic storage
+    command: facts
     region: "{{ aws_region }}"
-    instance_type: "{{ rds_instance_type }}"
-    instance_name: "{{ db_instance_name }}"
-    username: "{{ rds_master_username }}"
-    password: "{{ rds_master_password }}"
-    subnet: "{{ rds_subnet_group_name }}"
-    vpc_security_groups: "{{ private_security_group_id }}"
-    parameter_group: "{{ rds_parameter_group_name }}"
-    publicly_accessible: no
-    upgrade: yes
-    wait: yes
-    wait_timeout: 3000 # 50 minutes
-    tags:
-      Service: "{{ service_name }}"
-      Name: "{{ db_instance_name }}"
-  register: rds
+    instance_name: "{{ rds_instance_name }}"
+  register: result
+  until: result.instance.status == "available"
+  retries: 20
+  delay: 60
 
-- name: create non-privileged user
-  postgresql_user:
-    login_host: "{{ rds.instance.endpoint }}"
-    login_user: "{{ rds_master_username }}"
-    login_password: "{{ rds_master_password }}"
-    db: "{{ rds_database_name }}"
-    name: "{{ rds_app_username }}"
-    password: "{{ rds_app_password }}"
-    role_attr_flags: NOSUPERUSER
+- rds_instance_facts:
+    db_instance_identifier: "{{ rds_instance_name }}"
+  register: rds
+  
+- debug: var=rds
+
+# - name: enable iam authentication
+#   rds_instance:
+#     db_instance_identifier: "{{ rds.instance.endpoint }}"
+#     enable_iam_database_authentication: yes
+
+# - name: create non-privileged user
+#   postgresql_user:
+#     login_host: "{{ rds.instance.endpoint }}"
+#     login_user: "{{ rds_master_username }}"
+#     login_password: "{{ rds_master_password }}"
+#     db: "{{ rds_database_name }}"
+#     name: "{{ rds_app_username }}"
+#     password: "{{ rds_app_password }}"
+#     role_attr_flags: NOSUPERUSER
+
+# - name: modify the RDS instance to not be publicly accessible
+#   rds:
+#     command: modify
+#     instance_name: "{{ rds_instance_name }}"
+#     publicly_accessible: no
+#     vpc_security_groups: "{{ private_security_group_id }}"
+
+- set_fact:
+    db_endpoint_url: "{{ rds.instances[0].endpoint.address }}"
+
+- debug: var=db_endpoint_url
+
+- set_fact:
+    db_port_number: "{{ rds.instances[0].endpoint.port }}"
+
+- debug: var=db_port_number

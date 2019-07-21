@@ -1,9 +1,6 @@
 # group_vars/all.yml
 # ---
 
-# specify to run Ansible for hosts locally by default, not over SSH
-ansible_connection: local
-
 # override default, system python in order to use python in venv
 ansible_python_interpreter: python3
 
@@ -12,57 +9,62 @@ home_ip: 98.116.39.58
 
 org_name: roja
 service_name: elektron
-config_info: "../etc/env/{{ elektron_env }}.env"
 
-application_domain_name: "{{service_name}}.photos"
-media_cname: "media.{{ application_domain_name }}"
+https_domain_name: "{{service_name}}.photos"
+application_domain_name: "{{https_domain_name}}"
+media_cname: "media.{{service_name}}.photos"
 media_upload_bucket_name: "{{ media_cname }}"
-media_processor_artifact_bucket_name: "{{service_name}}.artifact.archive"
+media_processor_artifact_bucket_name: "archive.{{service_name}}.photos"
 
 # EC2 Facts
-nat_instance_ami: ami-0422d936d535c63b1
+nat_instance_ami: ami-058436d7e072250b3
 nat_instance_type: t2.micro
 
+## Lambda deployment & config
+photo_processor_rolename: elektron-production-photoProcessorRole
+photo_processor_connection_timeout: 5
+photo_processor_memory_size: 256
+
 # DB Facts
-db_instance_name: elektron-db
+rds_instance_name: elektron-db
 rds_database_name: media_info
 rds_master_username: elektrondba
-rds_master_password: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          35356561616438653732626161626437353165323939656431323963303839303736636336636265
-          6539333266653934363933663762623235616431333933350a343565326262363432306261346434
-          63623035666238343463396363616631613835623233353362346365326461376364323765333865
-          3238383463623264370a376237303031396130366239393563386564343532653432383563626536
-          3261
-
 rds_app_username: elektronusr
-rds_app_password: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          37336139616363316462643633363638393330313139333030316666623239663536373065616339
-          3834393132356266373732613031636332643362623039620a363735343733343563613536376531
-          66346431383831663433666264396164333938666163336136336136313737306639646534376564
-          6465613131313733310a633331326564333635353432623432333262356639616334653831656232
-          38633038333935326238356564366331636465383438383833393664366330383063
 
 # AWS Facts
 aws_ssh_key: roja-llc
 aws_region: us-east-1
-aws_access_key: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          65373764376163663330316535393264316530653064633436363234633933643534343864623435
-          3562333631633930306462623236383966643432363362360a383835326230623330333932373231
-          38623837323264383866393639376437343032656232333534313363343131303139376561383630
-          3665653438386635620a666165633638626639316261313439613737663134396635356565393134
-          62643938626234373834346339376366383664333537303834666662653139653035
-aws_secret_key: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          34376165346166333063313762306530356362626132646261663665623361643361343261643062
-          3239313166383138666161346538313135653062663765370a386136383664366133343961653261
-          39393561383836633833343165626636366538353531353336323339303039646333363261303731
-          3866396434633639340a633566656265396461336231653532663165376664346462626338326238
-          33306133343433366338613036373030323762306234336637306634653233616538633833323436
-          3339356131373634616263373564303963613562386639366431
 
-## Lambda deployment & config
-photo_processor_connection_timeout: 5
-photo_processor_memory_size: 256
+## Django Configuration
+django_debug_enabled: False
+django_email_backend: django.core.mail.backends.filebased.EmailBackend
+django_allowed_hosts: "{{ application_domain_name }}"
+
+## VPC Configuration
+
+vpc_cidr_block: 10.0.0.0/16
+
+vpc_subnets:
+  private-01:
+    cidr: 10.0.0.0/19
+    az: "{{ aws_region }}a"
+    visibility: private
+  public-01:
+    cidr: 10.0.32.0/19
+    az: "{{ aws_region }}a"
+    visibility: public
+  private-02:
+    cidr: 10.0.64.0/19
+    az: "{{ aws_region }}b"
+    visibility: private
+  public-02:
+    cidr: 10.0.96.0/19
+    az: "{{ aws_region }}b"
+    visibility: public
+
+vpc_subnets_private: 
+  - "{{vpc_subnets['private-01']['cidr']}}"
+  - "{{vpc_subnets['private-02']['cidr']}}"
+vpc_subnets_public: 
+  - "{{vpc_subnets['public-01']['cidr']}}"
+  - "{{vpc_subnets['public-02']['cidr']}}"
