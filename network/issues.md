@@ -1,19 +1,4 @@
 
-# Open Issues
-
--[ ] when creating an ec2 key pair register `key.private_key` as a var and save it to a file.
-
--[ ] generate and import an https certificate separately
-
-        https://blog.confirm.ch/deploying-ssl-private-keys-with-ansible/
-        https://vittegleo.com/post/letsencrypt-lambda-ssl/
-
--[ ] Installation of psql client on NAT instance
-
-        sudo rpm -ivh --force https://yum.postgresql.org/testing/10/redhat/rhel-6-x86_64/postgresql10-libs-10.9-1PGDG.rhel6.x86_64.rpm
-        sudo rpm -ivh --force https://yum.postgresql.org/testing/10/redhat/rhel-6-x86_64/postgresql10-10.9-1PGDG.rhel6.x86_64.rpm
-
-
 # Closed Issues
 
 -[x] ensure nat instance names are unique across envs
