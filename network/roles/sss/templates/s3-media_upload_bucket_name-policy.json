@@ -2,15 +2,13 @@
   "Version": "2012-10-17",
   "Statement": [
       {
-          "Sid": "id123456",
           "Effect": "Allow",
           "Principal": {
               "AWS": "{{ photo_processor_role_arn}}"
           },
           "Action": [
-              "s3:ListBucket",
-              "s3:GetObject",
-              "s3:GetObjectAcl"
+              "s3:List*",
+              "s3:Get*"
           ],
           "Resource": [
               "arn:aws:s3:::{{ media_upload_bucket_name }}/*",
