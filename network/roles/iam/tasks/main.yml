@@ -32,6 +32,9 @@
         - s3:Get*
         - s3:List*
         - logs:*
+        - ec2:DescribeNetworkInterfaces
+        - ec2:CreateNetworkInterface
+        - ec2:DeleteNetworkInterface
         Resource:
         - arn:aws:s3:::{{media_upload_bucket_name}}
         - arn:aws:s3:::{{media_upload_bucket_name}}/*
