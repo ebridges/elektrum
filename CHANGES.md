@@ -1,7 +1,7 @@
 Elektron Change Log
 ================
 
-0.31 (unreleased)
+0.31 (2019-07-25)
 -----------------
 
 - [#50] Refactor network into separate, but identical environments.
