@@ -74,12 +74,13 @@ then
     ${docker_tag}
 elif [ "${CMD}" == 'build' ];
 then
+  echo "Running zappa ${CMD}"
   docker build \
     --build-arg="ELEKTRON_ENV=${ENV}"  \
     --tag ${docker_tag} .
 elif [ "${CMD}" == 'deploy' ];
 then
-  echo "Running zappa deploy & certify"
+  echo "Running zappa deploy"
 
   docker run \
     --env AWS_SECRET_ACCESS_KEY \
@@ -91,6 +92,7 @@ then
   echo "waiting on deploy to settle..."
   sleep 10
 
+  echo "Running zappa certify"
   docker run \
     --env AWS_SECRET_ACCESS_KEY \
     --env AWS_ACCESS_KEY_ID \
