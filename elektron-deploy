@@ -102,7 +102,6 @@ then
 
 elif [ "${CMD}" == 'update' ];
 then
-  docker build --build-arg="ELEKTRON_ENV=${ENV}"  --tag ${docker_tag} .
   echo "Running zappa ${CMD}"
   docker run \
     --env AWS_SECRET_ACCESS_KEY \
