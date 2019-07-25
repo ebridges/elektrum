@@ -1,5 +1,5 @@
 from logging import Logger, basicConfig, INFO, DEBUG, CRITICAL, debug, info, error, getLogger
-from os import getenv, path
+from os import getenv, path, stat
 from sys import argv, exit, exc_info
 import dotenv
 import boto3
@@ -32,11 +32,23 @@ def load_env():
 
 
 def upload_archive(archive_bucket, artifact_name, archive):
-    debug('Uploading artifact [%s] to bucket [%s] using archive [%s]' % (artifact_name, archive_bucket, archive))
     s3 = boto3.client('s3')
-    client = S3Transfer(client=s3)
-    client.upload_file(archive, archive_bucket, artifact_name)
-    info('Function archive [%s] uploaded to bucket [%s]' % (artifact_name, archive_bucket))
+    response = s3.head_object(Bucket=archive_bucket, Key=artifact_name)
+
+    uploaded_already = (response['ResponseMetadata']['HTTPStatusCode'] == 200)
+    if uploaded_already:
+        uploaded_size = int(response['ResponseMetadata']['HTTPHeaders']['content-length'])
+
+    archive_size = stat(archive).st_size
+    debug('uploaded size: %s / archive size: %s' % (uploaded_size, archive_size))
+
+    if not uploaded_already or uploaded_size != archive_size:
+        debug('Uploading artifact [%s] to bucket [%s] using archive [%s]' % (artifact_name, archive_bucket, archive))
+        client = S3Transfer(client=s3)
+        client.upload_file(archive, archive_bucket, artifact_name)
+        info('Function archive [%s] uploaded to bucket [%s]' % (artifact_name, archive_bucket))
+    else:
+        info('Archive already exists on S3, skipping upload.')
 
 
 def add_function(bucket, artifact_name, function_name):
