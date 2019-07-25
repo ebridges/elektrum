@@ -23,7 +23,7 @@
   iam_policy:
     iam_type: role
     iam_name: "{{ photo_processor_rolename }}"
-    policy_name: elektronPhotoProcessorPolicy
+    policy_name: "{{elektron_env}}-elektronPhotoProcessorPolicy"
     policy_json:
       Version: '2012-10-17'
       Statement:
