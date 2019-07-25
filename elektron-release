@@ -113,6 +113,8 @@ then
             exit ${result}
         fi
 
+        ./elektron-deploy build ${ELEKTRON_ENV}
+
         `aws --output text lambda list-functions | grep ${service_name}-${ELEKTRON_ENV} > /dev/null 2>&1`
 
         if [ $? == 0 ];
