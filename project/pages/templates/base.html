@@ -4,12 +4,15 @@
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Elektron{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'css/media_item.css' %}">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Hind">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}" >
+  <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/media_item.css' %}">
 </head>
 <body>
   <header>
-    <h1>Elektron</h1>
+    <div class="title">Elektron</div>
+    <div>{% block logged_in_state %}{% endblock %}</div>
   </header>
   <main>
     {% block content %}
