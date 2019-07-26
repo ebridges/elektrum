@@ -253,6 +253,18 @@ version = "1.4.2"
 
 [[package]]
 category = "dev"
+description = "An SSL-enabled development server for Django"
+name = "django-sslserver"
+optional = false
+python-versions = "*"
+version = "0.20"
+
+[package.dependencies]
+Django = ">=1.8"
+setuptools = "*"
+
+[[package]]
+category = "dev"
 description = "Pythonic argument parser, that will make you smile"
 name = "docopt"
 optional = false
@@ -1048,7 +1060,7 @@ python-versions = ">=2.7"
 version = "0.5.2"
 
 [metadata]
-content-hash = "c37f38ae83cb210a6282ad1f79b01ed9f1fc0541b7d08f9df7dc1558764db76a"
+content-hash = "159663567aa2df11e9231387eb7c5e9e2457ec5e13af6d6fdbaaea55a31d5ed9"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -1077,6 +1089,7 @@ defusedxml = ["6687150770438374ab581bb7a1b327a847dd9c5749e396102de3fad4e8a3ef93"
 django = ["4d23f61b26892bac785f07401bc38cbf8fa4cec993f400e9cd9ddf28fd51c0ea", "6e974d4b57e3b29e4882b244d40171d6a75202ab8d2402b8e8adbd182e25cf0c"]
 django-allauth = ["45661b6fe308466154adf54461679fab6f0c6850b10c56dc322fbbb9d47e03d9"]
 django-dotenv = ["3812bb0f4876cf31f902aad140f0645e120e51ee30eb7c40c22050f58a0e4adb", "a9b1b40a70bd321acd231926acedb9bd2c5e873e33a1873b34a7276d196a765e"]
+django-sslserver = ["6b2514427b4eed0713e478ae6dfdda622070a98f657d61a4502bf42b6311c66e"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 docutils = ["54a349c622ff31c91cbec43b0b512f113b5b24daf00e2ea530bb1bd9aac14849", "d2ddba74835cb090a1b627d3de4e7835c628d07ee461f7b4480f51af2fe4d448", "fa2e604dc8a1fe5676a6342d86aa410779df206eec24ebaf16b85687263d3ece"]
 durationpy = ["5ef9416b527b50d722f34655becfb75e49228eb82f87b855ed1911b3314b5408"]
