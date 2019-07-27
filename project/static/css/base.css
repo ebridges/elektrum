@@ -50,19 +50,3 @@ footer {
     font-size: 24px;
     text-transform: uppercase;
 }
-
-.item {
-    letter-spacing: 0.025em;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(15, 1fr);
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
-    /* grid-template-areas: 
-    'item-1' 'item-2' 'item-3'
-    'item-4' 'item-5' 'item-6'
-    'item-7' 'item-8' 'item-9'; */
-}
