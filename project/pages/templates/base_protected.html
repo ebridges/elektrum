@@ -3,9 +3,8 @@
 {% load i18n %}
 {% load socialaccount %}
 
-{% block content %}
+{% block loggedout_content %}
 
-{% if not user.is_authenticated %}
 {% blocktrans with site.name as site_name %}In order to access {{ site_name }} you can sign up or log in with your
 Google credentials, or create an account an log in with those credentials.{% endblocktrans %}
 
@@ -49,6 +48,5 @@ Google credentials, or create an account an log in with those credentials.{% end
     <button type="submit">{% trans "Sign Up" %} &raquo;</button>
   </form>
 </div>
-{% endif %}
 
 {% endblock %}

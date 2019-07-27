@@ -9,6 +9,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/media_item.css' %}">
+  {% block local_css %}
+  {% endblock %}
 </head>
 
 <body>
@@ -46,8 +48,13 @@
     </div>
   </header>
   <main>
-    {% block content %}
-    {% endblock %}
+    {% if user.is_authenticated %}
+      {% block content %}
+      {% endblock %}
+    {% else %}
+      {% block loggedout_content %}
+      {% endblock %}
+    {% endif %}
   </main>
   <footer>
     {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br />{{APP_DB_HOST}}
