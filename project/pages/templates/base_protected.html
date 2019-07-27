@@ -3,36 +3,6 @@
 {% load i18n %}
 {% load socialaccount %}
 
-{% block logged_in_state %}
-
-  {% if user.is_authenticated %}
-    <span class="avatar-container">
-      <img class="avatar" src="{{ request.user.profile_image_url }}"/>
-      <span class="avatar-badge">
-        {% if user.is_account_verified %}
-          🔵
-        {% else %}
-          🔴
-        {% endif %}
-      </span>
-    </span>
-    <!-- <div class="logout-button">
-      <a href="{% url 'account_logout' %}">
-        <img width="12" height="14" src="{% static 'img/logout.svg' %}">
-      </a>
-    </div> -->
-
-    {% block logged_in_content %}
-    {% endblock %}
-
-  {% else %}
-
-    {% block logged_out_content_top %}
-    {% endblock %}
-
-  {% endif %}
-{% endblock %}
-
 {% block content %}
 
   {% if not user.is_authenticated %}
@@ -78,13 +48,6 @@
         <button type="submit">{% trans "Sign Up" %} &raquo;</button>
       </form>
     </div>    
-
-    {% block logged_out_content_bottom %}
-      <p>You must be logged in to view this content.</p>
-    {% endblock %}
- 
-    <hr size="1"/>
-
   {% endif %}
 
 {% endblock %}

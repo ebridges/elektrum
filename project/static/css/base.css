@@ -3,12 +3,25 @@ body {
     font: 14px Hind,Helvetica,Arial,sans-serif;
 }
 
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 footer {
     font: 10px Hind,Helvetica,Arial,sans-serif;
 }
 
+.header-left {
+    flex-grow: 1;
+}
+
+.header-right {
+    text-align: center;
+}
+
 .avatar {
-    vertical-align: middle;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -20,7 +33,7 @@ footer {
 
 .avatar-badge {
     position: absolute;
-    top: -20px;
+    top: -5px;
     right: -5px;
 }
 

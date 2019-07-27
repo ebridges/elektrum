@@ -11,8 +11,37 @@
 </head>
 <body>
   <header>
-    <div class="title">Elektron</div>
-    <div>{% block logged_in_state %}{% endblock %}</div>
+  <div class="header-left">
+    <span class="title">
+      elektron.photos
+    </span>
+    {% if user.is_authenticated %}
+      <span class="subtitle">
+          {{ user.username }}
+      </span>
+    {% endif %}
+  </div>
+  <div class="header-right">
+  {% if user.is_authenticated %}
+    <div class="avatar-container">
+      <img class="avatar" src="{{ request.user.profile_image_url }}"/>
+      <span class="avatar-badge">
+        {% if not user.is_account_verified %}
+        🔴
+        {% endif %}
+      </span>
+    </div>
+    <div class="logout-button">
+      <a href="{% url 'account_logout' %}">logout</a>
+    </div>
+  </div>
+  {% else %}
+
+    Please sign in.
+
+  {% endif %}
+
+</div>
   </header>
   <main>
     {% block content %}
