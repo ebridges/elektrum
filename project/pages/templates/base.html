@@ -1,54 +1,57 @@
 <!DOCTYPE html>
 {% load static %}
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Elektron{% endblock %}</title>
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Hind">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}" >
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/media_item.css' %}">
 </head>
+
 <body>
   <header>
-  <div class="header-left">
-    <span class="title">
-      elektron.photos
-    </span>
-    {% if user.is_authenticated %}
+    <div class="header-left">
+      <span class="title">
+        elektron.photos
+      </span>
+      {% if user.is_authenticated %}
       <span class="subtitle">
-          {{ user.username }}
+        {{ user.username }}
       </span>
-    {% endif %}
-  </div>
-  <div class="header-right">
-  {% if user.is_authenticated %}
-    <div class="avatar-container">
-      <img class="avatar" src="{{ request.user.profile_image_url }}"/>
-      <span class="avatar-badge">
-        {% if not user.is_account_verified %}
-        🔴
-        {% endif %}
-      </span>
+      {% endif %}
     </div>
-    <div class="logout-button">
-      <a href="{% url 'account_logout' %}">logout</a>
+    <div class="header-right">
+      {% if user.is_authenticated %}
+      <div class="avatar-container">
+        <img class="avatar" src="{{ request.user.profile_image_url }}" />
+        <span class="avatar-badge">
+          {% if not user.is_account_verified %}
+          🔴
+          {% endif %}
+        </span>
+      </div>
+      <div class="logout-button">
+        <a href="{% url 'account_logout' %}">logout</a>
+      </div>
     </div>
-  </div>
-  {% else %}
+    {% else %}
 
     Please sign in.
 
-  {% endif %}
+    {% endif %}
 
-</div>
+    </div>
   </header>
   <main>
     {% block content %}
     {% endblock %}
   </main>
   <footer>
-    {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br/>{{APP_DB_HOST}}
+    {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br />{{APP_DB_HOST}}
   </footer>
 </body>
+
 </html>
