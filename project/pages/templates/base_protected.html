@@ -16,14 +16,11 @@
         {% endif %}
       </span>
     </span>
-    <p>
-      <div class="logout-button">
-          {{ user.username }}
-          <a href="{% url 'account_logout' %}">
-          <img src="{% static 'img/logout.svg' %}">
-        </a>
-      </div>
-    </p>
+    <!-- <div class="logout-button">
+      <a href="{% url 'account_logout' %}">
+        <img width="12" height="14" src="{% static 'img/logout.svg' %}">
+      </a>
+    </div> -->
 
     {% block logged_in_content %}
     {% endblock %}
