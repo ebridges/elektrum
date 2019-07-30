@@ -1,6 +1,6 @@
 body {
     padding: 2em;
-    font: 14px Hind,Helvetica,Arial,sans-serif;
+    font: 14px Hind, Helvetica, Arial, sans-serif;
 }
 
 header {
@@ -9,7 +9,7 @@ header {
 }
 
 footer {
-    font: 10px Hind,Helvetica,Arial,sans-serif;
+    font: 10px Hind, Helvetica, Arial, sans-serif;
 }
 
 .header-left {
@@ -17,7 +17,6 @@ footer {
 }
 
 .header-right {
-    text-align: center;
     padding-top: 10px;
 }
 
@@ -25,7 +24,7 @@ footer {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-  }
+}
 
 .avatar-container {
     position: relative;
@@ -44,9 +43,15 @@ footer {
     text-transform: uppercase;
 }
 
+.logout-button {
+    text-align: right;
+}
+
 .subtitle {
     color: #aaa;
     letter-spacing: 0.025em;
     font-size: 24px;
     text-transform: uppercase;
+    position: relative;
+    top: -25px;
 }
