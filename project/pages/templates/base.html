@@ -20,14 +20,15 @@
         elektron.photos
       </span>
       {% if user.is_authenticated %}
-      <span class="subtitle">
-        {{ user.username }}
+      <span class="title">
+
       </span>
       {% endif %}
     </div>
     <div class="header-right">
       {% if user.is_authenticated %}
       <div class="avatar-container">
+        <!-- <span class="subtitle">{{ user.username }}</span> -->
         <img class="avatar" src="{{ request.user.profile_image_url }}" />
         <span class="avatar-badge">
           {% if not user.is_account_verified %}
@@ -47,13 +48,16 @@
 
     </div>
   </header>
+  <nav>
+
+  </nav>
   <main>
     {% if user.is_authenticated %}
-      {% block content %}
-      {% endblock %}
+    {% block content %}
+    {% endblock %}
     {% else %}
-      {% block loggedout_content %}
-      {% endblock %}
+    {% block loggedout_content %}
+    {% endblock %}
     {% endif %}
   </main>
   <footer>
