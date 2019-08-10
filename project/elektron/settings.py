@@ -227,12 +227,12 @@ LOGGING = {
         'elektron': {
             'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'django': {
             'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'django.utils.autoreload': {
             'handlers': ['console'],
@@ -241,7 +241,7 @@ LOGGING = {
         '': {
             'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
     },
 }
