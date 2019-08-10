@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from base.views.utils import assert_owner_id
+from base.views.utils import assert_owner_id, media_url
 from base.views.errors import exceptions_to_http_status, BadRequestException
 from media_items.models import MediaItem
 from date_dimension.models import DateDimension
@@ -34,6 +34,12 @@ def albums_view(request, owner_id, year, template_name='media_items/albums_view.
 @exceptions_to_http_status
 def collections_view(request, owner_id, template_name='media_items/collections_view.html'):
     assert_owner_id(owner_id, request.user.id)
-    dates = DateDimension.objects.filter(mediaitem__owner_id__exact=owner_id)
-    data = {'object_list': [d.year for d in dates]}
-    return render(request, template_name, data)
+    media_items = MediaItem.objects.raw('''select distinct on (d.year) m.* 
+                                    from media_item m, date_dim d 
+                                    where m.create_day_id = d.yyyymmdd 
+                                    order by d.year, random()''')
+    data = []
+    for mi in media_items:
+        data.append({'year': str(mi.create_day_id)[:4], 'url': media_url(mi.file_path)})
+
+    return render(request, template_name, {'objects': data})
