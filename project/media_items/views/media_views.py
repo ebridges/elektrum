@@ -40,6 +40,6 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
                                     order by d.year, random()''')
     data = []
     for mi in media_items:
-        data.append({'year': str(mi.create_day_id)[:4], 'url': media_url(mi.file_path)})
+        data.append({'year': int(str(mi.create_day_id)[:4]), 'url': media_url(mi.file_path)})
 
     return render(request, template_name, {'objects': data})
