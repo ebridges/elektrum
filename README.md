@@ -43,6 +43,12 @@ Django `runserver`:
 * `python manage.py runserver`
 * `open http://localhost:8000`
 
+Running with HTTPS:
+
+* `cd project`
+* `python manage.py runsslserver 127.0.0.1:8000`
+* `open https://127.0.0.1:8000`
+
 Gunicorn:
 
 * `cd project`
