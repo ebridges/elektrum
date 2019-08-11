@@ -1,6 +1,7 @@
 body {
     padding: 2em;
-    font: 14px Hind, Helvetica, Arial, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
 }
 
 header {
@@ -9,7 +10,8 @@ header {
 }
 
 footer {
-    font: 10px Hind, Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    padding-top: 20px;
 }
 
 .header-left {
@@ -37,9 +39,10 @@ footer {
 }
 
 .title {
+    font-family: Hind, Helvetica, Arial, sans-serif;
     color: #222;
     letter-spacing: 0.025em;
-    font-size: 36px;
+    font-size: 24px;
     text-transform: uppercase;
 }
 
@@ -50,8 +53,22 @@ footer {
 .subtitle {
     color: #aaa;
     letter-spacing: 0.025em;
-    font-size: 24px;
+    font-size: 18px;
     text-transform: uppercase;
     position: relative;
     top: -25px;
+}
+
+.subtitle a, a:visited  {
+    text-decoration: none;
+    color: #4848b4
+}
+
+.subtitle a:hover, a:active {
+    text-decoration: none;
+    color: #4848b48a
+}
+
+.nav-home-icon {
+    font-size: 22px;
 }
