@@ -12,13 +12,10 @@ class SignRequest(View):
     http_method_names = ['post']
 
     @staticmethod
-    def post(request, owner_id):
+    def post(request):
         user = request.user
         if not user.is_authenticated:
             return HttpResponseForbidden(content='Authentication is required.')
-
-        if owner_id != user.id:
-            return HttpResponseBadRequest('User is not authenticated properly')
 
         if 'mime_type' not in request.POST:
             return HttpResponseBadRequest('"mime_type" is a required parameter. It should be parsed from media\'s '
