@@ -146,7 +146,8 @@
     </div>
   </header>
   <nav>
-
+    {% block nav_block %}
+    {% endblock %}
   </nav>
   <main>
     {% if user.is_authenticated %}

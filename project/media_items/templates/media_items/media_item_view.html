@@ -2,15 +2,17 @@
 {% load i18n %}
 
 {% block title %}Media Item{% endblock %}
-{% block content %}
 
+{% block nav_block %}
 <h2 class="subtitle">
     <a href='{% url 'collections-view' user.id %}' class='subtitle_link'><span class="nav-home-icon">&#x2302;</span></a> /
     <a href='{% url 'albums-view' user.id collection_year %}' class='subtitle_link'>{{ collection_year }}</a> /
     <a href='{% url 'media-list-view' user.id collection_year album_id %}' class='subtitle_link'>{{ album_id }}</a> /
     {{ media_item.create_date }}
 </h2>
+{% endblock %}
 
+{% block content %}
 <div class="media_item_container">
     <img class="media_item"
          src="{{ media_item_url }}"

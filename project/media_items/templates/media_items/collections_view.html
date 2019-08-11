@@ -1,9 +1,13 @@
 {% extends 'base_protected.html' %}
 {% block title %}Collections Home{% endblock %}
-{% block content %}
+
+{% block nav_block %}
 <h2 class='subtitle'>
 &nbsp;    
 </h2>
+{% endblock %}
+
+{% block content %}
 <dl>
   {% for info in objects %}
   <span class='img-container'>
