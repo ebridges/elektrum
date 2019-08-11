@@ -1,7 +1,11 @@
 {% extends 'base_protected.html' %}
 {% block title %}Media Home{% endblock %}
 {% block content %}
-<h2 class='subtitle'>Images in album <a href='{% url 'albums-view' user.id year %}'>{{ year }}</a>/{{ yyyymmdd }}</h2>
+<h2 class='subtitle'>
+    <a href='{% url 'collections-view' user.id %}'><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href='{% url 'albums-view' user.id year %}'>{{ year }}</a> /
+    {{ yyyymmdd }}
+</h2>
 <dl>
   {% for info in objects %}
   <span class='img-container'>

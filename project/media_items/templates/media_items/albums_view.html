@@ -1,7 +1,10 @@
 {% extends 'base_protected.html' %}
 {% block title %}Album Home{% endblock %}
 {% block content %}
-<h2 class='subtitle'>Albums for <a href='{% url 'collections-view' user.id %}''>{{ year }}</a></h2>
+<h2 class='subtitle'>
+    <a href='{% url 'collections-view' user.id %}'><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href='{% url 'albums-view' user.id year %}'>{{ year }}</a>
+</h2>
 <dl>
   {% for info in objects %}
   <span class='img-container'>
