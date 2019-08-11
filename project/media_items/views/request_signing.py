@@ -28,6 +28,7 @@ class SignRequest(View):
         signed_url = create_signed_upload_url(user, mime_type)
 
         response = HttpResponse(status=201)
+        response['Access-Control-Expose-Headers'] = 'Location'
         response['Location'] = signed_url.geturl()
 
         return response
