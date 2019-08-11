@@ -1,28 +1,13 @@
 {% extends 'base_protected.html' %}
-
-{% block title %}Collections{% endblock %}
-
+{% block title %}Album Home{% endblock %}
 {% block content %}
-
-<h2>Albums available for {{ user.username }} in year {{ collection_year }}</h2>
-
-<table border="1">
-  <thead>
-      <tr>
-          <th>Path</th>
-      </tr>
-  </thead>
-  <tbody>
-      {% for yyyymmdd in object_list %}
-      <tr>
-          <td>{{ yyyymmdd }}</td>
-      </tr>
-      {% endfor %}
-  </tbody>
-  </table>
-{% endblock %}
-
-
-{% block loggedout_content %}
-  <p>You must be logged in to view this content.</p>
+<h2 class='subtitle'>Albums for <a href='{% url 'collections-view' user.id %}''>{{ year }}</a></h2>
+<dl>
+  {% for info in objects %}
+  <span class='img-container'>
+      <dd><img src='{{ info.url }}'/></dd>
+      <dt><a href='{% url 'media-list-view' user.id year info.yyyymmdd %}'>{{ info.yyyymmdd }}</a></dt>
+  </span>
+  {% endfor %}
+</dl>
 {% endblock %}

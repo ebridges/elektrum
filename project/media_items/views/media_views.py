@@ -26,9 +26,17 @@ def media_list_view(request, owner_id, year, date, template_name='media_items/me
 @exceptions_to_http_status
 def albums_view(request, owner_id, year, template_name='media_items/albums_view.html'):
     assert_owner_id(owner_id, request.user.id)
-    dates = DateDimension.objects.filter(mediaitem__owner_id__exact=owner_id, year__exact=year)
-    data = {'object_list': [d.yyyymmdd for d in dates], 'collection_year': year}
-    return render(request, template_name, data)
+    media_items = MediaItem.objects.raw('''select distinct on (d.yyyymmdd) m.* 
+                                           from media_item m, date_dim d 
+                                           where m.create_day_id = d.yyyymmdd 
+                                           and d.year = %d
+                                           order by d.yyyymmdd, random()''' % year)
+
+    data = []
+    for mi in media_items:
+        data.append({'yyyymmdd': yyyy_mm_dd(str(mi.create_day_id)), 'url': media_url(mi.file_path)})
+
+    return render(request, template_name, {'objects': data, 'year': int(str(mi.create_day_id)[:4])})
 
 
 @exceptions_to_http_status
@@ -43,3 +51,7 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
         data.append({'year': int(str(mi.create_day_id)[:4]), 'url': media_url(mi.file_path)})
 
     return render(request, template_name, {'objects': data})
+
+
+def yyyy_mm_dd(val):
+    return '%s-%s-%s' % (val[0:4], val[4:6], val[6:8])
