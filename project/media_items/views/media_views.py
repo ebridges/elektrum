@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import render, redirect, get_object_or_404
 
 from base.views.utils import assert_owner_id, media_url
@@ -17,10 +19,18 @@ def media_item_view(request, owner_id, image_id, template_name='media_items/medi
 @exceptions_to_http_status
 def media_list_view(request, owner_id, year, date, template_name='media_items/media_list_view.html'):
     assert_owner_id(owner_id, request.user.id)
-    dates = DateDimension.objects.filter(mediaitem__owner_id__exact=owner_id, year__exact=year, iso_date__exact=date)
-    media_items = MediaItem.objects.filter(owner_id__exact=owner_id, create_day__iso_date__exact=date)
-    data = {'object_list': media_items, 'collection_year': year, 'album_dates': dates}
-    return render(request, template_name, data)
+
+    yyyymmdd = int(re.sub('-', '', date))
+    media_items = MediaItem.objects.raw('''select m.* 
+                                           from media_item m
+                                           where m.create_day_id = %d
+                                           order by m.create_date''' % yyyymmdd)
+
+    data = []
+    for mi in media_items:
+        data.append({'file_name': mi.create_day_id, 'url': media_url(mi.file_path), 'title': mi.create_date, 'item_id': mi.id})
+
+    return render(request, template_name, {'objects': data, 'yyyymmdd': date, 'year': int(date[:4])})
 
 
 @exceptions_to_http_status
