@@ -9,6 +9,11 @@ from date_dimension.models import DateDimension
 
 
 @exceptions_to_http_status
+def media_item_upload_view(request, owner_id, template_name='media_items/media_item_upload_view.html'):
+    assert_owner_id(owner_id, request.user.id)
+    return render(request, template_name)
+
+@exceptions_to_http_status
 def media_item_view(request, owner_id, image_id, template_name='media_items/media_item_view.html'):
     assert_owner_id(owner_id, request.user.id)
     media_item = get_object_or_404(MediaItem, id=image_id)

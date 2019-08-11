@@ -30,6 +30,7 @@ register_converter(FourDigitYearConverter, 'yyyy')
 
 
 urlpatterns = [
+    path('upload/', media_item_upload_view, name='media-item-upload-view'),
     path('request-upload/', SignRequest.as_view(), name='request-upload'),
     path('<uuid:image_id>/', media_item_view, name='media-item-view'),
     path('<yyyy:year>/<yyyy-mm-dd:date>/', media_list_view, name='media-list-view'),
