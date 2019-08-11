@@ -1,81 +1,105 @@
 {% extends 'base_protected.html' %}
 {% load i18n %}
 
-{% block title %}Collections{% endblock %}
+{% block title %}Media Item{% endblock %}
+{% block content %}
 
-{% block logged_in_content %}
-
-<h2>
-    {% blocktrans with u=user.username d=media_item.create_day.iso_date %}
-        Media Item for {{ u }} date: {{ d }}
-    {% endblocktrans %}
+<h2 class="subtitle">
+    <a href='{% url 'collections-view' user.id %}' class='subtitle_link'><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href='{% url 'albums-view' user.id collection_year %}' class='subtitle_link'>{{ collection_year }}</a> /
+    <a href='{% url 'media-list-view' user.id collection_year album_id %}' class='subtitle_link'>{{ album_id }}</a> /
+    {{ media_item.create_date }}
 </h2>
 
 <div class="media_item_container">
     <img class="media_item"
-         src="{{ media_item.file_path }}"
-         width="{{ media_item.width }}"
-         height="{{ media_item.height }}"/>
+         src="{{ media_item_url }}"
+         width="{{ media_item.image_width }}"
+         height="{{ media_item.image_height }}"/>
 </div>
 
+<details>
+    <summary>This photo was taken on {{ media_item.create_date.date }} at {{ media_item.create_date.time }} {% if media_item.artist %} by {{ media_item.artist }} {% endif %}</summary>
+    <table class="media_metadata">
+        <thead>
+            <tr>
+                <th colspan="2">Additional information about this image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Date Created" %}</td>
+                <td class="media_metadata_item_val">{{ media_item.create_day.this_date }}</td>
+            </tr>
+            
+            {% if media_item.file_size %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "File Size" %}</td>
+                <td class="media_metadata_item_val">{{ media_item.file_size }}</td>
+            </tr>
+            {% endif %}
 
-<table class="media_metadata">
-  <thead>
-      <tr>
-          <th colspan="2">Photo Information</th>
-      </tr>
-  </thead>
-  <tbody>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "Date & Time Created" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.create_day.this_date }}</td>
-    </tr>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "File Size" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.file_size }}</td>
-    </tr>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "Dimensions (WxH)" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.image_width }}x{{ media_item.image_height }}x</td>
-    </tr>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "Camera Make & Model" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.camera_make }} {{ media_item.camera_model }}</td>
-    </tr>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "Exposure" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.aperture }} at {{ media_item.shutter_speed }}s
-            (iso {{ media_item.iso_speed }})</td>
-    </tr>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "GPS Location (lat/lon/alt [time])" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.gps_lat }}/{{ media_item.gps_lon }}/{{ media_item.gps_alt }}
-            [{{ media_item.gps_date_time }}]</td>
-    </tr>
-    <tr class="media_metadata_item">
-        <td class="media_metadata_item_key">{% trans "Photographer" %}</td>
-        <td class="media_metadata_item_val">{{ media_item.artist }}</td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-        <th colspan="2">{% trans "Location" %}</th>
-    </tr>
-    <tr>
-        <td colspan="2"><a href="{{ media_item.file_path }}">{{ media_item.file_path }}</a> ({{ media_item.mime_type }})</td>
-    </tr>
-    <tr>
-        <td colspan="2">{{ media_item.id }}</td>
-    </tr>
-  </tfoot>
-  </table>
-{% endblock %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Dimensions (WxH)" %}</td>
+                <td class="media_metadata_item_val">{{ media_item.image_width }}x{{ media_item.image_height }}</td>
+            </tr>
 
+            {% if media_item.camera_make %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Camera Make & Model" %}</td>
+                <td class="media_metadata_item_val">
+                    {{ media_item.camera_make }} 
+                    {% if media_item.camera_model %}
+                        {{ media_item.camera_model }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
 
-{% block logged_out_content_top %}
-  <h2>Please sign in!</h2>
-{% endblock %}
+            {% if media_item.aperture %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Exposure" %}</td>
+                <td class="media_metadata_item_val">
+                    {{ media_item.aperture }} 
+                    {% if media_item.camera_model %}
+                        at {{ media_item.shutter_speed }}s
+                    {% endif %}
+                    {% if media_item.iso_speed %}
+                        (iso {{ media_item.iso_speed }})</td>
+                    {% endif %}
+            </tr>
+            {% endif %}
 
-{% block logged_out_content_bottom %}
-  <p>You must be logged in to view this content.</p>
+            {% if media_item.gps_lat and media_item.gps_lon %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "GPS Location (lat/lon/alt [time])" %}</td>
+                <td class="media_metadata_item_val">
+                    {{ media_item.gps_lat }}/{{ media_item.gps_lon }}
+                    {% if media_item.gps_alt %}
+                        /{{ media_item.gps_alt }}
+                    {% endif %}
+                    {% if media_item.gps_date_time %}
+                        [{{ media_item.gps_date_time }}]
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+
+            {% if media_item.artist %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Photographer" %}</td>
+                <td class="media_metadata_item_val">{{ media_item.artist }}</td>
+            </tr>
+            {% endif %}
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Location" %}</td>
+                <td class="media_metadata_item_val"><a href="{{ media_item_url }}">{{ media_item.file_path }}</a> ({{ media_item.mime_type }})</td>
+            </tr>
+            <tr class="media_metadata_item">
+                <td class="media_metadata_item_key">{% trans "Media ID" %}</td>
+                <td class="media_metadata_item_val">{{ media_item.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+</details>
 {% endblock %}

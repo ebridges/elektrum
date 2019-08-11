@@ -12,7 +12,12 @@ from date_dimension.models import DateDimension
 def media_item_view(request, owner_id, image_id, template_name='media_items/media_item_view.html'):
     assert_owner_id(owner_id, request.user.id)
     media_item = get_object_or_404(MediaItem, id=image_id)
-    data = {'media_item': media_item}
+    data = { 
+        'collection_year': media_item.create_day.year, 
+        'album_id': media_item.create_day.iso_date, 
+        'media_item': media_item, 
+        'media_item_url': media_url(media_item.file_path) 
+    }
     return render(request, template_name, data)
 
 
