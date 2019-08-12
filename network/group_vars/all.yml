@@ -13,7 +13,7 @@ service_name: elektron
 https_domain_name: "{{service_name}}.photos"
 application_domain_name: "{{https_domain_name}}"
 media_cname: "media.{{https_domain_name}}"
-media_upload_bucket_name: "{{service_name}}-uploads"
+media_upload_bucket_name: "{{service_name}}-media"
 media_processor_artifact_bucket_name: "{{service_name}}-archive"
 
 # EC2 Facts
