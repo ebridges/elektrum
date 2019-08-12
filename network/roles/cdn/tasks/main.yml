@@ -13,7 +13,7 @@
     http_version: http2
     origins:
       - id: "{{ media_cname }}-cdn"
-        domain_name: "{{ media_cname }}.s3.amazonaws.com"
+        domain_name: "{{ media_upload_bucket_name }}.s3.amazonaws.com"
         s3_origin_access_identity_enabled: yes
     purge_tags: yes
     state: present
