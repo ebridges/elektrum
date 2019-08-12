@@ -7,6 +7,9 @@ config_info: ../etc/env/staging.env
 application_domain_name: "staging.{{service_name}}.photos"
 media_cname: "staging-media.{{service_name}}.photos"
 
+media_upload_bucket_name: "{{service_name}}-uploads-staging"
+media_processor_artifact_bucket_name: "{{service_name}}-archive-staging"
+
 photo_processor_rolename: elektron-staging-photoProcessorRole
 
 rds_instance_name: staging-elektron-db

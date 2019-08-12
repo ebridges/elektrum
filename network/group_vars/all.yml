@@ -12,9 +12,9 @@ service_name: elektron
 
 https_domain_name: "{{service_name}}.photos"
 application_domain_name: "{{https_domain_name}}"
-media_cname: "media.{{service_name}}.photos"
-media_upload_bucket_name: "{{ media_cname }}"
-media_processor_artifact_bucket_name: "archive.{{service_name}}.photos"
+media_cname: "media.{{https_domain_name}}"
+media_upload_bucket_name: "{{service_name}}-uploads"
+media_processor_artifact_bucket_name: "{{service_name}}-archive"
 
 # EC2 Facts
 nat_instance_ami: ami-058436d7e072250b3
