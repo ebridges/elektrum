@@ -7,6 +7,24 @@
       Name: "{{ media_upload_bucket_name }}-bucket"  
       Environment: "{{ elektron_env }}"
 
+- name: Add CORS configuration
+  aws_s3_cors:
+    name: "{{ media_upload_bucket_name }}"
+    state: present
+    rules:
+      - allowed_origins:
+          - https://127.0.0.1:8000
+          - 'https://{{application_domain_name}}'
+        allowed_methods:
+          - GET
+          - PUT
+        allowed_headers:
+          - '*'
+      - allowed_origins:
+          - '*'
+        allowed_methods:
+          - GET
+
 - name: Create bucket to archive photo-processor executables.  
   s3_bucket:
     name: "{{ media_processor_artifact_bucket_name }}"
