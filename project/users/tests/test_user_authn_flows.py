@@ -1,3 +1,4 @@
+import re
 import pytest
 
 from django.test.utils import override_settings
@@ -92,9 +93,13 @@ def test_signup_flow(client, mock_email_log):
     assert confirm_url is not None
     confirm_response = client.post(confirm_url)
 
+    expected_redirect_url = confirm_response.url
+
+    assert re.match('/media/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/', expected_redirect_url)
+
     # Because `ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION` is "True", the user is redirected to '/'
     # If there is some delay (see docs on that setting) then the redirect will be to '/account/login/'
-    util.assert_account_redirects(confirm_response, expected_url='/app-home')
+    util.assert_account_redirects(confirm_response, expected_url=expected_redirect_url)
 
     email = EmailAddress.objects.get(email=expected_email)
     assert email.verified

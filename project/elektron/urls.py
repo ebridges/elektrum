@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-import logging
+
+from elektron.log import getLogger
 
 # accounts/login/ [name='login']
 # accounts/logout/ [name='logout']
@@ -43,9 +44,9 @@ urlpatterns = [
 class ElektronAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
 
     def __init__(self, request):
-        self.logger = logging.getLogger(__name__)
-        self.logger.debug('ElektronAccountAdapter constructed with request.')
-    
+        self.logger = getLogger(__name__)
+        super().__init__(request)
+
     def get_connect_redirect_url(self, request, socialaccount):
         self.logger.debug('get_connect_redirect_url() called.')
         return self.redirect_url(request.user.id)
