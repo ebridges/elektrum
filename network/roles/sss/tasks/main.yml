@@ -5,7 +5,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ media_upload_bucket_name }}-bucket"  
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
 
 - name: Add CORS configuration
   aws_s3_cors:
@@ -31,4 +31,4 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ media_processor_artifact_bucket_name }}-bucket"  
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"

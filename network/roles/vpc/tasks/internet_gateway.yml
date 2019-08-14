@@ -6,7 +6,7 @@
     tags:
       Name: "{{ service_name }}-igw"
       Service: "{{ service_name }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
   register: create_gateway
 
 # capture new gateway id

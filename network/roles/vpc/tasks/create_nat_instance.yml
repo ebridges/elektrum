@@ -7,7 +7,7 @@
     instance_tags:
       Service: "{{ service_name }}"
       Name: "ec2-nat-{{ item.value.name }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
     exact_count: 1
     count_tag: 
       Name: "ec2-nat-{{ item.value.name }}"
@@ -39,7 +39,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ route_table_name }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
     subnets:
       - "{{ private_subnet_id }}"
     routes:

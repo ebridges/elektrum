@@ -22,7 +22,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ rds_parameter_group_name }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
 
 - name: Create Postgresql RDS instance using SSD storage
   command: "aws rds create-db-instance

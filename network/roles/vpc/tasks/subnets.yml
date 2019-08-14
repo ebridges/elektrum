@@ -9,7 +9,7 @@
       Service: "{{ service_name }}"
       Name: "{{ item.key }}"
       Visibility: "{{ item.value.visibility }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
   with_dict: "{{ vpc_subnets }}"
   register: vpc_facts_subnets
 
@@ -31,7 +31,7 @@
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
         "tag:Visibility": "private"
-        "tag:Environment": "{{ elektron_env }}"
+        "tag:Environment": "{{ operating_env }}"
   register: private_subnet_facts
 
 - debug: var=private_subnet_facts
@@ -47,7 +47,7 @@
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
         "tag:Visibility": "public"
-        "tag:Environment": "{{ elektron_env }}"
+        "tag:Environment": "{{ operating_env }}"
   register: public_subnet_facts
 
 - debug: var=public_subnet_facts

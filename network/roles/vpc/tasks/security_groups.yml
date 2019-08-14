@@ -9,7 +9,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ item.name }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
   loop: "{{ vpc_security_groups }}"
 
 # register facts related to the security groups
@@ -18,7 +18,7 @@
   ec2_group_facts:
     filters:
       "tag:Name": "{{ vpc_name }}-private-sg"
-      "tag:Environment": "{{ elektron_env }}"
+      "tag:Environment": "{{ operating_env }}"
   register: private_security_group
 - set_fact:
     private_security_group_id: "{{ private_security_group.security_groups[0].group_id }}"
@@ -28,7 +28,7 @@
   ec2_group_facts:
     filters:
       "tag:Name": "{{ vpc_name }}-public-sg"
-      "tag:Environment": "{{ elektron_env }}"
+      "tag:Environment": "{{ operating_env }}"
   register: public_security_group
 - set_fact:
     public_security_group_id: "{{ public_security_group.security_groups[0].group_id }}"
@@ -38,7 +38,7 @@
   ec2_group_facts:
     filters:
       "tag:Name": "{{ vpc_name }}-nat-sg"
-      "tag:Environment": "{{ elektron_env }}"
+      "tag:Environment": "{{ operating_env }}"
   register: nat_security_group
 - debug: var=nat_security_group
 - set_fact:

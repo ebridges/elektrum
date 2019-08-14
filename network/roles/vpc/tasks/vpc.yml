@@ -8,7 +8,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ vpc_name }}"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
   register: vpc_facts
 
 # parse the output of creating the VPC to extract the VPC ID -- we need to specify this in the subsequent tasks
