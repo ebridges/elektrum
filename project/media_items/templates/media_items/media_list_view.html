@@ -1,32 +1,21 @@
 {% extends 'base_protected.html' %}
+{% block title %}Media Home{% endblock %}
 
-{% block title %}Collections{% endblock %}
-
-{% block logged_in_content %}
-
-<h2>Albums available for {{ user.username }} in year {{ collection_year }}</h2>
-
-<table border="1">
-  <thead>
-      <tr>
-          <th>Path</th>
-      </tr>
-  </thead>
-  <tbody>
-      {% for item in object_list %}
-      <tr>
-          <td>{{ item }}</td>
-      </tr>
-      {% endfor %}
-  </tbody>
-  </table>
+{% block nav_block %}
+<h2 class='subtitle'>
+    <a href='{% url 'collections-view' user.id %}'><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href='{% url 'albums-view' user.id year %}'>{{ year }}</a> /
+    {{ yyyymmdd }}
+</h2>
 {% endblock %}
 
-
-{% block logged_out_content_top %}
-  <h2>Please sign in!</h2>
-{% endblock %}
-
-{% block logged_out_content_bottom %}
-  <p>You must be logged in to view this content.</p>
+{% block content %}
+<dl>
+  {% for info in objects %}
+  <span class='img-container'>
+      <dd><img src='{{ info.url }}'/></dd>
+      <dt><a href='{% url 'media-item-view' user.id info.item_id %}'>{{ info.title }}</a></dt>
+  </span>
+  {% endfor %}
+</dl>
 {% endblock %}

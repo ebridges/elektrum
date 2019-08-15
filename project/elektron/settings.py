@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'sslserver',
     'base',
     'users',
     'pages',
@@ -180,7 +181,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL = '/account/login/'  # is there a better way to do this?
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-LOGIN_REDIRECT_URL = 'app-home'
+ACCOUNT_ADAPTER = 'elektron.urls.ElektronAccountAdapter'
 LOGOUT_REDIRECT_URL = 'home'
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -205,3 +206,42 @@ EMAIL_BACKEND = os.getenv('django_email_backend')
 EMAIL_FILE_PATH = './sent_emails'
 
 TEST_RUNNER = 'elektron.test_runner.PytestTestRunner'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '[{levelname}] [{asctime}] [{name}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        'elektron': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.utils.autoreload': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+        },
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

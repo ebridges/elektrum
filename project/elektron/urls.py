@@ -16,6 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from allauth.account.adapter import DefaultAccountAdapter
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+
+from elektron.log import getLogger
 
 # accounts/login/ [name='login']
 # accounts/logout/ [name='logout']
@@ -33,5 +37,24 @@ urlpatterns = [
     path('account/', include('allauth.urls')),
     path('admin/', admin.site.urls),
     path('status/', include('status.urls')),
-    path('media/<uuid:owner_id>/', include('media_items.urls')),  # capture owner id here via path param?
+    path('media/', include('media_items.urls')),
 ]
+
+
+class ElektronAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
+
+    def __init__(self, request):
+        self.logger = getLogger(__name__)
+        super().__init__(request)
+
+    def get_connect_redirect_url(self, request, socialaccount):
+        self.logger.debug('get_connect_redirect_url() called.')
+        return self.redirect_url(request.user.id)
+
+    def get_login_redirect_url(self, request):
+        self.logger.debug('get_login_redirect_url() called.')
+        return self.redirect_url(request.user.id)
+
+    def redirect_url(self, owner_id):
+        self.logger.debug('redirect_url(%s) called.' % owner_id)
+        return '/media/{owner_id}/'.format(owner_id=owner_id)

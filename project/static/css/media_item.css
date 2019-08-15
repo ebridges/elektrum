@@ -1,13 +1,85 @@
-.media_metadata thead, tfoot {
-    font: 10px Helvetica, Arial, sans-serif;
-    text-align: left;
-}
-
-.media_metadata_item {
-    font: 8px Helvetica, Arial, sans-serif;
+.media_metadata th {
+  font-size: 10px;
+  text-align: left;
+  padding: 10px 5px 5px 20px;
 }
 
 .media_metadata_item_key {
-    font-weight: bolder;
-    padding-left: 10px;
+  font-weight: bolder;
+  padding: 5px 3px 3px 20px;
+}
+
+.media_metadata_item {
+  font-size: 8px;
+  padding: 5px 3px 3px 3px;
+}
+
+/* */
+
+details {
+  padding-top: 20px;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 10px 5px;
+}
+
+.img-container {
+  position: relative;
+}
+
+dt {
+  position: absolute;
+  bottom: 0;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  color: #ffffff;
+  width: 100%;
+}
+
+dt > a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+dt > a:visited {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+dt > a:hover {
+  color: #ffffff8a;
+}
+
+dt > a:active {
+  color: #ffffff8a;
+}
+
+dd {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+}
+
+/* https://stackoverflow.com/a/5804278/87408 */
+dd img {
+  display: block;    
+  object-fit: cover;
+  width: 222px;
+  height: 222px;
+}
+
+/* https://stackoverflow.com/a/23935891/87408 */
+dd::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width:222px;
+  min-height:222px;
+  background: linear-gradient( rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.02) 50%, rgba(0, 0, 0, 0.10) 100%);
 }

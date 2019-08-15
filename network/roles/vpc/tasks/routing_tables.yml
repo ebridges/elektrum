@@ -7,7 +7,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ vpc_name }}-public-01"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
     subnets:
       - "{{ vpc_subnet_ids['public-01']['id'] }}"
     routes:
@@ -21,7 +21,7 @@
     tags:
       Service: "{{ service_name }}"
       Name: "{{ vpc_name }}-public-02"
-      Environment: "{{ elektron_env }}"
+      Environment: "{{ operating_env }}"
     subnets:
       - "{{ vpc_subnet_ids['public-02']['id'] }}"
     routes:

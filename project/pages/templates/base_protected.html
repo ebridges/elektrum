@@ -1,74 +1,52 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% load socialaccount %}
 
-{% block content %}
+{% block loggedout_content %}
 
-  {% if user.is_authenticated %}
-    <p>Welcome {{ user.username }} !!!</p>
-    <p><img src="{{ request.user.profile_image_url }}"/></p>
-    <p>User's email is {% if not user.is_account_verified %} not{% endif %} verified.</p>
-    <p><a href="{% url 'account_logout' %}">Log out</a>
+{% blocktrans with site.name as site_name %}In order to access {{ site_name }} you can sign up or log in with your
+Google credentials, or create an account an log in with those credentials.{% endblocktrans %}
 
-    {% block logged_in_content %}
-    {% endblock %}
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+<h3>Authenticate via Google</h3>
+<div class="social-form">
+  {% blocktrans %}Connect via Google:{% endblocktrans %}
+  <ul>
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+  </ul>
+  {% include "socialaccount/snippets/login_extra.html" %}
+</div>
+{% endif %}
 
-  {% else %}
+<hr size="1" />
 
-  {% block logged_out_content_top %}
-  {% endblock %}
-
-  {% blocktrans with site.name as site_name %}In order to access {{ site_name }} you can sign up or log in with your Google credentials, or create an account an log in with those credentials.{% endblocktrans %}
-
-    {% get_providers as socialaccount_providers %}
-    {% if socialaccount_providers %}
-    <h3>Authenticate via Google</h3>
-    <div class="social-form">
-      {% blocktrans %}Connect via Google:{% endblocktrans %}
-      <ul>
-        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-      </ul>
-      {% include "socialaccount/snippets/login_extra.html" %}
-    </div>
+<h3>Authenticate via Password</h3>
+<div class="login-form">
+  <form class="login" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ login_form.as_p }}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
     {% endif %}
+    <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+    <button class="primaryAction" type="submit">{% trans "Sign In" %} &raquo;</button>
+  </form>
+</div>
 
-    <hr size="1"/>
+<hr size="1" />
 
-    <h3>Authenticate via Password</h3>
-    <div class="login-form">
-      <form class="login" method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        {{ login_form.as_p }}
-        {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-        <button class="primaryAction" type="submit">{% trans "Sign In" %} &raquo;</button>
-      </form>
-    </div>
-
-    <hr size="1"/>
-
-    <h3>Create an Account</h3>
-    <div class="signup-form">
-      <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {% if redirect_field_value %}
-          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        <button type="submit">{% trans "Sign Up" %} &raquo;</button>
-      </form>
-    </div>    
-
-    {% block logged_out_content_bottom %}
-      <p>You must be logged in to view this content.</p>
-    {% endblock %}
- 
-    <hr size="1"/>
-
-
+<h3>Create an Account</h3>
+<div class="signup-form">
+  <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
     {% endif %}
+    <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+  </form>
+</div>
 
 {% endblock %}
-

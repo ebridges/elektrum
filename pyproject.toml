@@ -39,6 +39,8 @@ assertpy = "^0.14.0"
 jinja2 = "^2.10"
 cryptography = "^2.7"
 jmespath-terminal = "^0.2.1"
+django-sslserver = "^0.20.0"
+autopep8 = "^1.4"
 
 [build-system]
 ## poetry version should agree with version in Dockerfile-App

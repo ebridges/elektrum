@@ -11,8 +11,9 @@ def test_media_item_collections_view(media_item_factory, authenticated_client):
     response = c.get(request_url)
     content = str(response.content)
     assert response.status_code == 200
-    assert 'Collections available for %s' % u.username in content
-    assert '<td>%s</td>' % mi.create_day.year in content
+    assert '<title>Collections Home</title>' in content
+    expected = '>%s<' % mi.create_day.year
+    assert expected in content
 
 
 @pytest.mark.django_db
@@ -32,8 +33,9 @@ def test_media_item_albums_view(media_item_factory, authenticated_client):
     response = c.get(request_url)
     content = str(response.content)
     assert response.status_code == 200
-    assert 'Albums available for %s in year %s' % (u.username, mi.create_day.year) in content
-    assert '<td>%s</td>' % mi.create_day.yyyymmdd in content
+    assert '<title>Album Home</title>' in content
+    expected = '>%s<' % mi.create_day.year
+    assert expected in content
 
 
 @pytest.mark.django_db
@@ -80,8 +82,9 @@ def test_media_item_view(authenticated_client, media_item_factory):
     content = str(response.content)
 
     assert response.status_code == 200
-    assert 'Media Item for %s date: %s' % (u.username, mi.create_day.iso_date) in content
-    assert '<td colspan="2">%s</td>' % mi.id in content
+    assert '<title>Media Item</title>' in content
+    expected = '>%s<' % mi.create_day.this_date
+    assert expected in content
 
 
 @pytest.mark.django_db

@@ -1,22 +1,163 @@
 <!DOCTYPE html>
 {% load static %}
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Elektron{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'css/media_item.css' %}">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Hind">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/media_item.css' %}">
+  {% block local_css %}
+  {% endblock %}
+  <style>
+    .button {
+      text-decoration: none;
+      cursor: pointer;
+      /* transition: all 0.3s ease-out; */
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.1);
+      /* transition: opacity 500ms; */
+      visibility: hidden;
+      opacity: 0;
+    }
+    
+    .overlay:target {
+      visibility: visible;
+      opacity: 1;
+      z-index: 1000000;
+    }
+
+    .popup {
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 5px;
+      width: 50%;
+      position: relative;
+      /* transition: all 5s ease-in-out; */
+    }
+
+    .popup h2 {
+      color: #aaa;
+      letter-spacing: 0.025em;
+      font-size: 18px;
+      padding: 3px;
+      position: absolute;
+      top: 17px;
+      left: 30px;
+    }
+
+    .popup .close {
+      position: absolute;
+      top: 10px;
+      right: 30px;
+      transition: all 200ms;
+      font-size: 24px;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .popup .close:hover, .close:active {
+      color: #33333366;
+    }
+
+    .popup-content {
+      padding: 40px;
+      font-size: 16px;
+    }
+
+    .popup-content li {
+      padding: 5px;
+    }
+
+    .profile-icon {
+      font-size: 18px;
+      color: black;
+      padding-right: 5px;
+    }
+
+    /* @media screen and (max-width: 700px) {
+      .box{
+        width: 70%;
+      }
+      .popup{
+        width: 70%;
+      }
+    } */
+  </style>
 </head>
+
 <body>
   <header>
-    <h1>Elektron</h1>
+    <div class="header-left">
+      <span class="title">
+        elektron.photos
+      </span>
+      {% if user.is_authenticated %}
+      <span class="title">
+
+      </span>
+      {% endif %}
+    </div>
+    <div class="header-right">
+      {% if user.is_authenticated %}
+      <div class="avatar-container">
+        <!-- <span class="subtitle">{{ user.username }}</span> -->
+        <a class="button" href="#profile">
+          <img class="avatar" src="{{ request.user.profile_image_url }}" />
+          <span class="avatar-badge">
+            {% if not user.is_account_verified %}
+            🔴
+            {% endif %}
+          </span>
+        </a>
+      </div>
+      <div id="profile" class="overlay">
+        <div class="popup">
+          <h2><span class="profile-icon">&#x24D8;</span> {{user.first_name}} {{user.last_name}}</h2>
+          <a class="close" href="#">×</a>
+          <div class="popup-content">
+            <ul>
+              <li><a href="{% url 'media-item-upload-view' user.id %}">Upload images</a></li>
+              <li><a href="{% url 'account_logout' %}">Logout</a></li>
+            </ul>
+            <footer>
+              {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br />{{APP_DB_HOST}}
+            </footer>            
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+
+    Please sign in.
+
+    {% endif %}
+
+    </div>
   </header>
+  <nav>
+    {% block nav_block %}
+    {% endblock %}
+  </nav>
   <main>
+    {% if user.is_authenticated %}
     {% block content %}
     {% endblock %}
+    {% else %}
+    {% block loggedout_content %}
+    {% endblock %}
+    {% endif %}
   </main>
-  <footer>
-    {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br/>{{APP_DB_HOST}}
-  </footer>
 </body>
+
 </html>

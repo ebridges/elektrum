@@ -1,0 +1,28 @@
+{% extends 'base_protected.html' %}
+{% load static %}
+
+{% block title %}Media Item Upload{% endblock %}
+
+{% block local_css %}
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+<style>
+#app {
+  font-family: Helvetica, Arial, sans-serif !important;
+}
+</style>
+{% endblock %}
+
+{% block nav_block %}
+<h2 class="subtitle">
+    <a href='{% url 'collections-view' user.id %}'><span class="nav-home-icon">&#x2302;</span></a> /
+    Upload Media
+</h2>
+{% endblock %}
+
+{% block content %}
+
+<div id="app"></div>
+<script type="text/javascript" src="{% static 'js/manifest.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendor.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+{% endblock %}

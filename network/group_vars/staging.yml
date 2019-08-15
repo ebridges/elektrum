@@ -1,11 +1,13 @@
 ---
 # group_vars/staging
 
-elektron_env: staging
+operating_env: staging
 config_info: ../etc/env/staging.env
 
 application_domain_name: "staging.{{service_name}}.photos"
 media_cname: "staging-media.{{service_name}}.photos"
+
+media_upload_bucket_name: "{{service_name}}-media-{{ operating_env }}"
 
 photo_processor_rolename: elektron-staging-photoProcessorRole
 

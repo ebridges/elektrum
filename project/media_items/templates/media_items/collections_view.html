@@ -1,32 +1,19 @@
 {% extends 'base_protected.html' %}
+{% block title %}Collections Home{% endblock %}
 
-{% block title %}Collections{% endblock %}
-
-{% block logged_in_content %}
-
-<h2>Collections available for {{ user.username }}</h2>
-
-<table border="1">
-  <thead>
-      <tr>
-          <th>Path</th>
-      </tr>
-  </thead>
-  <tbody>
-      {% for year in object_list %}
-      <tr>
-          <td>{{ year }}</td>
-      </tr>
-      {% endfor %}
-  </tbody>
-  </table>
+{% block nav_block %}
+<h2 class='subtitle'>
+&nbsp;    
+</h2>
 {% endblock %}
 
-
-{% block logged_out_content_top %}
-  <h2>Please sign in!</h2>
-{% endblock %}
-
-{% block logged_out_content_bottom %}
-  <p>You must be logged in to view this content.</p>
+{% block content %}
+<dl>
+  {% for info in objects %}
+  <span class='img-container'>
+      <dd><img src='{{ info.url }}'/></dd>
+      <dt><a href='{% url 'albums-view' user.id info.year %}'>{{ info.year }}</a></dt>
+  </span>
+  {% endfor %}
+</dl>
 {% endblock %}
