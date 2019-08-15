@@ -17,7 +17,7 @@ media_processor_artifact_bucket_name: "{{service_name}}-archive-{{ operating_env
 photo_processor_rolename: "{{service_name}}-{{operating_env}}-photoProcessorRole"
 
 rds_instance_name: "{{service_name}}-{{operating_env}}-db"
-rds_master_username: "{{service_name}}-{{operating_env}}-dba"
+rds_master_username: "{{service_name}}_{{operating_env}}_dba"
 rds_master_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           65326531363562376465393239633538393432333631336637333035373032643936393634666630
@@ -26,7 +26,7 @@ rds_master_password: !vault |
           6530343632346566360a343263393937323263623466666330633766303335316632363737386239
           30656634623832383839656166333161323034663566343638633034363338373966
 
-rds_app_username: "{{service_name}}-{{operating_env}}-usr"
+rds_app_username: "{{service_name}}_{{operating_env}}_usr"
 rds_app_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           34343336613162353233336234366235356237396261386164656437366366643761383536343532
