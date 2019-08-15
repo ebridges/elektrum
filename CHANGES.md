@@ -4,7 +4,7 @@ Elektron Change Log
 0.32 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- [#57] Implement media upload.
 
 
 0.31 (2019-07-25)
