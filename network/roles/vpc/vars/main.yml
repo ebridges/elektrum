@@ -1,5 +1,3 @@
-# host_vars/elektron.vpc.yml
-
 # a list defining the security groups for our VPC
 vpc_security_groups:
   - name: "{{ vpc_name }}-public-sg"

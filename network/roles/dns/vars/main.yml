@@ -8,11 +8,11 @@ lists: '{{ cdn_facts | json_query(query) }}'
 # {
 #     "dicts": {
 #         "d321f26luq1ktv.cloudfront.net": [
-#             "elektron.photos",
-#             "www.elektron.photos"
+#             "elektrum.photos",
+#             "www.elektrum.photos"
 #         ],
 #         "dccm9m7oagekp.cloudfront.net": [
-#             "media.elektron.photos"
+#             "media.elektrum.photos"
 #         ]
 #     }
 # }
@@ -22,15 +22,15 @@ dicts: '{{ dict( lists.cdn | zip_longest(lists.dn) ) }}'
 #     "dns_info": [
 #         {
 #             "cdn": "dccm9m7oagekp.cloudfront.net",
-#             "dn": "media.elektron.photos"
+#             "dn": "media.elektrum.photos"
 #         },
 #         {
 #             "cdn": "d321f26luq1ktv.cloudfront.net",
-#             "dn": "elektron.photos"
+#             "dn": "elektrum.photos"
 #         },
 #         {
 #             "cdn": "d321f26luq1ktv.cloudfront.net",
-#             "dn": "www.elektron.photos"
+#             "dn": "www.elektrum.photos"
 #         }
 #     ]
 # }
