@@ -6,6 +6,8 @@ service_name: elektrum
 
 config_info: "../etc/env/{{operating_env}}.env"
 
+https_domain_name: "{{service_name}}.dev"
+
 aws_ssh_key: "{{service_name}}-{{operating_env}}"
 
 application_domain_name: "{{operating_env}}.{{service_name}}.photos"
