@@ -33,6 +33,18 @@ do
     fi
 done
 
+IFS=', ' read -r -a sec_groups <<< ${vpc_nat_security_group_ids}
+sec_group_list=''
+for element in "${sec_groups[@]}"
+do
+    if [ -z "${sec_group_list}" ];
+    then
+        sec_group_list="\"${element}\""
+    else
+        sec_group_list="${sec_group_list}, \"${element}\""
+    fi
+done
+
 
 cat << EOF > project/zappa_settings.json
 {
@@ -54,7 +66,7 @@ cat << EOF > project/zappa_settings.json
           ${subnet_list}
       ],
       "SecurityGroupIds": [
-        ${vpc_nat_security_group_ids}
+        ${sec_group_list}
       ]
     }
   }
