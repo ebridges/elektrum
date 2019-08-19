@@ -10,8 +10,8 @@ https_domain_name: "{{service_name}}.dev"
 
 aws_ssh_key: "{{service_name}}-{{operating_env}}"
 
-application_domain_name: "{{operating_env}}.{{service_name}}.photos"
-media_cname: "{{operating_env}}-media.{{service_name}}.photos"
+application_domain_name: "{{https_domain_name}}"
+media_cname: "media.{{application_domain_name}}"
 
 media_upload_bucket_name: "{{service_name}}-media-{{ operating_env }}"
 media_processor_artifact_bucket_name: "{{service_name}}-archive-{{ operating_env }}"
