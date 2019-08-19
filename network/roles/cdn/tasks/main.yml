@@ -1,4 +1,4 @@
-- name: Configure CDN distribution for serving media over HTTPS
+- name: "Configure CDN distribution for serving media over HTTPS: {{ media_cname }}"
   cloudfront_distribution:
     alias: "{{ media_cname }}"
     comment: "{{ media_cname }} distribution"
