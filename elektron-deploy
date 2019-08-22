@@ -50,8 +50,8 @@ cat << EOF > project/zappa_settings.json
 {
   "${ENV}": {
     "aws_region": "${aws_region}",
-    "django_settings": "${service_name}.settings",
     "project_name": "${service_name}",
+    "django_settings": "elektron.settings",
     "runtime": "python3.6",
     "s3_bucket": "${media_processor_artifact_bucket_name}",
     "slim_handler": true,
