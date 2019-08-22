@@ -5,13 +5,13 @@ ENV=$2
 
 if [ -z "${CMD}" ];
 then
-  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [staging|production]"
+  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [development|staging|production]"
   exit 1
 fi
 
 if [ -z "${ENV}" ];
 then
-  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [staging|production]"
+  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [development|staging|production]"
   exit 1
 fi
 
