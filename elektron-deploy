@@ -152,6 +152,14 @@ then
     ${docker_tag} \
     bash --login -c "cd project && zappa invoke --raw ${ENV} \"from users.models import CustomUser; CustomUser.objects.create_superuser('admin', '${django_admin_username}', '${django_admin_password}')\""
 
+elif [ "${CMD}" == 'collectstatic' ];
+then
+  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+  python project/manage.py collectstatic \
+    --pythonpath=project \
+    --settings=elektron.settings \
+    --noinput
 else
   echo "ERROR: command '${CMD}' not recognized."
 fi
