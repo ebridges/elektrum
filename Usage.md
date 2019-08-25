@@ -24,7 +24,20 @@ _*Warning*: This requires the private key to be installed on the NAT._
 1. NAT Instance: ensure the `elektrum-${ENV}.pem` is available on the NAT instance.
 1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOST}:5432 -i [/path/to/elektrum-${ENV}.pem] ec2-user@127.0.0.1`
 1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U elektronusr -W`
+
+## Running Migrations
+
+1. Configure remote access to the database (see "Running Locally with Reote DB" above).
+1. Configure timeout on the `elektrum` lambda to be a large number (e.g. 5-10 minutes).
 1. Local: Open a shell in the VM `./elektron-deploy shell`
 1. Local: update `~/project/.env` to use hostname of NAT instance as value of `db_hostname`
-1. Local: run `python manage.py migrate` if necessary.
+1. Local: run `python manage.py migrate`.
+1. Reset the timeout to a low number (e.g. 30s - 1 minute).
+1. Remove the private key from the NAT server.
+
+## Running server locally on VM
+
+1. Configure remote access to the database (see "Running Locally with Reote DB" above).
+1. Local: Open a shell in the VM `./elektron-deploy shell`
+1. Local: update `~/project/.env` to use hostname of NAT instance as value of `db_hostname`
 1. Local: run `python manage.py runserver 0.0.0.0:8000` from `~/project`.
