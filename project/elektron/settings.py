@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('django_secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get('django_debug_enabled') else False
 
-allowed_hosts = os.getenv('django_allowed_hosts', 'elektron.photos')
+allowed_hosts = os.getenv('django_allowed_hosts')
 ALLOWED_HOSTS = allowed_hosts.split(',')
 
 # establish project root directory as a variable
@@ -46,13 +46,13 @@ print('Running Elektron v%s' % APP_VERSION_NUMBER)
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'django.contrib.sites',
 #    'django.contrib.gis',
     'allauth',
@@ -70,7 +70,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -172,13 +171,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATIC_HOST = os.environ.get('application_cdn_host', '')
-STATIC_URL = STATIC_HOST + '/static/'
-STATIC_ROOT = os.path.join(ELEKTRON_PROJECT_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STORAGE_BUCKET_NAME = os.getenv('static_files_bucket_name')
+AWS_S3_CUSTOM_DOMAIN = os.environ.get('static_domain_name')
+STATIC_URL = 'https//%s/' % AWS_S3_CUSTOM_DOMAIN
+AWS_DEFAULT_ACL = "public-read"
 
 LOGIN_URL = '/account/login/'  # is there a better way to do this?
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
