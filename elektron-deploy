@@ -20,6 +20,8 @@ source etc/env/${ENV}.env
 VERSION=$(cat version.txt | tr -d '\n')
 docker_tag="roja/elektron_zappa:${VERSION}"
 
+AWS_ACCESS_KEY_ID=`yq read network/group_vars/${ENV}.yml 'aws_access_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+AWS_SECRET_ACCESS_KEY=`yq read network/group_vars/${ENV}.yml 'aws_secret_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
 
 IFS=', ' read -r -a subnets <<< ${vpc_private_subnet_ids}
 subnet_list=''
@@ -137,6 +139,19 @@ then
       ${docker_tag} \
       bash --login -c "cd project && zappa undeploy --yes ${ENV}"
   fi
+elif [ "${CMD}" == 'create-admin-user' ];
+then
+  django_admin_username=`yq read network/group_vars/${ENV}.yml 'django_admin_username' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+  django_admin_password=`yq read network/group_vars/${ENV}.yml 'django_admin_password' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+
+  echo "creating admin user [${django_admin_username}]"
+  docker run \
+    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+    --env ELEKTRON_ENV=${ENV} \
+    ${docker_tag} \
+    bash --login -c "cd project && zappa invoke --raw ${ENV} \"from users.models import CustomUser; CustomUser.objects.create_superuser('admin', '${django_admin_username}', '${django_admin_password}')\""
+
 else
   echo "ERROR: command '${CMD}' not recognized."
 fi
