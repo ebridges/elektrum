@@ -1,31 +1,20 @@
 # Usage
 
-## Setup VSCode
+## Workarounds
 
-* To run vscode from root of project and still have project setup work correctly, change `python.envFile` in VSCode settings (CMD-,) to `${workspaceFolder}/vscode.env`
-
-## Setup Project
-
-1. Install Poetry
-  `curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python`
-1. Invoke poetry shell:
-  `source  "$(dirname $(poetry run which python))/activate`
-1. Install project dependencies
-  `poetry install`
-
-## Running Locally with Remote DB
+### Running Locally with Remote DB
 
 _*Warning*: This requires the private key to be installed on the NAT._
 
 1. Security Group: enable inbound access via NAT instance to port `5432` from local IP (e.g. home) in security groups:
-    * `elektrum-${ENV}-vpc-nat-sg`
-    * `elektrum-${ENV}-vpc-public-sg`
+    * `elektrum-${env}-vpc-nat-sg`
+    * `elektrum-${env}-vpc-public-sg`
 1. NAT Instance: edit `/etc/ssh/sshd_config` to ensure that the value of `GatewayPorts` is `yes`, running `sudo service sshd restart` if necessary.
-1. NAT Instance: ensure the `elektrum-${ENV}.pem` is available on the NAT instance.
-1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOST}:5432 -i [/path/to/elektrum-${ENV}.pem] ec2-user@127.0.0.1`
+1. NAT Instance: ensure the `elektrum-${env}.pem` is available on the NAT instance.
+1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOST}:5432 -i [/path/to/elektrum-${env}.pem] ec2-user@127.0.0.1`
 1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U elektronusr -W`
 
-## Running Migrations
+### Running Migrations
 
 1. Configure remote access to the database (see "Running Locally with Reote DB" above).
 1. Configure timeout on the `elektrum` lambda to be a large number (e.g. 5-10 minutes).
@@ -35,7 +24,7 @@ _*Warning*: This requires the private key to be installed on the NAT._
 1. Reset the timeout to a low number (e.g. 30s - 1 minute).
 1. Remove the private key from the NAT server.
 
-## Running server locally on VM
+### Running server locally on VM
 
 1. Configure remote access to the database (see "Running Locally with Reote DB" above).
 1. Local: Open a shell in the VM `./elektron-deploy shell`

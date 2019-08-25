@@ -4,10 +4,39 @@
 
 The `elektrum` application is a multi-tier system for hosting images and other media designed to be efficient and scalable.  Generally the steps involved in installing it are as follows:
 
+1. Setup Project
 1. Establish basic system prerequisites and configure parameters in a global settings file.
 1. Configure permissions, a network, storage, security, and distribution mechanisms on AWS.
 1. Generate a configuration file that can be used by the application.
 1. Deploy the application.
+
+## Platform Information
+
+* Python 3.7
+* Django 2.2
+* Zappa 0.48.2
+* PostgreSQL 11
+* Ansible 2.8.2
+
+## Local Setup
+
+1. Ensure you have a version of Python 3.6 or 3.7 available.
+1. Install Poetry
+
+        $ curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+1. Invoke poetry shell:
+
+        source  "$(dirname $(poetry run which python))/activate
+
+1. Install project dependencies
+
+        poetry install
+
+1. Editor/IDE Setup
+    * [VSCode](https://gist.github.com/ebridges/9e2e5a840c91c7a034c80e3e43dd3a9b0)
+    * [PyCharm setup for test coverage](https://gist.github.com/ebridges/d1ebe05e9fd87e409f6e5c978e44bde1)
+    * To run vscode from root of project and still have project setup work correctly, change `python.envFile` in VSCode settings (CMD-,) to `${workspaceFolder}/vscode.env`
 
 ## Steps to Install
 
@@ -40,6 +69,7 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 1. In Route53 create a Public Hosted Zone for this domain name.  Switch DNS records for your domain name to be Amazon's, as listed in the NS record for this hosted zone.
 1. [Request a public certificate](https://console.aws.amazon.com/acm/home?region=us-east-1#/wizard/) for this domain name.  Add `*.example.com` as an additional domain name.
 1. Choose "DNS Validation", and link the appropriate CNAME records to your domain name to do so.
+1. Wait for the validation of the HTTPs certificate to complete.
 
 #### A.6 Generate a Vault Password for storing secrets
 
@@ -71,7 +101,6 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 
         $ elektrum-deploy collectstatic ${env}
 
-
 1. Generate necessary migrations:
 
         $ cd project
@@ -89,4 +118,39 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 
 1. Run the migrations created above by following the workaround in `Usage.md`
 
+1. Visit the site at `https://${application_domain_name}`
 
+### D. Running Locally
+
+```
+$ cd project
+$ python manage.py runsslserver 127.0.0.1:8000
+$ open https://127.0.0.1:8000
+```
+
+## Further Info
+
+* https://romandc.com/zappa-django-guide
+
+## Common Errors
+
+<dl>
+<dt><strong><tt>TypeError: 'NoneType' object is not callable</tt> when deploying to an environment</strong></dt>
+<dd>
+Causes can vary.
+<br>
+Check:
+<li>Ensure host is in `ALLOWED_HOSTS` in the Django configuration.</li>
+</dd>
+<dt><strong><tt>
+ResourceNotFoundException: An error occurred (ResourceNotFoundException) when calling the DescribeLogStreams operation: The specified log group does not exist.</tt></strong>
+</dt>
+<dd>
+<li>Ensure that API has permissions to log to Cloudwatch.
+<br>
+Add <tt>arn:aws:iam::743873495175:role/elektrum-development-ZappaLambdaExecutionRole</tt> to <kbd>API Gateway / Settings / CloudWatch log role ARN</kbd>
+<br>
+<a href="https://stackoverflow.com/a/50022932/87408">https://stackoverflow.com/a/50022932/87408</a>
+</li>
+</dd>
+<dl>
