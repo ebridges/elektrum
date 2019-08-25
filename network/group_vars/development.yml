@@ -2,26 +2,12 @@
 # group_vars/development
 
 operating_env: development
-service_name: elektrum
-
-config_info: "../etc/env/{{operating_env}}.env"
 
 https_domain_name: "{{service_name}}.dev"
-
-aws_ssh_key: "{{service_name}}-{{operating_env}}"
-
 application_domain_name: "{{https_domain_name}}"
-media_cname: "media.{{application_domain_name}}"
-static_cname: "static.{{application_domain_name}}"
 
-media_upload_bucket_name: "{{service_name}}-media-{{ operating_env }}"
-media_processor_artifact_bucket_name: "{{service_name}}-archive-{{ operating_env }}"
-static_files_bucket_name: "{{service_name}}-static-{{ operating_env }}"
+django_debug_enabled: True
 
-photo_processor_rolename: "{{service_name}}-{{operating_env}}-photoProcessorRole"
-
-rds_instance_name: "{{service_name}}-{{operating_env}}-db"
-rds_master_username: "{{service_name}}_{{operating_env}}_dba"
 rds_master_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           65326531363562376465393239633538393432333631336637333035373032643936393634666630
@@ -30,7 +16,6 @@ rds_master_password: !vault |
           6530343632346566360a343263393937323263623466666330633766303335316632363737386239
           30656634623832383839656166333161323034663566343638633034363338373966
 
-rds_app_username: "{{service_name}}_{{operating_env}}_usr"
 rds_app_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           34343336613162353233336234366235356237396261386164656437366366643761383536343532
@@ -39,9 +24,6 @@ rds_app_password: !vault |
           3638626664393434340a323562333434396537633831363462613264646362303934366230376538
           64366237343934343330363033323362363139653238636531646232343736353061
 
-django_debug_enabled: True
-django_email_backend: django.core.mail.backends.filebased.EmailBackend
-django_allowed_hosts: '{{ application_domain_name }},.execute-api.us-east-1.amazonaws.com,127.0.0.1,localhost'
 django_secret_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           62356530626535356631616363623430643131383161646666313862626237626133333739373039
@@ -52,6 +34,7 @@ django_secret_key: !vault |
           32373164323533343936643733623639633338623462313134373563373431623136346235363838
           31646264306365343539613435643839646362383135646466363135383864356432656237353532
           39383630363638353235
+
 django_admin_username: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           66333536353064653738316135616538643932383261343861336164303564663637373537633163
@@ -59,6 +42,7 @@ django_admin_username: !vault |
           36383264306563333561663362366638643432356335653565646537356433616263396636633430
           3963366566383030350a643163643834626162633735306134643935643730383661643333393561
           63616133623333366138313863393134656564326366616162323063663133623934
+
 django_admin_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           35313466366437653631333063383433306361353932363335313661653333343838363835613037
@@ -67,8 +51,6 @@ django_admin_password: !vault |
           6462363565653537610a316162306332373665396265616432663835656165643036613632373862
           63616436626464393766643037666335613738633938613661363964303734643964
 
-
-vpc_name: "{{service_name}}-{{operating_env}}-vpc"
 aws_access_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           37323635643036383661623130336638373837666230336139306336373934653734306663363535
