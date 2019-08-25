@@ -4,7 +4,7 @@ JS_CODE=./project/vue-s3-dropzone/frontend
 
 .PHONY: all clean
 
-js-all: js-clean js-build app.js app.css vendor.js manifest.js collectstatic
+js-all: js-clean js-build app.js app.css vendor.js manifest.js
 
 js-build:
 	cd ${JS_CODE} && yarn build install
@@ -36,10 +36,6 @@ manifest.js:
 	/bin/rm project/static/js/manifest.*.js.map
 	cp ${JS_CODE}/dist/static/js/manifest.*.js.map project/static/js/
 	@echo [manifest.js] SUCCESSFUL
-
-collectstatic:
-	python project/manage.py collectstatic --pythonpath=project --settings=elektron.settings --noinput
-	@echo [collectstatic] SUCCESSFUL
 
 elektron-processor%.zip:
 	cd ${CODE} && ./gradlew -PprojVersion=$(VERSION) buildZip
