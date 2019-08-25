@@ -57,12 +57,15 @@ cat << EOF > project/zappa_settings.json
     "runtime": "python3.6",
     "s3_bucket": "${media_processor_artifact_bucket_name}",
     "slim_handler": true,
+    "manage_roles": true,
     "certificate_arn": "${https_certificate_arn}",
     "domain": "${application_domain_name}",
     "route53_enabled": true,
     "environment_variables": {
         "ELEKTRON_ENV": "${ENV}"
     },
+    "exclude": ["static/"],
+    "touch_path": "/status/ok/",
     "vpc_config": {
       "SubnetIds": [
           ${subnet_list}
