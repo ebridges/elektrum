@@ -15,6 +15,7 @@ application_domain_name: "{{https_domain_name}}"
 media_cname: "media.{{https_domain_name}}"
 media_upload_bucket_name: "{{service_name}}-media"
 media_processor_artifact_bucket_name: "{{service_name}}-archive"
+static_files_bucket_name: "{{service_name}}-static"
 
 # EC2 Facts
 nat_instance_ami: ami-058436d7e072250b3

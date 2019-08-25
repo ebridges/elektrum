@@ -12,9 +12,11 @@ aws_ssh_key: "{{service_name}}-{{operating_env}}"
 
 application_domain_name: "{{https_domain_name}}"
 media_cname: "media.{{application_domain_name}}"
+static_cname: "static.{{application_domain_name}}"
 
 media_upload_bucket_name: "{{service_name}}-media-{{ operating_env }}"
 media_processor_artifact_bucket_name: "{{service_name}}-archive-{{ operating_env }}"
+static_files_bucket_name: "{{service_name}}-static-{{ operating_env }}"
 
 photo_processor_rolename: "{{service_name}}-{{operating_env}}-photoProcessorRole"
 
