@@ -32,7 +32,7 @@ rds_app_password: !vault |
 
 django_debug_enabled: True
 django_email_backend: django.core.mail.backends.filebased.EmailBackend
-django_allowed_hosts: '{{ application_domain_name }},*.execute-api.us-east-1.amazonaws.com,127.0.0.1,localhost'
+django_allowed_hosts: '{{ application_domain_name }},.execute-api.us-east-1.amazonaws.com,127.0.0.1,localhost'
 django_secret_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           30353161316163356137303731333363646235383865393664326138343534373065306331303363

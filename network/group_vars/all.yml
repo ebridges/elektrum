@@ -38,7 +38,7 @@ aws_region: us-east-1
 ## Django Configuration
 django_debug_enabled: False
 django_email_backend: django.core.mail.backends.filebased.EmailBackend
-django_allowed_hosts: "{{ application_domain_name }}"
+django_allowed_hosts: "{{ application_domain_name }},.execute-api.us-east-1.amazonaws.com"
 
 ## VPC Configuration
 
