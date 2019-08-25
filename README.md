@@ -79,6 +79,43 @@ _Docker compose runs the application behind a proxy, so it listens on `80` inste
 
 #### Misc Info
 
-Build network:
+**To build network**
 
 * see `network/README.md`
+
+**Configuring a certificate for a domain name**
+
+1. Request a public certificate via ACM.
+1. Add the bare domain name and a `*` wildcard for the domain.
+1. Choose DNS validation, and copy/retain the "Name" and "Value" for the CNAME record.
+1. Add tags for the name & service of the certificate.
+1. In Route 53, create a new hosted zone for the domain name; copy/retain the DNS Name Servers.
+1. In the domain registrar's admin panel, paste the CNAME record and the Name Servers into the config for the domain into the registrar's admin panel.
+1. Wait for the validation of the HTTPs certificate to complete.
+
+Further Info:
+* https://romandc.com/zappa-django-guide/walk_domain/#option-1-route53-and-acm
+
+### Common Errors
+
+<dl>
+<dt><strong><tt>TypeError: 'NoneType' object is not callable</tt> when deploying to an environment</strong></dt>
+<dd>
+Causes can vary.
+<br>
+Check:
+<li>Ensure host is in `ALLOWED_HOSTS` in the Django configuration.</li>
+</dd>
+<dt><strong><tt>
+ResourceNotFoundException: An error occurred (ResourceNotFoundException) when calling the DescribeLogStreams operation: The specified log group does not exist.</tt></strong>
+</dt>
+<dd>
+<li>Ensure that API has permissions to log to Cloudwatch.
+<br>
+Add <tt>arn:aws:iam::743873495175:role/elektrum-development-ZappaLambdaExecutionRole</tt> to <kbd>API Gateway / Settings / CloudWatch log role ARN</kbd>
+<br>
+<a href="https://stackoverflow.com/a/50022932/87408">https://stackoverflow.com/a/50022932/87408</a>
+</li>
+</dd>
+<dl>
+
