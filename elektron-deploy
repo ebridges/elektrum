@@ -81,8 +81,8 @@ then
   docker run \
     --tty \
     --interactive \
-    --env AWS_SECRET_ACCESS_KEY \
-    --env AWS_ACCESS_KEY_ID \
+    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
     --env ELEKTRON_ENV=${ENV} \
     --publish 8000:8000 \
     ${docker_tag}
@@ -97,8 +97,8 @@ then
   echo "Running zappa deploy"
 
   docker run \
-    --env AWS_SECRET_ACCESS_KEY \
-    --env AWS_ACCESS_KEY_ID \
+    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
     --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa deploy ${ENV}"
@@ -108,8 +108,8 @@ then
 
   echo "Running zappa certify"
   docker run \
-    --env AWS_SECRET_ACCESS_KEY \
-    --env AWS_ACCESS_KEY_ID \
+    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
     --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa certify --yes ${ENV}"
@@ -118,8 +118,8 @@ elif [ "${CMD}" == 'update' ];
 then
   echo "Running zappa ${CMD}"
   docker run \
-    --env AWS_SECRET_ACCESS_KEY \
-    --env AWS_ACCESS_KEY_ID \
+    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
     --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa update ${ENV}"
@@ -133,8 +133,8 @@ then
   else
     echo "Running zappa ${CMD} via docker"
     docker run \
-      --env AWS_SECRET_ACCESS_KEY \
-      --env AWS_ACCESS_KEY_ID \
+      --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+      --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
       --env ELEKTRON_ENV=${ENV} \
       ${docker_tag} \
       bash --login -c "cd project && zappa undeploy --yes ${ENV}"
