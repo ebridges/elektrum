@@ -1,23 +1,5 @@
 # How to Install Elektrum on AWS
 
-## About
-
-The `elektrum` application is a multi-tier system for hosting images and other media designed to be efficient and scalable.  Generally the steps involved in installing it are as follows:
-
-1. Setup Project
-1. Establish basic system prerequisites and configure parameters in a global settings file.
-1. Configure permissions, a network, storage, security, and distribution mechanisms on AWS.
-1. Generate a configuration file that can be used by the application.
-1. Deploy the application.
-
-## Platform Information
-
-* Python 3.7
-* Django 2.2
-* Zappa 0.48.2
-* PostgreSQL 11
-* Ansible 2.8.2
-
 ## Local Setup
 
 1. Ensure you have a version of Python 3.6 or 3.7 available.
@@ -36,7 +18,7 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 1. Editor/IDE Setup
     * [VSCode](https://gist.github.com/ebridges/9e2e5a840c91c7a034c80e3e43dd3a9b0)
     * [PyCharm setup for test coverage](https://gist.github.com/ebridges/d1ebe05e9fd87e409f6e5c978e44bde1)
-    * To run vscode from root of project and still have project setup work correctly, change `python.envFile` in VSCode settings (CMD-,) to `${workspaceFolder}/vscode.env`
+    * To run vscode from root of project and still have project setup work correctly, change the `python.envFile` setting in VSCode settings (CMD-,) to `${workspaceFolder}/vscode.env`
 
 ## Steps to Install
 
@@ -93,40 +75,86 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 
 ### C. Deploy the Application
 
+1. Change directory to the root level of the project (where this file is located).
+
+1. Ensure that the Access Key and Access Secret configured in section A.3 above are in your environment or configured in `~/.aws/credentials`.
+
 1. Minimize and bundle up JS assets:
 
         $ make js-all
 
 1. Bundle up static assets and publish them to S3:
 
-        $ elektrum-deploy collectstatic ${env}
+        $ ./elektrum-deploy collectstatic ${env}
 
-1. Generate necessary migrations:
+1. [Optional] Generate necessary migrations:
 
         $ cd project
         $ python manage.py makemigrations
 
 1. Create a VM that mimics the lambda execution environment:
 
-        $ elektrum-deploy build ${env}
+        $ ./elektrum-deploy build ${env}
 
 1. Deploy the application from the VM to AWS:
 
-        $ elektrum-deploy deploy ${env}
+        $ ./elektrum-deploy deploy ${env}
 
     * Subsequent updates to the application should use `update` instead of `deploy`
 
-1. Run the migrations created above by following the workaround in `Usage.md`
-
 1. Visit the site at `https://${application_domain_name}`
 
-### D. Running Locally
+### D. Configure Django
+
+#### D.1 Run Migrations
+
+        $ ./elektrum-deploy migrate ${env}
+
+#### D.1 Create the Django Admin User
+
+        $ ./elektrum-deploy create-admin-user ${env}
+
+#### D.2 Setup Google OAuth
+
+1. Visit site's admin panel at `https://${application_domain_name}/admin`
+1. Log in using the credentials for the admin user.
+1. Update the "Site" entity to use `${application_domain_name}`.
+1. Configure Google Auth credentials via Google's Developer Console.
+1. Add a Social Application for Google authentication, and configure with Google Auth credentials.
+
+* More info: https://wsvincent.com/django-allauth-tutorial-custom-user-model/#google-credentials
+
+### Miscellaneous
+
+#### Running Locally
 
 ```
 $ cd project
 $ python manage.py runsslserver 127.0.0.1:8000
 $ open https://127.0.0.1:8000
 ```
+
+#### Accessing Remote DB
+
+This involves configuring a NAT server as a Bastion host, to proxy the DB connection to the RDS instance (which isn't publicly available by default).
+
+_*Warning*: This requires the private key to be installed on the NAT._
+
+1. Security Group: enable inbound access via NAT instance to port `5432` from local IP (e.g. home) in security groups:
+    * `elektrum-${env}-vpc-nat-sg`
+    * `elektrum-${env}-vpc-public-sg`
+1. NAT Instance: edit `/etc/ssh/sshd_config` to ensure that the value of `GatewayPorts` is `yes`, running `sudo service sshd restart` if necessary.
+1. NAT Instance: ensure the `elektrum-${env}.pem` is available on the NAT instance.
+1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOST}:5432 -i [/path/to/elektrum-${env}.pem] ec2-user@127.0.0.1`
+1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U elektronusr -W`
+
+### Running server locally on VM
+
+1. Configure remote access to the database (see "Accessing Remote DB" above).
+1. Local: Open a shell in the VM `./elektrum-deploy shell`
+1. Local: update `~/project/.env` to use hostname of NAT instance as value of `db_hostname`
+1. Local: run `python manage.py runsslserver 0.0.0.0:8000` from `~/project`.
+1. Local: `curl https://127.0.0.1:8000/`.
 
 ## Further Info
 
@@ -135,15 +163,35 @@ $ open https://127.0.0.1:8000
 ## Common Errors
 
 <dl>
-<dt><strong><tt>TypeError: 'NoneType' object is not callable</tt> when deploying to an environment</strong></dt>
+<dt><li><strong><tt>
+An error occurred (BadRequestException) when calling the CreateDomainName operation: The domain name you provided already exists.
+</tt>
+</strong></li></dt>
+<dd>
+This may occur if the gateway had been previously created and then deleted.  To deal with it, delete the <a href="https://console.aws.amazon.com/apigateway/home?region=us-east-1#/custom-domain-names">Custom Domain Name</a> via the API Gateway admin panel, and then run `undeploy` and then `deploy` to recreate it.
+<br>
+Creation of the Custom Domain Name associated with the API Gateway takes some time (45-60 minutes) to complete initialization.  Visit the below control panel and look under "ACM Certificate" to track progress of initialization.
+<br>
+<a href="https://console.aws.amazon.com/apigateway/home?region=us-east-1#/custom-domain-names">API Gateway Control Panel</a>
+</dd>
+<dt><li><strong><tt>
+botocore.errorfactory.NotFoundException: An error occurred (NotFoundException) when calling the GetRestApi operation: Invalid API identifier specified 743873495175:8atzbrhf0a
+<br>
+botocore.errorfactory.BadRequestException: An error occurred (BadRequestException) when calling the CreateBasePathMapping operation: Invalid REST API identifier specified
+</tt>
+</strong></li></dt>
+<dd>
+Caused by an API gateway of the same name having been previously deleted.  Solution is to call `undeploy` first and then re-`deploy`.
+</dd>
+<dt><li><strong><tt>TypeError: 'NoneType' object is not callable</tt> when deploying to an environment</strong></li></dt>
 <dd>
 Causes can vary.
 <br>
 Check:
 <li>Ensure host is in `ALLOWED_HOSTS` in the Django configuration.</li>
 </dd>
-<dt><strong><tt>
-ResourceNotFoundException: An error occurred (ResourceNotFoundException) when calling the DescribeLogStreams operation: The specified log group does not exist.</tt></strong>
+<dt><li><strong><tt>
+ResourceNotFoundException: An error occurred (ResourceNotFoundException) when calling the DescribeLogStreams operation: The specified log group does not exist.</tt></strong></li>
 </dt>
 <dd>
 <li>Ensure that API has permissions to log to Cloudwatch.
