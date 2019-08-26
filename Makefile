@@ -7,7 +7,7 @@ JS_CODE=./project/vue-s3-dropzone/frontend
 js-all: js-clean js-build app.js app.css vendor.js manifest.js
 
 js-build:
-	cd ${JS_CODE} && yarn build install
+	cd ${JS_CODE} && yarn install && yarn build
 
 js-clean:
 	/bin/rm -rf ${JS_CODE}/dist
