@@ -155,6 +155,28 @@ then
     ${docker_tag} \
     bash --login -c "cd project && zappa invoke --raw ${ENV} \"from users.models import CustomUser; CustomUser.objects.create_superuser('admin', '${django_admin_username}', '${django_admin_password}')\""
 
+elif [ "${CMD}" == 'migrate' ];
+then
+  echo "applying db migrations"
+
+  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+  aws --output=text lambda update-function-configuration \
+    --function-name "elektrum-${ENV}" \
+    --timeout=900
+
+  docker run \
+    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+    ${docker_tag} \
+    bash --login -c "cd project && zappa manage ${ENV} migrate"
+
+  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+  aws --output=text lambda update-function-configuration \
+    --function-name "elektrum-${ENV}" \
+    --timeout=60
+
 elif [ "${CMD}" == 'collectstatic' ];
 then
   AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
