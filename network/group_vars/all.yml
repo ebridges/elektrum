@@ -18,9 +18,9 @@ media_cname: "media.{{application_domain_name}}"
 static_cname: "static.{{application_domain_name}}"
 
 # S3 Facts
-media_upload_bucket_name: "{{service_name}}-media-{{ operating_env }}"
-media_processor_artifact_bucket_name: "{{service_name}}-archive-{{ operating_env }}"
-static_files_bucket_name: "{{service_name}}-static-{{ operating_env }}"
+media_upload_bucket_name: "{{service_name}}-{{ operating_env }}-media"
+media_processor_artifact_bucket_name: "{{service_name}}-{{ operating_env }}-archive"
+static_files_bucket_name: "{{service_name}}-{{ operating_env }}-static"
 
 # Django Facts
 django_email_backend: django.core.mail.backends.filebased.EmailBackend
