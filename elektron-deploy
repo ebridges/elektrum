@@ -93,7 +93,7 @@ elif [ "${CMD}" == 'build' ];
 then
   echo "Running zappa ${CMD}"
   docker build \
-    --build-arg="ELEKTRON_ENV=${ENV}"  \
+    --build-arg="OPERATING_ENV=${ENV}"  \
     --tag ${docker_tag} .
 elif [ "${CMD}" == 'deploy' ];
 then

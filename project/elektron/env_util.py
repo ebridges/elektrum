@@ -23,15 +23,8 @@ def locate_env_file(start_dir=os.getcwd()):
     logger.info('Located env file in %s' % location)
     return location
 
-  # check in parent, parent directory for `.env`
-  location = os.path.join(os.path.dirname(start_dir), '.env')
-  logger.debug('Looking for env file in %s' % location)
-  if os.path.isfile(location):
-    logger.info('Located env file in %s' % location)
-    return location
-  
-  # check in parent, parent etc/env directory for `$ELEKTRON_ENV.env`
-  location = os.path.join(os.path.dirname(start_dir), 'etc/env/%s.env' % os.getenv('ELEKTRON_ENV', DEFAULT_ENV))
+  # check in parent, parent etc/env directory for `$OPERATING_ENV.env`
+  location = os.path.join(os.path.dirname(start_dir), 'etc/env/%s.env' % os.getenv('OPERATING_ENV', DEFAULT_ENV))
   logger.debug('Looking for env file in %s' % location)
   if os.path.isfile(location):
     logger.info('Located env file in %s' % location)

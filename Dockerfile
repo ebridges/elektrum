@@ -35,7 +35,7 @@ RUN yum install --assumeyes \
 ARG app_home=/home/elektron
 ARG wkdir=$app_home/app/
 ARG venv=$app_home/zappa-venv
-ARG ELEKTRON_ENV=production
+ARG OPERATING_ENV=production
 
 RUN mkdir -p $wkdir
 
@@ -51,7 +51,7 @@ RUN source $venv/bin/activate && \
 
 COPY project $wkdir/project
 COPY version.txt $wkdir/project/version.txt
-COPY etc/env/${ELEKTRON_ENV}.env $wkdir/project/.env
+COPY etc/env/${OPERATING_ENV}.env $wkdir/project/.env
 
 RUN echo "source $venv/bin/activate" > $HOME/.profile
 RUN echo "alias dj='cd $wkdir/project && python manage.py runserver'" >> $HOME/.profile
