@@ -33,9 +33,6 @@ DEBUG = True if os.environ.get('django_debug_enabled') else False
 allowed_hosts = os.getenv('django_allowed_hosts')
 ALLOWED_HOSTS = allowed_hosts.split(',')
 
-# establish project root directory as a variable
-ELEKTRON_PROJECT_DIR = os.path.abspath('%s/..' % BASE_DIR)
-
 # read version number for display in the app
 version_file = resolve_version(BASE_DIR)
 if os.path.isfile(version_file):
