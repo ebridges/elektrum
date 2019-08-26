@@ -58,7 +58,6 @@ RUN echo "alias dj='cd $wkdir/project && python manage.py runserver'" >> $HOME/.
 ENV PS1="\[$(tput setaf 2)\]zappa\[$(tput sgr0)\]> "
 ENV AWS_SECRET_ACCESS_KEY=
 ENV AWS_ACCESS_KEY_ID=
-ENV ELEKTRON_ENV=${ELEKTRON_ENV}
 
 EXPOSE 8000
 

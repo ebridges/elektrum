@@ -61,9 +61,6 @@ cat << EOF > project/zappa_settings.json
     "certificate_arn": "${https_certificate_arn}",
     "domain": "${application_domain_name}",
     "route53_enabled": true,
-    "environment_variables": {
-        "ELEKTRON_ENV": "${ENV}"
-    },
     "exclude": ["static/"],
     "touch_path": "/status/ok/",
     "vpc_config": {
@@ -86,7 +83,6 @@ then
     --interactive \
     --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
     --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    --env ELEKTRON_ENV=${ENV} \
     --publish 8000:8000 \
     ${docker_tag}
 elif [ "${CMD}" == 'build' ];
@@ -102,7 +98,6 @@ then
   docker run \
     --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
     --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa deploy ${ENV}"
 
@@ -113,7 +108,6 @@ then
   docker run \
     --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
     --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa certify --yes ${ENV}"
 
@@ -123,7 +117,6 @@ then
   docker run \
     --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
     --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa update ${ENV}"
 elif [ "${CMD}" == 'undeploy' ];
@@ -138,7 +131,6 @@ then
     docker run \
       --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
       --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-      --env ELEKTRON_ENV=${ENV} \
       ${docker_tag} \
       bash --login -c "cd project && zappa undeploy --yes ${ENV}"
   fi
@@ -151,7 +143,6 @@ then
   docker run \
     --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
     --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    --env ELEKTRON_ENV=${ENV} \
     ${docker_tag} \
     bash --login -c "cd project && zappa invoke --raw ${ENV} \"from users.models import CustomUser; CustomUser.objects.create_superuser('admin', '${django_admin_username}', '${django_admin_password}')\""
 
