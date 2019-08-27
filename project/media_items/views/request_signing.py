@@ -6,7 +6,7 @@ from django.utils.dateparse import parse_datetime
 from django.views.generic.list import ListView
 
 from media_items.upload_signing import create_signed_upload_url, supported_upload_types
-from elektron.log import getLogger
+from elektrum.log import getLogger
 
 class SignRequest(View):
     http_method_names = ['post']

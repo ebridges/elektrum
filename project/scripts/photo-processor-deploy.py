@@ -6,7 +6,7 @@ import boto3
 from boto3.s3.transfer import S3Transfer
 import argparse
 from traceback import format_exc
-from elektron.env_util import locate_env_file
+from elektrum.env_util import locate_env_file
 
 # Presumed to be run from the root of the project
 

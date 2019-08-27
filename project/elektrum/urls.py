@@ -41,7 +41,7 @@ urlpatterns = [
 ]
 
 
-class ElektronAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
+class ElektrumAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
 
     def __init__(self, request):
         self.logger = getLogger(__name__)

@@ -5,7 +5,7 @@ branch = True
 [report]
 omit=
     base/*
-    elektron/*
+    elektrum/*
     status/*
     manage.py
     */admin.py

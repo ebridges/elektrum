@@ -4,7 +4,7 @@ import os
 import django
 import logging_tree
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'elektron.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'elektrum.settings')
 
 SECRET_KEY = 'not-secret'
 LOGGING = {

@@ -53,7 +53,7 @@ cat << EOF > project/zappa_settings.json
   "${ENV}": {
     "aws_region": "${aws_region}",
     "project_name": "${service_name}",
-    "django_settings": "elektron.settings",
+    "django_settings": "${service_name}.settings",
     "runtime": "python3.6",
     "s3_bucket": "${media_processor_artifact_bucket_name}",
     "slim_handler": true,
@@ -174,7 +174,7 @@ then
   AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
   python project/manage.py collectstatic \
     --pythonpath=project \
-    --settings=elektron.settings \
+    --settings=${service_name}.settings \
     --noinput
 else
   echo "ERROR: command [${CMD}] not recognized."

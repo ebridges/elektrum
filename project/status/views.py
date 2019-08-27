@@ -4,7 +4,7 @@ from django.db import connection
 from io import StringIO
 
 from meta.management.commands import createdb
-from elektron.log import getLogger
+from elektrum.log import getLogger
 
 class Ok(View):
     # noinspection PyUnusedLocal
