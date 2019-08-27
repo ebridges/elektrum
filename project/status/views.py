@@ -11,7 +11,7 @@ class Ok(View):
     def get(self, request=None):
         time_at = self.db_time()
         response = HttpResponse('<h2>Ok</h2> %s' % time_at[0])
-        response['X-Elektron-Now'] = time_at[0]
+        response['X-Elektrum-Now'] = time_at[0]
         logger = getLogger(__name__)
         logger.debug(time_at[0])
         return response

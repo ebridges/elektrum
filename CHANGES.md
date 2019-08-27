@@ -1,4 +1,4 @@
-Elektron Change Log
+Elektrum Change Log
 ================
 
 0.32 (unreleased)
