@@ -24,6 +24,14 @@
         allowed_methods:
           - GET
 
+- name: Link up image processor lambda with media upload bucket.
+  s3_bucket_notification:
+    state: present
+    event_name: on_image_add
+    bucket_name: "{{ media_upload_bucket_name }}"
+    function_name: "{{ media_upload_processor_arn }}"
+    events: ["s3:ObjectCreated:*"]
+
 - name: Create bucket to archive photo-processor executables.  
   s3_bucket:
     name: "{{ media_processor_artifact_bucket_name }}"
