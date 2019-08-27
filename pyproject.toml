@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "elektron"
+name = "elektrum"
 version = "0.24.dev0"
 description = "Media archiving & management system."
 authors = ["Edward Q. Bridges <ebridges@roja.cc>"]
 readme = "README.md"
-homepage = "https://elektron.photos"
+homepage = "https://elektrum.photos"
 repository = "https://bitbucket.org/roja-cc/elektron"
 license = "CC-BY-NC-ND-4.0"
 

@@ -37,11 +37,11 @@ manifest.js:
 	cp ${JS_CODE}/dist/static/js/manifest.*.js.map project/static/js/
 	@echo [manifest.js] SUCCESSFUL
 
-elektron-processor%.zip:
+elektrum-processor%.zip:
 	cd ${CODE} && ./gradlew -PprojVersion=$(VERSION) buildZip
 	@echo [photo-processor] BUILD: SUCCESSFUL
 
-processor.zip: elektron-processor%.zip
+processor.zip: elektrum-processor%.zip
 
 clean:
 	/bin/rm -rf ${BUILD}

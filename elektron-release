@@ -55,8 +55,8 @@ then
     fi
 
     # echo "Running smoke test in dev environment."
-    # docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
-    # docker build --file Dockerfile-App --build-arg="OPERATING_ENV=development" --tag roja/elektron_app:latest .
+    # docker build --file Dockerfile-Proxy --tag roja/elektrum_proxy:latest .
+    # docker build --file Dockerfile-App --build-arg="OPERATING_ENV=development" --tag roja/elektrum_app:latest .
     # OPERATING_ENV=development ./scripts/tests/smoke_test.py
     # result=$?
     # if [ "${result}" != "0" ];
@@ -100,7 +100,7 @@ then
 
         make all VERSION=${version}
         cwd=`pwd`
-        processor_archive=`find ${cwd}/processor -name 'elektron-processor*.zip'`
+        processor_archive=`find ${cwd}/processor -name '${service_name}-processor*.zip'`
         echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
         export PYTHONPATH=${PYTHONPATH}:${cwd}/project
         pushd ${cwd}/project

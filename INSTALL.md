@@ -146,7 +146,7 @@ _*Warning*: This requires the private key to be installed on the NAT._
 1. NAT Instance: edit `/etc/ssh/sshd_config` to ensure that the value of `GatewayPorts` is `yes`, running `sudo service sshd restart` if necessary.
 1. NAT Instance: ensure the `elektrum-${env}.pem` is available on the NAT instance.
 1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOST}:5432 -i [/path/to/elektrum-${env}.pem] ec2-user@127.0.0.1`
-1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U elektronusr -W`
+1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U ${db_username} -W`
 
 ### Running server locally on VM
 

@@ -32,9 +32,9 @@ RUN yum install --assumeyes \
 # COPY etc/bin/install-gdal.sh
 # RUN /var/task/install-gdal.sh /var/venv
 
-ARG app_home=/home/elektron
+ARG app_home=/home/elektrum
 ARG wkdir=$app_home/app/
-ARG venv=$app_home/zappa-venv
+ARG venv=$app_home/venv/
 ARG OPERATING_ENV=production
 
 RUN mkdir -p $wkdir
