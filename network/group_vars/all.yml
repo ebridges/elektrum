@@ -45,26 +45,6 @@ photo_processor_memory_size: 256
 ## VPC Configuration
 vpc_name: "{{service_name}}-{{operating_env}}-vpc"
 
-vpc_cidr_block: 10.0.0.0/16
-
-vpc_subnets:
-  private-01:
-    cidr: 10.0.0.0/19
-    az: "{{ aws_region }}a"
-    visibility: private
-  public-01:
-    cidr: 10.0.32.0/19
-    az: "{{ aws_region }}a"
-    visibility: public
-  private-02:
-    cidr: 10.0.64.0/19
-    az: "{{ aws_region }}b"
-    visibility: private
-  public-02:
-    cidr: 10.0.96.0/19
-    az: "{{ aws_region }}b"
-    visibility: public
-
 vpc_subnets_private: 
   - "{{vpc_subnets['private-01']['cidr']}}"
   - "{{vpc_subnets['private-02']['cidr']}}"
