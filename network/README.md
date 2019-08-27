@@ -1,6 +1,6 @@
-# Elektron Network
+# Elektrum Network
 
-These scripts configure a multi-stage VPC network and database instance on AWS for use by the Elektron app.
+These scripts configure a multi-stage VPC network and database instance on AWS for use by the Elektrum app.
 
 ## Usage
 
@@ -34,27 +34,28 @@ These scripts configure a multi-stage VPC network and database instance on AWS f
                    │ │  │  └──────────────────────┘   │    │   │   └──────────────────────┘    │ │
                    │ │     ┌──────────────────────┐        │       ┌──────────────────────┐ │  │ │
                    │ │  │  │ ┌──────────────┬──┐  │   │    │   │   │  ┌──┬──────────────┐ │    │ │
-                   │ │     │ │ elektron_app │E │  │        │       │  │E │ elektron_app │ │ │  │ │
+                   │ │     │ │ elektrum_app │E │  │        │       │  │E │ elektrum_app │ │ │  │ │
 private-01 subnet ─┼─┼──┼─▶│ │   [Lambda]   │N │◀─┼───┼────┴───┼───┼─▶│N │   [Lambda]   │ │◀───┼─┼─private-02 subnet
                    │ │     │ │              │I │  │                │  │I │              │ │ │  │ │
                    │ │  │  │ └──────────────┴──┘  │   │        │   │  └──┴──────────────┘ │    │ │
                    │ │     └─────────┬────────────┘                └─────────────┬────────┘ │  │ │
                    │ │  │            │                │        │                 │             │ │
-   elektron-vpc ───┼▶│               │                                           │          │  │ │
+   elektrum-vpc ───┼▶│               │                                           │          │  │ │
                    │ └──┼────────────┼────────────────┼────────┼─────────────────┼─────────────┘ │
                    │                 └─────────────────────┬─────────────────────┘          │    │
                    │    │                             │    │   │                                 │
                    │                                       │                                │    │
                    │    │az: {aws-region}a            │    │   │          az: {aws-region}b      │
                    │     ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─     ▼    ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
-                   │                                ┌────────────┐                               │
-                   │                                │elektron_db │                               │
-                   │                                │   [RDS]    │                               │
-                   │                                └────────────┘                               │
-                   │                           ┌──────────────────────┐                          │
-                   │                           │media.elektron.photos │                          │
-                   │                           │         [S3]         │                          │
-                   │ Region: us-east           └──────────────────────┘                          │
+                   │                                ┌─────────────┐                              │
+                   │                                │ elektrum_db │                              │
+                   │                                │    [RDS]    │                              │
+                   │                                └─────────────┘                              │
+                   |               ┌──────────────────────┐ ┌──────────────────────┐             |
+                   |               │static.elektrum.photos│ │media.elektrum.photos │             │
+                   |               │         [S3]         │ │         [S3]         │             │
+                   |               └──────────────────────┘ └──────────────────────┘             │
+                   │ aws-region: us-east-1                                                       |
                    └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

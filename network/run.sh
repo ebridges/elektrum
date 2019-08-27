@@ -2,7 +2,7 @@
 
 if [ -z "${1}" ];
 then
-  echo "Usage: $0 [production|staging]"
+  echo "Usage: $0 [production|staging|development]"
   exit 1
 fi
 

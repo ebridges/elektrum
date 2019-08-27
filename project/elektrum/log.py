@@ -5,7 +5,7 @@ loggers = {}
 # https://stackoverflow.com/a/7175288/87408
 def getLogger(name):
   global loggers
-  logger_name = 'elektron.%s' % name
+  logger_name = 'elektrum.%s' % name
   if loggers.get(logger_name):
     return loggers.get(logger_name)
   else:

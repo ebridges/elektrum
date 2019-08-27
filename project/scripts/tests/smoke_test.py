@@ -11,7 +11,7 @@ import sys
 process=None
 
 urls_to_test = [
-  {'url': 'http://localhost/status/ok', 'header': 'X-Elektron-Now'},
+  {'url': 'http://localhost/status/ok', 'header': 'X-Elektrum-Now'},
   {'url': 'http://localhost/static/img/logo.png'},
 ]
 

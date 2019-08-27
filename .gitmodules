@@ -1,0 +1,3 @@
+[submodule "project/vue-s3-dropzone"]
+	path = project/vue-s3-dropzone
+	url = git@github.com:ebridges/vue-s3-dropzone.git

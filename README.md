@@ -1,84 +1,30 @@
-VSCode Setup
-https://gist.github.com/ebridges/9e2e5a840c91c7a034c80e3e43dd3a9b
+# Elektrum
 
-PyCharm Setup for Coverage
-https://gist.github.com/ebridges/d1ebe05e9fd87e409f6e5c978e44bde1
+## About
 
+The `elektrum` application is a multi-tier system for hosting images and other media designed to be efficient and scalable.  Generally the steps involved in installing it are as follows:
 
-## Elektron
+1. Setup Project
+1. Establish basic system prerequisites and configure parameters in a global settings file.
+1. Configure permissions, a network, storage, security, and distribution mechanisms on AWS.
+1. Generate a configuration file that can be used by the application.
+1. Deploy the application.
 
-https://www.ybrikman.com/writing/2015/05/19/docker-osx-dev/
-https://www.ybrikman.com/writing/2015/11/11/running-docker-aws-ground-up/
-https://www.ybrikman.com/writing/2016/03/31/infrastructure-as-code-microservices-aws-docker-terraform-ecs/
-https://www.expeditedssl.com/aws-in-plain-english
-https://wsvincent.com/django-docker-postgresql/
+## Platform Information
 
-https://docs.djangoproject.com/en/2.1/intro/tutorial01/
-https://wsvincent.com/django-testing-tutorial/
-https://medium.com/@tomwwright/automating-with-ansible-building-a-vpc-c252944d3d2e
+* Python 3.7
+* Django 2.2
+* Zappa 0.48.2
+* PostgreSQL 11
+* Ansible 2.8.2
 
+## Installation & Deployment
 
-AMI that has ECS Client & Docker Server pre-installed:
-ami_id: 'ami-07eb698ce660402d2'
+### To Install & Run
 
-#### Running the Application
+* see `INSTALL.md`
 
-*Prerequisites*
-
-* Configure environment:
-
-`export ELEKTRON_ENV=[development|staging|production]`
-
-* Generate environment file for the environment
-  
-  `cd network && ./run.sh --tags=common,cfg`
-
-* Edit `db_hostname` in `etc/env/development.env` to be the IP address of the development database.
-
-*Running Locally*
-
-Django `runserver`:
-
-* `cd project`
-* `python manage.py runserver`
-* `open http://localhost:8000`
-
-Running with HTTPS:
-
-* `cd project`
-* `python manage.py runsslserver 127.0.0.1:8000`
-* `open https://127.0.0.1:8000`
-
-Gunicorn:
-
-* `cd project`
-* `gunicorn --bind :8000 elektron.wsgi:application`
-* `open http://localhost:8000`
-
-*Running in a container*
-
-Building the container image for the App:
-
-* `docker build --file Dockerfile-App --build-arg ELEKTRON_ENV=${ELEKTRON_ENV} -t roja/elektron_app:latest .`
-
-Building the container image for the Proxy:
-
-* `docker build --file Dockerfile-Proxy --build-arg ELEKTRON_ENV=${ELEKTRON_ENV} -t roja/elektron_proxy:latest .`
-
-To run via Docker:
-
-* `docker run --env ELEKTRON_ENV=${ELEKTRON_ENV} --publish 8000:8000 roja/elektron_app:latest`
-* `open http://localhost:8000`
-
-Run via Docker Compose:
-
-_Docker compose runs the application behind a proxy, so it listens on `80` instead._
-
-* `ELEKTRON_ENV=[development|staging|production] docker-compose up`
-* `open http://localhost:80`
-
-#### Misc Info
-
-Build network:
+### Network Documentation
 
 * see `network/README.md`
+* see `network/roles/vpc/README.md`

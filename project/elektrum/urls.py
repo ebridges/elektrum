@@ -1,5 +1,5 @@
 """
-elektron URL Configuration
+elektrum URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -19,7 +19,7 @@ from django.urls import path, include
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
-from elektron.log import getLogger
+from elektrum.log import getLogger
 
 # accounts/login/ [name='login']
 # accounts/logout/ [name='logout']
@@ -41,7 +41,7 @@ urlpatterns = [
 ]
 
 
-class ElektronAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
+class ElektrumAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
 
     def __init__(self, request):
         self.logger = getLogger(__name__)

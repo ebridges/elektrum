@@ -32,10 +32,10 @@ RUN yum install --assumeyes \
 # COPY etc/bin/install-gdal.sh
 # RUN /var/task/install-gdal.sh /var/venv
 
-ARG app_home=/home/elektron
+ARG app_home=/home/elektrum
 ARG wkdir=$app_home/app/
-ARG venv=$app_home/zappa-venv
-ARG ELEKTRON_ENV=production
+ARG venv=$app_home/venv/
+ARG OPERATING_ENV=production
 
 RUN mkdir -p $wkdir
 
@@ -51,14 +51,13 @@ RUN source $venv/bin/activate && \
 
 COPY project $wkdir/project
 COPY version.txt $wkdir/project/version.txt
-COPY etc/env/${ELEKTRON_ENV}.env $wkdir/project/.env
+COPY etc/env/${OPERATING_ENV}.env $wkdir/project/.env
 
 RUN echo "source $venv/bin/activate" > $HOME/.profile
 RUN echo "alias dj='cd $wkdir/project && python manage.py runserver'" >> $HOME/.profile
 ENV PS1="\[$(tput setaf 2)\]zappa\[$(tput sgr0)\]> "
 ENV AWS_SECRET_ACCESS_KEY=
 ENV AWS_ACCESS_KEY_ID=
-ENV ELEKTRON_ENV=${ELEKTRON_ENV}
 
 EXPOSE 8000
 

@@ -6,12 +6,12 @@ import boto3
 from boto3.s3.transfer import S3Transfer
 import argparse
 from traceback import format_exc
-from elektron.env_util import locate_env_file
+from elektrum.env_util import locate_env_file
 
 # Presumed to be run from the root of the project
 
-APP_NAME = 'elektron-processor'
-ROOT_FOLDER = 'elektron-processor-artifacts'
+APP_NAME = 'elektrum-processor'
+ROOT_FOLDER = 'elektrum-processor-artifacts'
 
 
 def deploy(archive):
@@ -106,7 +106,7 @@ def configure_logging(threshold=INFO):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Deploy Elektron Photo Processor')
+    parser = argparse.ArgumentParser(description='Deploy Elektrum Photo Processor')
     parser.add_argument('--verbose', action="store_true", dest="verbose", default=False)
     parser.add_argument('--archive', action="store", dest="archive", required=True)
     args = parser.parse_args()

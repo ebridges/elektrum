@@ -1,4 +1,4 @@
-- name: Configure CDN distribution for serving media over HTTPS
+- name: "Configure CDN distribution for serving media over HTTPS: {{ media_cname }}"
   cloudfront_distribution:
     alias: "{{ media_cname }}"
     comment: "{{ media_cname }} distribution"
@@ -26,14 +26,35 @@
         acm_certificate_arn: "{{ https_certificate_arn }}"
         ssl_support_method: sni-only
 
+- name: "Configure CDN distribution for serving static files over HTTPS: {{ static_cname }}"
+  cloudfront_distribution:
+    alias: "{{ static_cname }}"
+    comment: "{{ static_cname }} distribution"
+    default_cache_behavior:
+      viewer_protocol_policy: redirect-to-https
+      target_origin_id: "{{ static_cname }}-cdn"
+      forwarded_values:
+        query_string: true
+        cookies:
+          forward: all
+    enabled: yes
+    http_version: http2
+    origins:
+      - id: "{{ static_cname }}-cdn"
+        domain_name: "{{ static_files_bucket_name }}.s3.amazonaws.com"
+        s3_origin_access_identity_enabled: yes
+    purge_tags: yes
+    state: present
+    wait: yes
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ static_cname }}-cdn"
+      Environment: "{{ operating_env }}"
+    viewer_certificate:
+        acm_certificate_arn: "{{ https_certificate_arn }}"
+        ssl_support_method: sni-only
+
 - name: obtain cdn facts for application server
   cloudfront_facts:
     summary: true
   register: cdn_facts
-
-- set_fact:
-    media_domain_name_query: "ansible_facts.cloudfront.summary.distributions[?Aliases[0] == `{{ media_cname }}`]|[0].DomainName"
-
-- name: set domain name of media CDN distribution as a fact
-  set_fact:
-     application_cdn_host: "{{ cdn_facts|json_query(media_domain_name_query) }}"

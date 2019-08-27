@@ -104,7 +104,7 @@ def build_clean_processor():
 
 def run_processor(path):
     cwd = processor_project_dir()
-    jar = '%s/build/libs/elektron-processor*.jar' % cwd
+    jar = '%s/build/libs/elektrum-processor*.jar' % cwd
     jar = next(iter(glob(jar)), None)
     assert_that(jar).is_not_none()
     assert_that(jar).exists()

@@ -9,25 +9,25 @@ then
     exit 0
 fi
 
-if [ -z "${ELEKTRON_ENV}" ];
+if [ -z "${OPERATING_ENV}" ];
 then
     # default environment
-    ELEKTRON_ENV=staging
+    OPERATING_ENV=staging
 fi
 
-if [ ! -f "./etc/env/${ELEKTRON_ENV}.env" ];
+if [ ! -f "./etc/env/${OPERATING_ENV}.env" ];
 then
-    echo "Generating configuration for ${ELEKTRON_ENV}"
+    echo "Generating configuration for ${OPERATING_ENV}"
     pushd network
-    ./run.sh --tags=common,cfg
+    ./run.sh ${OPERATING_ENV}
     popd
 else
-    echo "Configuration already exists for ${ELEKTRON_ENV}"
+    echo "Configuration already exists for ${OPERATING_ENV}"
 fi
 
-source "./etc/env/${ELEKTRON_ENV}.env" || (echo "Error: config for ${ELEKTRON_ENV} not found" && exit 1)
+source "./etc/env/${OPERATING_ENV}.env" || (echo "Error: config for ${OPERATING_ENV} not found" && exit 1)
 
-ENV_NAME="${service_name}-${ELEKTRON_ENV}"
+ENV_NAME="${service_name}-${OPERATING_ENV}"
 
 if [ 'deploy-release' == "${CMD}" ];
 then
@@ -43,9 +43,9 @@ then
         fi
     fi
     
-    echo "Running unit tests in development env."
+    echo "Running unit tests in local env."
     pushd project
-    ELEKTRON_ENV=development python manage.py test
+    OPERATING_ENV=local python manage.py test
     result=$?
     popd
     if [ "${result}" != "0" ];
@@ -55,9 +55,9 @@ then
     fi
 
     # echo "Running smoke test in dev environment."
-    # docker build --file Dockerfile-Proxy --tag roja/elektron_proxy:latest .
-    # docker build --file Dockerfile-App --build-arg="ELEKTRON_ENV=development" --tag roja/elektron_app:latest .
-    # ELEKTRON_ENV=development ./scripts/tests/smoke_test.py
+    # docker build --file Dockerfile-Proxy --tag roja/elektrum_proxy:latest .
+    # docker build --file Dockerfile-App --build-arg="OPERATING_ENV=development" --tag roja/elektrum_app:latest .
+    # OPERATING_ENV=development ./scripts/tests/smoke_test.py
     # result=$?
     # if [ "${result}" != "0" ];
     # then
@@ -100,11 +100,11 @@ then
 
         make all VERSION=${version}
         cwd=`pwd`
-        processor_archive=`find ${cwd}/processor -name 'elektron-processor*.zip'`
+        processor_archive=`find ${cwd}/processor -name '${service_name}-processor*.zip'`
         echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
         export PYTHONPATH=${PYTHONPATH}:${cwd}/project
         pushd ${cwd}/project
-        ELEKTRON_ENV=${ELEKTRON_ENV} python3 scripts/photo-processor-deploy.py --archive=${processor_archive}
+        python3 scripts/photo-processor-deploy.py --archive=${processor_archive}
         result=$?
         popd
         if [ "${result}" -ne "0" ];
@@ -113,15 +113,15 @@ then
             exit ${result}
         fi
 
-        ./elektron-deploy build ${ELEKTRON_ENV}
+        ./elektrum-deploy build ${OPERATING_ENV}
 
-        `aws --output text lambda list-functions | grep ${service_name}-${ELEKTRON_ENV} > /dev/null 2>&1`
+        `aws --output text lambda list-functions | grep ${service_name}-${OPERATING_ENV} > /dev/null 2>&1`
 
         if [ $? == 0 ];
         then
-            ./elektron-deploy update ${ELEKTRON_ENV}
+            ./elektrum-deploy update ${OPERATING_ENV}
         else
-            ./elektron-deploy deploy ${ELEKTRON_ENV}
+            ./elektrum-deploy deploy ${OPERATING_ENV}
         fi
 
         rm project/zappa_settings.json

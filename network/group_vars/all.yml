@@ -7,60 +7,43 @@ ansible_python_interpreter: python3
 # IP Address to allow access for SSH & PostgreSQL from:
 home_ip: 98.116.39.58
 
-org_name: roja
-service_name: elektron
+service_name: elektrum
 
-https_domain_name: "{{service_name}}.photos"
-application_domain_name: "{{https_domain_name}}"
-media_cname: "media.{{https_domain_name}}"
-media_upload_bucket_name: "{{service_name}}-media"
-media_processor_artifact_bucket_name: "{{service_name}}-archive"
+aws_region: us-east-1
+
+config_info: "../etc/env/{{operating_env}}.env"
+
+# Domain names
+media_cname: "media.{{application_domain_name}}"
+static_cname: "static.{{application_domain_name}}"
+
+# S3 Facts
+media_upload_bucket_name: "{{service_name}}-{{ operating_env }}-media"
+media_processor_artifact_bucket_name: "{{service_name}}-{{ operating_env }}-archive"
+static_files_bucket_name: "{{service_name}}-{{ operating_env }}-static"
+
+# Django Facts
+django_email_backend: django.core.mail.backends.filebased.EmailBackend
+django_allowed_hosts: "{{ application_domain_name }},.execute-api.us-east-1.amazonaws.com,127.0.0.1,localhost"
+
+# RDS Facts
+rds_database_name: media_info
+rds_instance_name: "{{service_name}}-{{operating_env}}-db"
+rds_master_username: "{{service_name}}_{{operating_env}}_dba"
+rds_app_username: "{{service_name}}_{{operating_env}}_usr"
 
 # EC2 Facts
+aws_ssh_key: "{{service_name}}-{{operating_env}}"
 nat_instance_ami: ami-058436d7e072250b3
 nat_instance_type: t2.micro
 
 ## Lambda deployment & config
-photo_processor_rolename: elektron-production-photoProcessorRole
+photo_processor_rolename: "{{service_name}}-{{operating_env}}-PhotoProcessorRole"
 photo_processor_connection_timeout: 5
 photo_processor_memory_size: 256
 
-# DB Facts
-rds_instance_name: elektron-db
-rds_database_name: media_info
-rds_master_username: elektrondba
-rds_app_username: elektronusr
-
-# AWS Facts
-aws_ssh_key: roja-llc
-aws_region: us-east-1
-
-## Django Configuration
-django_debug_enabled: False
-django_email_backend: django.core.mail.backends.filebased.EmailBackend
-django_allowed_hosts: "{{ application_domain_name }}"
-
 ## VPC Configuration
-
-vpc_cidr_block: 10.0.0.0/16
-
-vpc_subnets:
-  private-01:
-    cidr: 10.0.0.0/19
-    az: "{{ aws_region }}a"
-    visibility: private
-  public-01:
-    cidr: 10.0.32.0/19
-    az: "{{ aws_region }}a"
-    visibility: public
-  private-02:
-    cidr: 10.0.64.0/19
-    az: "{{ aws_region }}b"
-    visibility: private
-  public-02:
-    cidr: 10.0.96.0/19
-    az: "{{ aws_region }}b"
-    visibility: public
+vpc_name: "{{service_name}}-{{operating_env}}-vpc"
 
 vpc_subnets_private: 
   - "{{vpc_subnets['private-01']['cidr']}}"
