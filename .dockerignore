@@ -15,6 +15,5 @@ network
 *.retry
 scripts/
 *.md
-elektron-deploy
-elektron-release
-etc/env/*.tmpl
+elektrum-deploy
+elektrum-release
