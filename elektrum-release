@@ -113,15 +113,15 @@ then
             exit ${result}
         fi
 
-        ./elektron-deploy build ${OPERATING_ENV}
+        ./elektrum-deploy build ${OPERATING_ENV}
 
         `aws --output text lambda list-functions | grep ${service_name}-${OPERATING_ENV} > /dev/null 2>&1`
 
         if [ $? == 0 ];
         then
-            ./elektron-deploy update ${OPERATING_ENV}
+            ./elektrum-deploy update ${OPERATING_ENV}
         else
-            ./elektron-deploy deploy ${OPERATING_ENV}
+            ./elektrum-deploy deploy ${OPERATING_ENV}
         fi
 
         rm project/zappa_settings.json
