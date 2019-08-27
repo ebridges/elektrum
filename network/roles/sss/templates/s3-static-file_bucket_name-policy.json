@@ -7,7 +7,6 @@
                 "AWS": [ "*" ]
             },
             "Action": [
-                "s3:List*",
                 "s3:Get*"
             ],
             "Resource": [
