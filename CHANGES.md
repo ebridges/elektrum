@@ -6,7 +6,7 @@ Elektrum Change Log
 
 - [#57] Implement media upload.
 - [#58] Automate provisioning of different environments.
-- Renamed project from `elektron` to `elektrum` because the domain name was available in the `.dev` TLD as well as `.photos`.
+- [#60] Rename project from `elektron` to `elektrum`.
 
 0.31 (2019-07-25)
 -----------------
