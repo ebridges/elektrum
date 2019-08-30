@@ -11,7 +11,7 @@ class ImageKeyTest {
 
   @Test
   void testParse_Success() {
-    String testCase = "/2d249780-7fe9-4c49-aa31-0a30d56afa0f/b7556920-7009-11e9-b91d-320017981ea0.jpg";
+    String testCase = "2d249780-7fe9-4c49-aa31-0a30d56afa0f/b7556920-7009-11e9-b91d-320017981ea0.jpg";
     ImageKey underTest = ImageKey.parse(testCase);
 
     assertEquals(testCase, underTest.getKey());
