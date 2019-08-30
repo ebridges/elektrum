@@ -39,11 +39,6 @@ class S3ImageLoader implements ImageLoader {
 
     S3Client s3Client = buildS3Client(DEFAULT_REGION);
 
-    s3Client.getObject(
-        buildRequest(imageKey),
-        ResponseTransformer.toFile(tempfile)
-    );
-
     GetObjectRequest getObjectRequest = buildRequest(imageKey);
     ResponseInputStream<GetObjectResponse> response = s3Client.getObject(getObjectRequest);
     Files.copy(response, temppath, REPLACE_EXISTING);
