@@ -22,16 +22,11 @@ db_name='{{ rds_database_name }}'
 db_username='{{ rds_master_username }}'
 db_password='{{ rds_master_password }}'
 
-## Used for deployment purposes
-vpc_public_subnet_ids='{{ public_subnet_ids|join(',') }}' # only used by photo processor...maybe it should use private subnet?
+## Network configuration
 vpc_private_subnet_ids='{{ private_subnet_ids|join(',') }}'
-vpc_security_group_ids='{{ public_security_group_id }}'
 vpc_nat_security_group_ids='{{ nat_security_group_id }}'
 
-## Lambda deployment & config
-connection_timeout='{{ photo_processor_connection_timeout }}'
-memory_size='{{ photo_processor_memory_size }}'
-photo_processor_role_arn='{{ photo_processor_role_arn }}'
+## S3 Buckets
 media_upload_bucket_name='{{ media_upload_bucket_name }}'
 media_processor_artifact_bucket_name='{{ media_processor_artifact_bucket_name }}'
 static_files_bucket_name='{{ static_files_bucket_name }}'
