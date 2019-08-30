@@ -20,7 +20,6 @@ Elektrum Change Log
 
 - [#48] Minimize dependency on ELEKTRON_ENV environment variable.
 
-
 0.29 (2019-06-27)
 -----------------
 
@@ -31,7 +30,6 @@ Elektrum Change Log
 -----------------
 
 - [#41] Improve robustness of photo processor deployment.
-
 
 0.27 (2019-05-27)
 -----------------
