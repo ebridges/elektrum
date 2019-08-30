@@ -1,6 +1,7 @@
 package cc.roja.photo.io;
 
 import cc.roja.photo.model.ImageInfo;
+import cc.roja.photo.model.ImageKey;
 
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -82,4 +83,7 @@ public interface PhotoProcessorDAO {
  )
     // http://postgis.refractions.net/documentation/manual-1.5SVN/ST_MakePointM.html
   Integer insertImage(@BindBean("i") ImageInfo imageInfo);
+
+  @SqlUpdate("delete from media_item where id = :i.imageId")
+  void deleteImage(@BindBean("i") ImageKey imageKey);
 }

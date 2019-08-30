@@ -1,8 +1,8 @@
 package cc.roja.photo;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import cc.roja.photo.model.ImageKey;
 import cc.roja.photo.model.ProcessorResult;
@@ -67,23 +67,32 @@ public class ProcessorRequestHandler implements RequestHandler<S3EventNotificati
     try {
       Processor processor = new Processor();
       ProcessorResult result = new ProcessorResult();
-      List<String> objectKeys = new ArrayList<>();
+      Map<String, String> objectKeys = new HashMap<>();
 
       for(S3EventNotification.S3EventNotificationRecord record : event.getRecords()) {
         S3EventNotification.S3Entity s3Entity = record.getS3();
-        objectKeys.add(s3Entity.getObject().getKey());
+        objectKeys.put(s3Entity.getObject().getKey(), record.getEventName());
       }
 
       LOG.info("Processing "+objectKeys.size()+"event records.");
-      for(String objectKey : objectKeys) {
+      for(String objectKey : objectKeys.keySet()) {
         if (objectKey == null || objectKey.isEmpty()) {
-          throw new IllegalArgumentException("missing objectKey");
+          continue;
         }
 
         String imagePath = objectKey.replace("photos/pictures", "");
-
         ImageKey imageKey = ImageKey.parse(imagePath);
-        String imageId = processor.processPhoto(imageKey);
+
+        String eventName = objectKeys.get(objectKey);
+
+        String imageId = null;
+        if(eventName.contains("Created")) {
+          LOG.info("processing image: " + imageKey);
+          imageId = processor.processPhoto(imageKey);
+        } else if(eventName.contains("Removed")) {
+          LOG.info("removing image: " + imageKey);
+          imageId = processor.removePhoto(imageKey);
+        }
         result.addImageId(imageId);
         LOG.info("> Processed image "+imageKey+" ["+imageId+"]");
       }
