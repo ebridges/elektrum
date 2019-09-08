@@ -15,7 +15,13 @@ then
   exit 1
 fi
 
-source etc/env/${ENV}.env
+if [ -e etc/env/${ENV}.env ];
+then
+   source etc/env/${ENV}.env
+else
+    echo "ERROR: env file not located at 'etc/env/${ENV}.env'"
+    exit 1
+fi
 
 VERSION=$(cat version.txt | tr -d '\n')
 docker_tag="roja/${service_name}:${VERSION}"
