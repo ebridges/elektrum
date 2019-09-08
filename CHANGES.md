@@ -4,9 +4,10 @@ Elektrum Change Log
 0.32 (unreleased)
 -----------------
 
-- [#57] Implement media upload.
+- [#57] Implement media upload via web browser.
 - [#58] Automate provisioning of different environments.
 - [#60] Rename project from `elektron` to `elektrum`.
+- [#61] Fix "Forbidden" error when uploading images.
 
 0.31 (2019-07-25)
 -----------------
