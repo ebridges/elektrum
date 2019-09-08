@@ -33,6 +33,15 @@ public class Processor {
     this(DatabaseManager.getDBI(), ImageLoaderFactory.getLoader(), new MetaDataExtractor());
   }
 
+  public String removePhoto(ImageKey imageKey) throws IOException {
+    try (Handle handle = dbi.open()) {
+      PhotoProcessorDAO dao = handle.attach(PhotoProcessorDAO.class);
+      LOG.info("Deleting: " + imageKey);
+      dao.deleteImage(imageKey);
+      return imageKey.getImageId().toString();
+    }    
+  }
+
   public String processPhoto(ImageKey imageKey) throws IOException {
     try (Handle handle = dbi.open()) {
       PhotoProcessorDAO dao = handle.attach(PhotoProcessorDAO.class);

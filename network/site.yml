@@ -10,6 +10,7 @@
     - { role: vpc, tags: vpc }
     - { role: rds, tags: rds }
     - { role: sss, tags: sss }
+    - { role: lam, tags: lam }
     - { role: acm, tags: acm }
     - { role: cdn, tags: cdn }
     - { role: dns, tags: dns }

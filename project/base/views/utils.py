@@ -8,4 +8,4 @@ def assert_owner_id(owner_id, user_id):
 
 
 def media_url(path, scheme='https'):
-  return '%s://%s%s' % (scheme, environ.get('media_storage_cname'), path)
+  return '%s://%s/%s' % (scheme, environ.get('media_storage_cname'), path)

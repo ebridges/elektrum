@@ -63,6 +63,8 @@ cat << EOF > project/zappa_settings.json
     "route53_enabled": true,
     "exclude": ["static/"],
     "touch_path": "/status/ok/",
+    "cors": true,
+    "cloudwatch_log_level": "INFO",
     "vpc_config": {
       "SubnetIds": [
           ${subnet_list}
@@ -170,6 +172,7 @@ then
 
 elif [ "${CMD}" == 'collectstatic' ];
 then
+  make all
   AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
   python project/manage.py collectstatic \

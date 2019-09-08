@@ -12,9 +12,9 @@ from date_dimension.models import DateDimension
 
 @deconstructible
 class MediaItemPathValidator(validators.RegexValidator):
-    regex = r'^\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\.[a-z]{3}$'
+    regex = r'^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\.[a-z]{3}$'
     message = _(
-        'Enter a valid media item path. Should be like this: `/uuid/uuid.ext`'
+        'Enter a valid media item path. Should be like this: `uuid/uuid.ext`'
     )
     flags = 0
 

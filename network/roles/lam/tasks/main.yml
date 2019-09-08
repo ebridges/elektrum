@@ -1,0 +1,85 @@
+- set_fact: project_dir="{{ playbook_dir }}/.."
+
+- debug: var=project_dir
+
+- set_fact: app_version="{{ lookup('file', '{{ project_dir }}/version.txt') }}"
+
+- debug: var=app_version
+
+- name: Build image processor and create archive.
+  make:
+    chdir: '{{ project_dir }}/processor'
+    target: processor.zip
+
+- set_fact:
+    processor_archive="{{ lookup('fileglob', '{{ project_dir }}/processor/build/archives/{{ service_name }}-processor*.zip') }}"
+
+- debug: var=processor_archive
+
+- name: Upload zipfile with image processor executable to S3
+  aws_s3:
+    mode: put
+    overwrite: different
+    bucket: "{{ media_processor_artifact_bucket_name }}"
+    object: "{{ service_name }}-{{ operating_env }}-processor-{{ app_version }}.zip"
+    src: "{{ processor_archive }}"
+  register: upload_result
+
+- debug: var=upload_result
+
+- name: Create image processor lambda
+  lambda:
+    state: present
+    runtime: java8
+    handler: cc.roja.photo.ProcessorRequestHandler
+    name: "{{ service_name }}-{{ operating_env }}-processor"
+    s3_bucket: "{{ media_processor_artifact_bucket_name }}"
+    s3_key: "{{ service_name }}-{{ operating_env }}-processor-{{ app_version }}.zip"
+    role: "{{ photo_processor_role_arn }}"
+    vpc_subnet_ids: "{{ private_subnet_ids }}"
+    vpc_security_group_ids: "{{ nat_security_group_id }}"
+    memory_size: "{{ photo_processor_memory_size }}"
+    timeout: "{{ photo_processor_connection_timeout }}"
+    environment_variables:
+      DB_JDBC_URL: "jdbc:postgresql://{{ db_endpoint_url }}:{{ db_port_number }}/{{ rds_database_name }}"
+      DB_USERNAME: "{{ rds_master_username }}"
+      DB_PASSWORD: "{{ rds_master_password }}"
+      AWS_UPLOAD_BUCKET_NAME: "{{ media_upload_bucket_name }}"
+    tags:
+      Name: "{{ service_name }}-{{ operating_env }}-processor"
+      Service: "{{ service_name }}"
+      Environment: "{{ operating_env }}"
+  register: lambda_result
+
+- debug: var=lambda_result
+
+- name: Get the current caller identity facts
+  aws_caller_info:
+  register: caller_info
+
+- set_fact: aws_account_id={{ caller_info.account }}
+  
+- name: Add policy that allows this lambda to be invoked by the upload bucket in S3
+  lambda_policy:
+    state: "present"
+    action: lambda:InvokeFunction
+    principal: s3.amazonaws.com
+    function_name: "{{ service_name }}-{{ operating_env }}-processor"
+    statement_id: "{{ service_name }}-{{ operating_env }}-processor"
+    source_arn: "arn:aws:s3:{{aws_region}}:{{aws_account_id}}:{{ media_upload_bucket_name }}"
+    source_account: "{{aws_account_id}}"
+  register: lambda_policy
+
+- debug: var=lambda_policy
+
+- name: Link up image processor lambda with media upload bucket.
+  s3_bucket_notification:
+    state: present
+    event_name: on_object_create
+    suffix: .jpg
+    events: ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
+    bucket_name: "{{ media_upload_bucket_name }}"
+    lambda_function_arn: "arn:aws:lambda:{{aws_region}}:{{aws_account_id}}:function:{{ service_name }}-{{ operating_env }}-processor"
+  register: bucket_notification
+
+- debug: var=bucket_notification

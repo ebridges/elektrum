@@ -4,9 +4,10 @@ Elektrum Change Log
 0.32 (unreleased)
 -----------------
 
-- [#57] Implement media upload.
+- [#57] Implement media upload via web browser.
 - [#58] Automate provisioning of different environments.
-- Renamed project from `elektron` to `elektrum` because the domain name was available in the `.dev` TLD as well as `.photos`.
+- [#60] Rename project from `elektron` to `elektrum`.
+- [#61] Fix "Forbidden" error when uploading images.
 
 0.31 (2019-07-25)
 -----------------
@@ -20,7 +21,6 @@ Elektrum Change Log
 
 - [#48] Minimize dependency on ELEKTRON_ENV environment variable.
 
-
 0.29 (2019-06-27)
 -----------------
 
@@ -31,7 +31,6 @@ Elektrum Change Log
 -----------------
 
 - [#41] Improve robustness of photo processor deployment.
-
 
 0.27 (2019-05-27)
 -----------------

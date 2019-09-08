@@ -13,10 +13,10 @@ import static java.lang.String.format;
  * This class is responsible for enforcing the structure of an identifier for a media item when receiving it for processing.
  *
  * A media identifier is of this form:
- *     /[USER_ID]/[UUID4].[EXT]
+ *     [USER_ID]/[UUID4].[EXT]
  *
  * For example:
- *     /2d249780-7fe9-4c49-aa31-0a30d56afa0f/6ee17b58-7008-11e9-a612-320017981ea0.jpg
+ *     2d249780-7fe9-4c49-aa31-0a30d56afa0f/6ee17b58-7008-11e9-a612-320017981ea0.jpg
  */
 public class ImageKey {
   private static final Logger LOG = LogManager.getLogger(ImageKey.class);
@@ -27,7 +27,7 @@ public class ImageKey {
 
   public static ImageKey parse(String imageIdentifier) {
     //noinspection RegExpRedundantEscape
-    String regex = "^[/](?<userId>[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})[/](?<imageId>[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})\\.(?<extension>[a-z]{3,4})";
+    String regex = "^(?<userId>[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})[/](?<imageId>[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})\\.(?<extension>[a-z]{3,4})";
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(imageIdentifier);
     boolean success = matcher.find();
@@ -63,7 +63,7 @@ public class ImageKey {
   }
 
   public String getKey() {
-    return "/" + this.userId + "/" + this.filename;
+    return this.userId + "/" + this.filename;
   }
 
   public String toString() {

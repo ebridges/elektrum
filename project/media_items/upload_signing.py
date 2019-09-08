@@ -36,9 +36,9 @@ def create_signed_url(credentials, upload_key):
     :return:
     """
     access_key, access_secret, bucket_name = credentials
-    session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
+    # session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=access_secret)
 
-    s3client = session.client('s3', config=Config(s3={'addressing_style': 'virtual'}, signature_version='s3v4'))
+    s3client = boto3.client('s3', config=Config(signature_version='s3v4'))
 
     url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key},
                                           ExpiresIn=36000, HttpMethod='PUT')

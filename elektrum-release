@@ -98,21 +98,6 @@ then
         echo "Release tagging successful, deploying application version ${version}"
         git checkout ${version}
 
-        make all VERSION=${version}
-        cwd=`pwd`
-        processor_archive=`find ${cwd}/processor -name '${service_name}-processor*.zip'`
-        echo "Deploying new version of image processor at version ${version} from ${processor_archive}"
-        export PYTHONPATH=${PYTHONPATH}:${cwd}/project
-        pushd ${cwd}/project
-        python3 scripts/photo-processor-deploy.py --archive=${processor_archive}
-        result=$?
-        popd
-        if [ "${result}" -ne "0" ];
-        then
-            echo "ERROR: building/deploying photo processor archive was unsuccessful."
-            exit ${result}
-        fi
-
         ./elektrum-deploy build ${OPERATING_ENV}
 
         `aws --output text lambda list-functions | grep ${service_name}-${OPERATING_ENV} > /dev/null 2>&1`

@@ -31,17 +31,13 @@ class S3ImageLoader implements ImageLoader {
     }
 
     // download from S3 & store in temp location
-    String extension = FilenameUtils.getExtension(imageKey);
-    Path temppath = Files.createTempFile(S3ImageLoader.class.getSimpleName(), '.'+extension);
+    String extension = "." + FilenameUtils.getExtension(imageKey);
+    String prefix = S3ImageLoader.class.getSimpleName() + "-" + System.currentTimeMillis();
+    Path temppath = Files.createTempFile(prefix, extension);
     File tempfile = temppath.toFile();
     tempfile.deleteOnExit();
 
     S3Client s3Client = buildS3Client(DEFAULT_REGION);
-
-    s3Client.getObject(
-        buildRequest(imageKey),
-        ResponseTransformer.toFile(tempfile)
-    );
 
     GetObjectRequest getObjectRequest = buildRequest(imageKey);
     ResponseInputStream<GetObjectResponse> response = s3Client.getObject(getObjectRequest);

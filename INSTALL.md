@@ -79,18 +79,14 @@
 
 1. Ensure that the Access Key and Access Secret configured in section A.3 above are in your environment or configured in `~/.aws/credentials`.
 
-1. Minimize and bundle up JS assets:
-
-        $ make js-all
-
-1. Bundle up static assets and publish them to S3:
-
-        $ ./elektrum-deploy collectstatic ${env}
-
 1. [Optional] Generate necessary migrations:
 
         $ cd project
         $ python manage.py makemigrations
+
+1. Bundle up static assets and publish them to S3:
+
+        $ ./elektrum-deploy collectstatic ${env}
 
 1. Create a VM that mimics the lambda execution environment:
 
