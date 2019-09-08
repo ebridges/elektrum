@@ -1,6 +1,6 @@
 CODE=./project/vue-s3-dropzone/frontend
 
-js-all: clean build app.js app.css vendor.js manifest.js
+all: clean build app.js app.css vendor.js manifest.js
 
 build:
 	cd ${CODE} && yarn install && yarn build
