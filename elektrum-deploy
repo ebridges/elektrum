@@ -63,6 +63,8 @@ cat << EOF > project/zappa_settings.json
     "route53_enabled": true,
     "exclude": ["static/"],
     "touch_path": "/status/ok/",
+    "cors": true,
+    "cloudwatch_log_level": "INFO",
     "vpc_config": {
       "SubnetIds": [
           ${subnet_list}
