@@ -59,13 +59,15 @@
 
 - set_fact: aws_account_id={{ caller_info.account }}
   
+- debug: var=caller_info
+
 - name: Add policy that allows this lambda to be invoked by the upload bucket in S3
   lambda_policy:
     state: "present"
     action: lambda:InvokeFunction
     principal: s3.amazonaws.com
     function_name: "{{ service_name }}-{{ operating_env }}-processor"
-    statement_id: "{{ service_name }}-{{ operating_env }}-processor"
+    statement_id: "{{ service_name }}-{{ operating_env }}-processor-policy"
     source_arn: "arn:aws:s3:{{aws_region}}:{{aws_account_id}}:{{ media_upload_bucket_name }}"
     source_account: "{{aws_account_id}}"
   register: lambda_policy
