@@ -26,7 +26,7 @@ def test_sign_upload_request_success(authenticated_client, img, env):
         assert_that(remote_file).exists()
 
         invoke_processor(image_key)
-        actual = MediaItem.objects.get(id=media_id)
+        actual = MediaItem.objects.get(file_path=image_key)
         assert_processing(img, actual)
 
 
