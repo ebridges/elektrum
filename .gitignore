@@ -37,3 +37,4 @@ temp-requirements.txt
 
 # deployment
 project/zappa_settings.json
+project/test-db.sqlite3

@@ -45,7 +45,7 @@ then
     
     echo "Running unit tests in local env."
     pushd project
-    OPERATING_ENV=local python manage.py test
+    python manage.py test
     result=$?
     popd
     if [ "${result}" != "0" ];

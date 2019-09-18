@@ -26,7 +26,7 @@ def test_sign_upload_request_success(authenticated_client, img, env):
         assert_that(remote_file).exists()
 
         invoke_processor(image_key)
-        actual = MediaItem.objects.get(id=media_id)
+        actual = MediaItem.objects.get(file_path=image_key)
         assert_processing(img, actual)
 
 
@@ -44,14 +44,15 @@ def assert_processing(e, a):
     assert a.artist is None
     assert e['camera_make'] == a.camera_make
     assert e['camera_model'] == a.camera_model
-    assert to_date(e['create_date']) == a.create_date
+    # assert to_date(e['create_date']) == a.create_date
+    assert e['create_day_id'] == a.create_day_id
     assert e['file_size'] == a.file_size
     assert e['focal_length_denominator'] == a.focal_length_denominator
     assert e['focal_length_numerator'] == a.focal_length_numerator
     assert e['gps_alt'] == a.gps_alt
-    assert to_date(e['gps_dt']) == a.gps_date_time
-    assert e['gps_lat'] == a.gps_lat
-    assert e['gps_lon'] == a.gps_lon
+    # assert to_date(e['gps_dt']) == a.gps_date_time
+    assert_that(e['gps_lat']).is_close_to(a.gps_lat, 0.001)
+    assert_that(e['gps_lon']).is_close_to(a.gps_lon, 0.001)
     assert e['image_height'] == a.image_height
     assert e['image_width'] == a.image_width
     assert e['iso_speed'] == a.iso_speed
@@ -80,11 +81,11 @@ def request_upload(client, img):
     response = client.post(request_url, {'mime_type': img['mime_type']})
     assert response.status_code == 201
     path = response['Location']
-    return urlparse(path).path
+    return urlparse(path).path.lstrip('/')
 
 
 def mock_upload(local, remote_path, image_key):
-    remote_file = '%s%s' % (remote_path.name, image_key)
+    remote_file = '%s/%s' % (remote_path.name, image_key)
     fqpathname = os.path.dirname(remote_file)
     os.makedirs(fqpathname)
     copyfile(local, remote_file)
@@ -110,7 +111,7 @@ def run_processor(path):
     assert_that(jar).exists()
     cmd = [
         'java',
-        '-Dlog4j.configurationFile=log4j.properties',
+        '-Dlog4j.configurationFile=log4j2.xml',
         '-jar',
         jar,
         '-f',

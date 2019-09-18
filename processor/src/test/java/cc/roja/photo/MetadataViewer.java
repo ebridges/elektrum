@@ -7,10 +7,10 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPIterator;
-import com.adobe.xmp.XMPMeta;
-import com.adobe.xmp.properties.XMPPropertyInfo;
+// import com.adobe.xmp.XMPException;
+// import com.adobe.xmp.XMPIterator;
+// import com.adobe.xmp.XMPMeta;
+// import com.adobe.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
@@ -20,7 +20,7 @@ import com.drew.metadata.xmp.XmpDirectory;
 
 public class MetadataViewer {
 
-  public static void main(String[] args) throws ImageProcessingException, IOException, XMPException {
+  public static void main(String[] args) throws ImageProcessingException, IOException { //, XMPException {
     String imagePath = args[0];
     File file = new File(imagePath);
     Metadata metadata = ImageMetadataReader.readMetadata(file);
@@ -39,19 +39,19 @@ public class MetadataViewer {
         }
       }
     }
-    System.out.println("\n===============================================\nMetadata from XMP Directories:\n===============================================");
-    Collection<XmpDirectory> xmpDirectories = metadata.getDirectoriesOfType(XmpDirectory.class);
-    for (XmpDirectory xmpDirectory : xmpDirectories) {
-      XMPMeta xmpMeta = xmpDirectory.getXMPMeta();
-      XMPIterator iterator = xmpMeta.iterator();
-      while (iterator.hasNext()) {
-        XMPPropertyInfo xmpPropertyInfo = (XMPPropertyInfo)iterator.next();
-        if(xmpPropertyInfo.getPath() != null) {
-          System.out.format("[%s] - %s = %s\n",
-              xmpDirectory.getName(), xmpPropertyInfo.getPath(), xmpPropertyInfo.getValue());
-        }
-      }
-    }
+    // System.out.println("\n===============================================\nMetadata from XMP Directories:\n===============================================");
+    // Collection<XmpDirectory> xmpDirectories = metadata.getDirectoriesOfType(XmpDirectory.class);
+    // for (XmpDirectory xmpDirectory : xmpDirectories) {
+    //   XMPMeta xmpMeta = xmpDirectory.getXMPMeta();
+    //   XMPIterator iterator = xmpMeta.iterator();
+    //   while (iterator.hasNext()) {
+    //     XMPPropertyInfo xmpPropertyInfo = (XMPPropertyInfo)iterator.next();
+    //     if(xmpPropertyInfo.getPath() != null) {
+    //       System.out.format("[%s] - %s = %s\n",
+    //           xmpDirectory.getName(), xmpPropertyInfo.getPath(), xmpPropertyInfo.getValue());
+    //     }
+    //   }
+    // }
   }
 }
 

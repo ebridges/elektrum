@@ -117,22 +117,17 @@ DATABASES = {
     }
 }
 
-# substring search across cmdline args
-if [s for s in sys.argv if 'pytest' in s]:
-    DATABASES['default'] = {
-        # see #14 - SQLite backend is not working for some tests
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
-        #
-        # see issue #45
-        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+if [s for s in sys.argv if 'test' in s]:
+    IN_TEST_MODE = True
+else:
+    IN_TEST_MODE = False
 
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "media_info",
-        'USER': "ebridges",
-        'PASSWORD': "ebridges",
-        'HOST': "localhost",
-        'PORT': 5432,
+if IN_TEST_MODE:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'TEST': {
+            'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
+        },
     }
 
 # Password validation
@@ -230,12 +225,20 @@ LOGGING = {
         },
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         'django.utils.autoreload': {
             'handlers': ['console'],
             'level': 'WARNING',
+        },
+        'selenium.webdriver.remote.remote_connection': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        },
+        'urllib3.connectionpool': {
+            'handlers': ['console'],
+            'level': 'INFO'
         },
         '': {
             'handlers': ['console'],

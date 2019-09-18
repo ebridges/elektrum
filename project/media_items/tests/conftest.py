@@ -14,7 +14,8 @@ def image_info():
         'artist': None,
         'camera_make': 'Google',
         'camera_model': 'Pixel 3',
-        'create_date': '2019-04-13 19:29:12',
+        'create_date': '2019-04-13 23:28:47',
+        'create_day_id': 20190413,
         'file_size': 1494846,
         'focal_length_denominator': 1000,
         'focal_length_numerator': 4440,
@@ -35,11 +36,7 @@ def image_info():
 
 @pytest.fixture(name='env')
 def get_db_connect_info(live_server, monkeypatch):
-    db_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['NAME']
-    db_host = live_server._live_server_modified_settings.wrapped.DATABASES['default']['HOST']
-    db_port = live_server._live_server_modified_settings.wrapped.DATABASES['default']['PORT']
-    db_user = live_server._live_server_modified_settings.wrapped.DATABASES['default']['USER']
-    db_pass = live_server._live_server_modified_settings.wrapped.DATABASES['default']['PASSWORD']
+    db_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
 
     # bucket name is used to disable some tests in the Java processing code
     bucket_name = 'processing-integration-test'
@@ -49,9 +46,7 @@ def get_db_connect_info(live_server, monkeypatch):
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
 
     # used by image processor
-    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:postgresql://%s:%s/%s' % (db_host, db_port, db_name))
-    monkeypatch.setenv('DB_USERNAME', db_user)
-    monkeypatch.setenv('DB_PASSWORD', db_pass)
+    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:sqlite:%s' % db_name)
     monkeypatch.setenv('IMAGE_ROOT', remote_path.name)
 
     return {
