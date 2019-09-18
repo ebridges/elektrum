@@ -45,6 +45,7 @@ def assert_processing(e, a):
     assert e['camera_make'] == a.camera_make
     assert e['camera_model'] == a.camera_model
     assert to_date(e['create_date']) == a.create_date
+    assert e['create_day_id'] == a.create_day_id
     assert e['file_size'] == a.file_size
     assert e['focal_length_denominator'] == a.focal_length_denominator
     assert e['focal_length_numerator'] == a.focal_length_numerator
