@@ -225,12 +225,20 @@ LOGGING = {
         },
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         'django.utils.autoreload': {
             'handlers': ['console'],
             'level': 'WARNING',
+        },
+        'selenium.webdriver.remote.remote_connection': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        },
+        'urllib3.connectionpool': {
+            'handlers': ['console'],
+            'level': 'INFO'
         },
         '': {
             'handlers': ['console'],
