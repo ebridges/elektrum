@@ -80,11 +80,11 @@ def request_upload(client, img):
     response = client.post(request_url, {'mime_type': img['mime_type']})
     assert response.status_code == 201
     path = response['Location']
-    return urlparse(path).path
+    return urlparse(path).path.lstrip('/')
 
 
 def mock_upload(local, remote_path, image_key):
-    remote_file = '%s%s' % (remote_path.name, image_key)
+    remote_file = '%s/%s' % (remote_path.name, image_key)
     fqpathname = os.path.dirname(remote_file)
     os.makedirs(fqpathname)
     copyfile(local, remote_file)
