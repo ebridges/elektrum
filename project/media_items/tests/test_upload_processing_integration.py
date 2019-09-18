@@ -50,9 +50,9 @@ def assert_processing(e, a):
     assert e['focal_length_denominator'] == a.focal_length_denominator
     assert e['focal_length_numerator'] == a.focal_length_numerator
     assert e['gps_alt'] == a.gps_alt
-    assert e['gps_lat'] == a.gps_lat
-    assert e['gps_lon'] == a.gps_lon
     # assert to_date(e['gps_dt']) == a.gps_date_time
+    assert_that(e['gps_lat']).is_close_to(a.gps_lat, 0.001)
+    assert_that(e['gps_lon']).is_close_to(a.gps_lon, 0.001)
     assert e['image_height'] == a.image_height
     assert e['image_width'] == a.image_width
     assert e['iso_speed'] == a.iso_speed
