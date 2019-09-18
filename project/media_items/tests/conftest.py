@@ -14,7 +14,7 @@ def image_info():
         'artist': None,
         'camera_make': 'Google',
         'camera_model': 'Pixel 3',
-        'create_date': '2019-04-13 19:29:12',
+        'create_date': '2019-04-13 23:28:47',
         'create_day_id': 20190413,
         'file_size': 1494846,
         'focal_length_denominator': 1000,
