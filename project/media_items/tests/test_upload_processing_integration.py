@@ -110,7 +110,7 @@ def run_processor(path):
     assert_that(jar).exists()
     cmd = [
         'java',
-        '-Dlog4j.configurationFile=log4j.properties',
+        '-Dlog4j.configurationFile=log4j2.xml',
         '-jar',
         jar,
         '-f',
