@@ -6,7 +6,7 @@ RUN yum clean all && \
 RUN yum install --assumeyes \
     postgresql \
     postgresql-devel \
-    python36-pip
+    python37-pip
 
 # RUN yum install --assumeyes \
 #     yum-utils \
@@ -46,7 +46,7 @@ COPY pyproject.toml $wkdir
 COPY poetry.lock $wkdir
 RUN source $venv/bin/activate && \
     pip3 install -U pip && \
-    pip3 install 'poetry==0.12.11' && \
+    pip3 install 'poetry==0.12.17' && \
     poetry install --no-dev
 
 COPY project $wkdir/project
