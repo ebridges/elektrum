@@ -109,6 +109,10 @@ then
             ./elektrum-deploy deploy ${OPERATING_ENV}
         fi
 
+        ./elektrum-deploy migrate ${OPERATING_ENV}
+
+        ./elektrum-deploy collectstatic ${OPERATING_ENV}
+
         rm project/zappa_settings.json
 
         git checkout master
