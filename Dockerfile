@@ -1,12 +1,24 @@
 FROM lambci/lambda:build AS base
 
+RUN yum makecache fast
+
 RUN yum clean all && \
     yum update --assumeyes && \
     yum upgrade --assumeyes
+
+RUN yum install  --assumeyes \
+  gcc openssl-devel \
+  bzip2-devel \
+  libffi-devel \
+  wget
+
+RUN wget -qO- https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz | tar xvzf - -C /usr/src
+RUN cd /usr/src/Python-3.7.3 && ./configure --enable-optimizations && make install
+
 RUN yum install --assumeyes \
     postgresql \
     postgresql-devel \
-    python37-pip
+    python36-pip
 
 # RUN yum install --assumeyes \
 #     yum-utils \

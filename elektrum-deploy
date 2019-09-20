@@ -60,7 +60,7 @@ cat << EOF > project/zappa_settings.json
     "aws_region": "${aws_region}",
     "project_name": "${service_name}",
     "django_settings": "${service_name}.settings",
-    "runtime": "python3.6",
+    "runtime": "python3.7",
     "s3_bucket": "${media_processor_artifact_bucket_name}",
     "slim_handler": true,
     "manage_roles": true,
