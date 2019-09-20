@@ -1,7 +1,7 @@
 Elektrum Change Log
 ================
 
-0.32 (unreleased)
+0.32 (2019-09-20)
 -----------------
 
 - [#57] Implement media upload via web browser.
