@@ -43,7 +43,7 @@
     origins:
       - id: "{{ static_cname }}-cdn"
         domain_name: "{{ static_files_bucket_name }}.s3.amazonaws.com"
-        s3_origin_access_identity_enabled: yes
+        s3_origin_access_identity_enabled: no
     purge_tags: yes
     state: present
     wait: yes
