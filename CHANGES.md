@@ -8,6 +8,7 @@ Elektrum Change Log
 - [#58] Automate provisioning of different environments.
 - [#60] Rename project from `elektron` to `elektrum`.
 - [#61] Fix "Forbidden" error when uploading images.
+- Upgrade all dependencies.
 
 0.31 (2019-07-25)
 -----------------
