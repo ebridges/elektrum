@@ -1,6 +1,7 @@
 - name: "Configure CDN distribution for serving media over HTTPS: {{ media_cname }}"
   cloudfront_distribution:
     alias: "{{ media_cname }}"
+    caller_reference: "{{ media_cname }}-cdn"
     comment: "{{ media_cname }} distribution"
     default_cache_behavior:
       viewer_protocol_policy: redirect-to-https
