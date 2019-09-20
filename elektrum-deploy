@@ -96,6 +96,7 @@ then
 elif [ "${CMD}" == 'build' ];
 then
   echo "Running zappa ${CMD}"
+
   docker build \
     --build-arg="OPERATING_ENV=${ENV}"  \
     --tag ${docker_tag} .
@@ -178,7 +179,9 @@ then
 
 elif [ "${CMD}" == 'collectstatic' ];
 then
+  # bundle JS assets
   make all
+
   AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
   python project/manage.py collectstatic \
