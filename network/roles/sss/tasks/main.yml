@@ -17,6 +17,9 @@
           - 'https://{{application_domain_name}}'
         allowed_methods:
           - GET
+          - PUT
+          - POST
+          - DELETE
         allowed_headers:
           - '*'
       - allowed_origins:
