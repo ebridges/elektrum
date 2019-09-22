@@ -6,22 +6,32 @@ from django.views import View
 from media_items.upload_signing import create_signed_upload_url, supported_upload_types
 from elektrum.log import getLogger
 
-class SignRequest(View):
-    http_method_names = ['post']
+@exceptions_to_web_response
+def upload_media_web(request):
+    if request.method != 'POST':
+        raise MethodNotAllowedException()
+    
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponseForbidden(content='Authentication is required.')
 
-    @staticmethod
-    def post(request):
-        user = request.user
-        if not user.is_authenticated:
-            return HttpResponseForbidden(content='Authentication is required.')
+    if 'mime_type' not in request.POST:
+        return HttpResponseBadRequest('"mime_type" is a required parameter. It should be parsed from media\'s '
+                                        'metadata.')
 
-        if 'mime_type' not in request.POST:
-            return HttpResponseBadRequest('"mime_type" is a required parameter. It should be parsed from media\'s '
-                                          'metadata.')
+    mime_type = request.POST['mime_type']
+    if mime_type not in supported_upload_types:
+        return HttpResponseBadRequest('the provided mime type [%s] is not supported.' % mime_type)
 
-        mime_type = request.POST['mime_type']
-        if mime_type not in supported_upload_types:
-            return HttpResponseBadRequest('the provided mime type [%s] is not supported.' % mime_type)
+    signed_url = create_signed_upload_url(user, mime_type)
+
+    response = HttpResponse(status=201)
+    response['Access-Control-Expose-Headers'] = 'Location'
+    response['Location'] = signed_url.geturl()
+    logger = getLogger(__name__)
+    logger.info('signed request url: %s' % signed_url.geturl())
+    return response
+
 
         signed_url = create_signed_upload_url(user, mime_type)
 
