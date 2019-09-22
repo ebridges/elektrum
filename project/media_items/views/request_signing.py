@@ -1,22 +1,15 @@
-from django.shortcuts import render
-
 from rest_framework.response import Response
 from django.http import HttpResponse
 
 from media_items.upload_signing import create_signed_upload_url, supported_upload_types
-from elektrum.log import getLogger
 from base.errors import *
 
 
 @exceptions_to_web_response
 def upload_media_web(request):
-    validate_request(request)
+    (user, mime_type) = validate_request(request)
 
-    signed_url = create_signed_upload_url(user, mime_type)
-
-    location = signed_url.geturl()
-    logger = getLogger(__name__)
-    logger.info('signed request url: %s' % location)
+    location = create_signed_upload_url(user, mime_type)
 
     response = HttpResponse(status=201)
     response['Access-Control-Expose-Headers'] = 'Location'
@@ -27,13 +20,9 @@ def upload_media_web(request):
 @api_view(http_method_names=['POST'])
 @exceptions_to_api_response
 def upload_media_api(request):
-    validate_request(request)
+    (user, mime_type) = validate_request(request)
 
-    signed_url = create_signed_upload_url(user, mime_type)
-
-    location = signed_url.geturl()
-    logger = getLogger(__name__)
-    logger.info('signed request url: %s' % location)
+    location = create_signed_upload_url(user, mime_type)
 
     headers = {
         'Access-Control-Expose-Headers': 'Location',
@@ -57,3 +46,5 @@ def validate_request(request):
     mime_type = request.POST['mime_type']
     if mime_type not in supported_upload_types:
         raise BadRequestException('the provided mime type [%s] is not supported.' % mime_type)
+
+    return (user, mime_type)

@@ -3,6 +3,7 @@ import boto3
 from uuid import uuid4
 from urllib.parse import urlparse
 from botocore.client import Config
+from elektrum.log import getLogger
 
 supported_upload_types = {
     'image/jpeg': 'jpg',
@@ -24,7 +25,14 @@ def create_signed_upload_url(user, mime_type):
 
     upload_key = create_upload_key(user, mime_type)
 
-    return create_signed_url(access_credentials, upload_key)
+    url = create_signed_url(access_credentials, upload_key)
+
+    location = url.geturl()
+    logger = getLogger(__name__)
+    logger.info('signed request url: %s' % location)
+
+    return location
+
 
 
 def create_signed_url(credentials, upload_key):
