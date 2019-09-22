@@ -2,8 +2,6 @@ from django.shortcuts import render
 
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.views import View
-from django.utils.dateparse import parse_datetime
-from django.views.generic.list import ListView
 
 from media_items.upload_signing import create_signed_upload_url, supported_upload_types
 from elektrum.log import getLogger
