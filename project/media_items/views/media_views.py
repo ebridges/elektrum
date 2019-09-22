@@ -4,17 +4,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 
 from base.views.utils import assert_owner_id, media_url
-from base.views.errors import exceptions_to_http_status, BadRequestException
+from base.views.errors import exceptions_to_web_response, BadRequestException
 from media_items.models import MediaItem
 from date_dimension.models import DateDimension
 
 
-@exceptions_to_http_status
+@exceptions_to_web_response
 def media_item_upload_view(request, owner_id, template_name='media_items/media_item_upload_view.html'):
     assert_owner_id(owner_id, request.user.id)
     return render(request, template_name)
 
-@exceptions_to_http_status
+@exceptions_to_web_response
 def media_item_view(request, owner_id, image_id, template_name='media_items/media_item_view.html'):
     assert_owner_id(owner_id, request.user.id)
     media_item = get_object_or_404(MediaItem, id=image_id)
@@ -27,7 +27,7 @@ def media_item_view(request, owner_id, image_id, template_name='media_items/medi
     return render(request, template_name, data)
 
 
-@exceptions_to_http_status
+@exceptions_to_web_response
 def media_list_view(request, owner_id, year, date, template_name='media_items/media_list_view.html'):
     assert_owner_id(owner_id, request.user.id)
 
@@ -44,7 +44,7 @@ def media_list_view(request, owner_id, year, date, template_name='media_items/me
     return render(request, template_name, {'objects': data, 'yyyymmdd': date, 'year': int(date[:4])})
 
 
-@exceptions_to_http_status
+@exceptions_to_web_response
 def albums_view(request, owner_id, year, template_name='media_items/albums_view.html'):
     assert_owner_id(owner_id, request.user.id)
 
@@ -78,7 +78,7 @@ def albums_view(request, owner_id, year, template_name='media_items/albums_view.
     return render(request, template_name, {'objects': data, 'year': int(str(mi.create_day_id)[:4])})
 
 
-@exceptions_to_http_status
+@exceptions_to_web_response
 def collections_view(request, owner_id, template_name='media_items/collections_view.html'):
     assert_owner_id(owner_id, request.user.id)
 

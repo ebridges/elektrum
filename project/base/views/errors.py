@@ -6,7 +6,7 @@ class BadRequestException(Exception):
     pass
 
 
-def exceptions_to_http_status(view_func):
+def exceptions_to_web_response(view_func):
     @wraps(view_func)
     def inner(*args, **kwargs):
         try:
