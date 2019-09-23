@@ -31,6 +31,7 @@ register_converter(FourDigitYearConverter, 'yyyy')
 
 urlpatterns = [
     path('request-upload/', upload_media_web, name='request-upload'),
+    path('api/request-upload/', upload_media_api, name='request-upload-api'),
     path('<uuid:owner_id>/upload/', media_item_upload_view, name='media-item-upload-view'),
     path('<uuid:owner_id>/<uuid:image_id>/', media_item_view, name='media-item-view'),
     path('<uuid:owner_id>/<yyyy:year>/<yyyy-mm-dd:date>/', media_list_view, name='media-list-view'),
