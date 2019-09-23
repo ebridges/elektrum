@@ -1,8 +1,9 @@
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from django.http import HttpResponse
 
 from media_items.upload_signing import create_signed_upload_url, supported_upload_types
-from base.errors import *
+from base.views.errors import *
 
 
 @exceptions_to_web_response
