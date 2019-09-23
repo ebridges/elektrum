@@ -38,6 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('status/', include('status.urls')),
     path('media/', include('media_items.urls')),
+    path('user/', include('users.urls'))
 ]
 
 

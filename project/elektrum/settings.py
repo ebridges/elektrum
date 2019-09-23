@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'rest_framework.authtoken',
     'sslserver',
     'meta',
     'base',
@@ -188,6 +189,12 @@ ACCOUNT_FORMS = {
 }
 
 SITE_ID = 2
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'base.authentication.BearerTokenAuthentication'
+    ]
+}
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True

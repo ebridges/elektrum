@@ -1,0 +1,29 @@
+{% extends 'base_protected.html' %}
+
+{% load account %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block nav_block %}
+<h2 class='subtitle'>
+  <a href='{% url 'collections-view' user.id %}' class='subtitle_link'><span class="nav-home-icon">&#x2302;</span></a> /
+  User Profile: {% user_display user %}
+</h2>
+{% endblock %}
+
+{% block content %}
+<table>
+  <tr><td class="user-attr-name">Member Since</td><td class="user-attr-value">{{ user.date_joined }}</td></tr>
+  <tr><td class="user-attr-name">First Name</td><td class="user-attr-value">{{ user.first_name }}</td></tr>
+  <tr><td class="user-attr-name">Last Name</td><td class="user-attr-value">{{ user.last_name }}</td></tr>
+  <tr><td class="user-attr-name">Email</td><td class="user-attr-value">{{ user.email }}</td></tr>
+  <tr><td class="user-attr-name">Username</td><td class="user-attr-value">{{ user.username }}</td></tr>
+  <tr><td class="user-attr-name">API Token</td><td class="user-attr-value">
+    {% if not token %}
+    <a href="{% url 'user-profile-view' owner_id=user.id %}?create_token=true">Generate Token</a>
+    {% else %}
+      {{ token }}
+    {% endif %}
+  </td></tr>
+</table>
+{% endblock %}
