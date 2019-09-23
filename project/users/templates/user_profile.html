@@ -20,9 +20,9 @@
   <tr><td class="user-attr-name">Username</td><td class="user-attr-value">{{ user.username }}</td></tr>
   <tr><td class="user-attr-name">API Token</td><td class="user-attr-value">
     {% if not token %}
-    <a href="{% url 'user-profile-view' owner_id=user.id %}?create_token=true">Generate Token</a>
+    <a href="{% url 'user-profile-token-create' owner_id=user.id %}">Generate Token</a>
     {% else %}
-      {{ token }}
+      {{ token }} <a style="text-decoration: none" href="{% url 'user-profile-token-reset' owner_id=user.id %}">&nbsp;&nbsp;[RESET TOKEN]</a>
     {% endif %}
   </td></tr>
 </table>
