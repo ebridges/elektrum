@@ -42,6 +42,13 @@
       {{ request.scheme }}://{{ request.get_host }}{{ request.port }}/media/api/request-upload/
     </td>
   </tr>
+  <tr>
+    <td colspan="2">
+      <ul>
+        <li>After running the above command, <tt>PUT</tt> your image file (of type "mime_type") to the URL in the <tt>Location</tt> header.</li>
+      </ul>
+    </td>
+  </tr>
 </table>
 {% endif %}
 {% endblock %}
