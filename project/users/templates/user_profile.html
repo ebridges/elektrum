@@ -26,4 +26,22 @@
     {% endif %}
   </td></tr>
 </table>
+{% if token %}
+<table>
+  <tr>
+    <td colspan="2">Example:</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="white-space: pre; display: block; background-color: #eeeeee; font-family: monospace;">
+      curl \
+      --insecure \
+      --verbose \
+      -H 'Authorization: Bearer {{ token }}' \
+      -X POST \
+      -F 'mime_type=image/jpeg' \
+      {{ request.scheme }}://{{ request.get_host }}{{ request.port }}/media/api/request-upload/
+    </td>
+  </tr>
+</table>
+{% endif %}
 {% endblock %}
