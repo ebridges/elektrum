@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DEFAULT_ENV='development'
+DEFAULT_ENV='local'
 
 def locate_env_file(start_dir=os.getcwd()):
   logger.debug('Begin looking for environment in: %s' % start_dir)
