@@ -1,0 +1,54 @@
+{% extends 'base_protected.html' %}
+
+{% load account %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block nav_block %}
+<h2 class='subtitle'>
+  <a href='{% url 'collections-view' user.id %}' class='subtitle_link'><span class="nav-home-icon">&#x2302;</span></a> /
+  User Profile: {% user_display user %}
+</h2>
+{% endblock %}
+
+{% block content %}
+<table>
+  <tr><td class="user-attr-name">Member Since</td><td class="user-attr-value">{{ user.date_joined }}</td></tr>
+  <tr><td class="user-attr-name">First Name</td><td class="user-attr-value">{{ user.first_name }}</td></tr>
+  <tr><td class="user-attr-name">Last Name</td><td class="user-attr-value">{{ user.last_name }}</td></tr>
+  <tr><td class="user-attr-name">Email</td><td class="user-attr-value">{{ user.email }}</td></tr>
+  <tr><td class="user-attr-name">Username</td><td class="user-attr-value">{{ user.username }}</td></tr>
+  <tr><td class="user-attr-name">API Token</td><td class="user-attr-value">
+    {% if not token %}
+    <a href="{% url 'user-profile-token-create' owner_id=user.id %}">Generate Token</a>
+    {% else %}
+      {{ token }} <a style="text-decoration: none" href="{% url 'user-profile-token-reset' owner_id=user.id %}">&nbsp;&nbsp;[RESET TOKEN]</a>
+    {% endif %}
+  </td></tr>
+</table>
+{% if token %}
+<table>
+  <tr>
+    <td colspan="2">Example:</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="white-space: pre; display: block; background-color: #eeeeee; font-family: monospace;">
+      curl \
+      --insecure \
+      --verbose \
+      -H 'Authorization: Bearer {{ token }}' \
+      -X POST \
+      -F 'mime_type=image/jpeg' \
+      {{ request.scheme }}://{{ request.get_host }}{{ request.port }}/media/api/request-upload/
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <ul>
+        <li>After running the above command, <tt>PUT</tt> your image file (of type "mime_type") to the URL in the <tt>Location</tt> header.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+{% endif %}
+{% endblock %}

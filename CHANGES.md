@@ -4,7 +4,7 @@ Elektrum Change Log
 0.33 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- [#62] Add API for uploading via CLI.
 
 
 0.32 (2019-09-20)
