@@ -53,6 +53,7 @@ RUN mkdir -p $wkdir
 
 WORKDIR $wkdir
 
+RUN /bin/rm -rf $venv # https://trello.com/c/Ck6JwOo7
 RUN python3 -m venv $venv
 COPY pyproject.toml $wkdir
 COPY poetry.lock $wkdir
