@@ -71,6 +71,7 @@ cat << EOF > project/zappa_settings.json
     "touch_path": "/status/ok/",
     "cors": true,
     "cloudwatch_log_level": "INFO",
+    "keep_warm": false,
     "vpc_config": {
       "SubnetIds": [
           ${subnet_list}
