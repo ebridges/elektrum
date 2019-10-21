@@ -48,4 +48,4 @@ def validate_request(request):
     if mime_type not in supported_upload_types:
         raise BadRequestException('the provided mime type [%s] is not supported.' % mime_type)
 
-    return (user, mime_type)
+    return user, mime_type

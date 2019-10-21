@@ -2,11 +2,14 @@ from functools import wraps
 from django.http import HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed, HttpResponseForbidden
 from rest_framework.response import Response
 
+
 class BadRequestException(Exception):
     pass
 
+
 class MethodNotAllowedException(Exception):
     pass
+
 
 class ForbiddenException(Exception):
     pass
