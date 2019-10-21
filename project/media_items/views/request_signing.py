@@ -38,7 +38,7 @@ def validate_request(request):
     
     user = request.user
     if not user.is_authenticated:
-        raise ForbiddenException(content='Authentication is required.')
+        raise ForbiddenException('Authentication is required.')
 
     if 'mime_type' not in request.POST:
         raise BadRequestException('"mime_type" is a required parameter. It should be parsed from media\'s '

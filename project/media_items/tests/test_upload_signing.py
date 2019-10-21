@@ -15,14 +15,15 @@ def test_create_signed_upload_url(user_factory, monkeypatch):
     mime_type = 'image/jpeg'
     user = user_factory()
     actual_url = create_signed_upload_url(user, mime_type)
-    qs = parse_qs(actual_url.query)
-    assert actual_url.scheme == 'https'
-    assert actual_url.hostname == '%s.s3.amazonaws.com' % bucket_name
+    au = urlparse(actual_url)
+    qs = parse_qs(au.query)
+    assert au.scheme == 'https'
+    assert au.hostname == '%s.s3.amazonaws.com' % bucket_name
     assert 'X-Amz-Credential' in qs
     assert 'X-Amz-Signature' in qs
     assert 'X-Amz-Expires' in qs
 
-    m = match_image_key(user.id, actual_url.path)
+    m = match_image_key(user.id, au.path)
     assert m is not None
     assert m.group('user_id') == str(user.id)
     assert m.group('image_id') is not None
