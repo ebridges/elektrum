@@ -185,6 +185,7 @@ then
 
   AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+  OPERATING_ENV=${ENV} \
   python project/manage.py collectstatic \
     --pythonpath=project \
     --settings=${service_name}.settings \
