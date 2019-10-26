@@ -42,3 +42,15 @@
 - name: set photo processor role arn as fact
   set_fact:
     photo_processor_role_arn: "{{ photo_processor_role_info.iam_role.arn }}"
+
+- name: Create a role that allows API Gateway to write to Cloudwatch
+    iam_role:
+    name: "{{ api_gateway_logging_rolename }}"
+    managed_policy:
+      - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    description: Allow API Gateway to write to Cloudwatch
+  register: api_gateway_logging_role_info
+
+- name: set API gateway logging role arn as fact
+  set_fact:
+    api_gateway_logging_role_arn: "{{ api_gateway_logging_role_info.iam_role.arn }}"
