@@ -41,6 +41,7 @@ nat_instance_type: t2.micro
 photo_processor_rolename: "{{service_name}}-{{operating_env}}-PhotoProcessorRole"
 photo_processor_connection_timeout: 30
 photo_processor_memory_size: 256
+api_gateway_logging_rolename: "{{service_name}}-{{operating_env}}-APIGatewayLoggingRole"
 
 ## VPC Configuration
 vpc_name: "{{service_name}}-{{operating_env}}-vpc"
