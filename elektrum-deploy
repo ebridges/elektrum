@@ -53,7 +53,6 @@ do
     fi
 done
 
-
 cat << EOF > project/zappa_settings.json
 {
   "${ENV}": {
@@ -71,6 +70,7 @@ cat << EOF > project/zappa_settings.json
     "touch_path": "/status/ok/",
     "cors": true,
     "cloudwatch_log_level": "INFO",
+    "cloudwatch_log_role_arn": "${cloudwatch_log_role_arn}",
     "keep_warm": false,
     "vpc_config": {
       "SubnetIds": [
