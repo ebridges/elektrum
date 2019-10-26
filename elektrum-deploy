@@ -187,9 +187,9 @@ then
   AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
   OPERATING_ENV=${ENV} \
   python project/manage.py collectstatic \
+    --noinput \
     --pythonpath=project \
-    --settings=${service_name}.settings \
-    --noinput
+    --settings=${service_name}.settings
 else
   echo "ERROR: command [${CMD}] not recognized."
 fi
