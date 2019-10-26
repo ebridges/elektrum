@@ -44,7 +44,7 @@
     photo_processor_role_arn: "{{ photo_processor_role_info.iam_role.arn }}"
 
 - name: Create a role that allows API Gateway to write to Cloudwatch
-    iam_role:
+  iam_role:
     name: "{{ api_gateway_logging_rolename }}"
     managed_policy:
       - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
