@@ -48,6 +48,15 @@
     name: "{{ api_gateway_logging_rolename }}"
     managed_policy:
       - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    assume_role_policy_document:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - apigateway.amazonaws.com
+        Action:
+        - sts:AssumeRole
     description: Allow API Gateway to write to Cloudwatch
   register: api_gateway_logging_role_info
 
