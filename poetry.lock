@@ -1123,6 +1123,10 @@ troposphere = ">=1.9.0"
 wheel = ">=0.30.0"
 wsgi-request-logger = "0.4.6"
 
+[package.source]
+reference = "d346ab5"
+type = "git"
+url = "https://github.com/ebridges/Zappa.git"
 [[package]]
 category = "dev"
 description = "Software releasing made easy and repeatable"
@@ -1264,6 +1268,6 @@ wrapt = ["565a021fd19419476b9362b05eeaa094178de64f8361e44468f9e9d7843901e1"]
 wsgi-request-logger = ["445d7ec52799562f812006394d0b4a7064b37084c6ea6bd74ea7a2136c97ed83"]
 xlrd = ["546eb36cee8db40c3eaa46c351e67ffee6eeb5fa2650b71bc4c758a29a1b29b2", "e551fb498759fa3a5384a94ccd4c3c02eb7c00ea424426e212ac0c57be9dfbde"]
 xlwt = ["a082260524678ba48a297d922cc385f58278b8aa68741596a87de01a9c628b2e", "c59912717a9b28f1a3c2a98fd60741014b06b043936dcecbc113eaaada156c88"]
-zappa = ["621209ceaf2cf5fcc18ed6bb6cf53aeb2315e38989a6929cbb49c66b5454d656", "86b125c0e9696b177f61bf636ab19ead7aba1bb9281cdba0651825358337008e", "b7a04172407cdb9277cb166b42920d3c5d745fd50204d1ce7f42769e61b6649e"]
+zappa = []
 zest-releaser = ["d3827fd126890c23c04a85a639054fc68334e0c42deb1410a476e0170bfaed3b"]
 zipp = ["3718b1cbcd963c7d4c5511a8240812904164b7f381b647143a89d3b98f9bcd8e", "f06903e9f1f43b12d371004b4ac7b06ab39a44adc747266928ae6debfa7b3335"]
