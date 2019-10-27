@@ -1115,7 +1115,7 @@ wheel = ">=0.30.0"
 wsgi-request-logger = "0.4.6"
 
 [package.source]
-reference = "d346ab5"
+reference = "ee9498e"
 type = "git"
 url = "https://github.com/ebridges/Zappa.git"
 [[package]]
@@ -1146,7 +1146,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "47d04aa1bb14d088f9fd27a2a30519c58ba3b5d5ad59c8017152de70e4ba766a"
+content-hash = "77dfc754d76480bc2dc80f16267109e526e7cc80f1a80bee0fdd5e80df070ba3"
 python-versions = "^3.7"
 
 [metadata.hashes]
