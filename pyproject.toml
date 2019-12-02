@@ -16,7 +16,6 @@ gunicorn = "^19.9.0"
 django-dotenv = "^1.4.2"
 psycopg2-binary = "^2.8.3"
 boto3 = "^1.9.228"
-zappa = { git = "https://github.com/ebridges/Zappa.git", rev = "ee9498e" }
 django-sslserver = "^0.21.0"
 django-storages = "^1.7.2"
 djangorestframework = "^3.10.3"
