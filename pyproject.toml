@@ -42,6 +42,7 @@ cryptography = "^2.7"
 jmespath-terminal = "^0.2.1"
 autopep8 = "^1.4.4"
 logging_tree = "^1.8"
+lgw = "^1.0"
 
 [build-system]
 ## poetry version should agree with version in Dockerfile-App
