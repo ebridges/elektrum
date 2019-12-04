@@ -4,16 +4,17 @@ from sys import argv, stderr, exit
 from toml import load
 from pprint import pprint
 
+EXCLUDED = ['ansible', 'boto3', 'botocore', 's3transfer', 'jmsepath', 'docutils']
+
 
 def parse_project_file(file):
   doc = load(file)
   # pprint(doc)
   deps = {}
   for dep in doc['package']:
-    if dep['name'] == 'ansible':
-      continue
-    if dep['category'] == 'main':
-      deps[dep['name']] = dep['version']
+    name = dep['name']
+    if dep['category'] == 'main' and name not in EXCLUDED:
+      deps[name] = dep['version']
   return deps
 
 
