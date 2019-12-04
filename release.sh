@@ -9,6 +9,14 @@ function main() {
 
     log "Deploying lambda archive from location: ${lambda_archive}"
     lgw lambda-deploy ${VERBOSE} --config-file=${CONFIG} --lambda-file=${lambda_archive}
+
+    log "Creating an API gateway for this function, if it doesn't already exist."
+    lgw gw-deploy ${VERBOSE} --config-file=${CONFIG}
+
+    log "Linking domain name with this gateway."
+    api_url=$(lgw domain-add ${VERBOSE} --config-file=${CONFIG})
+
+    log "Application deployed at URL: ${api_url}"
 }
 
 function log() {
