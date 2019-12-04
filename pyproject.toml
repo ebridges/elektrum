@@ -20,6 +20,7 @@ django-sslserver = "^0.21.0"
 django-storages = "^1.7.2"
 djangorestframework = "^3.10.3"
 toml = "^0.10.0"
+apig_wsgi = "^2.4"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.3.1"

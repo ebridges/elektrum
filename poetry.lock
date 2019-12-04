@@ -28,6 +28,14 @@ version = "1.2.0"
 ansible = "*"
 
 [[package]]
+category = "main"
+description = "Wrap a WSGI application in an AWS Lambda handler function for running on API Gateway or an ALB."
+name = "apig-wsgi"
+optional = false
+python-versions = ">=3.5"
+version = "2.4.0"
+
+[[package]]
 category = "dev"
 description = "Assertion library for python unit testing with a fluent API"
 name = "assertpy"
@@ -1106,12 +1114,13 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "643c96bdbcd4138aa77c8ee90e434da8924589f24bcd55fcd348849d2f308f3e"
+content-hash = "6a1b7bd7c62e31d3ce8dc41add53407b841a59cde5c783c9dc686631df80b9e5"
 python-versions = "^3.7"
 
 [metadata.hashes]
 ansible = []
 ansible-vault = ["984c5fe1a875d55669c9c167fd4265cf5c6446de4a6a478e0a057a4d43e6608c"]
+apig-wsgi = ["507fd0d8f14d536be9e534c2e7a98c2a8c6ab71af2e07118e2a24ac386060d48", "f095fda23d8eca38503eca080b75128e2957970d89042c95728a5f35335032f2"]
 assertpy = ["1b7e591f490616e3f2707b6e511b91b188a8c6facb3a4ff0db2339b0a41d73c4"]
 astroid = ["71ea07f44df9568a75d0f354c49143a4575d90645e9fead6dfb52c26a85ed13a", "840947ebfa8b58f318d42301cf8c0a20fd794a33b61cc4638e28e9e61ba32f42"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
