@@ -24,12 +24,12 @@ else
 fi
 
 VERSION=$(cat version.txt | tr -d '\n')
-docker_tag="roja/${service_name}:${VERSION}"
+docker_tag="roja/${SERVICE_NAME}:${VERSION}"
 
 AWS_ACCESS_KEY_ID=`yq read network/group_vars/${ENV}.yml 'aws_access_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
 AWS_SECRET_ACCESS_KEY=`yq read network/group_vars/${ENV}.yml 'aws_secret_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
 
-IFS=', ' read -r -a subnets <<< ${vpc_private_subnet_ids}
+IFS=', ' read -r -a subnets <<< ${VPC_PRIVATE_SUBNET_IDS}
 subnet_list=''
 for element in "${subnets[@]}"
 do
@@ -41,7 +41,7 @@ do
     fi
 done
 
-IFS=', ' read -r -a sec_groups <<< ${vpc_nat_security_group_ids}
+IFS=', ' read -r -a sec_groups <<< ${VPC_NAT_SECURITY_GROUP_IDS}
 sec_group_list=''
 for element in "${sec_groups[@]}"
 do
@@ -56,21 +56,21 @@ done
 cat << EOF > project/zappa_settings.json
 {
   "${ENV}": {
-    "aws_region": "${aws_region}",
-    "project_name": "${service_name}",
-    "django_settings": "${service_name}.settings",
+    "aws_region": "${AWS_REGION}",
+    "project_name": "${SERVICE_NAME}",
+    "django_settings": "${SERVICE_NAME}.settings",
     "runtime": "python3.7",
-    "s3_bucket": "${media_processor_artifact_bucket_name}",
+    "s3_bucket": "${MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME}",
     "slim_handler": true,
     "manage_roles": true,
-    "certificate_arn": "${https_certificate_arn}",
-    "domain": "${application_domain_name}",
+    "certificate_arn": "${HTTPS_CERTIFICATE_ARN}",
+    "domain": "${APPLICATION_DOMAIN_NAME}",
     "route53_enabled": true,
     "exclude": ["static/"],
     "touch_path": "/status/ok/",
     "cors": true,
     "cloudwatch_log_level": "INFO",
-    "cloudwatch_log_role_arn": "${cloudwatch_log_role_arn}",
+    "cloudwatch_log_role_arn": "${CLOUDWATCH_LOG_ROLE_ARN}",
     "keep_warm": false,
     "vpc_config": {
       "SubnetIds": [
@@ -189,7 +189,7 @@ then
   python project/manage.py collectstatic \
     --noinput \
     --pythonpath=project \
-    --settings=${service_name}.settings
+    --settings=${SERVICE_NAME}.settings
 else
   echo "ERROR: command [${CMD}] not recognized."
 fi

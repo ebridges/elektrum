@@ -27,7 +27,7 @@ fi
 
 source "./etc/env/${OPERATING_ENV}.env" || (echo "Error: config for ${OPERATING_ENV} not found" && exit 1)
 
-ENV_NAME="${service_name}-${OPERATING_ENV}"
+ENV_NAME="${SERVICE_NAME}-${OPERATING_ENV}"
 
 if [ 'deploy-release' == "${CMD}" ];
 then
@@ -103,7 +103,7 @@ then
 
         ./elektrum-deploy build ${OPERATING_ENV}
 
-        `aws --output text lambda list-functions | grep ${service_name}-${OPERATING_ENV} > /dev/null 2>&1`
+        `aws --output text lambda list-functions | grep ${SERVICE_NAME}-${OPERATING_ENV} > /dev/null 2>&1`
 
         if [ $? == 0 ];
         then

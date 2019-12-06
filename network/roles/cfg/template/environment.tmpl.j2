@@ -3,38 +3,38 @@
 # run `cd network && ./run.sh --tags=common,cfg` to update
 
 ### Application name (used for info purposes)
-service_name='{{ service_name }}'
+SERVICE_NAME='{{ service_name }}'
 
 ### Django config
-django_debug_enabled='{{django_debug_enabled}}'
-django_secret_key='{{django_secret_key}}'
-django_email_backend='{{django_email_backend}}'
-django_allowed_hosts='{{django_allowed_hosts}}'
+DJANGO_DEBUG_ENABLED='{{django_debug_enabled}}'
+DJANGO_SECRET_KEY='{{django_secret_key}}'
+DJANGO_EMAIL_BACKEND='{{django_email_backend}}'
+DJANGO_ALLOWED_HOSTS='{{django_allowed_hosts}}'
 
 ### AWS Info
-aws_region='{{ aws_region }}'
-https_certificate_arn='{{ https_certificate_arn }}'
+AWS_REGION='{{ aws_region }}'
+HTTPS_CERTIFICATE_ARN='{{ https_certificate_arn }}'
 
 ### Database Connect Info
-db_hostname='{{ db_endpoint_url }}'
-db_port_num='{{ db_port_number }}'
-db_name='{{ rds_database_name }}'
-db_username='{{ rds_master_username }}'
-db_password='{{ rds_master_password }}'
+DB_HOSTNAME='{{ db_endpoint_url }}'
+DB_PORT_NUM='{{ db_port_number }}'
+DB_NAME='{{ rds_database_name }}'
+DB_USERNAME='{{ rds_master_username }}'
+DB_PASSWORD='{{ rds_master_password }}'
 
 ## Network configuration
-vpc_private_subnet_ids='{{ private_subnet_ids|join(',') }}'
-vpc_nat_security_group_ids='{{ nat_security_group_id }}'
+VPC_PRIVATE_SUBNET_IDS='{{ private_subnet_ids|join(',') }}'
+VPC_NAT_SECURITY_GROUP_IDS='{{ nat_security_group_id }}'
 
 ## S3 Buckets
-media_upload_bucket_name='{{ media_upload_bucket_name }}'
-media_processor_artifact_bucket_name='{{ media_processor_artifact_bucket_name }}'
-static_files_bucket_name='{{ static_files_bucket_name }}'
+MEDIA_UPLOAD_BUCKET_NAME='{{ media_upload_bucket_name }}'
+MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME='{{ media_processor_artifact_bucket_name }}'
+STATIC_FILES_BUCKET_NAME='{{ static_files_bucket_name }}'
 
 ## Application domain names
-application_domain_name='{{ application_domain_name }}'
-media_storage_cname='{{ media_cname }}'
-static_domain_name='{{ static_cname }}'
+APPLICATION_DOMAIN_NAME='{{ application_domain_name }}'
+MEDIA_STORAGE_CNAME='{{ media_cname }}'
+STATIC_DOMAIN_NAME='{{ static_cname }}'
 
 ## API gateway configuration
-cloudwatch_log_role_arn='{{ api_gateway_logging_role_arn }}'
+CLOUDWATCH_LOG_ROLE_ARN='{{ api_gateway_logging_role_arn }}'

@@ -12,7 +12,7 @@ from media_items.models import MediaItem
 @pytest.mark.django_db
 def test_sign_upload_request_success(authenticated_client, monkeypatch):
     c, u = authenticated_client
-    monkeypatch.setenv('media_upload_bucket_name', 'abcdefgh')
+    monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', 'abcdefgh')
     mime_type = 'image/jpeg'
     request_url = '/media/request-upload/'
     response = c.post(request_url, {'mime_type': mime_type})

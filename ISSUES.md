@@ -35,7 +35,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-event-notification
 </strong>
 </dt>
         <dd>
-        This may occur if the gateway had been previously created and then deleted.  The root cause is that the A record for your domain name (`${application_domain_name}`) does not match the (hidden) Cloudfront distribution that connects the domain name to the API Gateway.
+        This may occur if the gateway had been previously created and then deleted.  The root cause is that the A record for your domain name (`${APPLICATION_DOMAIN_NAME}`) does not match the (hidden) Cloudfront distribution that connects the domain name to the API Gateway.
         <br>
         <li>
                 As a first step to deal with this, delete the <a href="https://console.aws.amazon.com/apigateway/home?region=us-east-1#/custom-domain-names">Custom Domain Name</a> via the API Gateway admin panel, and then run `undeploy` and then `deploy` to recreate it.
@@ -48,7 +48,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-event-notification
                 To further dig into this, you can check the following:
                 <br>
                 <blockquote>
-                        • In Route 53 go to the hosted zone for ${application_domain_name}.  Look for an A record for the bare domain name (i.e. neither static nor <tt>media</tt>).  The Alias Target for that A record should point to a Cloudfront distribution (e.g.: <tt>d2m2kec3ulw33f.cloudfront.net.</tt>).
+                        • In Route 53 go to the hosted zone for ${APPLICATION_DOMAIN_NAME}.  Look for an A record for the bare domain name (i.e. neither static nor <tt>media</tt>).  The Alias Target for that A record should point to a Cloudfront distribution (e.g.: <tt>d2m2kec3ulw33f.cloudfront.net.</tt>).
                         <br>
                         • In Cloudfront, review the existing distributions: there should be two -- one for <tt>media</tt> and one for <tt>static</tt>.  The ID of both of them should <i>not match</i> the ID of the A record's Alias Target.
                         <br>
