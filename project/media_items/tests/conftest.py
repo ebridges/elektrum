@@ -36,7 +36,7 @@ def image_info():
 
 @pytest.fixture(name='env')
 def get_db_connect_info(live_server, monkeypatch):
-    db_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
+    database_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
 
     # bucket name is used to disable some tests in the Java processing code
     bucket_name = 'processing-integration-test'
@@ -46,7 +46,7 @@ def get_db_connect_info(live_server, monkeypatch):
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
 
     # used by image processor
-    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:sqlite:%s' % db_name)
+    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:sqlite:%s' % database_name)
     monkeypatch.setenv('IMAGE_ROOT', remote_path.name)
 
     return {
