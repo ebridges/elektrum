@@ -2,6 +2,9 @@
 # Defaults are configured via network/group_vars
 # run `cd network && ./run.sh --tags=common,cfg` to update
 
+### Expose current environment as a variable.
+ENVIRONMENT='{{ operating_env }}'
+
 ### Application name (used for info purposes)
 SERVICE_NAME='{{ service_name }}'
 
@@ -38,3 +41,20 @@ STATIC_DOMAIN_NAME='{{ static_cname }}'
 
 ## API gateway configuration
 CLOUDWATCH_LOG_ROLE_ARN='{{ api_gateway_logging_role_arn }}'
+
+## deployment options: these names are specified/required by the `lgw` command
+AWS_LAMBDA_NAME='${SERVICE_NAME}-${ENVIRONMENT}'
+AWS_LAMBDA_DESCRIPTION='${SERVICE_NAME} entry point'
+AWS_LAMBDA_HANDLER='${SERVICE_NAME}.lambda.handler'
+AWS_LAMBDA_ARCHIVE_BUCKET='${MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME}'
+AWS_LAMBDA_VPC_SUBNETS='${VPC_PRIVATE_SUBNET_IDS}'
+AWS_LAMBDA_VPC_SECURITY_GROUPS='${VPC_NAT_SECURITY_GROUP_IDS}'
+AWS_LAMBDA_TAGS='Name=${AWS_LAMBDA_NAME};Service=${SERVICE_NAME};Environment=${ENVIRONMENT}'
+AWS_LAMBDA_ARCHIVE_ADDL_FILES='etc/env/${ENVIRONMENT}.env,$wkdir/.env;version.txt,$wkdir;requirements.txt,$wkdir;project/,$wkdir'
+AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES='postgresql,postgresql-devel'
+AWS_LAMBDA_EXECUTION_ROLE_ARN='{{ lambda_execution_role }}'
+AWS_API_LAMBDA_INTEGRATION_ROLE='{{ lambda_integration_role }}'
+AWS_API_NAME='${SERVICE_NAME}-${ENVIRONMENT}-api'
+AWS_API_DEPLOY_STAGE='${ENVIRONMENT}'
+AWS_API_DOMAIN_NAME='${APPLICATION_DOMAIN_NAME}'
+AWS_ACM_CERTIFICATE_ARN='${HTTPS_CERTIFICATE_ARN}'
