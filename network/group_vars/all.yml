@@ -38,6 +38,7 @@ nat_instance_ami: ami-058436d7e072250b3
 nat_instance_type: t2.micro
 
 ## Lambda deployment & config
+lambda_execution_rolename: "{{service_name}}-{{operating_env}}-LambdaExecutionRole" 
 photo_processor_rolename: "{{service_name}}-{{operating_env}}-PhotoProcessorRole"
 photo_processor_connection_timeout: 30
 photo_processor_memory_size: 256
