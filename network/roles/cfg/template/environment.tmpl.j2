@@ -1,6 +1,6 @@
 # Below variables are auto-generated from network/cfg
 # Defaults are configured via network/group_vars
-# run `cd network && ./run.sh --tags=common,cfg` to update
+# run `cd network && ./run.sh [development|staging|production]` to update
 
 ### Expose current environment as a variable.
 ENVIRONMENT='{{ operating_env }}'
@@ -52,8 +52,8 @@ AWS_LAMBDA_VPC_SECURITY_GROUPS='${VPC_NAT_SECURITY_GROUP_IDS}'
 AWS_LAMBDA_TAGS='Name=${AWS_LAMBDA_NAME};Service=${SERVICE_NAME};Environment=${ENVIRONMENT}'
 AWS_LAMBDA_ARCHIVE_ADDL_FILES='etc/env/${ENVIRONMENT}.env,$wkdir/.env;version.txt,$wkdir;requirements.txt,$wkdir;project/,$wkdir'
 AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES='postgresql,postgresql-devel'
-AWS_LAMBDA_EXECUTION_ROLE_ARN='{{ lambda_execution_role }}'
-AWS_API_LAMBDA_INTEGRATION_ROLE='{{ lambda_integration_role }}'
+AWS_LAMBDA_EXECUTION_ROLE_ARN='{{ lambda_execution_role_arn }}'
+AWS_API_LAMBDA_INTEGRATION_ROLE='{{ api_gateway_logging_role_arn }}'
 AWS_API_NAME='${SERVICE_NAME}-${ENVIRONMENT}-api'
 AWS_API_DEPLOY_STAGE='${ENVIRONMENT}'
 AWS_API_DOMAIN_NAME='${APPLICATION_DOMAIN_NAME}'
