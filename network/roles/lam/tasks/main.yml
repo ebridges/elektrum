@@ -9,7 +9,7 @@
 - name: Build image processor and create archive.
   make:
     chdir: '{{ project_dir }}/processor'
-    target: processor.zip
+    target: all
 
 - set_fact:
     processor_archive="{{ lookup('fileglob', '{{ project_dir }}/processor/build/archives/{{ service_name }}-processor*.zip') }}"
