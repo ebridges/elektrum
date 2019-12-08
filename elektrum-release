@@ -101,28 +101,11 @@ then
         # build & deploy processor
         pushd processor && make all && popd
 
-        ./elektrum-deploy build ${OPERATING_ENV}
-
-        `aws --output text lambda list-functions | grep ${SERVICE_NAME}-${OPERATING_ENV} > /dev/null 2>&1`
-
-        if [ $? == 0 ];
-        then
-            ./elektrum-deploy update ${OPERATING_ENV}
-        else
-            ./elektrum-deploy deploy ${OPERATING_ENV}
-        fi
-
-        ./elektrum-deploy migrate ${OPERATING_ENV}
-
-        ./elektrum-deploy collectstatic ${OPERATING_ENV}
-
-        rm project/zappa_settings.json
+        ./elektrum-deploy ${OPERATING_ENV}
 
         git checkout master
         exit $?
     else
-        # Anything else pressed, do whatever else.
-        # echo [$key] not empty
         echo 'Deploy cancelled.'
         exit 0
     fi

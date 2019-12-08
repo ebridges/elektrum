@@ -14,7 +14,7 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 
 * Python 3.7
 * Django 2.2
-* Zappa 0.48.2
+* lgw 1.0.*
 * PostgreSQL 11
 * Ansible 2.8.2
 
