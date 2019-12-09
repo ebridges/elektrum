@@ -6,6 +6,9 @@ import pytest
 
 from tempfile import TemporaryDirectory
 
+from assertpy import assert_that
+from os import getenv
+
 
 @pytest.fixture(name='img')
 def image_info():
@@ -46,8 +49,15 @@ def get_db_connect_info(live_server, monkeypatch):
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
 
     # used by image processor
-    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:sqlite:%s' % database_name)
+    os.unsetenv('DB_USERNAME') # force processor into 'test' db mode
+
+    db_url = 'jdbc:sqlite:%s' % database_name
+    monkeypatch.setenv('DB_JDBC_URL', db_url)
     monkeypatch.setenv('IMAGE_ROOT', remote_path.name)
+
+    assert_that(getenv('DB_USERNAME')).is_none()
+    assert_that(getenv('DB_JDBC_URL')).is_equal_to(db_url)
+    assert_that(getenv('IMAGE_ROOT')).is_equal_to(remote_path.name)
 
     return {
         'bucket_name': bucket_name,
