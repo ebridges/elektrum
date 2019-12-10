@@ -124,8 +124,7 @@ def exec_cmd(cwd, cmd):
     subprocess.run(
         args=cmd,
         cwd=cwd,
-        # stdout=subprocess.DEVNULL,
-        # stderr=subprocess.DEVNULL
+        stderr=subprocess.STDOUT
     )
 
 

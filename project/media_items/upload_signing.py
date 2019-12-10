@@ -76,7 +76,7 @@ def lookup_user_upload_credentials(user):
     # @todo: update this to retrieve these values from the user's profile.
     aws_access_key = os.environ['AWS_ACCESS_KEY_ID']
     aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
-    aws_upload_bucket_name = os.environ['media_upload_bucket_name']
+    aws_upload_bucket_name = os.environ['MEDIA_UPLOAD_BUCKET_NAME']
     return aws_access_key, aws_secret_access_key, aws_upload_bucket_name
 
 

@@ -36,5 +36,5 @@ temp-requirements.txt
 .gradle/
 
 # deployment
-project/zappa_settings.json
 project/test-db.sqlite3
+requirements.txt

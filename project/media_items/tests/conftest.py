@@ -1,10 +1,11 @@
 from users.tests.factories import *
-from media_items.tests.factories import *
-from date_dimension.tests.factories import *
 
 import pytest
 
 from tempfile import TemporaryDirectory
+
+from assertpy import assert_that
+from os import getenv
 
 
 @pytest.fixture(name='img')
@@ -36,18 +37,29 @@ def image_info():
 
 @pytest.fixture(name='env')
 def get_db_connect_info(live_server, monkeypatch):
-    db_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
+    # noinspection PyProtectedMember
+    database_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
 
     # bucket name is used to disable some tests in the Java processing code
     bucket_name = 'processing-integration-test'
     remote_path = TemporaryDirectory(suffix='.%s' % bucket_name)
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
 
     # used by upload url request & image processor
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
 
     # used by image processor
-    monkeypatch.setenv('DB_JDBC_URL', 'jdbc:sqlite:%s' % db_name)
+    if getenv('DB_USERNAME'):
+        del os.environ['DB_USERNAME']  # force processor into 'test' db mode
+
+    db_url = 'jdbc:sqlite:%s' % database_name
+    monkeypatch.setenv('DB_JDBC_URL', db_url)
     monkeypatch.setenv('IMAGE_ROOT', remote_path.name)
+
+    assert_that(getenv('DB_USERNAME')).is_none()
+    assert_that(getenv('DB_JDBC_URL')).is_equal_to(db_url)
+    assert_that(getenv('IMAGE_ROOT')).is_equal_to(remote_path.name)
 
     return {
         'bucket_name': bucket_name,

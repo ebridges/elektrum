@@ -1,195 +1,65 @@
-#!/bin/sh
+#!/bin/bash
 
-CMD=$1
-ENV=$2
+function main() {
+    log "Generating pip-style requirements.txt."
+    etc/bin/poetry2pip.py poetry.lock > requirements.txt
 
-if [ -z "${CMD}" ];
-then
-  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [development|staging|production]"
-  exit 1
-fi
+    log "Bundling lambda code into a zip archive."
+    lambda_archive=$(lgw lambda-archive ${VERBOSE} --config-file=${CONFIG})
+
+    log "Deploying lambda archive from location: ${lambda_archive}"
+    lgw lambda-deploy ${VERBOSE} --config-file=${CONFIG} --lambda-file=${lambda_archive}
+
+    log "Creating an API gateway for this function, if it doesn't already exist."
+    lgw gw-deploy ${VERBOSE} --config-file=${CONFIG}
+
+    log "Linking domain name with this gateway."
+    api_url=$(lgw domain-add ${VERBOSE} --config-file=${CONFIG})
+
+    log "Application deployed at URL: ${api_url}"
+}
+
+function log() {
+    msg=$1
+    now=$(date +"%Y/%m/%d %H:%M:%S")
+    echo "[${now}][BASH] ${msg}"
+}
+
+ENV=
+VERBOSE=
+
+while true; do
+    case "$1" in
+    -v|--verbose)
+        VERBOSE=--verbose
+        shift;
+        ;;
+    development|staging|production)
+        ENV=$1
+        shift
+        ;;
+    *)
+        break
+        ;;
+    esac
+done
 
 if [ -z "${ENV}" ];
 then
-  echo "USAGE: $0 [deploy|update|undeploy|shell|build] [development|staging|production]"
+  echo "Usage: $0 [development|staging|production]"
   exit 1
 fi
 
-if [ -e etc/env/${ENV}.env ];
-then
-   source etc/env/${ENV}.env
-else
-    echo "ERROR: env file not located at 'etc/env/${ENV}.env'"
-    exit 1
-fi
-
+CONFIG="etc/env/${ENV}.env"
 VERSION=$(cat version.txt | tr -d '\n')
-docker_tag="roja/${service_name}:${VERSION}"
+CWD=$(pwd)
 
-AWS_ACCESS_KEY_ID=`yq read network/group_vars/${ENV}.yml 'aws_access_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
-AWS_SECRET_ACCESS_KEY=`yq read network/group_vars/${ENV}.yml 'aws_secret_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+export AWS_ACCESS_KEY_ID=`yq read network/group_vars/${ENV}.yml 'aws_access_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+export AWS_SECRET_ACCESS_KEY=`yq read network/group_vars/${ENV}.yml 'aws_secret_key' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+export AWS_LAMBDA_ARCHIVE_KEY="elektrum-${VERSION}.zip"
 
-IFS=', ' read -r -a subnets <<< ${vpc_private_subnet_ids}
-subnet_list=''
-for element in "${subnets[@]}"
-do
-    if [ -z "${subnet_list}" ];
-    then
-        subnet_list="\"${element}\""
-    else
-        subnet_list="${subnet_list}, \"${element}\""
-    fi
-done
-
-IFS=', ' read -r -a sec_groups <<< ${vpc_nat_security_group_ids}
-sec_group_list=''
-for element in "${sec_groups[@]}"
-do
-    if [ -z "${sec_group_list}" ];
-    then
-        sec_group_list="\"${element}\""
-    else
-        sec_group_list="${sec_group_list}, \"${element}\""
-    fi
-done
-
-
-cat << EOF > project/zappa_settings.json
-{
-  "${ENV}": {
-    "aws_region": "${aws_region}",
-    "project_name": "${service_name}",
-    "django_settings": "${service_name}.settings",
-    "runtime": "python3.7",
-    "s3_bucket": "${media_processor_artifact_bucket_name}",
-    "slim_handler": true,
-    "manage_roles": true,
-    "certificate_arn": "${https_certificate_arn}",
-    "domain": "${application_domain_name}",
-    "route53_enabled": true,
-    "exclude": ["static/"],
-    "touch_path": "/status/ok/",
-    "cors": true,
-    "cloudwatch_log_level": "INFO",
-    "keep_warm": false,
-    "vpc_config": {
-      "SubnetIds": [
-          ${subnet_list}
-      ],
-      "SecurityGroupIds": [
-        ${sec_group_list}
-      ]
-    }
-  }
-}
-EOF
-
-
-if [ "${CMD}" == 'shell' ];
-then
-  docker run \
-    --tty \
-    --interactive \
-    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    --publish 8000:8000 \
-    ${docker_tag}
-elif [ "${CMD}" == 'build' ];
-then
-  echo "Running zappa ${CMD}"
-
-  docker build \
-    --build-arg="OPERATING_ENV=${ENV}"  \
-    --tag ${docker_tag} .
-elif [ "${CMD}" == 'deploy' ];
-then
-  echo "Running zappa deploy"
-
-  docker run \
-    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    ${docker_tag} \
-    bash --login -c "cd project && zappa deploy ${ENV}"
-
-  echo "waiting on deploy to settle..."
-  sleep 10
-
-  echo "Running zappa certify"
-  docker run \
-    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    ${docker_tag} \
-    bash --login -c "cd project && zappa certify --yes ${ENV}"
-
-elif [ "${CMD}" == 'update' ];
-then
-  echo "Running zappa ${CMD}"
-  docker run \
-    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    ${docker_tag} \
-    bash --login -c "cd project && zappa update ${ENV}"
-elif [ "${CMD}" == 'undeploy' ];
-then
-  if [ -f project/zappa_settings.json ];
-  then
-    echo "Running zappa ${CMD} using local settings file"
-    cd project
-    zappa undeploy --yes ${ENV}
-  else
-    echo "Running zappa ${CMD} via docker"
-    docker run \
-      --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-      --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-      ${docker_tag} \
-      bash --login -c "cd project && zappa undeploy --yes ${ENV}"
-  fi
-elif [ "${CMD}" == 'create-admin-user' ];
-then
-  django_admin_username=`yq read network/group_vars/${ENV}.yml 'django_admin_username' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
-  django_admin_password=`yq read network/group_vars/${ENV}.yml 'django_admin_password' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
-
-  echo "creating admin user [${django_admin_username}]"
-  docker run \
-    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    ${docker_tag} \
-    bash --login -c "cd project && zappa invoke --raw ${ENV} \"from users.models import CustomUser; CustomUser.objects.create_superuser('${django_admin_username}', '${django_admin_username}', '${django_admin_password}')\""
-
-elif [ "${CMD}" == 'migrate' ];
-then
-  echo "applying db migrations"
-
-  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-  aws --output=text lambda update-function-configuration \
-    --function-name "elektrum-${ENV}" \
-    --timeout=900
-
-  docker run \
-    --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-    --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-    ${docker_tag} \
-    bash --login -c "cd project && zappa manage ${ENV} migrate"
-
-  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-  aws --output=text lambda update-function-configuration \
-    --function-name "elektrum-${ENV}" \
-    --timeout=60
-
-elif [ "${CMD}" == 'collectstatic' ];
-then
-  # bundle JS assets
-  make all
-
-  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-  OPERATING_ENV=${ENV} \
-  python project/manage.py collectstatic \
-    --pythonpath=project \
-    --settings=${service_name}.settings \
-    --noinput
-else
-  echo "ERROR: command [${CMD}] not recognized."
-fi
+log "Building Elektrum release v${VERSION}."
+log "    Environment:   ${ENV}"
+log "    Configuration: ${CONFIG}"
+log "    Current dir:   ${CWD}"
+main "$@"

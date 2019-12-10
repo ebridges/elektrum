@@ -61,7 +61,7 @@
 
 #### B.1 AWS System Configuration
 
-1. Edit `network/group_vars/${env}.yml` to provide values for `https_domain_name` and `application_domain_name`.
+1. Edit `network/group_vars/${env}.yml` to provide values for `https_domain_name` and `APPLICATION_DOMAIN_NAME`.
     * These values will typically be the same.  The only time they wouldn't be is if the application domain name is a subdomain (e.g. `staging.example.com`), as the HTTPS certificate will still be connected to `example.com`.
 1. Generate encrypted versions of all secrets listed in the file.  The utility `tools/encrypt-var.sh` can assist with that.  Be sure to record the unencrypted secrets in a secure location.
 
@@ -98,7 +98,7 @@
 
         $ ./elektrum-deploy collectstatic ${env}
 
-1. Visit the site at `https://${application_domain_name}`
+1. Visit the site at `https://${APPLICATION_DOMAIN_NAME}`
 
 ### D. Configure Django
 
@@ -112,7 +112,7 @@
 
 #### D.2 Setup Google OAuth
 
-1. Visit site's admin panel at `https://${application_domain_name}/admin`
+1. Visit site's admin panel at `https://${APPLICATION_DOMAIN_NAME}/admin`
 1. Log in using the credentials for the admin user.
 1. Update the "Site" entity to use `${application_domain_name}`.
 1. Configure Google Auth credentials via Google's Developer Console.
@@ -141,20 +141,16 @@ _*Warning*: This requires the private key to be installed on the NAT._
     * `elektrum-${env}-vpc-public-sg`
 1. NAT Instance: edit `/etc/ssh/sshd_config` to ensure that the value of `GatewayPorts` is `yes`, running `sudo service sshd restart` if necessary.
 1. NAT Instance: ensure the `elektrum-${env}.pem` is available on the NAT instance.
-1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOST}:5432 -i [/path/to/elektrum-${env}.pem] ec2-user@127.0.0.1`
-1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U ${db_username} -W`
+1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOSTNAME}:5432 -i [/path/to/elektrum-${env}.pem] ec2-user@127.0.0.1`
+1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U ${DB_USERNAME} -W`
 
-### Running server locally on VM
+<!-- ### Running server locally on VM
 
 1. Configure remote access to the database (see "Accessing Remote DB" above).
 1. Local: Open a shell in the VM `./elektrum-deploy shell`
-1. Local: update `~/project/.env` to use hostname of NAT instance as value of `db_hostname`
+1. Local: update `~/project/.env` to use hostname of NAT instance as value of `DB_HOSTNAME`
 1. Local: run `python manage.py runsslserver 0.0.0.0:8000` from `~/project`.
-1. Local: `curl https://127.0.0.1:8000/`.
-
-## Further Info
-
-* https://romandc.com/zappa-django-guide
+1. Local: `curl https://127.0.0.1:8000/`. -->
 
 ## Common Errors
 

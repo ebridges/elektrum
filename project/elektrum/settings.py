@@ -13,24 +13,24 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import sys
 from elektrum.env_util import locate_env_file, resolve_version
-import dotenv
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env_file = locate_env_file(BASE_DIR)
-dotenv.read_dotenv(env_file)
+load_dotenv(env_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('django_secret_key')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get('django_debug_enabled') else False
+DEBUG = True if os.environ.get('DJANGO_DEBUG_ENABLED') else False
 
-allowed_hosts = os.getenv('django_allowed_hosts')
+allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS')
 ALLOWED_HOSTS = allowed_hosts.split(',')
 
 # read version number for display in the app
@@ -110,11 +110,11 @@ DATABASES = {
         # See issue #45
         # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('db_name'),
-        'USER': os.getenv('db_username'),
-        'PASSWORD': os.getenv('db_password'),
-        'HOST': os.getenv('db_hostname'),
-        'PORT': os.getenv('db_port_num'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USERNAME'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOSTNAME'),
+        'PORT': os.getenv('DB_PORT_NUM'),
     }
 }
 
@@ -169,8 +169,8 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_STORAGE_BUCKET_NAME = os.getenv('static_files_bucket_name')
-AWS_S3_CUSTOM_DOMAIN = os.environ.get('static_domain_name')
+AWS_STORAGE_BUCKET_NAME = os.getenv('STATIC_FILES_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = os.environ.get('STATIC_DOMAIN_NAME')
 STATIC_URL = 'https//%s/' % AWS_S3_CUSTOM_DOMAIN
 AWS_DEFAULT_ACL = "public-read"
 
@@ -203,7 +203,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-EMAIL_BACKEND = os.getenv('django_email_backend')
+EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
 EMAIL_FILE_PATH = './sent_emails'
 
 TEST_RUNNER = 'elektrum.test_runner.PytestTestRunner'

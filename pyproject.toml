@@ -13,13 +13,14 @@ python = "^3.7"
 django = "^2.2.5"
 django-allauth = "^0.40.0"
 gunicorn = "^19.9.0"
-django-dotenv = "^1.4.2"
 psycopg2-binary = "^2.8.3"
 boto3 = "^1.9.228"
-zappa = "^0.48.2"
 django-sslserver = "^0.21.0"
 django-storages = "^1.7.2"
 djangorestframework = "^3.10.3"
+toml = "^0.10.0"
+apig_wsgi = "^2.4"
+python-dotenv = "^0.10.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.3.1"
@@ -43,6 +44,7 @@ cryptography = "^2.7"
 jmespath-terminal = "^0.2.1"
 autopep8 = "^1.4.4"
 logging_tree = "^1.8"
+lgw = "^1.0"
 
 [build-system]
 ## poetry version should agree with version in Dockerfile-App

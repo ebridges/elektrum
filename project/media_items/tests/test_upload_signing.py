@@ -11,7 +11,9 @@ from base.tests.util import match_image_key
 @pytest.mark.django_db
 def test_create_signed_upload_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    monkeypatch.setenv('media_upload_bucket_name', bucket_name)
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
+    monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', bucket_name)
     mime_type = 'image/jpeg'
     user = user_factory()
     actual_url = create_signed_upload_url(user, mime_type)
@@ -33,7 +35,9 @@ def test_create_signed_upload_url(user_factory, monkeypatch):
 @pytest.mark.django_db
 def test_create_signed_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    monkeypatch.setenv('media_upload_bucket_name', bucket_name)
+    monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', bucket_name)
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
     user = user_factory()
     expected_credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
@@ -62,7 +66,7 @@ def test_create_upload_key(user_factory):
 def test_lookup_user_upload_credentials(user_factory, monkeypatch):
     monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'abcdefg')
     monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', 'hijklmn')
-    monkeypatch.setenv('media_upload_bucket_name', 'opqrstu')
+    monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', 'opqrstu')
 
     user = user_factory()
     credentials = lookup_user_upload_credentials(user)
