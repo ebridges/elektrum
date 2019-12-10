@@ -37,6 +37,7 @@ def image_info():
 
 @pytest.fixture(name='env')
 def get_db_connect_info(live_server, monkeypatch):
+    # noinspection PyProtectedMember
     database_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
 
     # bucket name is used to disable some tests in the Java processing code
@@ -48,7 +49,7 @@ def get_db_connect_info(live_server, monkeypatch):
 
     # used by image processor
     if getenv('DB_USERNAME'):
-        del os.environ['DB_USERNAME'] # force processor into 'test' db mode
+        del os.environ['DB_USERNAME']  # force processor into 'test' db mode
 
     db_url = 'jdbc:sqlite:%s' % database_name
     monkeypatch.setenv('DB_JDBC_URL', db_url)
