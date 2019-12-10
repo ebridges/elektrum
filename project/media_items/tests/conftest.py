@@ -49,7 +49,8 @@ def get_db_connect_info(live_server, monkeypatch):
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
 
     # used by image processor
-    os.unsetenv('DB_USERNAME') # force processor into 'test' db mode
+    if getenv('DB_USERNAME'):
+        del os.environ['DB_USERNAME'] # force processor into 'test' db mode
 
     db_url = 'jdbc:sqlite:%s' % database_name
     monkeypatch.setenv('DB_JDBC_URL', db_url)
