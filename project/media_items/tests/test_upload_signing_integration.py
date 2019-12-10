@@ -13,6 +13,8 @@ from media_items.models import MediaItem
 def test_sign_upload_request_success(authenticated_client, monkeypatch):
     c, u = authenticated_client
     monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', 'abcdefgh')
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
     mime_type = 'image/jpeg'
     request_url = '/media/request-upload/'
     response = c.post(request_url, {'mime_type': mime_type})

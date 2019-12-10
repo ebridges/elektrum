@@ -43,6 +43,8 @@ def get_db_connect_info(live_server, monkeypatch):
     # bucket name is used to disable some tests in the Java processing code
     bucket_name = 'processing-integration-test'
     remote_path = TemporaryDirectory(suffix='.%s' % bucket_name)
+    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
+    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
 
     # used by upload url request & image processor
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)
