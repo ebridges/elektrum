@@ -1,7 +1,7 @@
 Elektrum Change Log
 ================
 
-0.34 (unreleased)
+0.34 (2019-12-10)
 -----------------
 
 - [#63] Replace Zappa with LGW for deployment.
