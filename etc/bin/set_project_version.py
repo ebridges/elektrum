@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 def main(argv):
   parser = ArgumentParser(prog=argv[0])
   parser.add_argument('-v', '--version', required=True, help='New version for the project.')
-  parser.add_argument('-f', '--file', required=True, default='pyproject.toml', help='Project file.')
+  parser.add_argument('-f', '--file', default='pyproject.toml', help='Project file.')
   args = parser.parse_args()
 
   doc = load(args.file)
