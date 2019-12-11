@@ -1,8 +1,12 @@
+[build-system]
+requires = [ "poetry==0.12.17",]
+build-backend = "poetry.masonry.api"
+
 [tool.poetry]
 name = "elektrum"
 version = "0.24.dev0"
 description = "Media archiving & management system."
-authors = ["Edward Q. Bridges <ebridges@roja.cc>"]
+authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
 readme = "README.md"
 homepage = "https://elektrum.photos"
 repository = "https://bitbucket.org/roja-cc/elektrum"
@@ -24,7 +28,6 @@ python-dotenv = "^0.10.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.3.1"
-ansible = { git = "https://github.com/ansible/ansible.git", rev = "d77697e" }
 ansible-vault = "^1.2.0"
 botocore = "^1.12.228"
 boto = "^2.49.0"
@@ -46,7 +49,6 @@ autopep8 = "^1.4.4"
 logging_tree = "^1.8"
 lgw = "^1.0"
 
-[build-system]
-## poetry version should agree with version in Dockerfile-App
-requires = ["poetry==0.12.17"]
-build-backend = "poetry.masonry.api"
+[tool.poetry.dev-dependencies.ansible]
+git = "https://github.com/ansible/ansible.git"
+rev = "d77697e"
