@@ -4,7 +4,7 @@ Elektrum Change Log
 0.35 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Introduce automated increment of project version number from version.txt.
 
 
 0.34 (2019-12-10)
