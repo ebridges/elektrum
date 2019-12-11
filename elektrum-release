@@ -71,7 +71,7 @@ then
     if [ "$key" = '' ]; then
         version=$(cat ./version.txt | sed 's/\.dev0//')
         etc/bin/set_project_version.py -v ${version} && git add pyproject.toml
-        fullrelease --verbose --no-input
+        fullrelease
         result=$?
         if [ "${result}" -ne "0" ];
         then

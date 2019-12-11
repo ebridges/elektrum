@@ -1,10 +1,10 @@
 Elektrum Change Log
 ================
 
-0.35 (unreleased)
+0.35 (2019-12-11)
 -----------------
 
-- Introduce automated increment of project version number from version.txt.
+- Introduce automated increment of pyproject version number from version.txt.
 
 
 0.34 (2019-12-10)
