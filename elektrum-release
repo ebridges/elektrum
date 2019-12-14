@@ -61,7 +61,7 @@ function setup_new_version() {
 
         log "Commit updates to version"
         git add pyproject.toml version.txt
-        git commit --quiet --gpg-sign --message f'Setup next development version: {version}'
+        git commit --quiet --gpg-sign --message "Setup next development version: ${version}"
 
         log "Setup of new version ${version} sucessful."
     fi
