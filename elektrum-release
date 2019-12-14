@@ -113,10 +113,10 @@ function tag_release() {
         VER=${version} perl -MPOSIX -pi.bak -le '$d=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($d\)/i' CHANGES.md
         rm CHANGES.md.bak
 
-        log "Commit updates to version & changelog"
-        git add pyproject.toml version.txt CHANGES.md
+        log "Commit/tag updates to version & changelog"
+        git add pyproject.toml version.txt CHANGES.md > /dev/null 2>&1
         git commit --quiet --gpg-sign --message "Set release version to ${version}"
-        git tag --sign "${version}" > /dev/null 2>&1
+        git tag --force --message "v${version}" --sign "${version}" > /dev/null 2>&1
 
         result=$?
         if [ "${result}" -ne "0" ];
