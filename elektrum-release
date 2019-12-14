@@ -111,6 +111,7 @@ function tag_release() {
 
         log "Update change log version and add a new, empty unreleased section"
         VER=${version} perl -MPOSIX -pi.bak -le '$a=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($a\)/i' CHANGES.md
+        rm CHANGES.md.bak
 
         log "Commit updates to version & changelog"
         git add pyproject.toml version.txt CHANGES.md
