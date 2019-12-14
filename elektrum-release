@@ -9,11 +9,6 @@ function usage() {
 }
 
 function main() {
-    env=$1
-
-    log "Initializing environment for ${env}."
-    source_env ${env}
-
     log "Confirming we're on the correct branch."
     check_branch
 
@@ -23,8 +18,8 @@ function main() {
     log "Tagging current HEAD for this release."
     tag_release
 
-    log "Deploying the tagged version to ${env}."
-    deploy_version ${env}
+    log "Deploying the tagged version to ${OPERATING_ENV}."
+    deploy_version
 
     log "Setup project for new development."
     setup_new_version
@@ -36,15 +31,15 @@ function main() {
 function log() {
     msg=$1
     now=$(date +"%Y/%m/%d %H:%M:%S")
-    echo "[${now}][BASH] ${msg}"
+    echo "[${now}][RELEASE] ${msg}"
 }
 
 function push_commits() {
     read -n1 -rsp $'Press any key to push all commits for the release or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        # git push --quiet
-        # git push --quiet --tags
+        git push --quiet
+        git push --quiet --tags
         log "Commit push sucessful."
     else
         log "Release cancelled when pushing commits."
@@ -77,7 +72,6 @@ function deploy_version() {
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        env=$1
         version=$(read_version.py)
 
         log "Switching to tagged version ${version}"
@@ -87,12 +81,12 @@ function deploy_version() {
         pushd processor && make all && popd
 
         log "Deploying application"
-        ./elektrum-deploy ${env}
+        ./elektrum-deploy ${OPERATING_ENV}
 
         log "Finished deploying application, switching back to master."
         git checkout --quiet master
 
-        log "Version ${version} deploy successful."
+        log "Version ${version} deployed successfully to ${OPERATING_ENV}."
     else
         log "Release cancelled when deploying version."
         exit 1
@@ -134,8 +128,8 @@ function tag_release() {
 
 function run_unit_tests() {
     pushd project > /dev/null 2>&1
-#    python manage.py test
-#    result=$?
+    python manage.py test
+    result=$?
     result=0
     popd > /dev/null 2>&1
     if [ "${result}" != "0" ];
@@ -161,25 +155,6 @@ function check_branch() {
     log "Successfully checked current branch: ${current_branch}"
 }
 
-function source_env() {
-    env=$1
-    if [ ! -f "./etc/env/${env}.env" ];
-    then
-        log "Generating configuration for ${env}"
-        pushd network
-        ./run.sh ${env}
-        popd
-    else
-        log "Configuration already exists for ${env}"
-    fi
-
-    env_file="./etc/env/${env}.env"
-    source ${env_file} || (log "Error: config for ${env} not found" && exit 1)
-
-    log "Successfully sourced environment from ${env_file}"
-}
-
-
 if [ "${1}" == '--help' ];
 then
     usage $0
@@ -193,4 +168,4 @@ then
     usage $0
 fi
 
-main ${OPERATING_ENV}
+main
