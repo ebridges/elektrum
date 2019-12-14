@@ -1,10 +1,7 @@
 Elektrum Change Log
 ================
 
-0.36 (unreleased)
------------------
-
-- Nothing changed yet.
+## Unreleased
 
 
 0.35 (2019-12-11)
