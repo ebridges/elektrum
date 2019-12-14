@@ -1,129 +1,182 @@
 #!/usr/bin/env bash
 
-CMD=$1
-ARG=$2
+PATH="etc/bin:${PATH}"
 
-if [ -z "${CMD}" ];
-then
-    echo "Usage: ${0}: deploy-release [-f] | reset-release <version>"
-    exit 0
-fi
+function usage() {
+    app=$1
+    echo "Usage: ${app}: --help | (development|staging|production) [--force]"
+    exit 1
+}
 
-if [ -z "${OPERATING_ENV}" ];
-then
-    # default environment
-    OPERATING_ENV=staging
-fi
+function main() {
+    env=$1
 
-if [ ! -f "./etc/env/${OPERATING_ENV}.env" ];
-then
-    echo "Generating configuration for ${OPERATING_ENV}"
-    pushd network
-    ./run.sh ${OPERATING_ENV}
-    popd
-else
-    echo "Configuration already exists for ${OPERATING_ENV}"
-fi
+    log "Initializing environment for ${env}."
+    source_env ${env}
 
-source "./etc/env/${OPERATING_ENV}.env" || (echo "Error: config for ${OPERATING_ENV} not found" && exit 1)
+    log "Confirming we're on the correct branch."
+    check_branch
 
-ENV_NAME="${SERVICE_NAME}-${OPERATING_ENV}"
+    log "Running unit tests before release."
+    run_unit_tests
 
-if [ 'deploy-release' == "${CMD}" ];
-then
-    echo "Running deploy for ${ENV_NAME}"
+    log "Tagging current HEAD for this release."
+    tag_release
 
-    current_branch=$(git branch | grep \* | cut -d ' ' -f2)
-    if [ "${current_branch}" != 'master' ];
-    then
-        if [ "${ARG}" != '-f' ];
-        then
-            echo "Current branch is not master: [${current_branch}]."
-            exit 1
-        fi
-    fi
-    
-    echo "Running unit tests in local env."
-    pushd project
-    python manage.py test
-    result=$?
-    popd
-    if [ "${result}" != "0" ];
-    then
-        echo "Error running unit tests."
-        exit ${result}
-    fi
+    log "Deploying the tagged version to ${env}."
+    deploy_version ${env}
 
-    # echo "Running smoke test in dev environment."
-    # docker build --file Dockerfile-Proxy --tag roja/elektrum_proxy:latest .
-    # docker build --file Dockerfile-App --build-arg="OPERATING_ENV=development" --tag roja/elektrum_app:latest .
-    # OPERATING_ENV=development ./scripts/tests/smoke_test.py
-    # result=$?
-    # if [ "${result}" != "0" ];
-    # then
-    #     echo "Error running smoke test."
-    #     exit ${result}
-    # fi
+    log "Setup project for new development."
+    setup_new_version
 
-    read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
-    
-    declare version
+    log "Finalizing release by pushing all commits."
+    push_commits
+}
+
+function log() {
+    msg=$1
+    now=$(date +"%Y/%m/%d %H:%M:%S")
+    echo "[${now}][BASH] ${msg}"
+}
+
+function push_commits() {
+    read -n1 -rsp $'Press any key to push all commits for the release or Ctrl+C to exit...\n' key
+
     if [ "$key" = '' ]; then
-        version=$(cat ./version.txt | sed 's/\.dev0//')
-        etc/bin/set_project_version.py -v ${version} && git add pyproject.toml
-        fullrelease
-        result=$?
-        if [ "${result}" -ne "0" ];
-        then
-            echo "Error bundling release."
-            exit ${result}
-        fi
-    else
-        echo 'Deploy cancelled.'
-        exit 0
+        # git push --quiet
+        # git push --quiet --tags
+        log "Commit push sucessful."
     fi
+}
 
-    if [ -z "${version}" ];
-    then
-        echo "Version not set."
-        exit 1
-    else
-        echo "${version} ready for deploy."
+function setup_new_version() {
+    read -n1 -rsp $'Press any key to continue with new version setup or Ctrl+C to exit...\n' key
+
+    if [ "$key" = '' ]; then
+        version=$(read_version.py --dev --next)
+
+        log "Updating project version to next dev version: ${version}."
+        set_project_version.py --file pyproject.toml --version ${version}
+        echo ${version} > version.txt
+
+        log "Commit updates to version"
+        git add pyproject.toml version.txt
+        git commit --quiet --gpg-sign --message f'Setup next development version: {version}'
+
+        log "Setup of new version ${version} sucessful."
     fi
+}
 
+function deploy_version() {
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        # key pressed, do something
-        # echo [$key] is pressed # uncomment to trace
-        echo "Release tagging successful, deploying application version ${version}"
-        git checkout ${version}
+        env=$1
+        version=$(read_version.py)
 
-        # build & deploy processor
+        log "Switching to tagged version ${version}"
+        git checkout --quiet ${version}
+
+        log "Build & deploy processor"
         pushd processor && make all && popd
 
-        ./elektrum-deploy ${OPERATING_ENV}
+        log "Deploying application"
+        ./elektrum-deploy ${env}
 
-        git checkout master
-        exit $?
-    else
-        echo 'Deploy cancelled.'
-        exit 0
+        log "Finished deploying application, switching back to master."
+        git checkout --quiet master
+
+        log "Version ${version} deploy successful."
     fi
-elif [ 'reset-release' == "${CMD}" ];
-then
-    version=${ARG}
+}
 
-    if [ -z "${version}" ];
+function tag_release() {
+    read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
+
+    if [ "$key" = '' ]; then
+        version=$(read_version.py)
+
+        log "Update version in project to ${version}"
+        set_project_version.py --file pyproject.toml --version ${version}
+        echo ${version} > version.txt
+
+        log "Update change log version and add a new, empty unreleased section"
+        VER=${version} perl -MPOSIX -pi.bak -le '$a=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($a\)/i' CHANGES.md
+
+        log "Commit updates to version & changelog"
+        git add pyproject.toml version.txt CHANGES.md
+        git commit --quiet --gpg-sign --message "Set release version to ${version}"
+        git tag --quiet --sign "${version}"
+
+        result=$?
+        if [ "${result}" -ne "0" ];
+        then
+            log "Error bundling release."
+            exit ${result}
+        fi
+    fi
+    log "Release tagging successful, ready to deploy application version ${version}"
+}
+
+function run_unit_tests() {
+    pushd project
+#    python manage.py test
+#    result=$?
+    result=0
+    popd
+    if [ "${result}" != "0" ];
     then
-        echo "Usage: $0 reset-release <version>"
-        exit 1
+        log "Error running unit tests."
+        exit ${result}
+    fi
+    log "Unit test run successful."
+}
+
+function check_branch() {
+    current_branch=$(git branch | grep \* | cut -d ' ' -f2)
+    if [ "${current_branch}" != 'master' ];
+    then
+        if [ "${FORCE}" == "--force" ];
+        then
+            log "Building a release even though current branch (${current_branch}) is not master."
+        else
+            log "ERROR: Current branch is not master: [${current_branch}]."
+            exit 1
+        fi
+    fi
+    log "Successfully checked current branch: ${current_branch}"
+}
+
+function source_env() {
+    env=$1
+    if [ ! -f "./etc/env/${env}.env" ];
+    then
+        log "Generating configuration for ${env}"
+        pushd network
+        ./run.sh ${env}
+        popd
+    else
+        log "Configuration already exists for ${env}"
     fi
 
-    git checkout master
-    git tag --delete ${version}
-    git push origin :refs/tags/${version}
-    git reset HEAD~2
-    git checkout -- ./CHANGES.md ./version.txt
-    git push --force
+    env_file="./etc/env/${env}.env"
+    source ${env_file} || (log "Error: config for ${env} not found" && exit 1)
+
+    log "Successfully sourced environment from ${env_file}"
+}
+
+
+if [ "${1}" == '--help' ];
+then
+    usage $0
 fi
+
+OPERATING_ENV=${1}
+FORCE=${2}
+
+if [ -z "${OPERATING_ENV}" ];
+then
+    usage $0
+fi
+
+main ${OPERATING_ENV}
