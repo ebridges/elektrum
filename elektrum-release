@@ -110,7 +110,7 @@ function tag_release() {
         echo ${version} > version.txt
 
         log "Update change log version and add a new, empty unreleased section"
-        VER=${version} perl -MPOSIX -pi.bak -le '$a=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($a\)/i' CHANGES.md
+        VER=${version} perl -MPOSIX -pi.bak -le '$d=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($d\)/i' CHANGES.md
         rm CHANGES.md.bak
 
         log "Commit updates to version & changelog"
