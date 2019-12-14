@@ -116,7 +116,7 @@ function tag_release() {
         log "Commit updates to version & changelog"
         git add pyproject.toml version.txt CHANGES.md
         git commit --quiet --gpg-sign --message "Set release version to ${version}"
-        git tag --quiet --sign "${version}"
+        git tag --sign "${version}" > /dev/null 2>&1
 
         result=$?
         if [ "${result}" -ne "0" ];
@@ -133,11 +133,11 @@ function tag_release() {
 }
 
 function run_unit_tests() {
-    pushd project
+    pushd project > /dev/null 2>&1
 #    python manage.py test
 #    result=$?
     result=0
-    popd
+    popd > /dev/null 2>&1
     if [ "${result}" != "0" ];
     then
         log "Error running unit tests."
