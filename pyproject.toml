@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "elektrum"
-version = "0.36.dev0"
+version = "0.36"
 description = "Media archiving & management system."
 authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
 readme = "README.md"

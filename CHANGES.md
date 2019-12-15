@@ -3,6 +3,9 @@ Elektrum Change Log
 
 ## Unreleased
 
+
+## 0.36 (2019-12-15)
+
 - Rewrite of `elektrum-release` script.
 
 0.35 (2019-12-11)
