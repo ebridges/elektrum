@@ -16,7 +16,7 @@ from base.tests.util import match_image_key
 
 @pytest.mark.django_db
 def test_sign_upload_request_success(authenticated_client, img, env):
-    with(env['remote_path']):
+    with (env['remote_path']):
         c, u = authenticated_client
 
         image_key = request_upload(c, img)
@@ -63,10 +63,7 @@ def assert_processing(e, a):
 
 
 def to_date(s):
-    formats = [
-        '%Y-%m-%d %H:%M:%S%z',
-        '%Y-%m-%d %H:%M:%S',
-    ]
+    formats = ['%Y-%m-%d %H:%M:%S%z', '%Y-%m-%d %H:%M:%S']
     dt = None
     for f in formats:
         try:
@@ -109,23 +106,12 @@ def run_processor(path):
     jar = next(iter(glob(jar)), None)
     assert_that(jar).is_not_none()
     assert_that(jar).exists()
-    cmd = [
-        'java',
-        '-Dlog4j.configurationFile=log4j2.xml',
-        '-jar',
-        jar,
-        '-f',
-        path
-    ]
+    cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', jar, '-f', path]
     exec_cmd(cwd, cmd)
 
 
 def exec_cmd(cwd, cmd):
-    subprocess.run(
-        args=cmd,
-        cwd=cwd,
-        stderr=subprocess.STDOUT
-    )
+    subprocess.run(args=cmd, cwd=cwd, stderr=subprocess.STDOUT)
 
 
 def processor_project_dir():

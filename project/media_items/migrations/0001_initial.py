@@ -11,25 +11,51 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
             name='MediaItem',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='id')),
-                ('path', models.CharField(help_text='Required. Path to media item from the root of users archive.', max_length=4096, validators=[media_items.models.MediaItemPathValidator()], verbose_name='file path')),
-                ('media_type', models.CharField(choices=[('jpg', 'image/jpeg'), ('png', 'image/png')], default='image/jpeg', help_text='Required. Mime type of the media item. Default: image/jpeg', max_length=64, verbose_name='mime type')),
-                ('owner', models.ForeignKey(help_text='User that owns this media item', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='id',
+                    ),
+                ),
+                (
+                    'path',
+                    models.CharField(
+                        help_text='Required. Path to media item from the root of users archive.',
+                        max_length=4096,
+                        validators=[media_items.models.MediaItemPathValidator()],
+                        verbose_name='file path',
+                    ),
+                ),
+                (
+                    'media_type',
+                    models.CharField(
+                        choices=[('jpg', 'image/jpeg'), ('png', 'image/png')],
+                        default='image/jpeg',
+                        help_text='Required. Mime type of the media item. Default: image/jpeg',
+                        max_length=64,
+                        verbose_name='mime type',
+                    ),
+                ),
+                (
+                    'owner',
+                    models.ForeignKey(
+                        help_text='User that owns this media item',
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'db_table': 'media_item',
-            },
+            options={'db_table': 'media_item'},
         ),
-        migrations.AlterUniqueTogether(
-            name='mediaitem',
-            unique_together={('path', 'owner')},
-        ),
+        migrations.AlterUniqueTogether(name='mediaitem', unique_together={('path', 'owner')}),
     ]

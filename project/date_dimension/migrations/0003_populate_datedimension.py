@@ -8,18 +8,29 @@ def create_date_dimension_rows():
     end_date = date(2050, 12, 31)
     for d in date_range(start_date, end_date):
         yield migrations.RunSQL(
-                [("INSERT INTO date_dim(yyyymmdd,this_date,year,month,day,week_num,week_day,day_in_year,iso_date) "
-                  "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);",
-                  [d['yyyymmdd'],d['this_date'],d['year'],d['month'],d['day'],d['week_num'],d['week_day'],
-                   d['day_in_year'],d['iso_date']])],
-                [("DELETE FROM date_dim where yyyymmdd=%s;", [d['yyyymmdd']])],
-            )
+            [
+                (
+                    'INSERT INTO date_dim(yyyymmdd,this_date,year,month,day,week_num,week_day,day_in_year,iso_date) '
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);',
+                    [
+                        d['yyyymmdd'],
+                        d['this_date'],
+                        d['year'],
+                        d['month'],
+                        d['day'],
+                        d['week_num'],
+                        d['week_day'],
+                        d['day_in_year'],
+                        d['iso_date'],
+                    ],
+                )
+            ],
+            [('DELETE FROM date_dim where yyyymmdd=%s;', [d['yyyymmdd']])],
+        )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('date_dimension', '0002_datedimension_iso_date'),
-    ]
+    dependencies = [('date_dimension', '0002_datedimension_iso_date')]
 
     operations = create_date_dimension_rows()

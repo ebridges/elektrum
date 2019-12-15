@@ -5,27 +5,37 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('media_items', '0005_auto_20190506_1704'),
-    ]
+    dependencies = [('media_items', '0005_auto_20190506_1704')]
 
     operations = [
         migrations.AlterField(
             model_name='mediaitem',
             name='file_size',
-            field=models.BigIntegerField(default=0, help_text='Required. The size in bytes of the media item.', verbose_name='file size'),
+            field=models.BigIntegerField(
+                default=0,
+                help_text='Required. The size in bytes of the media item.',
+                verbose_name='file size',
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='mediaitem',
             name='image_height',
-            field=models.IntegerField(default=0, help_text='Required. The height of this media item.', verbose_name='image height'),
+            field=models.IntegerField(
+                default=0,
+                help_text='Required. The height of this media item.',
+                verbose_name='image height',
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='mediaitem',
             name='image_width',
-            field=models.IntegerField(default=0, help_text='Required. The width of this media item.', verbose_name='image width'),
+            field=models.IntegerField(
+                default=0,
+                help_text='Required. The width of this media item.',
+                verbose_name='image width',
+            ),
             preserve_default=False,
         ),
     ]

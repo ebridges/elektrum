@@ -28,7 +28,7 @@ dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.633'
     compile group: 'software.amazon.awssdk', name: 'aws-sdk-java', version: '2.9.1'
     compile group: 'software.amazon.awssdk', name: 's3', version: '2.9.1'
-    
+
     compile group: 'org.jdbi', name: 'jdbi3-core', version: '3.10.1'
     compile group: 'org.jdbi', name: 'jdbi3-sqlobject', version: '3.10.1'
     compile group: 'org.jdbi', name: 'jdbi3-postgres', version: '3.10.1'
@@ -76,7 +76,7 @@ task buildZip(type: Zip) {
     from processResources
     into('lib') {
         from configurations.runtime
-    }           
+    }
 }
 
 buildZip.dependsOn test

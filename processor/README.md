@@ -25,5 +25,3 @@ When the image is missing `DateTimeOriginal`
 Search: `(\d{4}/\d{4}-\d{2}-\d{2}/)(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(_\d{2}\.jpg)`
 
 Replace: `exiftool '-datetimeoriginal=$2:$3:$4 $5:$6:$7' $1$2$3$4T$5$6$7$8 && exiftool '-gpstimestamp<${datetimeoriginal}-05:00' '-gpsdatestamp<${datetimeoriginal}-05:00' $1$2$3$4T$5$6$7$8`
-
-

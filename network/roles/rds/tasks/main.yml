@@ -58,7 +58,7 @@
 - rds_instance_facts:
     db_instance_identifier: "{{ rds_instance_name }}"
   register: rds
-  
+
 - debug: var=rds
 
 # - name: enable iam authentication

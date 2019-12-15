@@ -5,29 +5,42 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('media_items', '0002_auto_20190406_0117'),
-    ]
+    dependencies = [('media_items', '0002_auto_20190406_0117')]
 
     operations = [
         migrations.AlterField(
             model_name='mediaitem',
             name='create_date',
-            field=models.DateTimeField(help_text='Required. The date and time this media item was created.', verbose_name='create date'),
+            field=models.DateTimeField(
+                help_text='Required. The date and time this media item was created.',
+                verbose_name='create date',
+            ),
         ),
         migrations.AlterField(
             model_name='mediaitem',
             name='file_size',
-            field=models.BigIntegerField(help_text='Required. The size in bytes of the media item.', null=True, verbose_name='artist'),
+            field=models.BigIntegerField(
+                help_text='Required. The size in bytes of the media item.',
+                null=True,
+                verbose_name='artist',
+            ),
         ),
         migrations.AlterField(
             model_name='mediaitem',
             name='image_height',
-            field=models.IntegerField(help_text='Required. The height of this media item.', null=True, verbose_name='image height'),
+            field=models.IntegerField(
+                help_text='Required. The height of this media item.',
+                null=True,
+                verbose_name='image height',
+            ),
         ),
         migrations.AlterField(
             model_name='mediaitem',
             name='image_width',
-            field=models.IntegerField(help_text='Required. The width of this media item.', null=True, verbose_name='image width'),
+            field=models.IntegerField(
+                help_text='Required. The width of this media item.',
+                null=True,
+                verbose_name='image width',
+            ),
         ),
     ]

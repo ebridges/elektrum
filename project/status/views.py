@@ -6,6 +6,7 @@ from io import StringIO
 from meta.management.commands import createdb
 from elektrum.log import getLogger
 
+
 class Ok(View):
     # noinspection PyUnusedLocal
     def get(self, request=None):
@@ -18,7 +19,7 @@ class Ok(View):
 
     def db_time(self):
         with connection.cursor() as cursor:
-            cursor.execute("SELECT current_timestamp AS now")
+            cursor.execute('SELECT current_timestamp AS now')
             return cursor.fetchone()
 
 
@@ -26,11 +27,10 @@ class DBCreate(View):
     def get(self, request=None):
         output = StringIO()
         command = createdb.Command(stdout=output, stderr=output)
-        command.handle(None, None);
+        command.handle(None, None)
         result = output.getvalue()
         logger = getLogger(__name__)
         logger.info(result)
         response = HttpResponse(result)
         response['Content-Type'] = 'text/plain'
         return response
-

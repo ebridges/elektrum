@@ -39,7 +39,7 @@ public class Processor {
       LOG.info("Deleting: " + imageKey);
       dao.deleteImage(imageKey);
       return imageKey.getImageId().toString();
-    }    
+    }
   }
 
   public String processPhoto(ImageKey imageKey) throws IOException {

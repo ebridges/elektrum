@@ -46,14 +46,18 @@ class DateDimension(Model):
 
     week_num = models.IntegerField(
         _('Week number.'),
-        help_text=_('Required. Number of the week in the year this date falls in.  The first week of a year is the '
-                    'first calendar week of the year containing a Thursday.'),
+        help_text=_(
+            'Required. Number of the week in the year this date falls in.  The first week of a year is the '
+            'first calendar week of the year containing a Thursday.'
+        ),
         null=False,
     )
 
     week_day = models.IntegerField(
         _('Day of the week.'),
-        help_text=_('Required. Number of the day in the week of this date. 1 == Monday, 7 == Sunday'),
+        help_text=_(
+            'Required. Number of the day in the week of this date. 1 == Monday, 7 == Sunday'
+        ),
         null=False,
     )
 
@@ -74,7 +78,7 @@ class DateDimension(Model):
             day=from_date.day,
             week_num=from_date.isocalendar()[1],
             week_day=from_date.isoweekday(),
-            day_in_year=from_date.timetuple().tm_yday
+            day_in_year=from_date.timetuple().tm_yday,
         )
 
     class Meta:

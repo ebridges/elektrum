@@ -25,24 +25,22 @@ def upload_media_api(request):
 
     location = create_signed_upload_url(user, mime_type)
 
-    headers = {
-        'Access-Control-Expose-Headers': 'Location',
-        'Location': location
-    }
-    return Response(None, headers=headers, status=201);
+    headers = {'Access-Control-Expose-Headers': 'Location', 'Location': location}
+    return Response(None, headers=headers, status=201)
 
 
 def validate_request(request):
     if request.method != 'POST':
         raise MethodNotAllowedException()
-    
+
     user = request.user
     if not user.is_authenticated:
         raise ForbiddenException('Authentication is required.')
 
     if 'mime_type' not in request.POST:
-        raise BadRequestException('"mime_type" is a required parameter. It should be parsed from media\'s '
-                                        'metadata.')
+        raise BadRequestException(
+            '"mime_type" is a required parameter. It should be parsed from media\'s ' 'metadata.'
+        )
 
     mime_type = request.POST['mime_type']
     if mime_type not in supported_upload_types:

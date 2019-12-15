@@ -46,7 +46,7 @@ def test_csrf_login_failure(client, user_factory):
     :param user_factory: mock user generator
     """
     u = user_factory()
-    client.handler.enforce_csrf_checks=True
+    client.handler.enforce_csrf_checks = True
     response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
     assert response.status_code == 403
 
@@ -69,7 +69,7 @@ def test_csrf_logout_failure(authenticated_client):
     :param authenticated_client: mock django client that has been logged in
     """
     (c, __) = authenticated_client
-    c.handler.enforce_csrf_checks=True
+    c.handler.enforce_csrf_checks = True
     response = c.post('/account/logout/')
     assert response.status_code == 403
 
@@ -85,9 +85,17 @@ def test_signup_flow(client, mock_email_log):
     """
     expected_email = 'newuser@example.com'
     expected_username = 'newuser'
-    response = client.post('/account/signup/',
-                  {'email': expected_email, 'username': expected_username, 'first_name': 'first',
-                   'last_name': 'last', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    response = client.post(
+        '/account/signup/',
+        {
+            'email': expected_email,
+            'username': expected_username,
+            'first_name': 'first',
+            'last_name': 'last',
+            'password1': 'abcd@1234',
+            'password2': 'abcd@1234',
+        },
+    )
     util.assert_account_redirects(response)
     confirm_url = util.assert_signup_mail(expected_email, mock_email_log)
     assert confirm_url is not None
@@ -95,7 +103,10 @@ def test_signup_flow(client, mock_email_log):
 
     expected_redirect_url = confirm_response.url
 
-    assert re.match('/media/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/', expected_redirect_url)
+    assert re.match(
+        '/media/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/',
+        expected_redirect_url,
+    )
 
     # Because `ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION` is "True", the user is redirected to '/'
     # If there is some delay (see docs on that setting) then the redirect will be to '/account/login/'
@@ -116,16 +127,32 @@ def test_signup_flow_multiple(client, mock_email_log):
     :param client: mock django client
     :param mock_email_log: file where verification email gets written.
     """
-    response = client.post('/account/signup/',
-                      {'username': 'newuser2', 'email': 'newuser2@example.com', 'first_name': 'first2',
-                       'last_name': 'last2', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    response = client.post(
+        '/account/signup/',
+        {
+            'username': 'newuser2',
+            'email': 'newuser2@example.com',
+            'first_name': 'first2',
+            'last_name': 'last2',
+            'password1': 'abcd@1234',
+            'password2': 'abcd@1234',
+        },
+    )
     util.assert_account_redirects(response)
     util.assert_signup_mail('newuser2@example.com', mock_email_log)
 
     util.trunc_file(mock_email_log)
 
-    response = client.post('/account/signup/',
-                      {'username': 'newuser3', 'email': 'newuser3@example.com', 'first_name': 'first3',
-                       'last_name': 'last3', 'password1': 'abcd@1234', 'password2': 'abcd@1234'})
+    response = client.post(
+        '/account/signup/',
+        {
+            'username': 'newuser3',
+            'email': 'newuser3@example.com',
+            'first_name': 'first3',
+            'last_name': 'last3',
+            'password1': 'abcd@1234',
+            'password2': 'abcd@1234',
+        },
+    )
     util.assert_account_redirects(response)
     util.assert_signup_mail('newuser3@example.com', mock_email_log)

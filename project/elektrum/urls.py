@@ -38,12 +38,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('status/', include('status.urls')),
     path('media/', include('media_items.urls')),
-    path('user/', include('users.urls'))
+    path('user/', include('users.urls')),
 ]
 
 
 class ElektrumAccountAdapter(DefaultAccountAdapter, DefaultSocialAccountAdapter):
-
     def __init__(self, request):
         self.logger = getLogger(__name__)
         super().__init__(request)

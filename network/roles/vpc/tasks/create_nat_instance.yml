@@ -9,7 +9,7 @@
       Name: "ec2-nat-{{ item.value.name }}"
       Environment: "{{ operating_env }}"
     exact_count: 1
-    count_tag: 
+    count_tag:
       Name: "ec2-nat-{{ item.value.name }}"
     instance_type: "{{ nat_instance_type }}"
     key_name: "{{ aws_ssh_key }}"

@@ -1,5 +1,10 @@
 from functools import wraps
-from django.http import HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed, HttpResponseForbidden
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseServerError,
+    HttpResponseNotAllowed,
+    HttpResponseForbidden,
+)
 from rest_framework.response import Response
 
 
@@ -28,6 +33,7 @@ def exceptions_to_web_response(view_func):
             return HttpResponseNotAllowed(str(e))
         except Exception as e:
             return HttpResponseServerError(str(e))
+
     return inner
 
 
@@ -44,4 +50,5 @@ def exceptions_to_api_response(view_func):
             return Response(str(e), status=405)
         except Exception as e:
             return Response(str(e), status=500)
+
     return inner

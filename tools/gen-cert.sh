@@ -10,9 +10,9 @@ openssl req -x509 \
   -keyout ${DOMAIN}.key \
   -out ${DOMAIN}.crt \
   -extensions san \
-  -config <(echo "[req]"; 
-    echo distinguished_name=req; 
-    echo "[san]"; 
+  -config <(echo "[req]";
+    echo distinguished_name=req;
+    echo "[san]";
     echo subjectAltName=DNS:${DOMAIN},DNS:media.${DOMAIN}
     ) \
   -subj /CN=${DOMAIN}

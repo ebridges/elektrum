@@ -26,7 +26,7 @@ exclude_lines =
   class Meta
   from
   import
- 
+
   # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError
     raise NotImplementedError

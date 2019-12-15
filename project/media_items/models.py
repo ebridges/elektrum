@@ -3,6 +3,7 @@ from django.core import validators
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+
 # from django.contrib.gis.db import models
 from django.db.models import Field
 
@@ -13,19 +14,14 @@ from date_dimension.models import DateDimension
 @deconstructible
 class MediaItemPathValidator(validators.RegexValidator):
     regex = r'^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\.[a-z]{3}$'
-    message = _(
-        'Enter a valid media item path. Should be like this: `uuid/uuid.ext`'
-    )
+    message = _('Enter a valid media item path. Should be like this: `uuid/uuid.ext`')
     flags = 0
 
 
 JPG = 'jpg'
 PNG = 'png'
 
-MIME_TYPE_CHOICES = (
-    (JPG, "image/jpeg"),
-    (PNG, "image/png"),
-)
+MIME_TYPE_CHOICES = ((JPG, 'image/jpeg'), (PNG, 'image/png'))
 
 
 class DateTimeNoTZField(Field):
@@ -64,7 +60,7 @@ class MediaItem(BaseModel):
     create_date = DateTimeNoTZField(
         _('create date'),
         help_text=_('Required. The date and time this media item was created.'),
-        null=False
+        null=False,
     )
 
     create_day = models.ForeignKey(
@@ -75,21 +71,15 @@ class MediaItem(BaseModel):
     )
 
     file_size = models.BigIntegerField(
-        _('file size'),
-        help_text=_('Required. The size in bytes of the media item.'),
-        null=False
+        _('file size'), help_text=_('Required. The size in bytes of the media item.'), null=False
     )
 
     image_width = models.IntegerField(
-        _('image width'),
-        help_text=_('Required. The width of this media item.'),
-        null=False
+        _('image width'), help_text=_('Required. The width of this media item.'), null=False
     )
 
     image_height = models.IntegerField(
-        _('image height'),
-        help_text=_('Required. The height of this media item.'),
-        null=False
+        _('image height'), help_text=_('Required. The height of this media item.'), null=False
     )
 
     camera_make = models.CharField(
@@ -115,14 +105,18 @@ class MediaItem(BaseModel):
 
     shutter_speed_numerator = models.IntegerField(
         _('shutter speed (numerator)'),
-        help_text=_('Optional. The shutter speed (numerator) setting used when this media item was created.'),
-        null=True
+        help_text=_(
+            'Optional. The shutter speed (numerator) setting used when this media item was created.'
+        ),
+        null=True,
     )
 
     shutter_speed_denominator = models.IntegerField(
         _('shutter speed (denominator)'),
-        help_text=_('Optional. The shutter speed (denominator) setting used when this media item was created.'),
-        null=True
+        help_text=_(
+            'Optional. The shutter speed (denominator) setting used when this media item was created.'
+        ),
+        null=True,
     )
 
     shutter_speed = models.CharField(
@@ -134,43 +128,55 @@ class MediaItem(BaseModel):
 
     focal_length_numerator = models.IntegerField(
         _('focal length (numerator)'),
-        help_text=_('Optional. The focal length (numerator) setting used when this media item was created.'),
-        null=True
+        help_text=_(
+            'Optional. The focal length (numerator) setting used when this media item was created.'
+        ),
+        null=True,
     )
 
     focal_length_denominator = models.IntegerField(
         _('focal length (denominator)'),
-        help_text=_('Optional. The focal length (denominator) setting used when this media item was created.'),
-        null=True
+        help_text=_(
+            'Optional. The focal length (denominator) setting used when this media item was created.'
+        ),
+        null=True,
     )
 
     iso_speed = models.IntegerField(
         _('iso speed'),
         help_text=_('Optional. The ISO speed of the exposure used to create this media item.'),
-        null=True
+        null=True,
     )
 
     gps_lon = models.FloatField(
         _('gps longitude'),
-        help_text=_('Optional. The longitude of the GPS location of where this media item was created.'),
+        help_text=_(
+            'Optional. The longitude of the GPS location of where this media item was created.'
+        ),
         null=True,
     )
 
     gps_lat = models.FloatField(
         _('gps latitude'),
-        help_text=_('Optional. The latitude of the GPS location of where this media item was created.'),
+        help_text=_(
+            'Optional. The latitude of the GPS location of where this media item was created.'
+        ),
         null=True,
     )
 
     gps_alt = models.FloatField(
         _('gps altitude'),
-        help_text=_('Optional. The altitude of the GPS location of where this media item was created.'),
+        help_text=_(
+            'Optional. The altitude of the GPS location of where this media item was created.'
+        ),
         null=True,
     )
 
     gps_date_time = models.DateTimeField(
         _('gps date time'),
-        help_text=_('Optional. The date and time in UTC at the GPS location of where this media item was created.'),
+        help_text=_(
+            'Optional. The date and time in UTC at the GPS location of where this media item was created.'
+        ),
         null=True,
     )
 
@@ -185,7 +191,7 @@ class MediaItem(BaseModel):
         _('artist'),
         help_text=_('Optional. Artist responsible for creating this media item.'),
         null=True,
-        max_length=64
+        max_length=64,
     )
 
     def save(self, *args, **kwargs):

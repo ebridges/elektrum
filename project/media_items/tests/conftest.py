@@ -40,7 +40,9 @@ def image_info():
 @pytest.fixture(name='env')
 def get_db_connect_info(live_server, monkeypatch):
     # noinspection PyProtectedMember
-    database_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST']['NAME']
+    database_name = live_server._live_server_modified_settings.wrapped.DATABASES['default']['TEST'][
+        'NAME'
+    ]
 
     # bucket name is used to disable some tests in the Java processing code
     bucket_name = 'processing-integration-test'
@@ -63,7 +65,4 @@ def get_db_connect_info(live_server, monkeypatch):
     assert_that(getenv('DB_JDBC_URL')).is_equal_to(db_url)
     assert_that(getenv('IMAGE_ROOT')).is_equal_to(remote_path.name)
 
-    return {
-        'bucket_name': bucket_name,
-        'remote_path': remote_path
-    }
+    return {'bucket_name': bucket_name, 'remote_path': remote_path}

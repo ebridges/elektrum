@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'django.contrib.sites',
-#    'django.contrib.gis',
+    #    'django.contrib.gis',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -94,10 +94,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'elektrum.context_processors.selected_settings'
-            ],
+                'elektrum.context_processors.selected_settings',
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = 'elektrum.wsgi.application'
@@ -126,27 +126,17 @@ else:
 if IN_TEST_MODE:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'TEST': {
-            'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3'),
-        },
+        'TEST': {'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3')},
     }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -164,15 +154,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_STORAGE_BUCKET_NAME = os.getenv('STATIC_FILES_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('STATIC_DOMAIN_NAME')
 STATIC_URL = 'https//%s/' % AWS_S3_CUSTOM_DOMAIN
-AWS_DEFAULT_ACL = "public-read"
+AWS_DEFAULT_ACL = 'public-read'
 
 LOGIN_URL = '/account/login/'  # is there a better way to do this?
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
@@ -184,16 +172,12 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
-ACCOUNT_FORMS = {
-    'signup': 'users.forms.CustomUserCreationForm',
-}
+ACCOUNT_FORMS = {'signup': 'users.forms.CustomUserCreationForm'}
 
 SITE_ID = 2
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'base.authentication.BearerTokenAuthentication'
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': ['base.authentication.BearerTokenAuthentication']
 }
 
 ACCOUNT_EMAIL_REQUIRED = True
@@ -212,45 +196,17 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
-        'verbose': {
-            'format': '[{levelname}] [{asctime}] [{name}] {message}',
-            'style': '{',
-        },
+        'verbose': {'format': '[{levelname}] [{asctime}] [{name}] {message}', 'style': '{'}
     },
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-            'level': 'DEBUG',
-        },
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose', 'level': 'DEBUG'}
     },
     'loggers': {
-        'elektrum': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'django.utils.autoreload': {
-            'handlers': ['console'],
-            'level': 'WARNING',
-        },
-        'selenium.webdriver.remote.remote_connection': {
-            'handlers': ['console'],
-            'level': 'INFO'
-        },
-        'urllib3.connectionpool': {
-            'handlers': ['console'],
-            'level': 'INFO'
-        },
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+        'elektrum': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
+        'django.utils.autoreload': {'handlers': ['console'], 'level': 'WARNING'},
+        'selenium.webdriver.remote.remote_connection': {'handlers': ['console'], 'level': 'INFO'},
+        'urllib3.connectionpool': {'handlers': ['console'], 'level': 'INFO'},
+        '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
 }
