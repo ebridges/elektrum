@@ -2,6 +2,11 @@
 requires = [ "poetry==0.12.17",]
 build-backend = "poetry.masonry.api"
 
+[tool.black]
+line-length = 100
+skip-string-normalization = true
+target-version = ['py37']
+
 [tool.poetry]
 name = "elektrum"
 version = "0.37.dev0"
