@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 function main() {
     log "Generating pip-style requirements.txt."
@@ -16,6 +16,8 @@ function main() {
     log "Linking domain name with this gateway."
     api_url=$(lgw domain-add ${VERBOSE} --config-file=${CONFIG})
 
+    apply_migrations
+
     deploy_static_assets
 
     log "Application deployed at URL: ${api_url}"
@@ -30,6 +32,22 @@ function log() {
 function deploy_static_assets() {
     log "Deploying static assets."
     make static
+}
+
+function apply_migrations() {
+    log "Applying database migrations."
+
+    source ${CONFIG}
+
+    output_file=$(mktemp)
+    trap "{ rm -f $output_file; }" EXIT
+
+    aws --output json \
+        lambda invoke \
+        --function-name ${AWS_LAMBDA_NAME} \
+        --log-type Tail \
+        --payload '{"manage": "migrate"}' ${output_file} \
+    | jq --raw-output .LogResult | base64 --input=- --decode
 }
 
 ENV=
@@ -79,7 +97,7 @@ static)
     deploy_static_assets
     ;;
 migrate)
-    echo "NOT YET IMPLEMENTED"
+    apply_migrations
     ;;
 admin-user)
     echo "NOT YET IMPLEMENTED"
