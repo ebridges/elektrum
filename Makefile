@@ -48,16 +48,22 @@ publish:
 	@echo [publish] SUCCESSFUL
 
 commit:
-	# add a newline to all files to fix lint check done by pre-commit-config
-	for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* ; do \
+# add a newline to all files to fix lint check done by pre-commit-config
+	@for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* ; do \
 		echo >> $${file} ; \
 	done
 
-	git add project/static/css/app* \
-					project/static/js/app* \
-					project/static/js/manifest* \
-					project/static/js/vendor*
+# if there are changes, then commit them
+	@delta=$(git diff-index --quiet HEAD -- project/static)
+	@if [ -z "$$delta" ]; then \
+		echo '[commit] No files need committing.' ; \
+	else \
+		git add project/static/css/app* \
+						project/static/js/app* \
+						project/static/js/manifest* \
+						project/static/js/vendor* && \
+		git commit --gpg-sign --message 'Static assets generated.' \
+		echo '[commit] SUCCESSFUL' ; \
+	fi
 
-	git commit --gpg-sign --message 'Static assets generated.'
-
-	@echo [commit] SUCCESSFUL
+	@echo COMPLETED SUCCESSFULLY
