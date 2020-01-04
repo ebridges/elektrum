@@ -16,6 +16,9 @@ function main() {
     log "Linking domain name with this gateway."
     api_url=$(lgw domain-add ${VERBOSE} --config-file=${CONFIG})
 
+    log "Deploy static assets."
+    make static
+
     log "Application deployed at URL: ${api_url}"
 }
 
