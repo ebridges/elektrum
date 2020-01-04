@@ -80,23 +80,18 @@
 
 1. Change directory to the root level of the project (where this file is located).
 
-1. Create a VM that mimics the lambda execution environment:
+1. Deploy the application:
 
-        $ ./elektrum-deploy build ${env}
+        $ ./elektrum-deploy ${env}
 
-1. Deploy the application from the VM to AWS:
-
-        $ ./elektrum-deploy deploy ${env}
-
-    * Subsequent updates to the application should use `update` instead of `deploy`
+    - Builds a VM that mimics the lambda env, and deploys the application to that.
+    - Configures API gateway to point to the application's lambda.
+    - Links the application's domain name with this gateway.
+    - Publishes static assets to S3.
 
 1. [Optional] Generate necessary migrations:
 
         $ ./elektrum-deploy migrate ${env}
-
-1. Bundle up static assets and publish them to S3:
-
-        $ ./elektrum-deploy collectstatic ${env}
 
 1. Visit the site at `https://${APPLICATION_DOMAIN_NAME}`
 
@@ -104,13 +99,15 @@
 
 #### D.1 Run Migrations
 
-        $ ./elektrum-deploy migrate ${env}
+        $ ./elektrum-deploy ${env} migrate
 
-#### D.1 Create the Django Admin User
+#### D.2 Create the Django Admin User
 
-        $ ./elektrum-deploy create-admin-user ${env}
+        $ ./elektrum-deploy ${env} admin-user
 
-#### D.2 Setup Google OAuth
+    - Credentials are pulled from `network/group_vars/${env}.yml`
+
+#### D.3 Setup Google OAuth
 
 1. Visit site's admin panel at `https://${APPLICATION_DOMAIN_NAME}/admin`
 1. Log in using the credentials for the admin user.
@@ -130,7 +127,7 @@ $ python manage.py runsslserver 127.0.0.1:8000
 $ open https://127.0.0.1:8000
 ```
 
-#### Accessing Remote DB
+<!-- #### Accessing Remote DB
 
 This involves configuring a NAT server as a Bastion host, to proxy the DB connection to the RDS instance (which isn't publicly available by default).
 
@@ -144,7 +141,7 @@ _*Warning*: This requires the private key to be installed on the NAT._
 1. NAT Instance: run the command `ssh -N -R 0.0.0.0:5432:${DB_HOSTNAME}:5432 -i [/path/to/elektrum-${env}.pem] ec2-user@127.0.0.1`
 1. Test: `psql -h [nat instance subdomain].compute-1.amazonaws.com -U ${DB_USERNAME} -W`
 
-<!-- ### Running server locally on VM
+### Running server locally on VM
 
 1. Configure remote access to the database (see "Accessing Remote DB" above).
 1. Local: Open a shell in the VM `./elektrum-deploy shell`
