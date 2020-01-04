@@ -42,24 +42,7 @@ def make_lambda_handler(wsgi_app, binary_support=False, non_binary_content_type_
     def handler(event, context):
         info(event)
         if event.get('manage', None):
-            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'elektrum.settings')
-            setup(set_prefix=False)
-            app_function = get_wsgi_application()
-
-            command = event['manage'].split()
-
-            if len(command) == 0:
-                warn('No management command provided.')
-                return {}
-
-            if command[0] != 'migrate':
-                warn('Unsupported command: %s' % command[0])
-                return {}
-
-            info('invoking command: %s' % command[0])
-            result = management.call_command(*command)
-            info('Execution completed with result: [%s]' % result)
-
+            result = handle_manage_event(event['manage'])
             return result
 
         environ = get_environ(event, binary_support=binary_support)
@@ -73,6 +56,50 @@ def make_lambda_handler(wsgi_app, binary_support=False, non_binary_content_type_
         return response.as_apig_response()
 
     return handler
+
+
+def handle_manage_event(manage_event):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'elektrum.settings')
+    setup(set_prefix=False)
+    app_function = get_wsgi_application()
+
+    command = manage_event.get('cmd')
+
+    if not command:
+        warn('No management command provided.')
+        return {}
+
+    if command == 'migrate':
+        return handle_migrate_command(command)
+
+    if command == 'create-admin-user':
+        return handle_adminuser_command(manage_event.get('args'))
+
+    warn('Unsupported command: %s' % command)
+    return {}
+
+
+def handle_adminuser_command(args):
+    if not args:
+        warn('No args supplied.')
+        return {}
+
+    email = args['email']
+    username = args['username']
+    password = args['password']
+
+    from users.models import CustomUser
+
+    info(f'Creating super user with username: {username}')
+    return CustomUser.objects.create_superuser(username, email=email, password=password)
+
+
+def handle_migrate_command(command):
+    info('invoking migrate command: %s' % command)
+    args = command.split()
+    result = management.call_command(*args)
+    info('Execution completed with result: [%s]' % result)
+    return result
 
 
 def get_environ(event, binary_support):
