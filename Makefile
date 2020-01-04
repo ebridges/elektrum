@@ -6,7 +6,7 @@
 
 CODE=./project/vue-s3-dropzone/frontend
 
-static: clean index.html app.js app.css vendor.js manifest.js publish
+static: clean index.html app.js app.css vendor.js manifest.js publish commit
 
 clean:
 	/bin/rm -rf ${CODE}/dist
@@ -46,3 +46,18 @@ publish:
     --pythonpath=project \
     --settings=elektrum.settings
 	@echo [publish] SUCCESSFUL
+
+commit:
+	# add a newline to all files to fix lint check done by pre-commit-config
+	for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* ; do \
+		echo >> $${file} ; \
+	done
+
+	git add project/static/css/app* \
+					project/static/js/app* \
+					project/static/js/manifest* \
+					project/static/js/vendor*
+
+	git commit --gpg-sign --message 'Static assets generated.'
+
+	@echo [commit] SUCCESSFUL
