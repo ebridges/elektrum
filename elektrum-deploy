@@ -46,7 +46,42 @@ function apply_migrations() {
         lambda invoke \
         --function-name ${AWS_LAMBDA_NAME} \
         --log-type Tail \
-        --payload '{"manage": "migrate"}' ${output_file} \
+        --payload '{"manage": {"cmd": "migrate"} }' ${output_file} \
+    | jq --raw-output .LogResult | base64 --input=- --decode
+}
+
+function create_admin_user() {
+    log "Creating admin user account."
+
+    django_admin_username=`yq read network/group_vars/${ENV}.yml 'django_admin_username' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+    django_admin_password=`yq read network/group_vars/${ENV}.yml 'django_admin_password' | ansible-vault decrypt --vault-password-file=network/environments/${ENV}-vault-password.txt`
+
+    dummy_email='admin@example.com'
+
+    source ${CONFIG}
+
+    output_file=$(mktemp)
+    trap "{ rm -f $output_file; }" EXIT
+
+event=$(cat <<-EOT
+{
+    "manage": {
+        "cmd": "create-admin-user",
+        "args": {
+            "username": "${django_admin_username}",
+            "password": "${django_admin_password}",
+            "email": "${dummy_email}"
+        }
+    }
+}
+EOT
+)
+
+    aws --output json \
+        lambda invoke \
+        --function-name ${AWS_LAMBDA_NAME} \
+        --log-type Tail \
+        --payload "${event}" ${output_file} \
     | jq --raw-output .LogResult | base64 --input=- --decode
 }
 
@@ -100,7 +135,7 @@ migrate)
     apply_migrations
     ;;
 admin-user)
-    echo "NOT YET IMPLEMENTED"
+    create_admin_user
     ;;
 *)
     echo main "$@"
