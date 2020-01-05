@@ -138,6 +138,6 @@ admin-user)
     create_admin_user
     ;;
 *)
-    echo main "$@"
+    main "$@"
     ;;
 esac
