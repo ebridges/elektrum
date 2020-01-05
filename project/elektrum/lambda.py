@@ -5,6 +5,7 @@ from elektrum import settings
 from django import setup
 from django.core import management
 from django.core.wsgi import get_wsgi_application
+from django.core.exceptions import ObjectDoesNotExist
 from logging import warn, info
 from pprint import pprint
 from json import loads
@@ -91,7 +92,23 @@ def handle_adminuser_command(args):
     from users.models import CustomUser
 
     info(f'Creating super user with username: {username}')
-    return CustomUser.objects.create_superuser(username, email=email, password=password)
+
+    try:
+        u = CustomUser.objects.get(username=username)
+        info(f'User exists for username {username}: id [%s]' % str(u.id))
+        return as_json(u)
+    except ObjectDoesNotExist:
+        info(f'User does not exist for username {username}, creating.')
+        return as_json(
+            CustomUser.objects.create_superuser(username, email=email, password=password)
+        )
+
+    info(f'Unable to create user for username: {username}')
+    return {}
+
+
+def as_json(u):
+    return {'id': str(u.id), 'username': u.username, 'email': u.email}
 
 
 def handle_migrate_command(command):
