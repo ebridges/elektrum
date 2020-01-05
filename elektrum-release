@@ -26,6 +26,9 @@ function main() {
 
     log "Finalizing release by pushing all commits."
     push_commits
+
+    log "Publish release to github."
+    publish_release
 }
 
 function log() {
@@ -33,6 +36,22 @@ function log() {
     now=$(date +"%Y/%m/%d %H:%M:%S")
     echo "[${now}][RELEASE] ${msg}"
 }
+
+function publish_release() {
+    read -n1 -rsp $'Press any key to publish release or Ctrl+C to exit...\n' key
+    if [ "$key" = '' ]; then
+        tag_name=$(git tag --sort creatordate -n1 | tail -1 | awk '{ print $1}')
+        release_name=$(git tag --sort creatordate -n1 | tail -1 | awk '{ print $2}')
+
+        result=$(publish_release.py -v ${tag_name} -r "${release_name}" )
+
+        log result
+    else
+        log "Release cancelled when publishing."
+        exit 1
+    fi
+}
+
 
 function push_commits() {
     read -n1 -rsp $'Press any key to push all commits for the release or Ctrl+C to exit...\n' key
@@ -109,7 +128,7 @@ function tag_release() {
 
         log "Commit/tag updates to version & changelog"
         git add pyproject.toml version.txt CHANGES.md > /dev/null 2>&1
-        git commit --quiet --gpg-sign --message "Set release version to ${version}"
+        git commit --quiet --gpg-sign --message "Release version ${version}"
         git tag --force --message "v${version}" --sign "${version}" > /dev/null 2>&1
 
         result=$?
