@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.38 (2020-01-05)
+
 - When app is released publish changelog to GitHub as a release.
 
 ## 0.37 (2020-01-05)
