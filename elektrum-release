@@ -109,7 +109,7 @@ function tag_release() {
 
         log "Commit/tag updates to version & changelog"
         git add pyproject.toml version.txt CHANGES.md > /dev/null 2>&1
-        git commit --quiet --gpg-sign --message "Set release version to ${version}"
+        git commit --quiet --gpg-sign --message "Release version ${version}"
         git tag --force --message "v${version}" --sign "${version}" > /dev/null 2>&1
 
         result=$?
