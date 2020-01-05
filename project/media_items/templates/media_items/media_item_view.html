@@ -33,7 +33,7 @@
                 <td class="media_metadata_item_key">{% trans "Date Created" %}</td>
                 <td class="media_metadata_item_val">{{ media_item.create_day.this_date }}</td>
             </tr>
-            
+
             {% if media_item.file_size %}
             <tr class="media_metadata_item">
                 <td class="media_metadata_item_key">{% trans "File Size" %}</td>
@@ -50,7 +50,7 @@
             <tr class="media_metadata_item">
                 <td class="media_metadata_item_key">{% trans "Camera Make & Model" %}</td>
                 <td class="media_metadata_item_val">
-                    {{ media_item.camera_make }} 
+                    {{ media_item.camera_make }}
                     {% if media_item.camera_model %}
                         {{ media_item.camera_model }}
                     {% endif %}
@@ -62,7 +62,7 @@
             <tr class="media_metadata_item">
                 <td class="media_metadata_item_key">{% trans "Exposure" %}</td>
                 <td class="media_metadata_item_val">
-                    {{ media_item.aperture }} 
+                    {{ media_item.aperture }}
                     {% if media_item.camera_model %}
                         at {{ media_item.shutter_speed }}s
                     {% endif %}

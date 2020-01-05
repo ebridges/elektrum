@@ -5,10 +5,7 @@ from urllib.parse import urlparse
 from botocore.client import Config
 from elektrum.log import getLogger
 
-supported_upload_types = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-}
+supported_upload_types = {'image/jpeg': 'jpg', 'image/png': 'png'}
 
 
 def create_signed_upload_url(user, mime_type):
@@ -34,7 +31,6 @@ def create_signed_upload_url(user, mime_type):
     return location
 
 
-
 def create_signed_url(credentials, upload_key):
     """
     Given credentials and a storage key, generate a signed URL to upload the item with.
@@ -48,8 +44,12 @@ def create_signed_url(credentials, upload_key):
 
     s3client = boto3.client('s3', config=Config(signature_version='s3v4'))
 
-    url = s3client.generate_presigned_url('put_object', Params={'Bucket': bucket_name, 'Key': upload_key},
-                                          ExpiresIn=36000, HttpMethod='PUT')
+    url = s3client.generate_presigned_url(
+        'put_object',
+        Params={'Bucket': bucket_name, 'Key': upload_key},
+        ExpiresIn=36000,
+        HttpMethod='PUT',
+    )
     return urlparse(url)
 
 

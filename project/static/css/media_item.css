@@ -67,7 +67,7 @@ dd {
 
 /* https://stackoverflow.com/a/5804278/87408 */
 dd img {
-  display: block;    
+  display: block;
   object-fit: cover;
   width: 222px;
   height: 222px;

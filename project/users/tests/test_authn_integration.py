@@ -12,12 +12,11 @@ from users.tests.factories import UserFactory
 
 
 class AuthnIntegrationTests(StaticLiveServerTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--headless')
         cls.driver = webdriver.Chrome(options=chrome_options)
         cls.driver.implicitly_wait(10)
 

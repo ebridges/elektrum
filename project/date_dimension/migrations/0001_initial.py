@@ -7,24 +7,71 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='DateDimension',
             fields=[
-                ('yyyymmdd', models.IntegerField(help_text='Required. YYYYMMDD as an integer.', primary_key=True, serialize=False, verbose_name='This date as an integer')),
-                ('this_date', models.DateField(help_text='Required. This date as a date-type.', verbose_name='This date as a typed date field.')),
-                ('year', models.IntegerField(help_text='Required. The year of this date as an integer.', verbose_name='Year of this date.')),
-                ('month', models.IntegerField(help_text='Required. The month of this date as an integer.', verbose_name='Month of this date.')),
-                ('day', models.IntegerField(help_text='Required. The day of this date as an integer.', verbose_name='Day of this date.')),
-                ('week_num', models.IntegerField(help_text='Required. Number of the week in the year this date falls in.  The first week of a year is the first calendar week of the year containing a Thursday.', verbose_name='Week number.')),
-                ('week_day', models.IntegerField(help_text='Required. Number of the day in the week of this date. 1 == Monday, 7 == Sunday', verbose_name='Day of the week.')),
-                ('day_in_year', models.IntegerField(help_text='Required. Ordinal count of day in the year. From 1-36[56]', verbose_name='Day in the year.')),
+                (
+                    'yyyymmdd',
+                    models.IntegerField(
+                        help_text='Required. YYYYMMDD as an integer.',
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='This date as an integer',
+                    ),
+                ),
+                (
+                    'this_date',
+                    models.DateField(
+                        help_text='Required. This date as a date-type.',
+                        verbose_name='This date as a typed date field.',
+                    ),
+                ),
+                (
+                    'year',
+                    models.IntegerField(
+                        help_text='Required. The year of this date as an integer.',
+                        verbose_name='Year of this date.',
+                    ),
+                ),
+                (
+                    'month',
+                    models.IntegerField(
+                        help_text='Required. The month of this date as an integer.',
+                        verbose_name='Month of this date.',
+                    ),
+                ),
+                (
+                    'day',
+                    models.IntegerField(
+                        help_text='Required. The day of this date as an integer.',
+                        verbose_name='Day of this date.',
+                    ),
+                ),
+                (
+                    'week_num',
+                    models.IntegerField(
+                        help_text='Required. Number of the week in the year this date falls in.  The first week of a year is the first calendar week of the year containing a Thursday.',
+                        verbose_name='Week number.',
+                    ),
+                ),
+                (
+                    'week_day',
+                    models.IntegerField(
+                        help_text='Required. Number of the day in the week of this date. 1 == Monday, 7 == Sunday',
+                        verbose_name='Day of the week.',
+                    ),
+                ),
+                (
+                    'day_in_year',
+                    models.IntegerField(
+                        help_text='Required. Ordinal count of day in the year. From 1-36[56]',
+                        verbose_name='Day in the year.',
+                    ),
+                ),
             ],
-            options={
-                'db_table': 'date_dim',
-            },
-        ),
+            options={'db_table': 'date_dim'},
+        )
     ]

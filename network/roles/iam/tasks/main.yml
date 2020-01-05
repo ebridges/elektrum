@@ -87,4 +87,3 @@
 - name: set lambda execution role arn as fact
   set_fact:
     lambda_execution_role_arn: "{{ lambda_execution_role_info.iam_role.arn }}"
-

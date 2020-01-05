@@ -6,14 +6,16 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('media_items', '0007_mediaitem_create_day'),
-    ]
+    dependencies = [('media_items', '0007_mediaitem_create_day')]
 
     operations = [
         migrations.AlterField(
             model_name='mediaitem',
             name='create_day',
-            field=models.ForeignKey(help_text='The date the media item was created.', on_delete=django.db.models.deletion.DO_NOTHING, to='date_dimension.DateDimension'),
-        ),
+            field=models.ForeignKey(
+                help_text='The date the media item was created.',
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to='date_dimension.DateDimension',
+            ),
+        )
     ]

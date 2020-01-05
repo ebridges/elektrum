@@ -22,7 +22,10 @@ email_log = os.path.join(email_file_path, 'test_authn_user_flows.log')
 
 
 def match_image_key(user_id, to_match):
-    pattern = r'[/]?(?P<user_id>%s)/(?P<image_id>%s)\.(?P<extension>[a-z]{3})' % (user_id, UUID_REGEX)
+    pattern = r'[/]?(?P<user_id>%s)/(?P<image_id>%s)\.(?P<extension>[a-z]{3})' % (
+        user_id,
+        UUID_REGEX,
+    )
     return re.match(pattern, to_match)
 
 
@@ -59,8 +62,12 @@ def assert_signup_mail(email_to, email_log, email_subject_substr='Confirm'):
     return confirm_url
 
 
-def assert_account_redirects(response, expected_url='/account/confirm-email/', expected_redirect_sc=302,
-                                  expected_target_sc=200):
+def assert_account_redirects(
+    response,
+    expected_url='/account/confirm-email/',
+    expected_redirect_sc=302,
+    expected_target_sc=200,
+):
     assert_redirects(response, expected_url, expected_redirect_sc, expected_target_sc)
 
 
@@ -92,9 +99,10 @@ def assert_contains(response, text, count=None, status_code=200, html=False):
     if hasattr(response, 'render') and callable(response.render) and not response.is_rendered:
         response.render()
 
-    assert response.status_code == status_code, \
-        "Couldn't retrieve content: Response code was %d (expected %d)" \
+    assert response.status_code == status_code, (
+        "Couldn't retrieve content: Response code was %d (expected %d)"
         % (response.status_code, status_code)
+    )
 
     if response.streaming:
         content = b''.join(response.streaming_content)
@@ -108,20 +116,23 @@ def assert_contains(response, text, count=None, status_code=200, html=False):
         text_repr = repr(text)
     if html:
         content = assert_and_parse_html(content, None, "Response's content is not valid HTML:")
-        text = assert_and_parse_html(text, None, "Second argument is not valid HTML:")
+        text = assert_and_parse_html(text, None, 'Second argument is not valid HTML:')
 
     real_count = content.count(text)
 
     if count is not None:
-        assert real_count == count, \
-            "Found %d instances of %s in response (expected %d)" \
-            % (real_count, text_repr, count)
+        assert real_count == count, 'Found %d instances of %s in response (expected %d)' % (
+            real_count,
+            text_repr,
+            count,
+        )
     else:
         assert real_count != 0, "Couldn't find %s in response" % text_repr
 
 
-def assert_redirects(response, expected_url, status_code=302,
-                          target_status_code=200, fetch_redirect_response=True):
+def assert_redirects(
+    response, expected_url, status_code=302, target_status_code=200, fetch_redirect_response=True
+):
     """
     Assert that a response redirected to a specific URL and that the
     redirect URL can be loaded.
@@ -133,26 +144,30 @@ def assert_redirects(response, expected_url, status_code=302,
 
     if hasattr(response, 'redirect_chain'):
         # The request was a followed redirect
-        assert response.redirect_chain, \
-            "Response didn't redirect as expected: Response code was %d (expected %d)" \
+        assert response.redirect_chain, (
+            "Response didn't redirect as expected: Response code was %d (expected %d)"
             % (response.status_code, status_code)
+        )
 
-        assert response.redirect_chain[0][1] == status_code, \
-            "Initial response didn't redirect as expected: Response code was %d (expected %d)" \
+        assert response.redirect_chain[0][1] == status_code, (
+            "Initial response didn't redirect as expected: Response code was %d (expected %d)"
             % (response.redirect_chain[0][1], status_code)
+        )
 
         url, status_code = response.redirect_chain[-1]
         #        scheme, netloc, path, query, fragment = urlsplit(url)
 
-        assert response.status_code == target_status_code, \
-            "Response didn't redirect as expected: Final Response code was %d (expected %d)" \
+        assert response.status_code == target_status_code, (
+            "Response didn't redirect as expected: Final Response code was %d (expected %d)"
             % (response.status_code, target_status_code)
+        )
 
     else:
         # Not a followed redirect
-        assert response.status_code == status_code, \
-            "Response didn't redirect as expected: Response code was %d (expected %d)" \
+        assert response.status_code == status_code, (
+            "Response didn't redirect as expected: Response code was %d (expected %d)"
             % (response.status_code, status_code)
+        )
 
         url = response.url
         scheme, netloc, path, query, fragment = urlsplit(url)
@@ -169,21 +184,23 @@ def assert_redirects(response, expected_url, status_code=302,
             domain, port = split_domain_port(netloc)
             if domain and not validate_host(domain, settings.ALLOWED_HOSTS):
                 raise ValueError(
-                    "The test client is unable to fetch remote URLs (got %s). "
+                    'The test client is unable to fetch remote URLs (got %s). '
                     "If the host is served by Django, add '%s' to ALLOWED_HOSTS. "
-                    "Otherwise, use assertRedirects(..., fetch_redirect_response=False)."
+                    'Otherwise, use assertRedirects(..., fetch_redirect_response=False).'
                     % (url, domain)
                 )
-            redirect_response = response.client.get(path, QueryDict(query), secure=(scheme == 'https'))
+            redirect_response = response.client.get(
+                path, QueryDict(query), secure=(scheme == 'https')
+            )
 
             # Get the redirection page, using the same client that was used
             # to obtain the original response.
-            assert redirect_response.status_code == target_status_code, \
-                "Couldn't retrieve redirection page '%s': response code was %d (expected %d)" \
+            assert redirect_response.status_code == target_status_code, (
+                "Couldn't retrieve redirection page '%s': response code was %d (expected %d)"
                 % (path, redirect_response.status_code, target_status_code)
+            )
 
-    assert url == expected_url, \
-        "Response redirected to '%s', expected '%s'" % (url, expected_url)
+    assert url == expected_url, "Response redirected to '%s', expected '%s'" % (url, expected_url)
 
 
 def fail(msg):

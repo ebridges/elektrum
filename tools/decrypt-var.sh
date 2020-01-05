@@ -10,4 +10,3 @@ fi
 
 echo "Decrypting var $var for env: $env"
 yq read network/group_vars/${env}.yml ${var_name} | ansible-vault decrypt --vault-password-file=network/environments/${env}-vault-password.txt
-

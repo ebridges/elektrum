@@ -10,38 +10,55 @@ from date_dimension.models import DateDimension
 
 
 @exceptions_to_web_response
-def media_item_upload_view(request, owner_id, template_name='media_items/media_item_upload_view.html'):
+def media_item_upload_view(
+    request, owner_id, template_name='media_items/media_item_upload_view.html'
+):
     assert_owner_id(owner_id, request.user.id)
     return render(request, template_name)
+
 
 @exceptions_to_web_response
 def media_item_view(request, owner_id, image_id, template_name='media_items/media_item_view.html'):
     assert_owner_id(owner_id, request.user.id)
     media_item = get_object_or_404(MediaItem, id=image_id)
-    data = { 
-        'collection_year': media_item.create_day.year, 
-        'album_id': media_item.create_day.iso_date, 
-        'media_item': media_item, 
-        'media_item_url': media_url(media_item.file_path) 
+    data = {
+        'collection_year': media_item.create_day.year,
+        'album_id': media_item.create_day.iso_date,
+        'media_item': media_item,
+        'media_item_url': media_url(media_item.file_path),
     }
     return render(request, template_name, data)
 
 
 @exceptions_to_web_response
-def media_list_view(request, owner_id, year, date, template_name='media_items/media_list_view.html'):
+def media_list_view(
+    request, owner_id, year, date, template_name='media_items/media_list_view.html'
+):
     assert_owner_id(owner_id, request.user.id)
 
     yyyymmdd = int(re.sub('-', '', date))
-    media_items = MediaItem.objects.raw('''select m.* 
+    media_items = MediaItem.objects.raw(
+        '''select m.*
                                            from media_item m
                                            where m.create_day_id = %d
-                                           order by m.create_date''' % yyyymmdd)
+                                           order by m.create_date'''
+        % yyyymmdd
+    )
 
     data = []
     for mi in media_items:
-        data.append({'file_name': mi.create_day_id, 'url': media_url(mi.file_path), 'title': mi.create_date, 'item_id': mi.id})
+        data.append(
+            {
+                'file_name': mi.create_day_id,
+                'url': media_url(mi.file_path),
+                'title': mi.create_date,
+                'item_id': mi.id,
+            }
+        )
 
-    return render(request, template_name, {'objects': data, 'yyyymmdd': date, 'year': int(date[:4])})
+    return render(
+        request, template_name, {'objects': data, 'yyyymmdd': date, 'year': int(date[:4])}
+    )
 
 
 @exceptions_to_web_response
@@ -53,14 +70,17 @@ def albums_view(request, owner_id, year, template_name='media_items/albums_view.
     # equivalent in that it doesn't retrieve a random item. However it is sufficient
     # for current state of tests.
     if not settings.IN_TEST_MODE:
-        query = '''select distinct on (d.yyyymmdd) m.* 
-                   from media_item m, date_dim d 
-                   where m.create_day_id = d.yyyymmdd 
+        query = (
+            '''select distinct on (d.yyyymmdd) m.*
+                   from media_item m, date_dim d
+                   where m.create_day_id = d.yyyymmdd
                    and d.year = %d
-                   order by d.yyyymmdd, random()''' % year
+                   order by d.yyyymmdd, random()'''
+            % year
+        )
     else:
         query = '''SELECT d.yyyymmdd, m.*
-                   from media_item m, date_dim d 
+                   from media_item m, date_dim d
                    left JOIN date_dim dd
                    ON
                       d.yyyymmdd < dd.yyyymmdd
@@ -87,13 +107,13 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
     # equivalent in that it doesn't retrieve a random item. However it is sufficient
     # for current state of tests.
     if not settings.IN_TEST_MODE:
-        query = '''select distinct on (d.year) m.* 
-                   from media_item m, date_dim d 
-                   where m.create_day_id = d.yyyymmdd 
+        query = '''select distinct on (d.year) m.*
+                   from media_item m, date_dim d
+                   where m.create_day_id = d.yyyymmdd
                    order by d.year, random()'''
     else:
-        query = '''SELECT d.year, m.* 
-                   from media_item m, date_dim d 
+        query = '''SELECT d.year, m.*
+                   from media_item m, date_dim d
                    left JOIN date_dim dd
                    ON
                       d.yyyymmdd < dd.yyyymmdd

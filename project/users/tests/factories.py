@@ -15,10 +15,10 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = get_user_model()
 
-    email = Sequence(lambda n: "user%03d@example.com" % n)
-    username = Sequence(lambda n: "user%03d" % n)
-    first_name = Sequence(lambda n: "fname: %03d" % n)
-    last_name = Sequence(lambda n: "lname: %03d" % n)
+    email = Sequence(lambda n: 'user%03d@example.com' % n)
+    username = Sequence(lambda n: 'user%03d' % n)
+    first_name = Sequence(lambda n: 'fname: %03d' % n)
+    last_name = Sequence(lambda n: 'lname: %03d' % n)
     password = make_password(USER_PASSWORD)
 
 

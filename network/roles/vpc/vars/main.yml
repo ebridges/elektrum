@@ -40,4 +40,3 @@ vpc_security_groups:
         ports:
           - 22
         rule_desc: "SSH access from Home"
-
