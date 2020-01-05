@@ -99,9 +99,9 @@ def handle_adminuser_command(args):
         return as_json(u)
     except ObjectDoesNotExist:
         info(f'User does not exist for username {username}, creating.')
-        return as_json(
-            CustomUser.objects.create_superuser(username, email=email, password=password)
-        )
+        u = CustomUser.objects.create_superuser(username, email=email, password=password)
+        info('Created user with id %s' % str(u.id))
+        return as_json(u)
 
     info(f'Unable to create user for username: {username}')
     return {}
