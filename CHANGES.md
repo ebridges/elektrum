@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Rewrite of `elektrum-deploy` script.
 
 ## 0.36 (2019-12-15)
 
