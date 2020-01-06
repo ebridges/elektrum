@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Completed migration from Bitbucket to GitHub, including issues.
+- Consolidated documentation from bitbucket wiki.
 
 ## 0.38 (2020-01-05)
 
