@@ -57,7 +57,7 @@ pre-commit = "^1.20"
 
 [tool.poetry.dev-dependencies.black]
 version = "^19.3b0"
-allows-prereleases = true
+allow-prereleases = true
 
 [tool.poetry.dev-dependencies.ansible]
 git = "https://github.com/ansible/ansible.git"
