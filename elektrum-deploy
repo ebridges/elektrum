@@ -29,6 +29,13 @@ function log() {
     echo "[${now}][BASH] ${msg}"
 }
 
+function check_required() {
+    command -v jq >/dev/null 2>&1 || { echo >&2 "Command 'jq' not installed. Install using `brew install jq`.  Aborting."; exit 1; }
+    command -v yq >/dev/null 2>&1 || { echo >&2 "Command 'yq' not installed. Install using `brew install yq`.  Aborting."; exit 1; }
+    command -v aws >/dev/null 2>&1 || { echo >&2 "Command 'aws' not installed. Install using `brew install awscli`.  Aborting."; exit 1; }
+    command -v ansible-vault >/dev/null 2>&1 || { echo >&2 "Command 'ansible-vault' not installed. Install using `brew install ansible`.  Aborting."; exit 1; }
+}
+
 function deploy_static_assets() {
     log "Deploying static assets."
     make static
@@ -84,6 +91,9 @@ EOT
         --payload "${event}" ${output_file} \
     | jq --raw-output .LogResult | base64 --input=- --decode
 }
+
+log "Ensuring required commands are installed."
+check_required
 
 ENV=
 VERBOSE=
