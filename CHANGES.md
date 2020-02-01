@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.39 (2020-02-01)
+
 - Completed migration from Bitbucket to GitHub, including issues.
 - Consolidated documentation from bitbucket wiki.
 - Fix for 'Access Denied' error when uploading images.
