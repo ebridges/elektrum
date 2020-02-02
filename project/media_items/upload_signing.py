@@ -41,6 +41,8 @@ def create_signed_url(credentials, upload_key):
     """
     access_key, access_secret, bucket_name = credentials
 
+    logger = getLogger(__name__)
+    logger.info(f'access_key: {access_key}, access_secret: {access_secret}')
     s3client = boto3.client(
         's3',
         aws_access_key_id=access_key,
