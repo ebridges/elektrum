@@ -3,6 +3,9 @@
 ## Unreleased
 
 
+## 0.40 (2020-02-01)
+
+
 ## 0.39 (2020-02-01)
 
 - Completed migration from Bitbucket to GitHub, including issues.
