@@ -68,7 +68,7 @@
 - name: Create a lambda execution role
   iam_role:
     name: "{{ lambda_execution_rolename }}"
-    managed_policy:
+    managed_policies:
       - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
