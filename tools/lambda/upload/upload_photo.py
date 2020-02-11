@@ -7,8 +7,9 @@ from logging import debug, info, INFO, DEBUG, basicConfig
 from urllib.parse import urlparse
 from datetime import datetime
 
-# import requests
-from botocore.vendored import requests
+import requests
+
+# from botocore.vendored import requests
 import boto3
 from botocore.client import Config
 
@@ -43,8 +44,9 @@ def create_signed_url(bucket_name, file):
 
 
 def upload_photo(photo, url):
-    files = {'file': open(photo, 'rb')}
-    response = requests.put(url, files=files)
+    headers = {'Content-type': 'image/jpeg'}
+    data = open(photo, 'rb')
+    response = requests.put(url, data=data, headers=headers)
     debug(
         'RESPONSE: {status_code}\n{headers}\n\n{body}'.format(
             status_code=response.status_code,
@@ -91,8 +93,8 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    environ['AWS_ACCESS_KEY_ID'] = ''
-    environ['AWS_SECRET_ACCESS_KEY'] = ''
-    environ['AWS_DEFAULT_REGION'] = ''
+    # environ['AWS_ACCESS_KEY_ID'] = ''
+    # environ['AWS_SECRET_ACCESS_KEY'] = ''
+    # environ['AWS_DEFAULT_REGION'] = ''
 
     main(argv)
