@@ -11,8 +11,6 @@ from base.tests.util import match_image_key
 @pytest.mark.django_db
 def test_create_signed_upload_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
-    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
     monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', bucket_name)
     mime_type = 'image/jpeg'
     user = user_factory()
@@ -35,19 +33,13 @@ def test_create_signed_upload_url(user_factory, monkeypatch):
 @pytest.mark.django_db
 def test_create_signed_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
-    monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', bucket_name)
-    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'XXXX22XXXXXX4XX2XXXX')
-    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
     user = user_factory()
-    expected_credentials = lookup_user_upload_credentials(user)
     upload_key = 'abcdefg'
-    url = create_signed_url(expected_credentials, upload_key)
+    url = create_signed_url(bucket_name, upload_key)
     qs = parse_qs(url.query)
-    actual_credential = qs['X-Amz-Credential'][0].split('/')[0]
     assert url.scheme == 'https'
     assert url.hostname == '%s.s3.amazonaws.com' % bucket_name
     assert url.path == '/%s' % upload_key
-    assert actual_credential == expected_credentials[0]
 
 
 @pytest.mark.django_db
@@ -60,19 +52,6 @@ def test_create_upload_key(user_factory):
     assert m.group('user_id') == str(user.id)
     assert m.group('image_id') is not None
     assert m.group('extension') == supported_upload_types[mtype]
-
-
-@pytest.mark.django_db
-def test_lookup_user_upload_credentials(user_factory, monkeypatch):
-    monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'abcdefg')
-    monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', 'hijklmn')
-    monkeypatch.setenv('MEDIA_UPLOAD_BUCKET_NAME', 'opqrstu')
-
-    user = user_factory()
-    credentials = lookup_user_upload_credentials(user)
-    assert credentials[0] == 'abcdefg'
-    assert credentials[1] == 'hijklmn'
-    assert credentials[2] == 'opqrstu'
 
 
 def test_extension_from_type_failure():
