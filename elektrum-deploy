@@ -33,6 +33,7 @@ function check_required() {
     command -v jq >/dev/null 2>&1 || { echo >&2 "Command 'jq' not installed. Install using `brew install jq`.  Aborting."; exit 1; }
     command -v yq >/dev/null 2>&1 || { echo >&2 "Command 'yq' not installed. Install using `brew install yq`.  Aborting."; exit 1; }
     command -v aws >/dev/null 2>&1 || { echo >&2 "Command 'aws' not installed. Install using `brew install awscli`.  Aborting."; exit 1; }
+    command -v yarn >/dev/null 2>&1 || { echo >&2 "Command 'yarn' not installed. Install using `brew install yarn`.  Aborting."; exit 1; }
     command -v ansible-vault >/dev/null 2>&1 || { echo >&2 "Command 'ansible-vault' not installed. Install using `brew install ansible`.  Aborting."; exit 1; }
 }
 

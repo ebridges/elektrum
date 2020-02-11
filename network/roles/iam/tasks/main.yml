@@ -68,7 +68,7 @@
 - name: Create a lambda execution role
   iam_role:
     name: "{{ lambda_execution_rolename }}"
-    managed_policy:
+    managed_policies:
       - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
@@ -83,6 +83,20 @@
         - sts:AssumeRole
     description: Lambda execution role
   register: lambda_execution_role_info
+
+- name: Ensure lambda has authorization to write to media bucket
+  iam_policy:
+    policy_name: "{{ service_name }}-{{ operating_env }}-media-put"
+    iam_name: "{{ lambda_execution_rolename }}"
+    iam_type: role
+    policy_json:
+      Version: "2012-10-17"
+      Statement:
+        - Sid: Created20200209
+          Effect: Allow
+          Action: s3:PutObject
+          Resource: "arn:aws:s3:::{{ media_upload_bucket_name }}/*"
+    state: present
 
 - name: set lambda execution role arn as fact
   set_fact:
