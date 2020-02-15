@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/project/javascript-load-image/js/load-image.all.min.js"></script>
+  </head>
+  <body>
+    <div id='image'></div>
+  </body>
+  <script>
+    loadImage(
+      '/tools/lambda/upload/2020-02-01T10.16.41.jpg',
+      function(img) {
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.maxWidth = '100vw';
+        document.getElementById('image').appendChild(img);
+      },
+      {
+        orientation: true
+      }
+    );
+  </script>
+</html>
