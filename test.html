@@ -9,15 +9,26 @@
       <dd><div class='image'></div></dd>
       <dt>Image B</dt>
       <dd><div class='image'></div></dd>
+      <dt>Image C</dt>
+      <dd><div class='image'></div></dd>
+      <dt>Image D</dt>
+      <dd><div class='image'></div></dd>
     </dl>
   </body>
   <script>
-    for (loc of document.getElementsByClassName('image')) {
+    images = [
+      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
+    ];
+    for (let loc of document.getElementsByClassName('image')) {
+      let i = images.shift()
       loadImage(
-        '/tools/lambda/upload/2020-02-01T10.16.41.jpg',
+        i.src,
         function(img) {
-          img.style.width = '100%';
-          img.style.height = 'auto';
+          img.style.width = i.w;
+          img.style.height = i.h;
           img.style.maxWidth = '100vw';
           loc.appendChild(img);
         },
