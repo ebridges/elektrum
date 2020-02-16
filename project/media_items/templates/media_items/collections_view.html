@@ -12,7 +12,7 @@
   {% for info in objects %}
   <span class='img-container'>
       <dd><div class='media_item_thumbnail'></div></dd>
-      <dt><a href='{% url 'albums-view' user.id info.year %}'>{{ info.year }}</a></dt>
+      <dt><a href="{% url 'albums-view' user.id info.year %}">{{ info.year }}</a></dt>
   </span>
   {% endfor %}
 </dl>

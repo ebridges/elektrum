@@ -14,7 +14,7 @@
   {% for info in objects %}
   <span class='img-container'>
       <dd><img src='{{ info.url }}'/></dd>
-      <dt><a href='{% url 'media-item-view' user.id info.item_id %}'>{{ info.title }}</a></dt>
+      <dt><a href="{% url 'media-item-view' user.id info.item_id %}">{{ info.title }}</a></dt>
   </span>
   {% endfor %}
 </dl>
