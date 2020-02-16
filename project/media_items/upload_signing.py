@@ -7,6 +7,8 @@ from elektrum.log import getLogger
 
 supported_upload_types = {'image/jpeg': 'jpg', 'image/png': 'png'}
 
+signed_url_expiry_in_secs = 60 * 5  # 5min
+
 
 def create_signed_upload_url(user, mime_type):
     """
@@ -45,7 +47,7 @@ def create_signed_url(bucket_name, upload_key):
     url = s3client.generate_presigned_url(
         'put_object',
         Params={'Bucket': bucket_name, 'Key': upload_key},
-        ExpiresIn=3600,
+        ExpiresIn=signed_url_expiry_in_secs,
         HttpMethod='PUT',
     )
     return urlparse(url)
