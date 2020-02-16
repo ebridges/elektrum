@@ -2,7 +2,9 @@
 {% load i18n %}
 
 {% block title %}Media Item{% endblock %}
-
+{% block local_js %}
+<script type="text/javascript" src="{% static 'js/load-image.all.min.js' %}"></script>
+{% endblock %}
 {% block nav_block %}
 <h2 class="subtitle">
     <a href='{% url 'collections-view' user.id %}' class='subtitle_link'><span class="nav-home-icon">&#x2302;</span></a> /
@@ -14,8 +16,22 @@
 
 {% block content %}
 <div class="media_item_container">
-    <img class="media_item"
-         src="{{ media_item_url }}"/>
+    <div id="media_item"></div>
+    <script>
+      let image_url='{{ media_item_url }}';
+      loadImage(
+        image_url,
+        function(img) {
+          img.style.width = 1200;
+          img.style.height = 'auto';
+          img.style.maxWidth = '100vw';
+          document.getElementById('media_item').appendChild(img);
+        },
+        {
+          orientation: true
+        }
+      );
+    </script>
 </div>
 
 <details>
