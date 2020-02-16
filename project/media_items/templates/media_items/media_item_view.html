@@ -1,4 +1,5 @@
 {% extends 'base_protected.html' %}
+{% load static %}
 {% load i18n %}
 
 {% block title %}Media Item{% endblock %}
@@ -22,9 +23,9 @@
       loadImage(
         image_url,
         function(img) {
-          img.style.width = 1200;
+          img.style.width = 1000;
           img.style.height = 'auto';
-          img.style.maxWidth = '100vw';
+          img.style.maxWidth = '90vw';
           document.getElementById('media_item').appendChild(img);
         },
         {
