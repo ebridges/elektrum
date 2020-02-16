@@ -12,9 +12,19 @@
 <dl>
   {% for info in objects %}
   <span class='img-container'>
-      <dd><img src='{{ info.url }}'/></dd>
+      <dd><div class='media_item_thumbnail'></div></dd>
       <dt><a href="{% url 'media-list-view' user.id year info.yyyymmdd %}">{{ info.yyyymmdd }}</a></dt>
   </span>
   {% endfor %}
 </dl>
+{% endblock %}
+
+{% block local_endjs %}
+<script>
+  let images = [
+  {% for info in objects %}{src: '{{ info.url }}', w: '222', h: '222'},
+  {% endfor %}];
+  let locations = document.getElementsByClassName('media_item_thumbnail');
+  renderThumbnails(images, locations)
+</script>
 {% endblock %}
