@@ -1,41 +1,124 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/project/javascript-load-image/js/load-image.all.min.js"></script>
+    <script src="/project/static/js/load-image.all.min.js"></script>
+    <script src="/project/static/js/media_item.js"></script>
+    <style>
+    dl {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-gap: 10px 5px;
+    }
+
+    .img-container {
+      position: relative;
+    }
+
+    dt {
+      position: absolute;
+      bottom: 0;
+      padding-left: 10px;
+      padding-bottom: 5px;
+      color: #ffffff;
+      width: 100%;
+    }
+
+    dt > a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    dt > a:visited {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    dt > a:hover {
+      color: #ffffff8a;
+    }
+
+    dt > a:active {
+      color: #ffffff8a;
+    }
+
+    dd {
+      box-sizing: border-box;
+      position: relative;
+      display: grid;
+    }
+
+    /* https://stackoverflow.com/a/5804278/87408 */
+    dd img {
+      display: block;
+      object-fit: cover;
+      width: 222px;
+      height: 222px;
+    }
+
+    /* https://stackoverflow.com/a/23935891/87408 */
+    dd::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width:222px;
+      min-height:222px;
+      background: linear-gradient( rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.02) 50%, rgba(0, 0, 0, 0.10) 100%);
+    }
+    </style>
   </head>
   <body>
     <dl>
-      <dt>Image A</dt>
-      <dd><div class='image'></div></dd>
-      <dt>Image B</dt>
-      <dd><div class='image'></div></dd>
-      <dt>Image C</dt>
-      <dd><div class='image'></div></dd>
-      <dt>Image D</dt>
-      <dd><div class='image'></div></dd>
+      <span class='img-container'>
+        <dt>Image A</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image B</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image C</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image D</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image E</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image F</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image G</dt>
+        <dd><div class='image'></div></dd>
+      </span>
+      <span class='img-container'>
+        <dt>Image H</dt>
+        <dd><div class='image'></div></dd>
+      </span>
     </dl>
   </body>
   <script>
     images = [
-      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
-      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
-      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
-      {src: 'https://picsum.photos/300/200.jpg', w: '600', h: 'auto'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
+      {src: 'https://picsum.photos/300/200.jpg', w: '222', h: '222'},
     ];
-    for (let loc of document.getElementsByClassName('image')) {
-      let i = images.shift()
-      loadImage(
-        i.src,
-        function(img) {
-          img.style.width = i.w;
-          img.style.height = i.h;
-          img.style.maxWidth = '100vw';
-          loc.appendChild(img);
-        },
-        {
-          orientation: true
-        }
-      );
-    }
+    renderThumbnails(
+      images,
+      document.getElementsByClassName('image')
+    )
   </script>
 </html>
