@@ -55,7 +55,7 @@ publish:
 
 commit:
 # add a newline to all files to fix lint check done by pre-commit-config
-	@for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* ; do \
+	@for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* project/static/js/load-image* ; do \
 		echo >> $${file} ; \
 	done
 
@@ -67,7 +67,8 @@ commit:
 		git add project/static/css/app* \
 						project/static/js/app* \
 						project/static/js/manifest* \
-						project/static/js/vendor* && \
+						project/static/js/vendor* \
+						project/static/js/load-image* && \
 		git commit --gpg-sign --message 'Static assets generated.' \
 		echo '[commit] SUCCESSFUL' ; \
 	fi
