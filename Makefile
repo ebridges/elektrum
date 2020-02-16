@@ -4,40 +4,46 @@
 ###
 #######################################################################
 
-CODE=./project/vue-s3-dropzone/frontend
+DZ_CODE=./project/vue-s3-dropzone/frontend
+JSLI_CODE=./project/javascript-load-image
 
-static: clean index.html app.js app.css vendor.js manifest.js publish commit
+static: clean index.html load-image.all.min.js app.js app.css vendor.js manifest.js publish commit
 
 clean:
-	/bin/rm -rf ${CODE}/dist
+	/bin/rm -rf ${DZ_CODE}/dist
 	@echo [clean] SUCCESSFUL
 
+load-image.all.min.js:
+	cp ${JSLI_CODE}/js/load-image.all.min.js project/static/js/load-image.all.min.js
+	cp ${JSLI_CODE}/js/load-image.all.min.js.map project/static/js/load-image.all.min.js.map
+	@echo [load-image.all.min.js] SUCCESSFUL
+
 index.html:
-	cd ${CODE} && yarn install && yarn build
+	cd ${DZ_CODE} && yarn install && yarn build
 	@echo [index.html] SUCCESSFUL
 
 app.js:
-	cp ${CODE}/dist/static/js/app.*.js project/static/js/app.js
+	cp ${DZ_CODE}/dist/static/js/app.*.js project/static/js/app.js
 	/bin/rm project/static/js/app.*.js.map
-	cp ${CODE}/dist/static/js/app.*.js.map project/static/js/
+	cp ${DZ_CODE}/dist/static/js/app.*.js.map project/static/js/
 	@echo [app.js] SUCCESSFUL
 
 app.css:
-	cp ${CODE}/dist/static/css/app.*.css project/static/css/app.css
+	cp ${DZ_CODE}/dist/static/css/app.*.css project/static/css/app.css
 	/bin/rm project/static/css/app.*.css.map
-	cp ${CODE}/dist/static/css/app.*.css.map project/static/css/
+	cp ${DZ_CODE}/dist/static/css/app.*.css.map project/static/css/
 	@echo [app.css] SUCCESSFUL
 
 vendor.js:
-	cp ${CODE}/dist/static/js/vendor.*.js project/static/js/vendor.js
+	cp ${DZ_CODE}/dist/static/js/vendor.*.js project/static/js/vendor.js
 	/bin/rm project/static/js/vendor.*.js.map
-	cp ${CODE}/dist/static/js/vendor.*.js.map project/static/js/
+	cp ${DZ_CODE}/dist/static/js/vendor.*.js.map project/static/js/
 	@echo [vendor.js] SUCCESSFUL
 
 manifest.js:
-	cp ${CODE}/dist/static/js/manifest.*.js project/static/js/manifest.js
+	cp ${DZ_CODE}/dist/static/js/manifest.*.js project/static/js/manifest.js
 	/bin/rm project/static/js/manifest.*.js.map
-	cp ${CODE}/dist/static/js/manifest.*.js.map project/static/js/
+	cp ${DZ_CODE}/dist/static/js/manifest.*.js.map project/static/js/
 	@echo [manifest.js] SUCCESSFUL
 
 publish:
@@ -49,7 +55,7 @@ publish:
 
 commit:
 # add a newline to all files to fix lint check done by pre-commit-config
-	@for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* ; do \
+	@for file in project/static/css/app* project/static/js/app* project/static/js/manifest* project/static/js/vendor* project/static/js/load-image* ; do \
 		echo >> $${file} ; \
 	done
 
@@ -61,7 +67,8 @@ commit:
 		git add project/static/css/app* \
 						project/static/js/app* \
 						project/static/js/manifest* \
-						project/static/js/vendor* && \
+						project/static/js/vendor* \
+						project/static/js/load-image* && \
 		git commit --gpg-sign --message 'Static assets generated.' \
 		echo '[commit] SUCCESSFUL' ; \
 	fi
