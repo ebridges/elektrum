@@ -307,6 +307,18 @@ requests-oauthlib = ">=0.3.0"
 
 [[package]]
 category = "main"
+description = "A Django email backend that uses Boto3 to interact with Amazon Simple Email Service (SES)."
+name = "django-amazon-ses"
+optional = false
+python-versions = ">=3.5"
+version = "3.0.2"
+
+[package.dependencies]
+Django = ">=1.11,<3.1"
+boto3 = ">=1.3.0"
+
+[[package]]
+category = "main"
 description = "An SSL-enabled development server for Django"
 name = "django-sslserver"
 optional = false
@@ -1318,7 +1330,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools"]
 
 [metadata]
-content-hash = "1a6ecd16126eb09f5d3668c3af2575e1bc8279326566601ce44d62d24506b0da"
+content-hash = "17fbbf1f6ccdcde73caf69aa703c196dfc1fd04f81ba61e87d4e6b2f3d3b3746"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1498,6 +1510,10 @@ django = [
 ]
 django-allauth = [
     {file = "django-allauth-0.40.0.tar.gz", hash = "sha256:6a189fc4d3ee23596c3fd6e9f49c59b5b15618980118171a50675dd6a27cc589"},
+]
+django-amazon-ses = [
+    {file = "django-amazon-ses-3.0.2.tar.gz", hash = "sha256:f39503d5d16c7788b0ac45d7781100074ff3a19858e5c754031cd2281c7e4658"},
+    {file = "django_amazon_ses-3.0.2-py3-none-any.whl", hash = "sha256:d0e79422584e35e24788f60190fb5a1c4809560572e78fd7380a2ae864704ad6"},
 ]
 django-sslserver = [
     {file = "django_sslserver-0.21-py3-none-any.whl", hash = "sha256:67af769be32653ab55df60212e6f17be4ea972b678e0a17cd680cd5e66c006db"},
