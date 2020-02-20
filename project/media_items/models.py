@@ -194,6 +194,10 @@ class MediaItem(BaseModel):
         max_length=64,
     )
 
+    shared_by = models.ManyToManyField(
+        get_user_model(), through='sharing.Share', related_name='shared_by'
+    )
+
     def save(self, *args, **kwargs):
         created = int(self.create_date.strftime('%Y%m%d'))
         self.create_day = DateDimension.objects.get(yyyymmdd=created)
