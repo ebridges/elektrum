@@ -1,6 +1,7 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-from base.models import BaseModel
+from base.models import BaseModel, DateTimeNoTZField
 from media_items.models import MediaItem
 from users.models import CustomUser
 
@@ -21,7 +22,7 @@ class Share(BaseModel):
         MediaItem, related_name='shared_media', on_delete=models.CASCADE
     )
     state = models.CharField(default=10, choices=[(10, 'draft'), (30, 'shared')], max_length=24)
-    share_date = models.DateTimeNoTZField(
+    share_date = DateTimeNoTZField(
         _('share date'),
         help_text=_('Required. The date and time these media items were shared.'),
         null=True,

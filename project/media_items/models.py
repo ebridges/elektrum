@@ -5,9 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 # from django.contrib.gis.db import models
-from django.db.models import Field
 
-from base.models import BaseModel
+from base.models import BaseModel, DateTimeNoTZField
 from date_dimension.models import DateDimension
 
 
@@ -22,11 +21,6 @@ JPG = 'jpg'
 PNG = 'png'
 
 MIME_TYPE_CHOICES = ((JPG, 'image/jpeg'), (PNG, 'image/png'))
-
-
-class DateTimeNoTZField(Field):
-    def db_type(self, connection):
-        return 'TIMESTAMP WITHOUT TIME ZONE'
 
 
 class MediaItem(BaseModel):

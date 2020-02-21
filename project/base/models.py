@@ -1,7 +1,13 @@
 from uuid import uuid4
 
 from django.db import models
+from django.db.models import Field
 from django.utils.translation import gettext_lazy as _
+
+
+class DateTimeNoTZField(Field):
+    def db_type(self, connection):
+        return 'TIMESTAMP WITHOUT TIME ZONE'
 
 
 class BaseModel(models.Model):
