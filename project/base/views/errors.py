@@ -4,7 +4,9 @@ from django.http import (
     HttpResponseServerError,
     HttpResponseNotAllowed,
     HttpResponseForbidden,
+    HttpResponseNotFound,
 )
+from django.http.response import Http404, HttpResponseBase
 from rest_framework.response import Response
 
 
@@ -31,6 +33,10 @@ def exceptions_to_web_response(view_func):
             return HttpResponseBadRequest(str(e))
         except MethodNotAllowedException as e:
             return HttpResponseNotAllowed(str(e))
+        except Http404 as e:
+            return HttpResponseNotFound(str(e))
+        except HttpResponseBase as e:
+            return e
         except Exception as e:
             return HttpResponseServerError(str(e))
 
