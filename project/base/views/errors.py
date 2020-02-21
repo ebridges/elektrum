@@ -6,7 +6,7 @@ from django.http import (
     HttpResponseForbidden,
     HttpResponseNotFound,
 )
-from django.http.response import Http404, HttpResponseBase
+from django.http.response import Http404
 from rest_framework.response import Response
 
 
@@ -35,8 +35,6 @@ def exceptions_to_web_response(view_func):
             return HttpResponseNotAllowed(str(e))
         except Http404 as e:
             return HttpResponseNotFound(str(e))
-        except HttpResponseBase as e:
-            return e
         except Exception as e:
             return HttpResponseServerError(str(e))
 
