@@ -1,49 +1,6 @@
 {% extends 'base_protected.html' %}
 {% block title %}Share Media{% endblock %}
 
-{% block local_css %}
-<style>
-  .media_items {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 10px 5px;
-  }
-  .media_item {
-    box-sizing: border-box;
-    position: relative;
-    display: grid;
-    border: 0px;
-    width: min-content;
-    height: min-content;
-  }
-  .media_item figure {
-    display: table;
-    position: relative;
-    float: left;
-  }
-  .media_item figcaption {
-    width: 100%;
-    display: table-row;
-    float: left;
-    position: absolute;
-    top: 0;
-    padding: 0.75em 0em 0.75em 0em;
-    background: linear-gradient( rgba(0, 0, 0, 0.6) 15%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0.1) 60%);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-  }
-  .media_item_thumbnail {
-    border: 0px;
-  }
-  input[type=checkbox] {
-    zoom: 1.5;
-    vertical-align: middle;
-  }
-</style>
-
-{% endblock %}
-
 {% block local_js %}
 <script>
   function toggleCheckbox(checkboxId) {

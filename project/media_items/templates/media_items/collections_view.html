@@ -8,14 +8,20 @@
 {% endblock %}
 
 {% block content %}
-<dl>
+<div class="media_items">
   {% for info in objects %}
-  <span class='img-container'>
-      <dd><div class='media_item_thumbnail'></div></dd>
-      <dt><a href="{% url 'albums-view' user.id info.year %}">{{ info.year }}</a></dt>
-  </span>
+  <div class="media_item">
+    <a class="media_item_link" href="{% url 'albums-view' user.id info.year %}">
+      <figure>
+        <div class="media_item_thumbnail"></div>
+        <figcaption>
+          &nbsp;&nbsp;&nbsp;{{ info.year }}
+        </figcaption>
+      </figure>
+    </a>
+  </div>
   {% endfor %}
-</dl>
+</div>
 {% endblock %}
 
 {% block local_endjs %}
