@@ -1,11 +1,16 @@
 {% extends 'base_protected.html' %}
 {% block title %}Media Home{% endblock %}
+{% load static %}
 
 {% block nav_block %}
 <h2 class='subtitle'>
-    <a href='{% url 'collections-view' user.id %}'><span class="nav-home-icon">&#x2302;</span></a> /
-    <a href='{% url 'albums-view' user.id year %}'>{{ year }}</a> /
+    <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
     {{ yyyymmdd }}
+    &nbsp; &mdash; &nbsp;
+    <a href="{% url 'sharing-list-view' user.id year yyyymmdd %}" class="subtitle_link">
+      <img src="{% static 'img/sharing.svg' %}" alt="Share images from this album." width="20" height="20"/>
+    </a>
 </h2>
 {% endblock %}
 

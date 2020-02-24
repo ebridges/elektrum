@@ -10,7 +10,15 @@ function renderThumbnails(images, locations) {
         loc.appendChild(img);
       },
       {
-        orientation: true
+        orientation: true,
+        canvas: true,
+        // maxWidth: i.w,
+        // maxHeight: i.h,
+        // top: "5px",
+        // right: "5px",
+        // bottom: "5px",
+        // left: "5px",
+        // cover: true,
       }
     );
   }
