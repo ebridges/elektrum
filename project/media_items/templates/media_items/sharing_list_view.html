@@ -43,7 +43,7 @@
 {% block local_endjs %}
 <script>
   let images = [
-  {% for info in objects %}{src: '{{ info.url }}', w: '202px', h: '202px'},
+  {% for info in objects %}{src: '{{ info.url }}', w: '222px', h: '222px'},
   {% endfor %}];
   let locations = document.getElementsByClassName('media_item_thumbnail');
   renderThumbnails(images, locations)
