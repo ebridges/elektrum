@@ -18,7 +18,7 @@
 <h2 class='subtitle'>
     <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
     <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
-    <a href="{% url 'media-list-view' user.id year info.yyyymmdd %}">{{ yyyymmdd }}</a>
+    <a href="{% url 'media-list-view' user.id year yyyymmdd %}">{{ yyyymmdd }}</a>
 </h2>
 <button name="share" id="share-button"/>
 {% endblock %}
