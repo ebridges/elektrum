@@ -20,24 +20,30 @@
     <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
     <a href="{% url 'media-list-view' user.id year yyyymmdd %}">{{ yyyymmdd }}</a>
 </h2>
-<button name="share" id="share-button"/>
 {% endblock %}
 
 {% block content %}
-<div class="media_items">
-  {% for info in objects %}
-  <div class="media_item">
-    <a class="media_item_link" onclick="toggleCheckbox('{{ info.item_id }}')" href="#">
-      <figure>
-        <div class="media_item_thumbnail"></div>
-        <figcaption>
-          &nbsp;&nbsp;<input type="checkbox" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
-        </figcaption>
-      </figure>
-    </a>
+<form action="{% url 'share-media' %}" method="POST">
+  {% csrf_token %}
+  <input type="hidden" name="year" value="{{ year }}">
+  <input type="hidden" name="yyyymmdd" value="{{ yyyymmdd }}">
+  <label for="share-media">Share selected items.</label>
+  <input id="share-media" type="submit" name="share" >
+  <div class="media_items">
+    {% for info in objects %}
+    <div class="media_item">
+      <a class="media_item_link" onclick="toggleCheckbox('{{ info.item_id }}')" href="#">
+        <figure>
+          <div class="media_item_thumbnail"></div>
+          <figcaption>
+            &nbsp;&nbsp;<input type="checkbox" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
+          </figcaption>
+        </figure>
+      </a>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
+</form>
 {% endblock %}
 
 {% block local_endjs %}
