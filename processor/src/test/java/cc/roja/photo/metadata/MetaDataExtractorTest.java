@@ -65,4 +65,35 @@ class MetaDataExtractorTest {
     MetaDataExtractor underTest = new MetaDataExtractor();
     assertThrows(IOException.class, () -> underTest.extract(imageKey, file));
   }
+
+  @Test
+  void testExtractMetadata_CreateDateFromXmp() throws IOException {
+    File file = new File("src/test/resources/cc.roja.photo.metadata/testExtractMetadata_CreateDateFromXmp/9d90b8f3-113d-4476-afe8-9fc0ac265850.jpg");
+    ImageKey imageKey = ImageKey.parse("57f738b8-700f-11e9-90ab-320017981ea0/9d90b8f3-113d-4476-afe8-9fc0ac265850.jpg");
+
+    MetaDataExtractor underTest = new MetaDataExtractor();
+    ImageInfo actual = underTest.extract(imageKey, file);
+
+    LocalDateTime expectedCreateDate = LocalDateTime.parse("2016-02-22T20:57:08");
+    LocalDateTime actualCreateDate = actual.getCreateDateTime();
+
+    assertEquals(expectedCreateDate, actualCreateDate);
+  }
+
+  @Test
+  void testExtractMetadata_FileDimensions() throws IOException {
+    File file = new File("src/test/resources/cc.roja.photo.metadata/testExtractMetadata_CreateDateFromXmp/9d90b8f3-113d-4476-afe8-9fc0ac265850.jpg");
+    ImageKey imageKey = ImageKey.parse("57f738b8-700f-11e9-90ab-320017981ea0/9d90b8f3-113d-4476-afe8-9fc0ac265850.jpg");
+
+    MetaDataExtractor underTest = new MetaDataExtractor();
+    ImageInfo actual = underTest.extract(imageKey, file);
+
+    Integer expectedWidth = 1000;
+    Integer actualWidth = actual.getImageWidth();
+    assertEquals(expectedWidth, actualWidth);
+
+    Integer expectedHeight = 800;
+    Integer actualHeight = actual.getImageHeight();
+    assertEquals(expectedHeight, actualHeight);
+  }
 }

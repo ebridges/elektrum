@@ -38,6 +38,11 @@ import java.util.regex.Pattern;
 import cc.roja.photo.model.ImageInfo;
 import cc.roja.photo.model.ImageKey;
 import cc.roja.photo.util.DateUtils;
+
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPDateTime;
+import com.adobe.internal.xmp.XMPException;
+import com.adobe.internal.xmp.XMPMeta;
 import com.drew.lang.annotations.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +56,8 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
+import com.drew.metadata.jpeg.JpegDirectory;
+import com.drew.metadata.xmp.XmpDirectory;
 
 public class MetaDataExtractor {
   private static final Logger LOG = LogManager.getLogger(MetaDataExtractor.class);
@@ -122,11 +129,13 @@ public class MetaDataExtractor {
       meta.setShutterSpeed(shutterSpeedString);
     }
 
-    Integer imageHeight = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_HEIGHT));
+    Integer imageHeight = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_HEIGHT), of(
+        JpegDirectory.class, JpegDirectory.TAG_IMAGE_HEIGHT));
     LOG.debug("imageHeight: "+imageHeight);
     meta.setImageHeight(imageHeight);
 
-    Integer imageWidth = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_WIDTH));
+    Integer imageWidth = resolveInteger(metadata, of(ExifSubIFDDirectory.class, TAG_EXIF_IMAGE_WIDTH), of(
+        JpegDirectory.class, JpegDirectory.TAG_IMAGE_WIDTH));
     LOG.debug("imageWidth: "+imageWidth);
     meta.setImageWidth(imageWidth);
   }
@@ -135,10 +144,37 @@ public class MetaDataExtractor {
     TemporalAccessor createDate = MetadataUtils.resolveDate(metadata, MetadataUtils.createDateTags);
 
     if(createDate == null) {
+      createDate = getCreateDateFromXmpMetadata(metadata);
+    }
+
+    if(createDate == null) {
       createDate = getCreateDateFromFilename(metadata);
     }
 
     return DateUtils.stripTimeZone(createDate);
+  }
+
+  private static TemporalAccessor getCreateDateFromXmpMetadata(Metadata metadata) {
+    for (XmpDirectory xmpDirectory : metadata.getDirectoriesOfType(XmpDirectory.class)) {
+      // Usually with metadata-extractor, you iterate a directory's tags. However XMP has
+      // a complex structure with many potentially unknown properties. This doesn't map
+      // well to metadata-extractor's directory-and-tag model.
+      //
+      // If you need to use XMP data, access the XMPMeta object directly.
+      XMPMeta xmpMeta = xmpDirectory.getXMPMeta();
+      try {
+        XMPDateTime xmpDateTime = xmpMeta.getPropertyDate(XMPConst.NS_XMP, "xmp:CreateDate");
+
+        if ( xmpDateTime != null) {
+          DateTimeFormatter format = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+          String string = xmpDateTime.getISO8601String();
+          return  LocalDateTime.parse(string, format);
+        }
+      } catch (XMPException e) {
+        throw new IllegalArgumentException("Caught exception when reading XMP metadata.", e);
+      }
+    }
+    return null;
   }
 
   private static LocalDateTime getCreateDateFromFilename(Metadata metadata) {
