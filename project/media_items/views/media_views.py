@@ -45,9 +45,9 @@ def media_list_view(
     yyyymmdd = int(re.sub('-', '', date))
     media_items = MediaItem.objects.raw(
         '''select m.*
-                                           from media_item m
-                                           where m.create_day_id = %d
-                                           order by m.create_date'''
+            from media_item m
+            where m.create_day_id = %d
+            order by m.create_date'''
         % yyyymmdd
     )
 
