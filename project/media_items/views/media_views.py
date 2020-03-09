@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 
 from base.views.utils import assert_owner_id, media_url
-from base.views.errors import exceptions_to_web_response, BadRequestException
+from base.views.errors import exceptions_to_web_response
 from media_items.models import MediaItem
 from date_dimension.models import DateDimension
 
