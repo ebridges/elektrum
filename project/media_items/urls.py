@@ -35,11 +35,6 @@ urlpatterns = [
     path('<uuid:owner_id>/upload/', media_item_upload_view, name='media-item-upload-view'),
     path('<uuid:owner_id>/<uuid:image_id>/', media_item_view, name='media-item-view'),
     path('<uuid:owner_id>/<yyyy:year>/<yyyy-mm-dd:date>/', media_list_view, name='media-list-view'),
-    path(
-        'share/<uuid:owner_id>/<yyyy:year>/<yyyy-mm-dd:date>/',
-        sharing_list_view,
-        name='sharing-list-view',
-    ),
     path('<uuid:owner_id>/<yyyy:year>/', albums_view, name='albums-view'),
     path('<uuid:owner_id>/', collections_view, name='collections-view'),
 ]
