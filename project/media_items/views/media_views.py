@@ -32,11 +32,6 @@ def media_item_view(request, owner_id, image_id, template_name='media_items/medi
 
 
 @exceptions_to_web_response
-def sharing_list_view(request, owner_id, year, date):
-    return media_list_view(request, owner_id, year, date, 'media_items/sharing_list_view.html')
-
-
-@exceptions_to_web_response
 def media_list_view(
     request, owner_id, year, date, template_name='media_items/media_list_view.html'
 ):

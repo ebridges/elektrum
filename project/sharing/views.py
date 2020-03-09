@@ -1,5 +1,11 @@
 from django.shortcuts import render
 from base.views.errors import exceptions_to_web_response
+from media_items.views.media_views import media_list_view
+
+
+@exceptions_to_web_response
+def sharing_list_view(request, owner_id, year, date):
+    return media_list_view(request, owner_id, year, date, 'sharing/sharing_list_view.html')
 
 
 @exceptions_to_web_response
