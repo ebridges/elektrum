@@ -23,7 +23,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'share-media' %}" method="POST">
+<form action="{% url 'sharing-items-view' %}" method="POST">
   {% csrf_token %}
   <input type="hidden" name="year" value="{{ year }}">
   <input type="hidden" name="yyyymmdd" value="{{ yyyymmdd }}">

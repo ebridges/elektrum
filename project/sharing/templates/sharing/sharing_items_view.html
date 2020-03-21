@@ -1,0 +1,56 @@
+{% extends 'base_protected.html' %}
+{% block title %}Share Media{% endblock %}
+
+{% block nav_block %}
+<h2 class='subtitle'>
+    <a href="{% url 'collections-view'  user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href="{% url 'albums-view'  user.id year %}">{{ year }}</a> /
+    <a href="{% url 'media-list-view'  user.id year yyyymmdd %}">{{ yyyymmdd }}</a>
+</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'sharing-items-view' %}" method="POST">
+  <label for="from_address">From</label><br>
+  <input id="from_address" type="email" multiple="true" readonly="true" size="32" value="{{ request.user.email }}"><br>
+  <label for="to_address">Share To (comma separated)</label><br>
+  <input id="to_address" name="to_address" type="email" multiple="true" placeholder="joe@example.com, jane@example.com" size="128" minlength="3" maxlength="256" list="defaultEmails"><br>
+  <datalist id="defaultEmails">
+    <option value="jbond007@mi6.defence.gov.uk">
+    <option value="jbourne@unknown.net">
+    <option value="nfury@shield.org">
+    <option value="tony@starkindustries.com">
+    <option value="hulk@grrrrrrrr.arg">
+  </datalist>
+  <input type="hidden" name="share-id" value="{{ share_id }}">
+  <label for="share_message">Message</label><br>
+  <textarea id="share_message" name="share_message" placeholder="An optional message to accompany the photos." cols="132" rows="16"></textarea><br>
+  <button type="submit" name="action" value="share">Share Images</button>
+  <button type="submit" name="action" value="draft">Save as Draft</button><br>
+  <label for="media_items">Images being shared:</label>
+  <div id="media_items" class="media_items">
+    {% for info in objects %}
+    <div class="media_item">
+      <a class="media_item_link" href="#">
+        <figure>
+          <div class="media_item_thumbnail"></div>
+          <figcaption>
+            &nbsp;&nbsp;<input type="hidden" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
+          </figcaption>
+        </figure>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}
+
+{% block local_endjs %}
+<script>
+  let images = [
+  {% for info in objects %}{src: '{{ info.url }}', w: '222px', h: '222px'},
+  {% endfor %}];
+  let locations = document.getElementsByClassName('media_item_thumbnail');
+  renderThumbnails(images, locations)
+</script>
+{% endblock %}

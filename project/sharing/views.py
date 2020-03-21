@@ -1,6 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
+from urllib.parse import urlencode, quote_plus
 from base.views.errors import exceptions_to_web_response
 from media_items.views.media_views import media_list_view
+from media_items.models import MediaItem
+from sharing.models import Share
+from base.views.errors import BadRequestException
 
 
 @exceptions_to_web_response
@@ -9,18 +13,53 @@ def sharing_list_view(request, owner_id, year, date):
 
 
 @exceptions_to_web_response
-def share_media(request, template_name='sharing/share_items_view.html'):
-    if request.method == 'POST':
-        data = request.POST.getlist('items-to-share')
-        yyyymmdd = request.POST.get('yyyymmdd')
-        year = request.POST.get('year')
-
-        response_data = {'objects': data, 'yyyymmdd': yyyymmdd, 'year': int(year)}
-
-        # save items to share, then
-        # redirect as a GET to display it.
-
+def sharing_items_view(request):
+    if request.method == 'GET':
         # else if request.method == 'GET':
         # query items to share, and render page with data
+        share_id = request.GET.get('share-id')
+        if not share_id:
+            raise BadRequestException('Share not identified.')
+        yyyymmdd = request.GET.get('yyyymmdd')
+        year = request.GET.get('year')
 
-        return render(request, template_name, response_data)
+        share = Share.objects.get(pk=share_id)
+        items = [item.view() for item in share.shared.all()]
+        response_data = {
+            'objects': items,
+            'share_id': share.id,
+            'yyyymmdd': yyyymmdd,
+            'year': int(year),
+        }
+
+        return render(request, 'sharing/sharing_items_view.html', response_data)
+
+    elif request.method == 'POST':
+        yyyymmdd = request.POST['yyyymmdd']
+        year = request.POST['year']
+        items = request.POST.getlist('items-to-share')
+
+        if len(items) > 0:
+            if 'share-id' in request.POST:
+                share = Share.objects.get(pk=request.POST['share-id'])
+            else:
+                share = Share(shared_by=request.user)
+                share.save()
+
+            for item in items:
+                share.shared.add(MediaItem.objects.get(pk=item))
+
+            url = reverse('sharing-items-view')
+            qs = urlencode(
+                {'share-id': share.id, 'yyyymmdd': yyyymmdd, 'year': int(year)},
+                quote_via=quote_plus,
+            )
+            response_url = f'{url}?{qs}'
+
+            return redirect(response_url)
+        else:
+            # handle state where no items selected
+            pass
+    else:
+        # handle unsupported method
+        pass
