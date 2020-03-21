@@ -20,23 +20,14 @@ def sharing_items_view(request):
         share_id = request.GET.get('share-id')
         if not share_id:
             raise BadRequestException('Share not identified.')
-        yyyymmdd = request.GET.get('yyyymmdd')
-        year = request.GET.get('year')
 
         share = Share.objects.get(pk=share_id)
         items = [item.view() for item in share.shared.all()]
-        response_data = {
-            'objects': items,
-            'share_id': share.id,
-            'yyyymmdd': yyyymmdd,
-            'year': int(year),
-        }
+        response_data = {'objects': items, 'share_id': share.id}
 
         return render(request, 'sharing/sharing_items_view.html', response_data)
 
     elif request.method == 'POST':
-        yyyymmdd = request.POST['yyyymmdd']
-        year = request.POST['year']
         items = request.POST.getlist('items-to-share')
 
         if len(items) > 0:
@@ -50,10 +41,7 @@ def sharing_items_view(request):
                 share.shared.add(MediaItem.objects.get(pk=item))
 
             url = reverse('sharing-items-view')
-            qs = urlencode(
-                {'share-id': share.id, 'yyyymmdd': yyyymmdd, 'year': int(year)},
-                quote_via=quote_plus,
-            )
+            qs = urlencode({'share-id': share.id}, quote_via=quote_plus)
             response_url = f'{url}?{qs}'
 
             return redirect(response_url)

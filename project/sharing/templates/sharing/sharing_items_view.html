@@ -3,9 +3,7 @@
 
 {% block nav_block %}
 <h2 class='subtitle'>
-    <a href="{% url 'collections-view'  user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
-    <a href="{% url 'albums-view'  user.id year %}">{{ year }}</a> /
-    <a href="{% url 'media-list-view'  user.id year yyyymmdd %}">{{ yyyymmdd }}</a>
+    <a href="{% url 'collections-view'  user.id %}"><span class="nav-home-icon">&#x2302;</span></a>
 </h2>
 {% endblock %}
 
