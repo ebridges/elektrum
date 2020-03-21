@@ -28,9 +28,6 @@ class CustomUser(AbstractUser, BaseModel):
         validators=[username_validator],
         error_messages={'unique': _('A user with that username already exists.')},
     )
-    shared_items = models.ManyToManyField(
-        'media_items.MediaItem', through='sharing.Share', related_name='shared_items'
-    )
 
     def is_account_verified(self):
         if self.is_authenticated:
