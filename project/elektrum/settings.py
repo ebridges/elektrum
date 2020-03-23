@@ -37,7 +37,8 @@ ALLOWED_HOSTS = allowed_hosts.split(',')
 version_file = resolve_version(BASE_DIR)
 if os.path.isfile(version_file):
     with open(version_file) as v_file:
-        APP_VERSION_NUMBER = v_file.read()
+        v = v_file.read()
+        APP_VERSION_NUMBER = v.strip()
 print('Running Elektrum v%s' % APP_VERSION_NUMBER)
 
 # Application definition
