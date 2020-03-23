@@ -24,7 +24,8 @@
   <label for="share-message">Message</label><br>
   <textarea id="share-message" name="share-message" placeholder="An optional message to accompany the photos." cols="132" rows="16"></textarea><br>
   <button type="submit" name="action" value="share">Share Images</button>
-  <button type="submit" name="action" value="draft">Save as Draft</button><br>
+  <button type="submit" name="action" value="draft">Save as Draft</button>
+  <button type="submit" name="action" value="cancel">Cancel</button><br>
   <label for="media_items">Images being shared:</label>
   <div id="media_items" class="media_items">
     {% for info in objects %}

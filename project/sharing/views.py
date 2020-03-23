@@ -51,3 +51,36 @@ def sharing_items_view(request):
     else:
         # handle unsupported method
         pass
+
+
+@exceptions_to_web_response
+def share_items(request):
+    if request.method == 'POST':
+        action = request.POST['action']
+
+        if action == 'share':
+            response = do_share_items()
+
+        elif action == 'draft':
+            response = do_save_draft()
+
+        elif action == 'cancel':
+            response = do_cancel_share()
+
+        else:
+            # handle unrecognized value for 'action'
+            pass
+
+        return response
+
+
+def do_share_items():
+    pass
+
+
+def do_cancel_share():
+    pass
+
+
+def do_save_draft():
+    pass
