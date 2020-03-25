@@ -42,7 +42,7 @@ class CustomUser(AbstractUser, BaseModel):
         if len(gogl_acct):
             return gogl_acct[0].extra_data['picture']
 
-        return 'http://www.gravatar.com/avatar/{}?s=40'.format(
+        return 'https://www.gravatar.com/avatar/{}?s=40'.format(
             hashlib.md5(self.email.encode('utf-8')).hexdigest()
         )
 
