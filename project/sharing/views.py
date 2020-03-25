@@ -4,7 +4,7 @@ from urllib.parse import urlencode, quote_plus
 from base.views.errors import exceptions_to_web_response
 from media_items.views.media_views import media_list_view
 from media_items.models import MediaItem
-from sharing.models import Share
+from sharing.models import Share, Audience
 from sharing.forms import ShareForm
 from base.views.errors import BadRequestException
 
@@ -79,6 +79,7 @@ def share_items(request, share_id):
             initial={
                 'from_address': request.user.email,
                 'subject_line': 'Sharing %s images from elektrum.' % len(items),
+                'to_address': [a.email for a in share.shared_to.all()],
             }
         )
 
@@ -99,6 +100,12 @@ def share_items(request, share_id):
 
 
 def do_share_items(u, s, d):
+    s.shared_to.clear()
+    for address in d['to_address']:
+        (audience, created) = Audience.objects.get_or_create(email=address)
+        s.shared_to.add(audience)
+    s.save()
+
     return JsonResponse(
         data={'response': 'ok', 'user': {'id': u.id, 'email': u.email}, 'share_id': s.id, 'data': d}
     )

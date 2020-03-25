@@ -20,6 +20,14 @@ class NonValidatedTypedMultipleChoiceField(fields.TypedMultipleChoiceField):
 class MultiEmailField(fields.EmailField):
     default_validators = []
 
+    def prepare_value(self, value):
+        val = super().prepare_value(value)
+
+        if val in self.empty_values:
+            return None
+
+        return ','.join(value)
+
     def to_python(self, value):
         val = super().to_python(value)
         cleaned = []
