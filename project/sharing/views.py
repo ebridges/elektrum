@@ -1,33 +1,24 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.http import JsonResponse
 from urllib.parse import urlencode, quote_plus
 from base.views.errors import exceptions_to_web_response
 from media_items.views.media_views import media_list_view
 from media_items.models import MediaItem
 from sharing.models import Share
+from sharing.forms import ShareForm
 from base.views.errors import BadRequestException
 
 
 @exceptions_to_web_response
-def sharing_list_view(request, owner_id, year, date):
+def sharing_items_list(request, year, date):
+    owner_id = request.user.id
     return media_list_view(request, owner_id, year, date, 'sharing/sharing_list_view.html')
 
 
 @exceptions_to_web_response
-def sharing_items_view(request):
-    if request.method == 'GET':
-        # else if request.method == 'GET':
-        # query items to share, and render page with data
-        share_id = request.GET.get('share-id')
-        if not share_id:
-            raise BadRequestException('Share not identified.')
+def sharing_items_select(request):
 
-        share = Share.objects.get(pk=share_id)
-        items = [item.view() for item in share.shared.all()]
-        response_data = {'objects': items, 'share_id': share.id}
-
-        return render(request, 'sharing/sharing_items_view.html', response_data)
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         items = request.POST.getlist('items-to-share')
 
         if len(items) > 0:
@@ -40,11 +31,9 @@ def sharing_items_view(request):
             for item in items:
                 share.shared.add(MediaItem.objects.get(pk=item))
 
-            url = reverse('sharing-items-view')
-            qs = urlencode({'share-id': share.id}, quote_via=quote_plus)
-            response_url = f'{url}?{qs}'
+            url = reverse('share-items', kwargs={'share_id': share.id})
 
-            return redirect(response_url)
+            return redirect(url)
         else:
             # handle state where no items selected
             pass
@@ -54,28 +43,65 @@ def sharing_items_view(request):
 
 
 @exceptions_to_web_response
-def share_items(request):
+def share_items(request, share_id):
+    if not share_id:
+        raise BadRequestException('Share not identified.')
+
+    share = get_object_or_404(Share, pk=share_id)
+    items = [item.view() for item in share.shared.all()]
+    item_ids = [item.id for item in share.shared.all()]
+
     if request.method == 'POST':
         action = request.POST['action']
+        form = ShareForm(
+            request.POST,
+            initial={
+                'from_address': request.user.email,
+                'subject_line': 'Sharing %s images from elektrum.' % len(items),
+            },
+        )
 
-        if action == 'share':
-            response = do_share_items()
+        if form.is_valid():
+            if action == 'share':
+                return do_share_items(request.user, share, form.cleaned_data)
 
-        elif action == 'draft':
-            response = do_save_draft()
+            elif action == 'draft':
+                return do_save_draft()
 
-        elif action == 'cancel':
-            response = do_cancel_share()
+            elif action == 'cancel':
+                return do_cancel_share()
 
-        else:
-            # handle unrecognized value for 'action'
-            pass
+            else:
+                # handle unrecognized value for 'action'
+                return JsonResponse(data={'response': 'ok (unrecognized action)'})
+    else:
+        form = ShareForm(
+            initial={
+                'from_address': request.user.email,
+                'subject_line': 'Sharing %s images from elektrum.' % len(items),
+            }
+        )
 
-        return response
+    context = {
+        'form': form,
+        'objects': items,
+        'share_id': share_id,
+        'default_emails': [
+            'jbond007@mi6.defence.gov.uk',
+            'jbourne@unknown.net',
+            'nfury@shield.org',
+            'tony@starkindustries.com',
+            'hulk@grrrrrrrr.arg',
+        ],
+    }
+
+    return render(request, 'sharing/sharing_items_view.html', context)
 
 
-def do_share_items():
-    pass
+def do_share_items(u, s, d):
+    return JsonResponse(
+        data={'response': 'ok', 'user': {'id': u.id, 'email': u.email}, 'share_id': s.id, 'data': d}
+    )
 
 
 def do_cancel_share():

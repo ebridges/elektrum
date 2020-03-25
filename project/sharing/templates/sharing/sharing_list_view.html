@@ -16,12 +16,14 @@
 
 {% block nav_block %}
 <h2 class='subtitle'>
-    <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a>
+    <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
+    <a href="{% url 'media-list-view' user.id year yyyymmdd %}" class="subtitle_link">{{ yyyymmdd }}</a>
 </h2>
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'sharing-items-view' %}" method="POST">
+<form action="{% url 'sharing-items-select' %}" method="POST">
   {% csrf_token %}
   <label for="share-media">Share selected items.</label>
   <input id="share-media" type="submit" name="share" >

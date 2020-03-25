@@ -1,13 +1,13 @@
 from django.urls import path
-from sharing.views import sharing_items_view, sharing_list_view, share_items
+from sharing.views import sharing_items_select, sharing_items_list, share_items
 
 
 urlpatterns = [
-    path('media/share-items/', share_items, name='share-items'),
-    path('media/', sharing_items_view, name='sharing-items-view'),
+    path('media/share-items/<uuid:share_id>/', share_items, name='share-items'),
+    path('media/select-items/', sharing_items_select, name='sharing-items-select'),
     path(
-        'list/<uuid:owner_id>/<yyyy:year>/<yyyy-mm-dd:date>/',
-        sharing_list_view,
-        name='sharing-list-view',
+        'media/list-items/<yyyy:year>/<yyyy-mm-dd:date>/',
+        sharing_items_list,
+        name='sharing-items-list',
     ),
 ]
