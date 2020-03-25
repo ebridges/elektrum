@@ -6,7 +6,7 @@ from media_items.views.media_views import media_list_view
 from media_items.models import MediaItem
 from sharing.models import Share, Audience
 from sharing.forms import ShareForm
-from base.views.errors import BadRequestException
+from base.views.errors import BadRequestException, MethodNotAllowedException
 
 
 @exceptions_to_web_response
@@ -17,7 +17,6 @@ def sharing_items_list(request, year, date):
 
 @exceptions_to_web_response
 def sharing_items_select(request):
-
     if request.method == 'POST':
         items = request.POST.getlist('items-to-share')
 
@@ -38,8 +37,7 @@ def sharing_items_select(request):
             # handle state where no items selected
             pass
     else:
-        # handle unsupported method
-        pass
+        raise MethodNotAllowedException('Method unsupported.')
 
 
 @exceptions_to_web_response
