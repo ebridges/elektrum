@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import JsonResponse
 from urllib.parse import urlencode, quote_plus
@@ -7,6 +8,7 @@ from media_items.models import MediaItem
 from sharing.models import Share, Audience
 from sharing.forms import ShareForm
 from base.views.errors import BadRequestException, MethodNotAllowedException
+from emailer.utils import send_email
 
 
 @exceptions_to_web_response
@@ -102,11 +104,46 @@ def do_share_items(u, s, d):
     for address in d['to_address']:
         (audience, created) = Audience.objects.get_or_create(email=address)
         s.shared_to.add(audience)
+    s.shared_on = datetime.now()
     s.save()
 
-    return JsonResponse(
-        data={'response': 'ok', 'user': {'id': u.id, 'email': u.email}, 'share_id': s.id, 'data': d}
+    text_tmpl = 'sharing/email_template.txt'
+    html_tmpl = 'sharing/email_template.html'
+    context = {
+        'to_address': d['to_address'],
+        'subject_line': d['subject_line'],
+        'share_message': d['share_message'],
+        'shared_count': len(s.shared.all()),
+        'shared_by': u.name(),
+        'shared_on': s.shared_on(),
+        'objects': s.shared.all(),
+    }
+
+    send_email(
+        u.email,
+        d['to_address'],
+        d['subject_line'],
+        body_text_tmpl=text_tmpl,
+        body_html_tmpl=html_tmpl,
+        context=context,
     )
+
+    url = reverse('shared-items', kwargs={'share_id': s.id})
+    return redirect(url)
+
+
+def shared_items(request, share_id):
+    if not share_id:
+        raise BadRequestException('Share not identified.')
+
+    share = get_object_or_404(Share, pk=share_id)
+    items = [item.view() for item in share.shared.all()]
+    context = {
+        'objects': items,
+        'to_address': [a.email for a in share.shared_to.all()],
+        'shared_on': str(share.shared_on),
+    }
+    return render(request, 'sharing/sharing_items_shared.html', context)
 
 
 def do_cancel_share():

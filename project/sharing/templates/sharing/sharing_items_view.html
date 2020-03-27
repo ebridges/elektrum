@@ -10,30 +10,45 @@
 {% block content %}
 <form action="{% url 'share-items' share_id %}" method="POST">
   {% csrf_token %}
-  {{ form.as_p }}
   <datalist id="default-emails">
-    {% for email in default_emails %}
-    <option value="{{ email }}">
-    {% endfor %}
-  </datalist>
-  <button type="submit" name="action" value="share">Share Images</button>
-  <button type="submit" name="action" value="draft">Save as Draft</button>
-  <button type="submit" name="action" value="cancel">Cancel</button><br>
-  <label for="media_items">Images being shared:</label>
-  <div id="media_items" class="media_items">
-    {% for info in objects %}
-    <div class="media_item">
-      <a class="media_item_link" href="#">
-        <figure>
-          <div class="media_item_thumbnail"></div>
-          <figcaption>
-            &nbsp;&nbsp;<input type="hidden" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
-          </figcaption>
-        </figure>
-      </a>
-    </div>
-    {% endfor %}
-  </div>
+  {% for email in default_emails %}  <option value="{{ email }}">
+  {% endfor %}</datalist>
+  <table style="width: 700px;">
+  {{ form }}
+  <tfoot>
+    <tr>
+      <th>
+        &nbsp;
+      </th>
+      <td>
+        <div id="media_items" class="media_items">
+          {% for info in objects %}
+          <div class="media_item">
+            <a class="media_item_link" href="#">
+              <figure>
+                <div class="media_item_thumbnail"></div>
+                <figcaption>
+                  &nbsp;&nbsp;<input type="hidden" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
+                </figcaption>
+              </figure>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th>
+        &nbsp;
+      </th>
+      <td>
+        <button type="submit" name="action" value="share">Share Images</button>
+        <button type="submit" name="action" value="draft">Save as Draft</button>
+        <button type="submit" name="action" value="cancel">Cancel</button><br>
+      </td>
+    </tr>
+  </tfoot>
+</table>
 </form>
 {% endblock %}
 
