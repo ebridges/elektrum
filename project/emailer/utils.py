@@ -1,36 +1,34 @@
-from django.shortcuts import render
-from django.core.mail import EmailMultiAlternatives
+import tempfile
+import urllib
+import shutil
+from email.mime.image import MIMEImage
+
 from django.template.loader import get_template
 from django.template import Context
 
+THUMBNAIL_URL = 'http://localhost:8182/iiif/2/%s/square/pct:33/0/default.jpg'
 
-def send_email(
-    sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, context={}, attachments=[]
-):
-    '''
-  Attachments: an array of https://docs.python.org/3.8/library/email.mime.html#email.mime.image.MIMEImage
-  '''
-    headers = {}
 
-    html = get_template(body_html_tmpl)
-    html_message = html.render(context)
+def render_template(template, context):
+    tmpl = get_template(template)
+    return tmpl.render(context)
 
-    if body_text_tmpl:
-        plaintext = get_template(body_text_tmpl)
-        text_message = plaintext.render(context)
 
-    msg = EmailMultiAlternatives(
-        from_email=sender,
-        to=[sender],
-        reply_to=[sender],
-        bcc=to,
-        subject=subject,
-        body=html_message,
-        attachments=attachments,
-        headers=headers,
-    )
+def download_and_encode_thumbnails(media_items):
+    for media_item in media_items:
+        url_encoded = media_item['file_path'].replace('/', '%2f')
+        thumbnail_url = THUMBNAIL_URL % url_encoded
+        encoded = mime_encode_file_at_url(thumbnail_url, media_item['basename'])
+        encoded.add_header('Content-ID', '<%s>' % media_item['item_id'])
+        media_item['content_id'] = media_item['item_id']
+        media_item['encoded'] = encoded
 
-    if body_text_tmpl:
-        msg.attach_alternative(text_message, 'text/plain')
 
-    msg.send()
+def mime_encode_file_at_url(img_url, filename):
+    b64 = None
+    mi = None
+    with tempfile.NamedTemporaryFile() as tmp:
+        with urllib.request.urlopen(img_url) as response, open(tmp.name, 'wb') as out_file:
+            shutil.copyfileobj(response, out_file)
+        with open(tmp.name, 'rb') as file:
+            return MIMEImage(file.read(), name=filename)

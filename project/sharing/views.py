@@ -115,8 +115,8 @@ def do_share_items(u, s, d):
         'share_message': d['share_message'],
         'shared_count': len(s.shared.all()),
         'shared_by': u.name(),
-        'shared_on': s.shared_on(),
-        'objects': s.shared.all(),
+        'shared_on': s.shared_on,
+        'objects': [item.view() for item in s.shared.all()],
     }
 
     send_email(

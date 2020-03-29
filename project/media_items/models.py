@@ -1,3 +1,4 @@
+from os.path import basename
 from django.db import models
 from django.core import validators
 from django.utils.deconstruct import deconstructible
@@ -201,11 +202,13 @@ class MediaItem(BaseModel):
             'file_name': self.create_day_id,
             'url': media_url(self.file_path),
             'media_item_url': media_url(self.file_path),
+            'file_path': self.file_path,
             'title': self.create_date,
             'collection_year': self.create_day.year,
             'album_id': self.create_day.iso_date,
             'yyyymmdd': self.yyyy_mm_dd(),
             'year': int(str(self.create_day_id)[:4]),
+            'basename': basename(self.file_path),
         }
 
     def yyyy_mm_dd(self):
