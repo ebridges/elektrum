@@ -20,6 +20,7 @@ def download_and_encode_thumbnails(media_items):
         thumbnail_url = THUMBNAIL_URL % url_encoded
         encoded = mime_encode_file_at_url(thumbnail_url, media_item['basename'])
         encoded.add_header('Content-ID', '<%s>' % media_item['item_id'])
+        encoded.add_header('Content-Location', media_item['file_path'])
         media_item['content_id'] = media_item['item_id']
         media_item['encoded'] = encoded
 
