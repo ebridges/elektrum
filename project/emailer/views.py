@@ -20,6 +20,8 @@ def send_email(sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, co
     html_message = render_template(body_html_tmpl, context)
     msg.attach_alternative(html_message, 'text/html')
 
+    msg.content_subtype = 'html'
+
     if body_text_tmpl:
         text_message = render_template(body_text_tmpl, context)
         msg.attach_alternative(text_message, 'text/plain')
