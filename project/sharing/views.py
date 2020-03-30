@@ -8,7 +8,7 @@ from media_items.models import MediaItem
 from sharing.models import Share, Audience
 from sharing.forms import ShareForm
 from base.views.errors import BadRequestException, MethodNotAllowedException
-from emailer.utils import send_email
+from emailer.views import send_email
 
 
 @exceptions_to_web_response
