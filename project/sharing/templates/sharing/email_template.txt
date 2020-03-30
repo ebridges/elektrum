@@ -1,5 +1,10 @@
+From: {{ shared_by }}
+Date: {{ shared_on }}
+
 {{ share_message }}
 
+{% for object in objects %}<{{ object.media_item_url }}>
+{% endfor %}
 --
-⃟ Shared from elektrum
+⌂  Shared from elektrum
 https://elektrum.photos
