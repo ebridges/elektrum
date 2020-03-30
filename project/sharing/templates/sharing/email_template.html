@@ -53,6 +53,13 @@
                                 Shared by {{ shared_by }}
                               </td>
                             </tr>
+                            {% if share_message %}
+                            <tr>
+                              <td class="message" style="padding: 10px; vertical-align: top; color: #222; letter-spacing: 0.025em; font-size: 14px; text-align: center; font-family: Hind, Helvetica, Arial, sans-serif;" valign="top" align="left">
+                              {{ share_message }}
+                              </td>
+                            </tr>
+                            {% endif %}
                           </thead>
                           <tbody>
                             <tr>
