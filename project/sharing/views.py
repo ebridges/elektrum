@@ -31,6 +31,7 @@ def sharing_items_select(request):
 
             for item in items:
                 share.shared.add(MediaItem.objects.get(pk=item))
+            share.state = 20  # "draft"
 
             url = reverse('share-items', kwargs={'share_id': share.id})
 
@@ -48,6 +49,10 @@ def share_items(request, share_id):
         raise BadRequestException('Share not identified.')
 
     share = get_object_or_404(Share, pk=share_id)
+    if share.state == 30:  # "shared"
+        # TODO return a read only view
+        raise BadRequestException('Content has already been shared.')
+
     items = [item.view() for item in share.shared.all()]
     item_ids = [item.id for item in share.shared.all()]
 
@@ -66,7 +71,7 @@ def share_items(request, share_id):
                 return do_share_items(request.user, share, form.cleaned_data)
 
             elif action == 'draft':
-                return do_save_draft()
+                return do_save_draft(share)
 
             elif action == 'cancel':
                 return do_cancel_share()
@@ -104,8 +109,6 @@ def do_share_items(u, s, d):
     for address in d['to_address']:
         (audience, created) = Audience.objects.get_or_create(email=address)
         s.shared_to.add(audience)
-    s.shared_on = datetime.now()
-    s.save()
 
     text_tmpl = 'sharing/email_template.txt'
     html_tmpl = 'sharing/email_template.html'
@@ -128,6 +131,10 @@ def do_share_items(u, s, d):
         context=context,
     )
 
+    s.shared_on = datetime.now()
+    s.state = 30  # "shared"
+    s.save()
+
     url = reverse('shared-items', kwargs={'share_id': s.id})
     return redirect(url)
 
@@ -146,9 +153,14 @@ def shared_items(request, share_id):
     return render(request, 'sharing/sharing_items_shared.html', context)
 
 
-def do_cancel_share():
-    pass
+def do_cancel_share(share):
+    share.delete()
+    share.save()
+    # TODO return a proper response
 
 
-def do_save_draft():
-    pass
+def do_save_draft(share):
+    share.state = 20  # 'draft'
+    # TODO save additional attributes that were entered (message, subject, to/from etc)
+    share.save
+    # TODO return a proper response
