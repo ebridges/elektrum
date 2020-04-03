@@ -23,6 +23,7 @@ JPG = 'jpg'
 PNG = 'png'
 
 MIME_TYPE_CHOICES = ((JPG, 'image/jpeg'), (PNG, 'image/png'))
+MIME_TYPE_EXTENSIONS = {'image/jpeg': JPG, 'image/png': PNG}
 
 
 class MediaItem(BaseModel):
@@ -209,6 +210,8 @@ class MediaItem(BaseModel):
             'yyyymmdd': self.yyyy_mm_dd(),
             'year': int(str(self.create_day_id)[:4]),
             'basename': basename(self.file_path),
+            'owner_id': owner.id,
+            'media_ext': MIME_TYPE_EXTENSIONS[self.mime_type],
         }
 
     def yyyy_mm_dd(self):

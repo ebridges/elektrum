@@ -5,7 +5,7 @@ from emailer.utils import download_and_encode_thumbnails, render_template
 
 def send_email(sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, context={}):
 
-    download_and_encode_thumbnails(context['objects'])
+    download_and_encode_thumbnails(context['owner_id'], context['objects'])
     attachments = [item['encoded'] for item in context['objects']]
 
     msg = EmailMultiAlternatives(
