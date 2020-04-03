@@ -1,3 +1,4 @@
+from logging import info
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import JsonResponse
@@ -45,6 +46,7 @@ def sharing_items_select(request):
 
 @exceptions_to_web_response
 def share_items(request, share_id):
+    info(f'share_items({share_id})')
     if not share_id:
         raise BadRequestException('Share not identified.')
 
@@ -66,6 +68,7 @@ def share_items(request, share_id):
             },
         )
 
+        info(f'sharing action: {action}')
         if form.is_valid():
             if action == 'share':
                 return do_share_items(request.user, share, form.cleaned_data)
@@ -105,6 +108,7 @@ def share_items(request, share_id):
 
 
 def do_share_items(u, s, d):
+    info('do_share_items()')
     s.shared_to.clear()
     for address in d['to_address']:
         (audience, created) = Audience.objects.get_or_create(email=address)
