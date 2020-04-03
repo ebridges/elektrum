@@ -23,7 +23,7 @@ media_processor_artifact_bucket_name: "{{service_name}}-{{ operating_env }}-arch
 static_files_bucket_name: "{{service_name}}-{{ operating_env }}-static"
 
 # Django Facts
-django_email_backend: django_amazon_ses.EmailBackend
+django_email_backend: django.core.mail.backends.smtp.EmailBackend
 django_allowed_hosts: "{{ application_domain_name }},.execute-api.us-east-1.amazonaws.com,127.0.0.1,localhost"
 
 # RDS Facts

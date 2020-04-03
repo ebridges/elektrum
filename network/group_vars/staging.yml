@@ -10,6 +10,12 @@ media_cname: "staging-media.{{https_domain_name}}"
 
 django_debug_enabled: True
 
+email_use_tls: True
+email_host: email-smtp.us-east-1.amazonaws.com
+email_port: 587
+email_host_user: elektrum-staging-smtp
+email_host_password: ''
+
 rds_master_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           35356561616438653732626161626437353165323939656431323963303839303736636336636265

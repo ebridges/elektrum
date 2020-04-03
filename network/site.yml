@@ -14,4 +14,5 @@
     - { role: acm, tags: acm }
     - { role: cdn, tags: cdn }
     - { role: dns, tags: dns }
+    - { role: ses, tags: ses }
     - { role: cfg, tags: cfg }

@@ -8,6 +8,12 @@ application_domain_name: "{{https_domain_name}}"
 
 django_debug_enabled: False
 
+email_use_tls: True
+email_host: email-smtp.us-east-1.amazonaws.com
+email_port: 587
+email_host_user: elektrum-production-smtp
+email_host_password: ''
+
 rds_master_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           62396361646265333836636564323762663565633539353266303732313335626563646131313764
