@@ -1,4 +1,4 @@
-from logging import info
+from logging import debug
 import tempfile
 import urllib
 import shutil
@@ -38,21 +38,21 @@ def download_and_encode_thumbnails(owner_id, media_items, dims='222x222'):
                 info(f'downloading {key} from s3')
                 get_image_from_s3(bucket, key, tmp.name)
                 with open(tmp.name, 'rb') as file:
-                    info(f'resizing downloaded image to {dims}')
+                    debug(f'creating thumbnail with dimensions: {dims}')
                     im = Image.open(file.name)
                     im.thumbnail(dims, Image.ANTIALIAS)
                     im.save(file.name)
                 with open(tmp.name, 'rb') as file:
-                    info('encoding thumbnail as a MIMEImage')
                     encoded_items['image_id'] = init_mime_image(file.read(), media_item)
+                    debug('encoding thumbnail as a MIMEImage')
 
 
 def get_image_from_s3(bucket, key, tempfile):
-    info(f's3 bucket with key: {bucket}::{key}')
+    debug(f'getting image from bucket with key: {bucket}::{key}')
     s3 = resource('s3')
     b = s3.Bucket(bucket)
     b.download_file(key, tempfile)
-    info('image downloaded from s3 and stored at: %s' % tempfile)
+    debug(f'image downloaded from s3 and stored at: {tempfile}')
 
 
 def init_mime_image(bytes, media_item):
