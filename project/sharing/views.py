@@ -122,7 +122,7 @@ def do_share_items(u, s, d):
         'share_message': d['share_message'],
         'shared_count': len(s.shared.all()),
         'shared_by': u.name(),
-        'owner_id': u.id(),
+        'owner_id': u.id,
         'shared_on': s.shared_on,
         'objects': [item.view() for item in s.shared.all()],
     }
