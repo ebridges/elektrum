@@ -14,6 +14,8 @@ def send_email(sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, co
     download_and_encode_thumbnails(context['owner_id'], context['objects'], dims=THUMBNAIL_DIMS)
     attachments = [item['encoded'] for item in context['objects']]
 
+    text_message = render_template(body_text_tmpl, context)
+
     msg = EmailMultiAlternatives(
         from_email=DEFAULT_FROM_ADDRESS,
         to=[sender],
@@ -21,15 +23,10 @@ def send_email(sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, co
         bcc=to,
         subject=subject,
         attachments=attachments,
+        body=text_message,
     )
 
     html_message = render_template(body_html_tmpl, context)
     msg.attach_alternative(html_message, 'text/html')
-
-    msg.content_subtype = 'html'
-
-    if body_text_tmpl:
-        text_message = render_template(body_text_tmpl, context)
-        msg.attach_alternative(text_message, 'text/plain')
 
     msg.send()
