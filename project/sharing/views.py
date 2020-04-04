@@ -114,6 +114,7 @@ def do_share_items(u, s, d):
         (audience, created) = Audience.objects.get_or_create(email=address)
         s.shared_to.add(audience)
 
+    s.shared_on = datetime.now()
     text_tmpl = 'sharing/email_template.txt'
     html_tmpl = 'sharing/email_template.html'
     context = {
@@ -121,6 +122,7 @@ def do_share_items(u, s, d):
         'subject_line': d['subject_line'],
         'share_message': d['share_message'],
         'shared_count': len(s.shared.all()),
+        'shared_on': s.shared_on,
         'shared_by': u.name(),
         'owner_id': u.id,
         'shared_on': s.shared_on,
@@ -136,7 +138,6 @@ def do_share_items(u, s, d):
         context=context,
     )
 
-    s.shared_on = datetime.now()
     s.state = 30  # "shared"
     s.save()
 
