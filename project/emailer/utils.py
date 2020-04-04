@@ -32,10 +32,10 @@ def download_and_encode_thumbnails(owner_id, media_items, dims):
     else:
         bucket = environ['MEDIA_UPLOAD_BUCKET_NAME']
         for media_item in media_items:
-            image_id = media_item['image_id']
             key = f'{owner_id}/{image_id}.{type}'
             with NamedTemporaryFile(suffix=f'.{type}') as tmp:
                 info(f'downloading {key} from s3')
+                image_id = media_item['item_id']
                 get_image_from_s3(bucket, key, tmp.name)
                 with open(tmp.name, 'rb') as file:
                     debug(f'creating thumbnail with dimensions: {dims}')
@@ -43,8 +43,8 @@ def download_and_encode_thumbnails(owner_id, media_items, dims):
                     im.thumbnail(dims)
                     im.save(file.name)
                 with open(tmp.name, 'rb') as file:
-                    encoded_items['image_id'] = init_mime_image(file.read(), media_item)
                     debug('encoding thumbnail as a MIMEImage')
+                    init_mime_image(file.read(), media_item)
 
 
 def get_image_from_s3(bucket, key, tempfile):
@@ -57,7 +57,7 @@ def get_image_from_s3(bucket, key, tempfile):
 
 def init_mime_image(bytes, media_item):
     image = MIMEImage(bytes, name=media_item['basename'])
-    image.add_header('Content-ID', '<%s>' % media_item['image_id'])
     image.add_header('Content-Location', media_item['file_path'])
-    media_item['content_id'] = media_item['image_id']
+    image.add_header('Content-ID', '<%s>' % media_item['item_id'])
+    media_item['content_id'] = media_item['item_id']
     media_item['encoded'] = image
