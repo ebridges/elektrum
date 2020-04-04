@@ -72,6 +72,7 @@
       - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      - arn:aws:iam::aws:policy/AmazonSESFullAccess
     assume_role_policy_document:
       Version: '2012-10-17'
       Statement:
