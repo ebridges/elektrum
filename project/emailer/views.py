@@ -4,13 +4,14 @@ import os
 
 from emailer.utils import download_and_encode_thumbnails, render_template
 
+THUMBNAIL_DIMS = 222, 222
 DEFAULT_FROM_ADDRESS = 'postmaster@%s' % os.environ['APPLICATION_DOMAIN_NAME']
 
 
 def send_email(sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, context={}):
     info(f'send_email({sender}, {to})')
 
-    download_and_encode_thumbnails(context['owner_id'], context['objects'])
+    download_and_encode_thumbnails(context['owner_id'], context['objects'], dims=THUMBNAIL_DIMS)
     attachments = [item['encoded'] for item in context['objects']]
 
     msg = EmailMultiAlternatives(

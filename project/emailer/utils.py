@@ -19,7 +19,7 @@ def render_template(template, context):
     return tmpl.render(context)
 
 
-def download_and_encode_thumbnails(owner_id, media_items, dims='222x222'):
+def download_and_encode_thumbnails(owner_id, media_items, dims):
     if environ['ENVIRONMENT'] == 'local':
         for media_item in media_items:
             path = media_item['file_path'].replace('/', '%2f')
@@ -40,7 +40,7 @@ def download_and_encode_thumbnails(owner_id, media_items, dims='222x222'):
                 with open(tmp.name, 'rb') as file:
                     debug(f'creating thumbnail with dimensions: {dims}')
                     im = Image.open(file.name)
-                    im.thumbnail(dims, Image.ANTIALIAS)
+                    im.thumbnail(dims)
                     im.save(file.name)
                 with open(tmp.name, 'rb') as file:
                     encoded_items['image_id'] = init_mime_image(file.read(), media_item)
