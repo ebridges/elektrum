@@ -32,10 +32,10 @@ def download_and_encode_thumbnails(owner_id, media_items, dims):
     else:
         bucket = environ['MEDIA_UPLOAD_BUCKET_NAME']
         for media_item in media_items:
-            key = f'{owner_id}/{image_id}.{type}'
-            with NamedTemporaryFile(suffix=f'.{type}') as tmp:
-                info(f'downloading {key} from s3')
-                image_id = media_item['item_id']
+            image_id = media_item['item_id']
+            ext = media_item['media_ext']
+            key = f'{owner_id}/{image_id}.{ext}'
+            with NamedTemporaryFile(suffix=f'.{ext}') as tmp:
                 get_image_from_s3(bucket, key, tmp.name)
                 with open(tmp.name, 'rb') as file:
                     debug(f'creating thumbnail with dimensions: {dims}')
