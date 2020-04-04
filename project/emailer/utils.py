@@ -56,8 +56,9 @@ def get_image_from_s3(bucket, key, tempfile):
 
 
 def init_mime_image(bytes, media_item):
+    content_location = 'https://%s/%s' % (environ['MEDIA_STORAGE_CNAME'], media_item['file_path'])
     image = MIMEImage(bytes, name=media_item['basename'])
-    image.add_header('Content-Location', media_item['file_path'])
     image.add_header('Content-ID', '<%s>' % media_item['item_id'])
+    image.add_header('Content-Location', content_location)
     media_item['content_id'] = media_item['item_id']
     media_item['encoded'] = image
