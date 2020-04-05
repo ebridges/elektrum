@@ -6,6 +6,7 @@ from django import setup
 from django.core import management
 from django.core.wsgi import get_wsgi_application
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
 from logging import warn, info
 from pprint import pprint
 from json import loads
@@ -89,17 +90,15 @@ def handle_adminuser_command(args):
     username = args['username']
     password = args['password']
 
-    from users.models import CustomUser
-
     info(f'Creating super user with username: {username}')
 
     try:
-        u = CustomUser.objects.get(username=username)
+        u = get_user_model().objects.get(username=username)
         info(f'User exists for username {username}: id [%s]' % str(u.id))
         return as_json(u)
     except ObjectDoesNotExist:
         info(f'User does not exist for username {username}, creating.')
-        u = CustomUser.objects.create_superuser(username, email=email, password=password)
+        u = get_user_model().objects.create_superuser(username, email=email, password=password)
         info('Created user with id %s' % str(u.id))
         return as_json(u)
 
