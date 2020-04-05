@@ -12,11 +12,11 @@
   <caption style="text-align: left;">
     <div>
       <label for="shared-on">Shared on:</label>
-      <span id="shared-on">{{ shared_on }}</span>
+      <span id="shared-on">{{ share.shared_on }}</span>
     </div>
     <div>
       <label for="to-address">Shared To:</label>
-      <span id="to-address">{{ to_address }}</span>
+      <span id="to-address">{{ share.to }}</span>
     </div>
   </caption>
   <tbody>
@@ -25,7 +25,7 @@
         &nbsp;
       </th>
       <td id="media_items" class="media_items">
-        {% for info in objects %}
+        {% for info in share.shared %}
         <span class="media_item">
           <figure>
             <div class="media_item_thumbnail"></div>

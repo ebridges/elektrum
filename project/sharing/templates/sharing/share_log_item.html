@@ -1,0 +1,68 @@
+{% extends 'base_protected.html' %}
+{% block title %}Share Media{% endblock %}
+
+{% block nav_block %}
+<h2 class='subtitle'>
+    <a href="{% url 'collections-view'  user.id %}"><span class="nav-home-icon">&#x2302;</span></a>
+</h2>
+{% endblock %}
+
+{% block content %}
+<table>
+  <table style="width: 700px">
+    <caption style="text-align: left;">
+      <div>
+        <label for="shared-on">Shared on:</label>
+        <span id="shared-on">{{ share.shared_on }}</span>
+      </div>
+      <div>
+        <label for="to-address">Shared To:</label>
+        <span id="to-address">{{ share.to }}</span>
+      </div>
+      <div>
+        <label for="subject">Subject:</label>
+        <span id="subject">{{ share.subject }}</span>
+      </div>
+      <div>
+        <label for="message">Message:</label>
+        <span id="message">{{ share.message }}</span>
+      </div>
+      <div>
+        <label for="created">Created on:</label>
+        <span id="created">{{ share.created }}</span>
+      </div>
+      <div>
+        <label for="modified">Last modified on:</label>
+        <span id="modified">{{ share.modified }}</span>
+      </div>
+      <div>
+        <label for="state">Share state:</label>
+        <span id="state">{{ share.state }}</span>
+      </div>
+    </caption>
+    <tbody>
+      <tr>
+        <th>
+          &nbsp;
+        </th>
+        <td id="media_items" class="media_items">
+          {% for info in share.shared %}
+          <span class="media_item">
+            <figure>
+              <div class="media_item_thumbnail"></div>
+              <figcaption>
+                &nbsp;&nbsp;{{ info.title }}
+              </figcaption>
+            </figure>
+          </span>
+          {% endfor %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</table>
+{% endblock %}
+
+{% block local_endjs %}
+{% include "thumbnail_js.html" %}
+{% endblock %}

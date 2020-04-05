@@ -8,26 +8,26 @@ THUMBNAIL_DIMS = 222, 222
 DEFAULT_FROM_ADDRESS = 'postmaster@%s' % os.environ['APPLICATION_DOMAIN_NAME']
 
 
-def send_email(sender, to, subject, body_text_tmpl=None, body_html_tmpl=None, context={}):
-    info(f'send_email({sender}, {to})')
+def send_email(mail_info, body_text_tmpl, body_html_tmpl):
+    info(f'send_email(%s, %s)' % (mail_info['shared_by'], mail_info['to']))
 
-    download_and_encode_thumbnails(context['owner_id'], context['objects'], dims=THUMBNAIL_DIMS)
-    attachments = [item['encoded'] for item in context['objects']]
+    download_and_encode_thumbnails(mail_info['owner_id'], mail_info['shared'], dims=THUMBNAIL_DIMS)
+    attachments = [item['encoded'] for item in mail_info['shared']]
     info('thumbnails downloaded and encoded as attachments')
 
-    text_message = render_template(body_text_tmpl, context)
+    text_message = render_template(body_text_tmpl, mail_info)
 
     msg = EmailMultiAlternatives(
         from_email=DEFAULT_FROM_ADDRESS,
-        to=[sender],
-        reply_to=[sender],
-        bcc=to,
-        subject=subject,
+        to=[mail_info['from']],
+        reply_to=[mail_info['from']],
+        bcc=mail_info['to'],
+        subject=mail_info['subject'],
         attachments=attachments,
         body=text_message,
     )
 
-    html_message = render_template(body_html_tmpl, context)
+    html_message = render_template(body_html_tmpl, mail_info)
     msg.attach_alternative(html_message, 'text/html')
 
     msg.send()

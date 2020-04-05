@@ -14,6 +14,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/media_item.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/sharing.css' %}">
   {% block local_css %}
   {% endblock %}
   <style>
@@ -127,6 +128,7 @@
           <a class="close" href="#">×</a>
           <div class="popup-content">
             <ul>
+              <li><a href="{% url 'share-log' %}">Share Log</a></li>
               <li><a href="{% url 'media-item-upload-view' user.id %}">Upload images</a></li>
               <li><a href="{% url 'user-profile-view' user.id %}">User Profile</a></li>
               <li><a href="{% url 'account_logout' %}">Logout</a></li>

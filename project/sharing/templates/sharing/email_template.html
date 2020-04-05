@@ -53,10 +53,10 @@
                                 Shared by {{ shared_by }}
                               </td>
                             </tr>
-                            {% if share_message %}
+                            {% if message %}
                             <tr>
                               <td class="message" style="padding: 10px; vertical-align: top; color: #222; letter-spacing: 0.025em; font-size: 14px; text-align: center; font-family: Hind, Helvetica, Arial, sans-serif;" valign="top" align="left">
-                              {{ share_message }}
+                              {{ message }}
                               </td>
                             </tr>
                             {% endif %}
@@ -64,7 +64,7 @@
                           <tbody>
                             <tr>
                               <td style="padding: 10px; font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
-                              {% for object in objects %}<a href="{{ object.media_item_url }}"><img src="cid:{{ object.content_id }}"></a>
+                              {% for object in shared %}<a href="{{ object.media_item_url }}"><img src="cid:{{ object.content_id }}"></a>
                               {% endfor %}
 
                             </td>

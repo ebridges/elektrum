@@ -6,6 +6,7 @@ import uuid
 
 
 class ShareForm(forms.Form):
+    from_id = fields.UUIDField(widget=forms.HiddenInput())
     from_address = fields.EmailField(
         label=_('From'),
         help_text=_('Return & reply-to address for the email.'),

@@ -1,9 +1,9 @@
 From: {{ shared_by }}
 Date: {{ shared_on }}
 
-{{ share_message }}
+{{ message }}
 
-{% for object in objects %}<{{ object.media_item_url }}>
+{% for object in shared %}<{{ object.media_item_url }}>
 {% endfor %}
 --
 ⌂  Shared from elektrum

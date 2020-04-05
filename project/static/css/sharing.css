@@ -1,0 +1,31 @@
+.share-log-header {
+  font-family: Hind, Arial, Helvetica, sans-serif;
+  font-size: 22px;
+  text-emphasis: strong;
+  padding-bottom: 10px;
+}
+
+.share-log {
+  width: 100%;
+  border-spacing: 2px;
+  caption-side: bottom;
+}
+
+.share-log caption {
+  font-size: 10px;
+  text-align: left;
+  padding: 4px;
+}
+
+.share-log th {
+  font-weight: bold;
+  padding: 4px;
+  text-align: left;
+  border-bottom: 2px solid black;
+}
+
+.share-log td {
+  padding: 4px;
+  font-size: 16px;
+  border-bottom: 1px solid gray;
+}
