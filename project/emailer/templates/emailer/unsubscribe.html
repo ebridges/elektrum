@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Unsubscribe{% endblock %}
+
+{% block loggedout_content %}
+<h1 class="share-log-header">Unsubscribe from Emails</h1>
+
+{% if unsubscribed %}
+  <p>Email address {{ shared_to }} has been unsubscribed  from photos shared by {{ shared_from }}.</p>
+{% else %}
+  <p>Clicking the button below will unsubscribe the email address {{ shared_to }} from photos shared by {{ shared_from }}.</p>
+  <p>
+    <form method="post" action="{% url 'unsubscribe' email_id %}">
+      {% csrf_token %}
+      <button type="submit" style="border: solid 1px #282828; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 5px 10px; text-decoration: none; text-transform: capitalize; background-color: #282828; border-color: #282828; color: #ffffff;">Unsubscribe from Emails</button>
+    </form>
+    <a href="https://elektrum.photos" target="_blank" style="border: solid 1px #282828; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 5px 10px; text-decoration: none; text-transform: capitalize; background-color: #282828; border-color: #282828; color: #ffffff;">Unsubscribe from Emails</a></p>
+{% endif %}
+{% endblock %}

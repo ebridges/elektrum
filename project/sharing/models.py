@@ -83,9 +83,13 @@ class Audience(BaseModel):
     shared_by = models.ForeignKey(
         get_user_model(), blank=False, null=False, on_delete=models.CASCADE, default=uuid4
     )
-    # unsubscribed = models.BooleanField(
-    #     verbose_name=_('Whether this email\'s owner has requested to be unsubscribed for this user.'),
-    #     null=False, default=False, )
+    unsubscribed = models.BooleanField(
+        null=False,
+        default=False,
+        verbose_name=_(
+            'Whether this email\'s owner has requested to be unsubscribed for this user.'
+        ),
+    )
 
 
 class AudienceShare(models.Model):

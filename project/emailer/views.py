@@ -2,11 +2,26 @@ from logging import info
 from os import environ
 
 from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import render
 
 from emailer.utils import download_and_encode_thumbnails, render_template
+from sharing.models import Audience
 
 THUMBNAIL_DIMS = 222, 222
 DEFAULT_FROM_ADDRESS = 'postmaster@%s' % environ['APPLICATION_DOMAIN_NAME']
+
+
+def unsubscribe(request, email_id):
+    email = Audience.objects.get(pk=email_id)
+    owner = email.shared_by
+    context = {'shared_to': email.email, 'shared_by': owner.name(), 'email_id': email.id}
+
+    if request.method == request.POST:
+        email.unsubscribed = True
+        email.save()
+        context['unsubscribed'] = True
+
+    return render(request, 'emailer/unsubscribe.html', context)
 
 
 def send_email(mail_info, body_text_tmpl, body_html_tmpl):
