@@ -16,6 +16,7 @@
   <thead>
   <tr>
     <th>Created</th>
+    <th>Status</th>
     <th>Subject</th>
     <th style="text-align: center;"># Items Shared</th>
     <th>To</th>
@@ -25,7 +26,8 @@
 <tbody>
   {% for share in share_list %}
   <tr>
-    <td>{{ share.shared_on }}</td>
+    <td>{{ share.created }}</td>
+    <td>{{ share.state }}</td>
     <td><a href="{% url 'share-log-item' share_id=share.id %}">{{ share.subject }}</a></td>
     <td style="text-align: center;">{{ share.shared_count }}</td>
     <td style="vertical-align: top;">
