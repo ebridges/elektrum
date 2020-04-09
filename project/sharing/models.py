@@ -44,6 +44,9 @@ class Share(BaseModel):
     shared_to = models.ManyToManyField('Audience', through='AudienceShare')
     shared = models.ManyToManyField(MediaItem, through='MediaShare')
 
+    def to_count(self):
+        return len(self.shared_to.all())
+
     def shared_count(self):
         return len(self.shared.all())
 
@@ -72,6 +75,7 @@ class Share(BaseModel):
             'state': self.state,
             'shared': [item.view() for item in self.shared.all()],
             'shared_count': self.shared_count(),
+            'to_count': self.to_count(),
         }
 
 

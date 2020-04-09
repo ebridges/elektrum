@@ -12,7 +12,7 @@ class ShareForm(forms.Form):
         help_text=_('Return & reply-to address for the email.'),
         disabled=True,
         required=False,
-        widget=forms.EmailInput(attrs={'id': 'from-address', 'size': 64}),
+        widget=forms.EmailInput(attrs={'id': 'from-address', 'size': 134}),
     )
     to_address = MultiEmailField(
         label=_('Share To'),
@@ -27,7 +27,7 @@ class ShareForm(forms.Form):
             attrs={
                 'id': 'to-address',
                 'multiple': 'true',
-                'size': 128,
+                'size': 134,
                 'minlength': 3,
                 'maxlength': 256,
                 'list': 'default-emails',
@@ -40,7 +40,7 @@ class ShareForm(forms.Form):
         help_text=_('Subject of the email.'),
         required=False,
         widget=forms.TextInput(
-            attrs={'id': 'subject-line', 'size': 128, 'minlength': 3, 'maxlength': 256}
+            attrs={'id': 'subject-line', 'size': 134, 'minlength': 3, 'maxlength': 256}
         ),
     )
     share_message = fields.CharField(
