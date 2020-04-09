@@ -88,6 +88,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'users/templates'),
             os.path.join(BASE_DIR, 'media_items/templates'),
             os.path.join(BASE_DIR, 'sharing/templates'),
+            os.path.join(BASE_DIR, 'emailer/templates'),
             os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
