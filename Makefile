@@ -48,9 +48,9 @@ manifest.js:
 
 publish:
 	python project/manage.py collectstatic \
-    --noinput \
-    --pythonpath=project \
-    --settings=elektrum.settings
+        --noinput \
+        --pythonpath=project \
+        --settings=elektrum.settings
 	@echo [publish] SUCCESSFUL
 
 commit:
