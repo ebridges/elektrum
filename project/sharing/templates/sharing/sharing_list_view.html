@@ -23,10 +23,12 @@
 {% endblock %}
 
 {% block content %}
+<div class="explanatory-text">
+  Review the images in this album and choose the ones you'd like to share.
+</div>
+<br/>
 <form action="{% url 'sharing-items-select' %}" method="POST">
   {% csrf_token %}
-  <label for="share-media">Share selected items.</label>
-  <input id="share-media" type="submit" name="share" >
   <div class="media_items">
     {% for info in objects %}
     <div class="media_item">
@@ -41,6 +43,9 @@
     </div>
     {% endfor %}
   </div>
+  <br/>
+  <br/>
+  <button id="share-media" type="submit" name="share">Share selected items.</button>
 </form>
 {% endblock %}
 

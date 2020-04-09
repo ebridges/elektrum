@@ -2,14 +2,13 @@
 {% block title %}Share Media{% endblock %}
 
 {% block nav_block %}
-<h2 class='subtitle'>
-    <a href="{% url 'collections-view'  user.id %}"><span class="nav-home-icon">&#x2302;</span></a>
+<h2 class="subtitle">
+  <a href="{% url 'collections-view' user.id %}" class="subtitle_link"><span class="nav-home-icon">&#x2302;</span></a> / Share Log
 </h2>
 {% endblock %}
 
 
 {% block content %}
-<h1 class="share-log-header">Share Log</h1>
 {% if share_list %}
 <table class="share-log">
   <caption>{{ share_list|length }} Shares</caption>
