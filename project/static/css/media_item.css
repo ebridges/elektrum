@@ -60,3 +60,36 @@ input[type=checkbox] {
 .media_item_thumbnail {
   border: 0px;
 }
+
+.media-metadata-table {
+  font-family: Inter, serif;
+  letter-spacing: .01px;
+  width: 100%;
+  max-width: 800px;
+  font-size: 12px;
+}
+
+.media-metadata-table caption {
+  text-align: left;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+.media-metadata-table tbody th {
+  text-align: left;
+  font-weight: 600;
+  padding: 5px 0 5px 0;
+}
+
+.media-metadata-table tbody td {
+  font-weight: 300;
+  line-height: 22px;
+}
+
+.media-metadata-table-column-one {
+  width: 20%;
+}
+
+.media-metadata-table-column-two {
+  width: 80%;
+}
