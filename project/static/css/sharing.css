@@ -1,5 +1,5 @@
 .share-log-header {
-  font-family: Hind, Arial, Helvetica, sans-serif;
+  font-family: Inter, sans-serif;
   font-size: 22px;
   text-emphasis: strong;
   padding-bottom: 10px;
@@ -12,7 +12,7 @@
 }
 
 .share-log caption {
-  font-size: 10px;
+  font-size: 12px;
   text-align: left;
   padding: 4px;
 }
@@ -28,4 +28,33 @@
   padding: 4px;
   font-size: 16px;
   border-bottom: 1px solid gray;
+  line-height: 1.5em;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.helptext {
+  visibility: hidden;
+}
+
+button {
+  background-color: #282828;
+  border-color: #282828;
+  border-radius: 5px;
+  border: solid 1px #282828;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 5px 15px;
+  text-align: center;
+  text-transform: capitalize;
+  vertical-align: top;
 }
