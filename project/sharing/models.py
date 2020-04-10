@@ -85,7 +85,7 @@ class Audience(BaseModel):
 
     email = models.EmailField(blank=False, null=False, max_length=512)
     shared_by = models.ForeignKey(
-        get_user_model(), blank=False, null=False, on_delete=models.CASCADE, default=uuid4
+        get_user_model(), blank=False, null=True, on_delete=models.CASCADE
     )
     unsubscribed = models.BooleanField(
         null=False,
