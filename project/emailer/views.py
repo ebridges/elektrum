@@ -16,7 +16,7 @@ def unsubscribe(request, email_id):
     owner = email.shared_by
     context = {'shared_to': email.email, 'shared_by': owner.name(), 'email_id': email.id}
 
-    if request.method == request.POST:
+    if request.method == 'POST':
         email.unsubscribed = True
         email.save()
         context['unsubscribed'] = True
