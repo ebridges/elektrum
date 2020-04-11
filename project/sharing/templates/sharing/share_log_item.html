@@ -22,7 +22,7 @@
         Shared To
       </th>
       <td>
-        <ul>{% for to in share.to %}
+        <ul>{% for to, id in share.to.items %}
           <li>{{to}}</li>
           {% endfor %}
         </ul>

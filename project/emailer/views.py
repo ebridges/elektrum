@@ -31,20 +31,27 @@ def send_email(mail_info, body_text_tmpl, body_html_tmpl):
     attachments = [item['encoded'] for item in mail_info['shared']]
     info('thumbnails downloaded and encoded as attachments')
 
-    text_message = render_template(body_text_tmpl, mail_info)
+    cnt = 0
+    addrs = mail_info['to']
+    for (email, email_id) in addrs.items():
+        mail_info['email_id'] = email_id
+        text_message = render_template(body_text_tmpl, mail_info)
 
-    msg = EmailMultiAlternatives(
-        from_email=DEFAULT_FROM_ADDRESS,
-        to=[mail_info['from']],
-        reply_to=[mail_info['from']],
-        bcc=mail_info['to'],
-        subject=mail_info['subject'],
-        attachments=attachments,
-        body=text_message,
-    )
+        msg = EmailMultiAlternatives(
+            from_email=DEFAULT_FROM_ADDRESS,
+            to=[email],
+            reply_to=[mail_info['from']],
+            bcc=mail_info['to'],
+            subject=mail_info['subject'],
+            attachments=attachments,
+            body=text_message,
+        )
 
-    html_message = render_template(body_html_tmpl, mail_info)
-    msg.attach_alternative(html_message, 'text/html')
+        html_message = render_template(body_html_tmpl, mail_info)
+        msg.attach_alternative(html_message, 'text/html')
 
-    msg.send()
-    info('Message sent.')
+        msg.send()
+        cnt = cnt + 1
+
+        info(f'Message sent to {email}')
+    info(f'{cnt} emails sent')

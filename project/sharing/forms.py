@@ -1,7 +1,8 @@
 from django import forms
-from django.forms import fields, widgets
+from django.forms import fields, widgets, ValidationError
 from django.utils.translation import gettext_lazy as _
 from sharing.fields import MultiEmailField
+from sharing.models import Audience
 import uuid
 
 
@@ -56,3 +57,11 @@ class ShareForm(forms.Form):
             }
         ),
     )
+
+    def clean_to_address(self):
+        emails = self.cleaned_data['to_address']
+        for email in emails:
+            a = Audience.objects.filter(email=email).values('unsubscribed', 'email').first()
+            if a['unsubscribed']:
+                raise ValidationError('%s asked to unsubscribe from future emails.' % a['email'])
+        return emails

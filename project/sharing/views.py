@@ -153,14 +153,18 @@ def do_share_items(
 ):
     info('do_share_items() called')
     share.from_data(data, shared_on=datetime.now)
+    mail_info = share.view()
+    if len(mail_info['to'].items()) > 0 and len(mail_info['shared'].items()) > 0:
+        send_email(mail_info, text_tmpl, html_tmpl)
 
-    send_email(share.view(), text_tmpl, html_tmpl)
+        share.state = ShareState.SHARED
+        share.save()
 
-    share.state = ShareState.SHARED
-    share.save()
-
-    url = reverse('share-log-item', kwargs={'share_id': share.id})
-    return redirect(url)
+        url = reverse('share-log-item', kwargs={'share_id': share.id})
+        return redirect(url)
+    else:
+        # handle case where there are no "to" emails or no images selected
+        raise BadRequestException('no "to" addresses and/or no images selected.')
 
 
 def do_delete_share(share):

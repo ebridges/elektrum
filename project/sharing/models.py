@@ -45,7 +45,7 @@ class Share(BaseModel):
     shared = models.ManyToManyField(MediaItem, through='MediaShare')
 
     def to_count(self):
-        return len(self.shared_to.all())
+        return len(self.shared_to.filter(unsubscribed=False))
 
     def shared_count(self):
         return len(self.shared.all())
@@ -65,7 +65,10 @@ class Share(BaseModel):
         return {
             'created': self.created,
             'modified': self.modified,
-            'to': [audience.email for audience in self.shared_to.all()],
+            'to': {
+                audience.email: audience.id
+                for audience in self.shared_to.filter(unsubscribed=False)
+            },
             'owner_id': self.shared_by.id,
             'shared_by': self.shared_by.name(),
             'from': self.shared_by.email,
