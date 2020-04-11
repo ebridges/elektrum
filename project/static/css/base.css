@@ -1,18 +1,18 @@
 body {
-    padding: 2em;
-    font-family: Inter, sans-serif;
-    font-size: 12px;
+  padding: 2em;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
 }
 
 header {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 footer {
-    font-size: 10px;
-    padding-top: 50px;
-    padding-left: 5px;
+  font-size: 10px;
+  padding-top: 50px;
+  padding-left: 5px;
 }
 
 .button {
@@ -89,125 +89,125 @@ footer {
 }
 
 .header-left {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .header-right {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 .avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 }
 
 .avatar-container {
-    position: relative;
+  position: relative;
 }
 
 .avatar-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
 }
 
 .title {
-    font-family: Hind, Helvetica, sans-serif !important;
-    color: #222;
-    letter-spacing: 0.025em;
-    font-size: 24px;
-    text-transform: uppercase;
+  font-family: Hind, Helvetica, sans-serif !important;
+  color: #222;
+  letter-spacing: 0.025em;
+  font-size: 24px;
+  text-transform: uppercase;
 }
 
 .logout-button {
-    text-align: right;
+  text-align: right;
 }
 
 nav {
-    font-family: Inter, sans-serif !important;
+  font-family: Inter, sans-serif !important;
 }
 
 .subtitle {
-    color: #aaa;
-    letter-spacing: 0.025em;
-    font-size: 18px;
-    text-transform: uppercase;
-    position: relative;
-    top: -25px;
+  color: #aaa;
+  letter-spacing: 0.025em;
+  font-size: 18px;
+  text-transform: uppercase;
+  position: relative;
+  top: -25px;
 }
 
-.subtitle a, a:visited  {
-    text-decoration: none;
-    color: #4848b4
+.subtitle a, a:visited {
+  text-decoration: none;
+  color: #4848b4
 }
 
 .subtitle a:hover, a:active {
-    text-decoration: none;
-    color: #4848b48a
+  text-decoration: none;
+  color: #4848b48a
 }
 
 .nav-home-icon {
-    font-size: 30px;
-    font-family: Helvetica, sans-serif !important;
+  font-size: 30px;
+  font-family: Helvetica, sans-serif !important;
 }
 
 .metadata-table {
-    font-family: Inter, serif;
-    letter-spacing: .01px;
-    width: 100%;
-    max-width: 700px;
-    font-size: 15px;
-  }
+  font-family: Inter, serif;
+  letter-spacing: .01px;
+  width: 100%;
+  max-width: 700px;
+  font-size: 15px;
+}
 
-  .metadata-table caption {
-    text-align: left;
-    font-size: 18px;
-    padding: 30px 0;
-  }
+.metadata-table caption {
+  text-align: left;
+  font-size: 18px;
+  padding: 30px 0;
+}
 
-  .metadata-table tbody th {
-    text-align: left;
-    font-weight: 500;
-    padding: 5px 5px 5px 0;
-    vertical-align: top;
-  }
+.metadata-table tbody th {
+  text-align: left;
+  font-weight: 500;
+  padding: 5px 5px 5px 0;
+  vertical-align: top;
+}
 
-  .metadata-table tbody td {
-    font-weight: 300;
-    line-height: 22px;
-  }
+.metadata-table tbody td {
+  font-weight: 300;
+  line-height: 22px;
+}
 
-  .metadata-table tbody td input {
-    font-weight: 300;
-    line-height: 22px;
-  }
+.metadata-table tbody td input {
+  font-weight: 300;
+  line-height: 22px;
+}
 
-  .metadata-table tfoot th {
-    font-weight: 600;
-    text-align: left;
-    font-size: 12px;
-    padding: 10px 0 5px 0;
-  }
+.metadata-table tfoot th {
+  font-weight: 600;
+  text-align: left;
+  font-size: 12px;
+  padding: 10px 0 5px 0;
+}
 
-  .metadata-table tfoot td {
-    font-weight: lighter;
-    font-size: 12px;
-    padding: 0 0 5px 0;
-  }
+.metadata-table tfoot td {
+  font-weight: lighter;
+  font-size: 12px;
+  padding: 0 0 5px 0;
+}
 
-  .metadata-table-thumbnail-container {
-    text-align: center;
-    padding-top: 20px;
-  }
+.metadata-table-thumbnail-container {
+  text-align: center;
+  padding-top: 20px;
+}
 
-  .metadata-table-column-one {
-    width: 20%;
-  }
+.metadata-table-column-one {
+  width: 20%;
+}
 
-  .metadata-table-column-two {
-    width: 80%;
-  }
+.metadata-table-column-two {
+  width: 80%;
+}
 
 .explanatory-text {
   font-size: 16px;
