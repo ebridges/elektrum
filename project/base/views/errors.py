@@ -23,21 +23,25 @@ class ForbiddenException(Exception):
     pass
 
 
+def format_exc_html():
+    return '<pre>%s</pre>' % format_exc()
+
+
 def exceptions_to_web_response(view_func):
     @wraps(view_func)
     def inner(*args, **kwargs):
         try:
             return view_func(*args, **kwargs)
         except ForbiddenException as e:
-            return HttpResponseForbidden(format_exc())
+            return HttpResponseForbidden(format_exc_html())
         except BadRequestException as e:
-            return HttpResponseBadRequest(format_exc())
+            return HttpResponseBadRequest(format_exc_html())
         except MethodNotAllowedException as e:
-            return HttpResponseNotAllowed(format_exc())
+            return HttpResponseNotAllowed(format_exc_html())
         except Http404 as e:
-            return HttpResponseNotFound(format_exc())
+            return HttpResponseNotFound(format_exc_html())
         except Exception as e:
-            return HttpResponseServerError(format_exc())
+            return HttpResponseServerError(format_exc_html())
 
     return inner
 
