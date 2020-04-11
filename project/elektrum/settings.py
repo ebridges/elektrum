@@ -37,7 +37,8 @@ ALLOWED_HOSTS = allowed_hosts.split(',')
 version_file = resolve_version(BASE_DIR)
 if os.path.isfile(version_file):
     with open(version_file) as v_file:
-        APP_VERSION_NUMBER = v_file.read()
+        v = v_file.read()
+        APP_VERSION_NUMBER = v.strip()
 print('Running Elektrum v%s' % APP_VERSION_NUMBER)
 
 # Application definition
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     'pages',
     'media_items',
     'date_dimension',
+    'sharing',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +87,8 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'pages/templates'),
             os.path.join(BASE_DIR, 'users/templates'),
             os.path.join(BASE_DIR, 'media_items/templates'),
+            os.path.join(BASE_DIR, 'sharing/templates'),
+            os.path.join(BASE_DIR, 'emailer/templates'),
             os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
@@ -185,8 +189,8 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
 EMAIL_FILE_PATH = './sent_emails'
 

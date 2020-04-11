@@ -1,0 +1,54 @@
+{% extends 'base_protected.html' %}
+{% block title %}Share Media{% endblock %}
+
+{% block local_js %}
+<script>
+  function toggleCheckbox(checkboxId) {
+    var items = document.getElementsByName('items-to-share');
+    for (var i = 0, len = items.length; i < len; i++) {
+      if(items[i].value === checkboxId) {
+        items[i].checked ^= 1;
+      }
+    }
+  }
+</script>
+{% endblock %}
+
+{% block nav_block %}
+<h2 class='subtitle'>
+    <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
+    <a href="{% url 'media-list-view' user.id year yyyymmdd %}" class="subtitle_link">{{ yyyymmdd }}</a>
+</h2>
+{% endblock %}
+
+{% block content %}
+<div class="explanatory-text">
+  Review the images in this album and choose the ones you'd like to share.
+</div>
+<br/>
+<form action="{% url 'sharing-items-select' %}" method="POST">
+  {% csrf_token %}
+  <div class="media_items">
+    {% for info in objects %}
+    <div class="media_item">
+      <a class="media_item_link" onclick="toggleCheckbox('{{ info.item_id }}')" href="#">
+        <figure>
+          <div class="media_item_thumbnail"></div>
+          <figcaption>
+            &nbsp;&nbsp;<input type="checkbox" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
+          </figcaption>
+        </figure>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <br/>
+  <br/>
+  <button id="share-media" type="submit" name="share">Share selected items.</button>
+</form>
+{% endblock %}
+
+{% block local_endjs %}
+{% include "thumbnail_js.html" %}
+{% endblock %}

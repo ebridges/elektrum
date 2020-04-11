@@ -39,6 +39,8 @@ urlpatterns = [
     path('status/', include('status.urls')),
     path('media/', include('media_items.urls')),
     path('user/', include('users.urls')),
+    path('share/', include('sharing.urls')),
+    path('email/', include('emailer.urls')),
 ]
 
 

@@ -1,10 +1,13 @@
+from traceback import format_exc
 from functools import wraps
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseServerError,
     HttpResponseNotAllowed,
     HttpResponseForbidden,
+    HttpResponseNotFound,
 )
+from django.http.response import Http404
 from rest_framework.response import Response
 
 
@@ -20,19 +23,25 @@ class ForbiddenException(Exception):
     pass
 
 
+def format_exc_html():
+    return '<pre>%s</pre>' % format_exc()
+
+
 def exceptions_to_web_response(view_func):
     @wraps(view_func)
     def inner(*args, **kwargs):
         try:
             return view_func(*args, **kwargs)
         except ForbiddenException as e:
-            return HttpResponseForbidden(str(e))
+            return HttpResponseForbidden(format_exc_html())
         except BadRequestException as e:
-            return HttpResponseBadRequest(str(e))
+            return HttpResponseBadRequest(format_exc_html())
         except MethodNotAllowedException as e:
-            return HttpResponseNotAllowed(str(e))
+            return HttpResponseNotAllowed(format_exc_html())
+        except Http404 as e:
+            return HttpResponseNotFound(format_exc_html())
         except Exception as e:
-            return HttpResponseServerError(str(e))
+            return HttpResponseServerError(format_exc_html())
 
     return inner
 

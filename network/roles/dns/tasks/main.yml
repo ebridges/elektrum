@@ -22,3 +22,12 @@
     zone: '{{ https_domain_name }}'
   with_items:
     - "{{ dns_info }}"
+
+- name: add txt records for DMARC validation of email
+  route53:
+      state: present
+      zone: '{{ https_domain_name }}'
+      record: "{{ item.dn }}"
+      type: TXT
+      ttl: '3600'
+      value: '"v=DMARC1; p=quarantine; rua=mailto:{{dmarc_report_address}}; pct=90; sp=none"'

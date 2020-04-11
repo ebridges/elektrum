@@ -1,31 +1,36 @@
 {% extends 'base_protected.html' %}
 {% block title %}Media Home{% endblock %}
+{% load static %}
 
 {% block nav_block %}
 <h2 class='subtitle'>
-    <a href='{% url 'collections-view' user.id %}'><span class="nav-home-icon">&#x2302;</span></a> /
-    <a href='{% url 'albums-view' user.id year %}'>{{ year }}</a> /
+    <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a> /
+    <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
     {{ yyyymmdd }}
+    &nbsp; &mdash; &nbsp;
+    <a href="{% url 'sharing-items-list' year yyyymmdd %}" class="subtitle_link">
+      <img src="{% static 'img/sharing.svg' %}" alt="Share images from this album." width="20" height="20"/>
+    </a>
 </h2>
 {% endblock %}
 
 {% block content %}
-<dl>
+<div class="media_items">
   {% for info in objects %}
-  <span class='img-container'>
-      <dd><div class='media_item_thumbnail'></div></dd>
-      <dt><a href="{% url 'media-item-view' user.id info.item_id %}">{{ info.title }}</a></dt>
-  </span>
+  <div class="media_item">
+    <a class="media_item_link" href="{% url 'media-item-view' user.id info.item_id %}">
+      <figure>
+        <div class="media_item_thumbnail"></div>
+        <figcaption>
+          &nbsp;&nbsp;&nbsp;{{ info.title }}
+        </figcaption>
+      </figure>
+    </a>
+  </div>
   {% endfor %}
-</dl>
+</div>
 {% endblock %}
 
 {% block local_endjs %}
-<script>
-  let images = [
-  {% for info in objects %}{src: '{{ info.url }}', w: '222', h: '222'},
-  {% endfor %}];
-  let locations = document.getElementsByClassName('media_item_thumbnail');
-  renderThumbnails(images, locations)
-</script>
+{% include "thumbnail_js.html" %}
 {% endblock %}

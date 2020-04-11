@@ -12,22 +12,28 @@
 {% endblock %}
 
 {% block content %}
-<table>
-  <tr><td class="user-attr-name">Member Since</td><td class="user-attr-value">{{ user.date_joined }}</td></tr>
-  <tr><td class="user-attr-name">First Name</td><td class="user-attr-value">{{ user.first_name }}</td></tr>
-  <tr><td class="user-attr-name">Last Name</td><td class="user-attr-value">{{ user.last_name }}</td></tr>
-  <tr><td class="user-attr-name">Email</td><td class="user-attr-value">{{ user.email }}</td></tr>
-  <tr><td class="user-attr-name">Username</td><td class="user-attr-value">{{ user.username }}</td></tr>
-  <tr><td class="user-attr-name">API Token</td><td class="user-attr-value">
-    {% if not token %}
-    <a href="{% url 'user-profile-token-create' owner_id=user.id %}">Generate Token</a>
-    {% else %}
-      {{ token }} <a style="text-decoration: none" href="{% url 'user-profile-token-reset' owner_id=user.id %}">&nbsp;&nbsp;[RESET TOKEN]</a>
-    {% endif %}
-  </td></tr>
+<table class="metadata-table">
+  <colgroup>
+    <col class="metadata-table-column-one" />
+    <col class="metadata-table-column-two" />
+  </colgroup>
+  <tbody>
+    <tr><th>Member Since</td><td>{{ user.date_joined }}</td></tr>
+    <tr><th>First Name</td><td>{{ user.first_name }}</td></tr>
+    <tr><th>Last Name</td><td>{{ user.last_name }}</td></tr>
+    <tr><th>Email</td><td>{{ user.email }}</td></tr>
+    <tr><th>Username</td><td>{{ user.username }}</td></tr>
+    <tr><th>API Token</td><td>
+      {% if not token %}
+      <a href="{% url 'user-profile-token-create' owner_id=user.id %}">Generate Token</a>
+      {% else %}
+        <tt>{{ token }}</tt> <a style="text-decoration: none" href="{% url 'user-profile-token-reset' owner_id=user.id %}">&nbsp;&nbsp;[RESET TOKEN]</a>
+      {% endif %}
+    </td></tr>
+  </tbody>
 </table>
 {% if token %}
-<table>
+<table class="metadata-table">
   <tr>
     <td colspan="2">Example:</td>
   </tr>

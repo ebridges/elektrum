@@ -11,8 +11,10 @@ SERVICE_NAME='{{ service_name }}'
 ### Django config
 DJANGO_DEBUG_ENABLED='{{django_debug_enabled}}'
 DJANGO_SECRET_KEY='{{django_secret_key}}'
-DJANGO_EMAIL_BACKEND='{{django_email_backend}}'
 DJANGO_ALLOWED_HOSTS='{{django_allowed_hosts}}'
+
+## Email Configuration
+DJANGO_EMAIL_BACKEND='{{django_email_backend}}'
 
 ### AWS Info
 AWS_REGION='{{ aws_region }}'
@@ -58,3 +60,4 @@ AWS_API_NAME='{{ service_name }}-{{ operating_env }}-api'
 AWS_API_DEPLOY_STAGE='{{ operating_env }}'
 AWS_API_DOMAIN_NAME='{{ application_domain_name }}'
 AWS_ACM_CERTIFICATE_ARN='{{ https_certificate_arn }}'
+AWS_LAMBDA_CONNECTION_TIMEOUT={{ elektrum_service_connection_timeout }}

@@ -3,17 +3,27 @@
 <html>
 
 <head>
+  <title>{% block title %}Elektrum{% endblock %}</title>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Elektrum{% endblock %}</title>
+
+  <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'img/site.webmanifest' %}">
+
   <script type="text/javascript" src="{% static 'js/load-image.all.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/media_item.js' %}"></script>
   {% block local_js %}
   {% endblock %}
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Hind">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/media_item.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/sharing.css' %}">
   {% block local_css %}
   {% endblock %}
   <style>
@@ -107,11 +117,6 @@
       <span class="title">
         elektrum.photos
       </span>
-      {% if user.is_authenticated %}
-      <span class="title">
-
-      </span>
-      {% endif %}
     </div>
     <div class="header-right">
       {% if user.is_authenticated %}
@@ -132,6 +137,7 @@
           <a class="close" href="#">×</a>
           <div class="popup-content">
             <ul>
+              <li><a href="{% url 'share-log' %}">Share Log</a></li>
               <li><a href="{% url 'media-item-upload-view' user.id %}">Upload images</a></li>
               <li><a href="{% url 'user-profile-view' user.id %}">User Profile</a></li>
               <li><a href="{% url 'account_logout' %}">Logout</a></li>
@@ -145,8 +151,30 @@
     </div>
     {% else %}
 
-    Please sign in.
-
+    <div class="avatar-container">
+      <!-- <span class="subtitle">{{ user.username }}</span> -->
+      <a class="button" href="#profile">
+        <img class="avatar" src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png" />
+        <span class="avatar-badge">
+        </span>
+      </a>
+    </div>
+    <div id="profile" class="overlay">
+      <div class="popup">
+        {% if shared_to %}
+        <h2><span class="profile-icon">&#x24D8;</span> {{ shared_to }}</h2>
+        {% else %}
+        <h2><span class="profile-icon">&#x24D8;</span> Please sign in.</h2>
+        {% endif %}
+        <a class="close" href="#">×</a>
+        <div class="popup-content">
+          <footer>
+            {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br />{{APP_DB_HOST}}
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
     {% endif %}
 
     </div>

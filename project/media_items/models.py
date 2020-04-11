@@ -1,3 +1,4 @@
+from os.path import basename
 from django.db import models
 from django.core import validators
 from django.utils.deconstruct import deconstructible
@@ -5,10 +6,10 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 # from django.contrib.gis.db import models
-from django.db.models import Field
 
-from base.models import BaseModel
+from base.models import BaseModel, DateTimeNoTZField
 from date_dimension.models import DateDimension
+from base.views.utils import media_url
 
 
 @deconstructible
@@ -22,11 +23,7 @@ JPG = 'jpg'
 PNG = 'png'
 
 MIME_TYPE_CHOICES = ((JPG, 'image/jpeg'), (PNG, 'image/png'))
-
-
-class DateTimeNoTZField(Field):
-    def db_type(self, connection):
-        return 'TIMESTAMP WITHOUT TIME ZONE'
+MIME_TYPE_EXTENSIONS = {'image/jpeg': JPG, 'image/png': PNG}
 
 
 class MediaItem(BaseModel):
@@ -198,6 +195,28 @@ class MediaItem(BaseModel):
         created = int(self.create_date.strftime('%Y%m%d'))
         self.create_day = DateDimension.objects.get(yyyymmdd=created)
         super(MediaItem, self).save(*args, **kwargs)
+
+    def view(self):
+        return {
+            'media_item': self,
+            'item_id': self.id,
+            'file_name': self.create_day_id,
+            'url': media_url(self.file_path),
+            'media_item_url': media_url(self.file_path),
+            'file_path': self.file_path,
+            'title': self.create_date,
+            'collection_year': self.create_day.year,
+            'album_id': self.create_day.iso_date,
+            'yyyymmdd': self.yyyy_mm_dd(),
+            'year': int(str(self.create_day_id)[:4]),
+            'basename': basename(self.file_path),
+            'owner_id': self.owner.id,
+            'media_ext': MIME_TYPE_EXTENSIONS[self.mime_type],
+        }
+
+    def yyyy_mm_dd(self):
+        val = str(self.create_day_id)
+        return '%s-%s-%s' % (val[0:4], val[4:6], val[6:8])
 
     def __str__(self):
         return self.file_path

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 
 from base.views.utils import assert_owner_id, media_url
-from base.views.errors import exceptions_to_web_response, BadRequestException
+from base.views.errors import exceptions_to_web_response
 from media_items.models import MediaItem
 from date_dimension.models import DateDimension
 
@@ -21,13 +21,7 @@ def media_item_upload_view(
 def media_item_view(request, owner_id, image_id, template_name='media_items/media_item_view.html'):
     assert_owner_id(owner_id, request.user.id)
     media_item = get_object_or_404(MediaItem, id=image_id)
-    data = {
-        'collection_year': media_item.create_day.year,
-        'album_id': media_item.create_day.iso_date,
-        'media_item': media_item,
-        'media_item_url': media_url(media_item.file_path),
-    }
-    return render(request, template_name, data)
+    return render(request, template_name, media_item.view())
 
 
 @exceptions_to_web_response
@@ -39,22 +33,15 @@ def media_list_view(
     yyyymmdd = int(re.sub('-', '', date))
     media_items = MediaItem.objects.raw(
         '''select m.*
-                                           from media_item m
-                                           where m.create_day_id = %d
-                                           order by m.create_date'''
+            from media_item m
+            where m.create_day_id = %d
+            order by m.create_date'''
         % yyyymmdd
     )
 
     data = []
     for mi in media_items:
-        data.append(
-            {
-                'file_name': mi.create_day_id,
-                'url': media_url(mi.file_path),
-                'title': mi.create_date,
-                'item_id': mi.id,
-            }
-        )
+        data.append(mi.view())
 
     return render(
         request, template_name, {'objects': data, 'yyyymmdd': date, 'year': int(date[:4])}
@@ -93,7 +80,7 @@ def albums_view(request, owner_id, year, template_name='media_items/albums_view.
     data = []
     mi = None
     for mi in media_items:
-        data.append({'yyyymmdd': yyyy_mm_dd(str(mi.create_day_id)), 'url': media_url(mi.file_path)})
+        data.append(mi.view())
 
     return render(request, template_name, {'objects': data, 'year': int(str(mi.create_day_id)[:4])})
 
@@ -127,7 +114,3 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
         data.append({'year': int(str(mi.create_day_id)[:4]), 'url': media_url(mi.file_path)})
 
     return render(request, template_name, {'objects': data})
-
-
-def yyyy_mm_dd(val):
-    return '%s-%s-%s' % (val[0:4], val[4:6], val[6:8])

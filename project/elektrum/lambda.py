@@ -6,6 +6,7 @@ from django import setup
 from django.core import management
 from django.core.wsgi import get_wsgi_application
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
 from logging import warn, info
 from pprint import pprint
 from json import loads
@@ -89,17 +90,15 @@ def handle_adminuser_command(args):
     username = args['username']
     password = args['password']
 
-    from users.models import CustomUser
-
     info(f'Creating super user with username: {username}')
 
     try:
-        u = CustomUser.objects.get(username=username)
+        u = get_user_model().objects.get(username=username)
         info(f'User exists for username {username}: id [%s]' % str(u.id))
         return as_json(u)
     except ObjectDoesNotExist:
         info(f'User does not exist for username {username}, creating.')
-        u = CustomUser.objects.create_superuser(username, email=email, password=password)
+        u = get_user_model().objects.create_superuser(username, email=email, password=password)
         info('Created user with id %s' % str(u.id))
         return as_json(u)
 
@@ -128,15 +127,27 @@ def get_environ(event, binary_support):
         body = body.encode('utf-8')
     params = event.get('queryStringParameters') or {}
 
+    headers = event.get('headers') or {}  # may be None when testing on console
+
+    x_forwarded_for = headers.get('X-Forwarded-For', '')
+    if ',' in x_forwarded_for:
+        # The last one is the cloudfront proxy ip. The second to last is the real client ip.
+        # Everything else is user supplied and untrustworthy.
+        remote_addr = x_forwarded_for.split(', ')[-2]
+    else:
+        remote_addr = x_forwarded_for or '127.0.0.1'
+
     environ = {
         'CONTENT_LENGTH': str(len(body)),
         'HTTP': 'on',
         'PATH_INFO': event['path'],
         'QUERY_STRING': urlencode(params),
-        'REMOTE_ADDR': '127.0.0.1',
+        'REMOTE_ADDR': remote_addr,
         'REQUEST_METHOD': method,
         'SCRIPT_NAME': '',
+        'SERVER_NAME': os.getenv('APPLICATION_DOMAIN_NAME', None),
         'SERVER_PROTOCOL': 'HTTP/1.1',
+        'SERVER_PORT': headers.get('X-Forwarded-Port', '80'),
         'wsgi.errors': sys.stderr,
         'wsgi.input': BytesIO(body),
         'wsgi.multiprocess': False,
@@ -145,20 +156,19 @@ def get_environ(event, binary_support):
         'wsgi.version': (1, 0),
     }
 
-    headers = event.get('headers') or {}  # may be None when testing on console
     for key, value in headers.items():
         key = key.upper().replace('-', '_')
 
         if key == 'CONTENT_TYPE':
             environ['CONTENT_TYPE'] = value
-        elif key == 'HOST':
-            environ['SERVER_NAME'] = value
         elif key == 'X_FORWARDED_FOR':
             environ['REMOTE_ADDR'] = value.split(', ')[0]
         elif key == 'X_FORWARDED_PROTO':
             environ['wsgi.url_scheme'] = value
         elif key == 'X_FORWARDED_PORT':
             environ['SERVER_PORT'] = value
+        elif not environ.get('SERVER_NAME', None) and key == 'HOST':
+            environ['SERVER_NAME'] = value
 
         environ['HTTP_' + key] = value
 

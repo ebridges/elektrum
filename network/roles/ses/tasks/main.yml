@@ -1,0 +1,5 @@
+# main.yml
+- name: Ensure {{application_domain_name}} domain identity exists
+  aws_ses_identity:
+    identity: '{{application_domain_name}}'
+    state: present

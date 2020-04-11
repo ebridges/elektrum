@@ -10,7 +10,7 @@ function renderThumbnails(images, locations) {
         loc.appendChild(img);
       },
       {
-        orientation: true
+        orientation: true,
       }
     );
   }
