@@ -142,6 +142,10 @@ nav {
   padding-bottom: 20px;
 }
 
-  tt {
-    font-family: monospace;
-  }
+tt {
+  font-family: monospace;
+}
+
+.errorlist {
+  color: salmon;
+}
