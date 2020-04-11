@@ -2,6 +2,7 @@ from logging import info
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import JsonResponse
+from django.db.models import Count
 from django.contrib.auth import get_user_model
 from urllib.parse import urlencode, quote_plus
 from base.views.errors import exceptions_to_web_response
@@ -132,16 +133,19 @@ def share_items(request, share_id):
 
 def default_email_list(uid):
     '''
-    select distinct email, count(sas.share_id)
-    from sharing_audience sa
-    join sharing_audienceshare sas on sas.shared_to_id = sa.id
-    join sharing_share s on sas.share_id = ss.id
-    where ss.shared_by_id = ?
-    group by sas.share_id
-    order by count(sas.share_id) desc
-    fetch first 10 rows only
+    Builds a list of the top 10 email addresses that this user has shared to, sorted alphabetically.
     '''
-    return ['aaa@example.com', 'bbb@example.com', 'ccc@example.com', 'ddd@example.com']
+    top_emails = (
+        Audience.objects.filter(shared_by=uid, unsubscribed=False)
+        .values('email')
+        .annotate(shares=Count('audienceshare'))
+        .order_by('-shares')[:10]
+    )
+
+    emails = []
+    for e in top_emails:
+        emails.append(e['email'])
+    return sorted(emails)
 
 
 def do_share_items(
