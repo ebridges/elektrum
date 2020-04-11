@@ -26,7 +26,10 @@ class MultiEmailField(fields.EmailField):
         if val in self.empty_values:
             return None
 
-        return ','.join(value)
+        if 'list' in str(type(val)):
+            return ','.join(val)
+        else:
+            return val
 
     def to_python(self, value):
         val = super().to_python(value)
