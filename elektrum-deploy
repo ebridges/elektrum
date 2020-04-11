@@ -52,6 +52,13 @@ function apply_migrations() {
     output_file=$(mktemp)
     trap "{ rm -f $output_file; }" EXIT
 
+    # aws --output json \
+    #     lambda invoke \
+    #     --function-name ${AWS_LAMBDA_NAME} \
+    #     --log-type Tail \
+    #     --payload '{"manage": {"cmd": "migrate sharing 0001_initial"} }' ${output_file} \
+    # | jq --raw-output .LogResult | base64 --input=- --decode
+
     aws --output json \
         lambda invoke \
         --function-name ${AWS_LAMBDA_NAME} \
