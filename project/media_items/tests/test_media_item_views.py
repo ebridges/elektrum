@@ -12,7 +12,7 @@ def test_media_item_collections_view(media_item_factory, authenticated_client):
     content = str(response.content)
     assert response.status_code == 200
     assert '<title>Collections Home</title>' in content
-    expected = '>%s<' % mi.create_day.year
+    expected = '&nbsp;%s' % mi.create_day.year
     assert expected in content
 
 

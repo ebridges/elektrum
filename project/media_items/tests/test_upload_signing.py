@@ -35,7 +35,8 @@ def test_create_signed_url(user_factory, monkeypatch):
     bucket_name = 'opqrstu'
     user = user_factory()
     upload_key = 'abcdefg'
-    url = create_signed_url(bucket_name, upload_key)
+    mim_type = 'text/plain'
+    url = create_signed_url(bucket_name, upload_key, mim_type)
     qs = parse_qs(url.query)
     assert url.scheme == 'https'
     assert url.hostname == '%s.s3.amazonaws.com' % bucket_name
