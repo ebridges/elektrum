@@ -8,7 +8,8 @@
     <a href="{% url 'albums-view' user.id year %}">{{ year }}</a> /
     {{ yyyymmdd }}
     &nbsp; &mdash; &nbsp;
-    <a href="{% url 'sharing-items-list' year yyyymmdd %}" class="subtitle_link">
+    <!-- Link to share items from this view -->
+    <a href="{% url 'list-items' year yyyymmdd %}" class="subtitle_link">
       <img src="{% static 'img/sharing.svg' %}" alt="Share images from this album." width="20" height="20"/>
     </a>
 </h2>

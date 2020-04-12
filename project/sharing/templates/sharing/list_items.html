@@ -27,7 +27,7 @@
   Review the images in this album and choose the ones you'd like to share.
 </div>
 <br/>
-<form action="{% url 'sharing-items-select' %}" method="POST">
+<form action="{% url 'select-items' %}" method="POST">
   {% csrf_token %}
   <div class="media_items">
     {% for info in objects %}
