@@ -17,6 +17,7 @@ def select_items(request):
         if len(items) > 0:
             if 'share-id' in request.POST:
                 share = Share.objects.get(pk=request.POST['share-id'])
+                share.shared_by = request.user
             else:
                 share = Share(shared_by=request.user)
                 share.save()
