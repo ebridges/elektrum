@@ -37,7 +37,7 @@ def exceptions_to_web_response(view_func):
         except BadRequestException as e:
             return HttpResponseBadRequest(format_exc_html())
         except MethodNotAllowedException as e:
-            return HttpResponseNotAllowed(format_exc_html())
+            return HttpResponseNotAllowed(str(e))
         except Http404 as e:
             return HttpResponseNotFound(format_exc_html())
         except Exception as e:

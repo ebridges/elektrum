@@ -31,4 +31,4 @@ def select_items(request):
         else:
             raise BadRequestException('No items selected.')
     else:
-        raise MethodNotAllowedException('Method unsupported.')
+        raise MethodNotAllowedException('POST')

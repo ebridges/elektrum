@@ -31,7 +31,7 @@ def upload_media_api(request):
 
 def validate_request(request):
     if request.method != 'POST':
-        raise MethodNotAllowedException()
+        raise MethodNotAllowedException('POST')
 
     user = request.user
     if not user.is_authenticated:
