@@ -25,7 +25,7 @@ def select_items(request):
             for item in items:
                 share.shared.add(MediaItem.objects.get(pk=item))
 
-            url = reverse('share-items', kwargs={'share_id': share.id})
+            url = reverse('share-items', kwargs={'id': share.id})
 
             return redirect(url)
         else:
