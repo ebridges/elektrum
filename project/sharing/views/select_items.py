@@ -23,7 +23,6 @@ def select_items(request):
 
             for item in items:
                 share.shared.add(MediaItem.objects.get(pk=item))
-            share.state = 20  # "draft"
 
             url = reverse('share-items', kwargs={'share_id': share.id})
 
