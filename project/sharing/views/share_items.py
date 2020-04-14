@@ -11,64 +11,6 @@ from sharing.forms import ShareForm
 from sharing.views.common import do_delete_share
 
 
-@exceptions_to_web_response
-def share_items(request, id):
-    info(f'share_items({id})')
-    if not id:
-        raise BadRequestException('Share not identified.')
-
-    share = get_object_or_404(Share, pk=id)
-    if share.state == ShareState.SHARED:
-        # this has already been shared, so redirect to a read only view
-        url = reverse('share-log-item', kwargs={'id': share.id})
-        return redirect(url)
-
-    if request.method == 'POST':
-        action = request.POST['action']
-        form = ShareForm(
-            request.POST, initial={'from_id': request.user.id, 'from_address': request.user.email}
-        )
-
-        info(f'sharing action: {action}')
-        if form.is_valid():
-            if action == 'share':
-                return do_share_items(request.user, share, form.cleaned_data)
-
-            elif action == 'draft':
-                return do_save_draft(request.user, share, form.cleaned_data)
-
-            elif action == 'cancel':
-                return do_delete_share(share)
-
-            else:
-                raise BadRequestException('Unrecognized action.')
-        else:
-            # falls through to populate default emails and to
-            # render view again with warning messages
-            pass
-    else:
-        form = ShareForm(
-            initial={
-                'from_id': request.user.id,
-                'from_address': request.user.email,
-                'subject_line': 'Sharing %s images from elektrum.' % share.shared_count(),
-                'to_address': [a.email for a in share.shared_to.all()],
-                ### TODO -- missing other fields?
-            }
-        )
-
-    default_emails = default_email_list(request.user.id)
-
-    context = {
-        'form': form,
-        'objects': [item.view() for item in share.shared.all()],
-        'id': id,
-        'default_emails': default_emails,
-    }
-
-    return render(request, 'sharing/share_items.html', context)
-
-
 def default_email_list(uid):
     '''
     Builds a list of the top 10 email addresses that this user has shared to, sorted alphabetically.
@@ -109,9 +51,68 @@ def do_share_items(
         raise BadRequestException('no "to" addresses and/or no images selected.')
 
 
-def do_save_draft(user, share, data):
-    share.from_data(data)
-    share.state = ShareState.DRAFT
-    share.save()
-    url = reverse('collections-view', kwargs={'owner_id': user.id})
-    return redirect(url)
+@exceptions_to_web_response
+def share_items(
+    request,
+    id,
+    email_list=default_email_list,
+    share_items=do_share_items,
+    delete_share=do_delete_share,
+    template='sharing/share_items.html',
+):
+    info(f'share_items({id})')
+
+    share = get_object_or_404(Share, pk=id)
+    if share.state == ShareState.SHARED:
+        # this has already been shared, so redirect to a read only view
+        url = reverse('share-log-item', kwargs={'id': share.id})
+        return redirect(url)
+
+    if request.method == 'POST':
+        action = request.POST['action']
+        form = ShareForm(
+            request.POST, initial={'from_id': request.user.id, 'from_address': request.user.email}
+        )
+
+        info(f'sharing action: {action}')
+        if form.is_valid():
+            if action == 'share':
+                return share_items(request.user, share, form.cleaned_data)
+
+            elif action == 'draft':
+                share.from_data(form.cleaned_data)
+                share.state = ShareState.DRAFT
+                share.save()
+                url = reverse('collections-view', kwargs={'owner_id': request.user.id})
+                return redirect(url)
+
+            elif action == 'cancel':
+                return delete_share(share)
+
+            else:
+                raise BadRequestException('Unrecognized action.')
+        else:
+            # falls through to populate default emails and to
+            # render view again with warning messages
+            pass
+    else:
+        form = ShareForm(
+            initial={
+                'from_id': request.user.id,
+                'from_address': request.user.email,
+                'subject_line': 'Sharing %s images from elektrum.' % share.shared_count(),
+                'to_address': [a.email for a in share.shared_to.all()],
+                ### TODO -- missing other fields?
+            }
+        )
+
+    default_emails = email_list(request.user.id)
+
+    context = {
+        'form': form,
+        'objects': [item.view() for item in share.shared.all()],
+        'id': id,
+        'default_emails': default_emails,
+    }
+
+    return render(request, template, context)
