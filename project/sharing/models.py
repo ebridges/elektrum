@@ -63,6 +63,7 @@ class Share(BaseModel):
 
     def view(self):
         return {
+            'id': self.id,
             'created': self.created,
             'modified': self.modified,
             'to': {

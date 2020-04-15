@@ -26,6 +26,7 @@ class ShareFactory(DjangoModelFactory):
     id = LazyFunction(uuid4)
     subject = FuzzyText(prefix='subject.')
     message = FuzzyText(prefix='message.')
+    shared_by = SubFactory(UserFactory)
 
     @post_generation
     def shared_to(self, create, extracted, **kwargs):
