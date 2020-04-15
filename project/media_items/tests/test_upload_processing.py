@@ -6,6 +6,8 @@ from glob import glob
 from urllib.parse import urlparse
 from datetime import datetime
 
+from django.shortcuts import reverse
+
 import pytest
 from assertpy import assert_that
 
@@ -19,7 +21,7 @@ def test_sign_upload_request_success(authenticated_client, img, env):
     with (env['remote_path']):
         c, u = authenticated_client
 
-        image_key = request_upload(c, img)
+        image_key = upload_request(c, img)
         media_id = parse_id_from_key(u.id, image_key)
 
         remote_file = mock_upload(img['local_path'], env['remote_path'], image_key)
@@ -73,9 +75,9 @@ def to_date(s):
     return dt
 
 
-def request_upload(client, img):
-    request_url = '/media/request-upload/'
-    response = client.post(request_url, {'mime_type': img['mime_type']})
+def upload_request(client, img):
+    url = reverse('upload-request')
+    response = client.post(url, {'mime_type': img['mime_type']})
     assert response.status_code == 201
     path = response['Location']
     return urlparse(path).path.lstrip('/')

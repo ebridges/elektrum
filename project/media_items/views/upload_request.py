@@ -2,12 +2,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.http import HttpResponse
 
-from media_items.upload_signing import create_signed_upload_url, supported_upload_types
+from media_items.views.upload_util import create_signed_upload_url, supported_upload_types
 from base.views.errors import *
 
 
 @exceptions_to_web_response
-def upload_media_web(request):
+def upload_request_web(request):
     (user, mime_type) = validate_request(request)
 
     location = create_signed_upload_url(user, mime_type)
@@ -20,7 +20,7 @@ def upload_media_web(request):
 
 @api_view(http_method_names=['POST'])
 @exceptions_to_api_response
-def upload_media_api(request):
+def upload_request_api(request):
     (user, mime_type) = validate_request(request)
 
     location = create_signed_upload_url(user, mime_type)

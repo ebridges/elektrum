@@ -2,16 +2,8 @@ import pytest
 
 from django.http import HttpResponseBadRequest
 
+from base.tests.util import MockGetRequest
 from sharing.views.share_log_item import share_log_item
-
-
-class MockGetRequest:
-    def __init__(self, user, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
-        self.user = user
-        self.method = 'GET'
-        self.GET = args
-        self.META = {}
-        self.META['CSRF_COOKIE'] = csrf_cookie
 
 
 @pytest.mark.django_db

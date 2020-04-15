@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import pytest
 
+from base.tests.util import MockGetRequest, MockPostRequest, assert_post_with_args
 from base.views.errors import BadRequestException
 from sharing.models import Share, ShareState
 from sharing.views.share_items import share_items, default_email_list, do_share_items
@@ -17,31 +18,6 @@ from sharing.views.share_items import share_items, default_email_list, do_share_
 
 def mock_email_list(id):
     return ['aaa@example.com', 'bbb@example.com', 'ccc@example.com']
-
-
-class MockPostRequest:
-    def __init__(self, user, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
-        self.user = user
-        self.method = 'POST'
-        self.POST = args
-        self.META = {}
-        self.META['CSRF_COOKIE'] = csrf_cookie
-
-
-class MockGetRequest:
-    def __init__(self, user, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
-        self.user = user
-        self.method = 'GET'
-        self.GET = args
-        self.META = {}
-        self.META['CSRF_COOKIE'] = csrf_cookie
-
-
-def assert_post_with_args(client, url_name, args, expected_code):
-    request_url = reverse(url_name, kwargs=args)
-    response = client.post(request_url)
-    assert response.status_code == expected_code
-    return response
 
 
 @pytest.mark.django_db

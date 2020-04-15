@@ -4,7 +4,13 @@ from urllib.parse import urlparse, parse_qs
 
 import pytest
 
-from media_items.upload_signing import *
+from media_items.views.upload_util import (
+    create_signed_upload_url,
+    supported_upload_types,
+    create_upload_key,
+    create_signed_url,
+    extension_from_type,
+)
 from base.tests.util import match_image_key
 
 
