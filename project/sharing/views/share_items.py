@@ -34,12 +34,13 @@ def do_share_items(
     data,
     text_tmpl='sharing/email_template.txt',
     html_tmpl='sharing/email_template.html',
+    emailer=lambda *args: None,
 ):
     info('do_share_items() called')
     share.from_data(data, shared_on=datetime.now)
     mail_info = share.view()
-    if len(mail_info['to'].items()) > 0 and len(mail_info['shared'].items()) > 0:
-        send_email(mail_info, text_tmpl, html_tmpl)
+    if len(share.shared_to.all()) > 0 and len(mail_info['shared']) > 0:
+        emailer(mail_info, text_tmpl, html_tmpl)
 
         share.state = ShareState.SHARED
         share.save()
@@ -74,12 +75,13 @@ def share_items(
             request.POST, initial={'from_id': request.user.id, 'from_address': request.user.email}
         )
 
-        info(f'sharing action: {action}')
         if form.is_valid():
             if action == 'share':
-                return share_items(request.user, share, form.cleaned_data)
+                info(f'sharing action: {action}')
+                return share_items(request.user, share, form.cleaned_data, emailer=send_email)
 
             elif action == 'draft':
+                info(f'sharing action: {action}')
                 share.from_data(form.cleaned_data)
                 share.state = ShareState.DRAFT
                 share.save()
@@ -87,9 +89,11 @@ def share_items(
                 return redirect(url)
 
             elif action == 'cancel':
+                info(f'sharing action: {action}')
                 return delete_share(share)
 
             else:
+                info(f'sharing action: {action}')
                 raise BadRequestException('Unrecognized action.')
         else:
             # falls through to populate default emails and to
@@ -111,7 +115,7 @@ def share_items(
     context = {
         'form': form,
         'objects': [item.view() for item in share.shared.all()],
-        'id': id,
+        'share_id': id,
         'default_emails': default_emails,
     }
 

@@ -1,20 +1,22 @@
 from uuid import uuid4
 
 from factory.django import DjangoModelFactory
-from factory.fuzzy import FuzzyNaiveDateTime, FuzzyText
-from factory import (
-    Sequence,
-    SubFactory,
-    LazyAttribute,
-    SelfAttribute,
-    LazyFunction,
-    post_generation,
-)
+from factory.fuzzy import FuzzyText
+from factory import LazyFunction, SubFactory, post_generation
 from pytest_factoryboy import register
 
-from sharing.models import Audience, Share, AudienceShare, ShareState
+from sharing.models import Audience, Share
 from users.tests.factories import UserFactory
-from media_items.tests.factories import MediaItemFactory
+
+
+class AudienceFactory(DjangoModelFactory):
+    class Meta:
+        model = Audience
+
+    id = LazyFunction(uuid4)
+    email = FuzzyText(prefix='audience@', suffix='.com')
+    shared_by = SubFactory(UserFactory)
+    unsubscribed = False
 
 
 class ShareFactory(DjangoModelFactory):
@@ -47,4 +49,5 @@ class ShareFactory(DjangoModelFactory):
                 self.shared.add(media_item)
 
 
+register(AudienceFactory)
 register(ShareFactory)
