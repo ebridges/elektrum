@@ -1,5 +1,5 @@
 from base.views.errors import exceptions_to_web_response
-from media_items.views.media_views import media_list_view
+from media_items.views.media_list_view import media_list_view
 
 
 @exceptions_to_web_response

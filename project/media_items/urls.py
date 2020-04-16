@@ -1,5 +1,10 @@
 from django.urls import path, register_converter
-from media_items.views.media_views import *
+
+from media_items.views.albums_view import albums_view
+from media_items.views.collections_view import collections_view
+from media_items.views.media_list_view import media_list_view
+from media_items.views.media_item_view import media_item_view
+from media_items.views.media_item_upload_view import media_item_upload_view
 from media_items.views.upload_request import upload_request_web, upload_request_api
 
 
