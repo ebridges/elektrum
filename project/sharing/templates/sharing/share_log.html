@@ -27,7 +27,7 @@
   <tr>
     <td>{{ share.created }}</td>
     <td>{{ share.state }}</td>
-    <td><a href="{% url 'share-log-item' share_id=share.id %}">{{ share.subject }}</a></td>
+    <td><a href="{% url 'share-log-item' id=share.id %}">{{ share.subject }}</a></td>
     <td style="text-align: center;">{{ share.shared_count }}</td>
     <td style="vertical-align: top;">
       <ul>
@@ -36,7 +36,7 @@
         {% endfor %}
       </ul>
     </td>
-    <td style="text-align: center;"><a href="{% url 'share-log-item-delete' share_id=share.id %}">❌</a></td>
+    <td style="text-align: center;"><a href="{% url 'share-log-delete' id=share.id %}">❌</a></td>
   </tr>
   {% endfor %}
 </tbody>
