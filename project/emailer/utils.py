@@ -20,7 +20,7 @@ def render_template(template, context):
 
 
 def download_and_encode_thumbnails(owner_id, media_items, dims):
-    if environ['ENVIRONMENT'] == 'local':
+    if environ['ENVIRONMENT'] == 'local':  # pragma: no cover
         for media_item in media_items:
             path = media_item['file_path'].replace('/', '%2f')
             url = f'http://localhost:8182/iiif/2/{path}/square/pct:33/0/default.jpg'
@@ -40,8 +40,8 @@ def download_and_encode_thumbnails(owner_id, media_items, dims):
                 with open(tmp.name, 'rb') as file:
                     debug(f'creating thumbnail with dimensions: {dims}')
                     im = Image.open(file.name)
-                    im.thumbnail(dims)
-                    im.save(file.name)
+                    nim = im.resize(dims)
+                    nim.save(file.name)
                 with open(tmp.name, 'rb') as file:
                     debug('encoding thumbnail as a MIMEImage')
                     init_mime_image(file.read(), media_item)
