@@ -10,7 +10,7 @@ from PIL import Image
 
 import emailer
 from emailer.utils import download_and_encode_thumbnails
-from emailer.views import THUMBNAIL_DIMS
+from emailer.views.send_email import THUMBNAIL_DIMS
 
 
 SAMPLE_IMAGE = 'project/emailer/tests/resources/mountains.jpg'
