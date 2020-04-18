@@ -1,8 +1,6 @@
 [run]
 source = .
 branch = True
-
-[report]
 omit=
     base/*
     elektrum/*
@@ -10,12 +8,18 @@ omit=
     manage.py
     */admin.py
     */apps.py
+    */meta/*
     */migrations/*
+    */models.py
     */urls.py
     */__init__.py
+    */fields.py
     */forms.py
+    */scripts/*
     */tests*
     conftest.py
+
+[report]
 show_missing = True
 exclude_lines =
   pragma: no cover
@@ -26,6 +30,7 @@ exclude_lines =
   class Meta
   from
   import
+
 
   # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError

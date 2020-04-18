@@ -52,17 +52,18 @@ class Share(BaseModel):
 
     def from_data(self, data, shared_on=lambda: None):
         user = get_user_model().objects.get(pk=data['from_id'])
-        self.message = data['share_message']
-        self.subject = data['subject_line']
+        self.message = data.get('share_message')
+        self.subject = data.get('subject_line')
         self.shared_by = user
         self.shared_to.clear()
-        for address in data['to_address']:
+        for address in data.get('to_address', []):
             (audience, created) = Audience.objects.get_or_create(email=address, shared_by=user)
             self.shared_to.add(audience)
         self.shared_on = shared_on()
 
     def view(self):
         return {
+            'id': self.id,
             'created': self.created,
             'modified': self.modified,
             'to': {

@@ -62,6 +62,6 @@ class ShareForm(forms.Form):
         emails = self.cleaned_data['to_address']
         for email in emails:
             a = Audience.objects.filter(email=email).values('unsubscribed', 'email').first()
-            if a['unsubscribed']:
+            if a and a['unsubscribed']:
                 raise ValidationError('%s asked to unsubscribe from future emails.' % a['email'])
         return emails

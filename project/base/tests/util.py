@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.http import QueryDict
 from django.http.request import split_domain_port, validate_host
+from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.test.html import HTMLParseError, parse_html
 
@@ -19,6 +20,31 @@ UUID_REGEX = '[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0
 USER_PASSWORD = 'temporary'
 email_file_path = os.path.join(settings.BASE_DIR, 'sent_emails')
 email_log = os.path.join(email_file_path, 'test_authn_user_flows.log')
+
+
+class MockPostRequest:
+    def __init__(self, user=None, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
+        self.user = user
+        self.method = 'POST'
+        self.POST = args
+        self.META = {}
+        self.META['CSRF_COOKIE'] = csrf_cookie
+
+
+class MockGetRequest:
+    def __init__(self, user=None, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
+        self.user = user
+        self.method = 'GET'
+        self.GET = args
+        self.META = {}
+        self.META['CSRF_COOKIE'] = csrf_cookie
+
+
+def assert_post_with_args(client, url_name, args, expected_code):
+    request_url = reverse(url_name, kwargs=args)
+    response = client.post(request_url)
+    assert response.status_code == expected_code
+    return response
 
 
 def match_image_key(user_id, to_match):
