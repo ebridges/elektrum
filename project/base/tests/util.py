@@ -23,7 +23,7 @@ email_log = os.path.join(email_file_path, 'test_authn_user_flows.log')
 
 
 class MockPostRequest:
-    def __init__(self, user, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
+    def __init__(self, user=None, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
         self.user = user
         self.method = 'POST'
         self.POST = args
@@ -32,7 +32,7 @@ class MockPostRequest:
 
 
 class MockGetRequest:
-    def __init__(self, user, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
+    def __init__(self, user=None, args={}, csrf_cookie='abcdefghijklmnopqrstuvwxyz'):
         self.user = user
         self.method = 'GET'
         self.GET = args
