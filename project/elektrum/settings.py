@@ -118,7 +118,7 @@ else:
 if IN_TEST_MODE:
     DATABASES = {
         'default': {
-            'ENGINE': os.getenv('DB_ENGINE'),
+            'ENGINE': 'django.db.backends.sqlite3',
             'TEST': {'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3')},
         }
     }
