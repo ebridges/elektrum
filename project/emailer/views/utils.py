@@ -14,6 +14,10 @@ from django.template.loader import get_template
 from django.template import Context
 
 
+THUMBNAIL_DIMS = 222, 222
+DEFAULT_FROM_ADDRESS = 'postmaster@%s' % environ['APPLICATION_DOMAIN_NAME']
+
+
 def render_template(template, context):
     tmpl = get_template(template)
     return tmpl.render(context)

@@ -3,11 +3,12 @@ from os import environ
 
 from django.core.mail import EmailMultiAlternatives
 
-from emailer.utils import download_and_encode_thumbnails, render_template
-
-
-THUMBNAIL_DIMS = 222, 222
-DEFAULT_FROM_ADDRESS = 'postmaster@%s' % environ['APPLICATION_DOMAIN_NAME']
+from emailer.views.utils import (
+    download_and_encode_thumbnails,
+    render_template,
+    THUMBNAIL_DIMS,
+    DEFAULT_FROM_ADDRESS,
+)
 
 
 def send_email(

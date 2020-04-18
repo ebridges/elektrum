@@ -5,8 +5,8 @@ from uuid import uuid4
 from emailer.views.send_email import EmailMultiAlternatives
 import pytest
 
-from emailer.views.send_email import send_email, DEFAULT_FROM_ADDRESS, EmailMultiAlternatives
-from emailer import utils
+from emailer.views.send_email import send_email, EmailMultiAlternatives
+from emailer.views.utils import DEFAULT_FROM_ADDRESS
 
 
 @pytest.mark.django_db
