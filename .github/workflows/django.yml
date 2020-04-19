@@ -2,7 +2,7 @@ name: Django CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, circleci-project-setup ]
   pull_request:
     branches: [ master ]
 
