@@ -5,6 +5,7 @@
 
 ## 0.40 (2020-02-01)
 
+- Misc cleanup and consolidation.
 
 ## 0.39 (2020-02-01)
 
