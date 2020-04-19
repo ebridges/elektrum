@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 
 from base.views.errors import exceptions_to_web_response, BadRequestException
-from emailer.views import send_email
+from emailer.views.send_email import send_email
 from sharing.models import Share, Audience, ShareState
 from sharing.forms import ShareForm
 from sharing.views.common import do_delete_share
