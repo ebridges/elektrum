@@ -1,3 +1,5 @@
+![Django CI](https://github.com/ebridges/elektrum/workflows/Django%20CI/badge.svg?branch=master)
+
 # Elektrum
 
 ## About
