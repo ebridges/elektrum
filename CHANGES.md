@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.41 (2020-04-19)
+
 - Add capability to share one or more images from a given album.
 - Integrate with Github CI
 
