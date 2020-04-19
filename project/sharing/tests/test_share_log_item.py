@@ -20,6 +20,7 @@ def test_share_log_item(share_factory):
     request = MockGetRequest(user=s.shared_by)
 
     response = share_log_item(request, id=s.id)
-    assert response.status_code == 200
     content = response.content.decode('utf-8')
+    print(content)
+    assert response.status_code == 200
     assert str(s.id) in content

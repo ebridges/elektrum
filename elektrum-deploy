@@ -4,7 +4,7 @@ set -e
 
 function main() {
     log "Generating pip-style requirements.txt."
-    etc/bin/poetry2pip.py poetry.lock > requirements.txt
+    etc/bin/poetry2pip.py --file poetry.lock > requirements.txt
 
     log "Bundling lambda code into a zip archive."
     lambda_archive=$(lgw lambda-archive ${VERBOSE} --config-file=${CONFIG})

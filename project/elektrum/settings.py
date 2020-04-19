@@ -109,18 +109,6 @@ WSGI_APPLICATION = 'elektrum.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        # See issue #45
-        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USERNAME'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOSTNAME'),
-        'PORT': os.getenv('DB_PORT_NUM'),
-    }
-}
 
 if [s for s in sys.argv if 'test' in s]:
     IN_TEST_MODE = True
@@ -128,9 +116,24 @@ else:
     IN_TEST_MODE = False
 
 if IN_TEST_MODE:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'TEST': {'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3')},
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'TEST': {'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3')},
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            # See issue #45
+            # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USERNAME'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOSTNAME'),
+            'PORT': os.getenv('DB_PORT_NUM'),
+        }
     }
 
 # Password validation

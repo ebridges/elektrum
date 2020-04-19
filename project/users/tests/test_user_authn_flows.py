@@ -31,7 +31,8 @@ def test_login_via_post(client, user_factory):
     """
     u = user_factory()
     response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
-    util.assert_account_redirects(response)
+    assert response.status_code == 302
+    assert response.url == '/account/confirm-email/'
     user = CustomUser.objects.get(username=u.username)
     assert user is not None, 'could not locate user with username %s' % u.username
     assert response.context['user'].email == user.email
@@ -59,7 +60,8 @@ def test_logout(authenticated_client):
     """
     (c, __) = authenticated_client
     response = c.post('/account/logout/')
-    util.assert_account_redirects(response, expected_url='/')
+    assert response.status_code == 302
+    assert response.url == '/'
 
 
 @pytest.mark.django_db
@@ -96,7 +98,8 @@ def test_signup_flow(client, mock_email_log):
             'password2': 'abcd@1234',
         },
     )
-    util.assert_account_redirects(response)
+    assert response.status_code == 302
+    assert response.url == '/account/confirm-email/'
     confirm_url = util.assert_signup_mail(expected_email, mock_email_log)
     assert confirm_url is not None
     confirm_response = client.post(confirm_url)
@@ -110,7 +113,8 @@ def test_signup_flow(client, mock_email_log):
 
     # Because `ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION` is "True", the user is redirected to '/'
     # If there is some delay (see docs on that setting) then the redirect will be to '/account/login/'
-    util.assert_account_redirects(confirm_response, expected_url=expected_redirect_url)
+    assert confirm_response.status_code == 302
+    assert confirm_response.url == expected_redirect_url
 
     email = EmailAddress.objects.get(email=expected_email)
     assert email.verified
@@ -138,7 +142,8 @@ def test_signup_flow_multiple(client, mock_email_log):
             'password2': 'abcd@1234',
         },
     )
-    util.assert_account_redirects(response)
+    assert response.status_code == 302
+    assert response.url == '/account/confirm-email/'
     util.assert_signup_mail('newuser2@example.com', mock_email_log)
 
     util.trunc_file(mock_email_log)
@@ -154,5 +159,6 @@ def test_signup_flow_multiple(client, mock_email_log):
             'password2': 'abcd@1234',
         },
     )
-    util.assert_account_redirects(response)
+    assert response.status_code == 302
+    assert response.url == '/account/confirm-email/'
     util.assert_signup_mail('newuser3@example.com', mock_email_log)
