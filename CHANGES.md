@@ -4,6 +4,9 @@
 
 - [#77] Fix for bug in sharing.
 
+## 0.42 (2020-04-20)
+
+
 ## 0.41 (2020-04-19)
 
 - Add capability to share one or more images from a given album.
