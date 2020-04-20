@@ -47,4 +47,3 @@ def send_email(
 
         info(f'Message sent to {email}')
     info(f'{cnt} emails sent')
-    return cnt

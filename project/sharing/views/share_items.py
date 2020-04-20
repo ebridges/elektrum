@@ -70,12 +70,12 @@ def share_items(
         return redirect(url)
 
     if request.method == 'POST':
-        action = request.POST['action']
         form = ShareForm(
             request.POST, initial={'from_id': request.user.id, 'from_address': request.user.email}
         )
 
         if form.is_valid():
+            action = request.POST['action']
             if action == 'share':
                 info(f'sharing action: {action}')
                 return share_items(request.user, share, form.cleaned_data, emailer=send_email)
