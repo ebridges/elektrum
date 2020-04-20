@@ -1,12 +1,27 @@
+from datetime import date
 from uuid import uuid4
+
+import pytest
 
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyText
 from factory import LazyFunction, SubFactory, post_generation
 from pytest_factoryboy import register
 
-from sharing.models import Audience, Share
+from sharing.models import Audience, Share, ShareState
 from users.tests.factories import UserFactory
+from date_dimension.tests.factories import DateDimensionFactory
+from media_items.tests.factories import MediaItemFactory
+
+
+@pytest.fixture
+def share_populated(custom_user, count_shared=5, count_shared_to=5):
+    date_dimension = DateDimensionFactory(from_date=date(1950, 9, 11))
+    media_items = MediaItemFactory.create_batch(
+        size=count_shared, owner=custom_user, create_day=date_dimension
+    )
+    audiences = AudienceFactory.create_batch(size=count_shared_to, shared_by=custom_user)
+    return ShareFactory(shared_by=custom_user, shared_to=audiences, shared=media_items)
 
 
 class AudienceFactory(DjangoModelFactory):

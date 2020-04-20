@@ -1,5 +1,6 @@
 from datetime import date
 from os.path import join
+from unittest.mock import patch
 from uuid import uuid4
 
 from django.conf import settings
@@ -12,6 +13,7 @@ import pytest
 
 from base.tests.util import MockGetRequest, MockPostRequest, assert_post_with_args
 from base.views.errors import BadRequestException
+from emailer.tests.factories import MockEmailerManager as mem
 from sharing.models import Share, ShareState
 from sharing.views.share_items import share_items, default_email_list, do_share_items
 
@@ -27,89 +29,103 @@ def test_share_items_missing_item(authenticated_client):
 
 
 @pytest.mark.django_db
-def test_share_items_already_shared(user_factory, share_factory):
-    u = user_factory()
-    request = MockPostRequest(user=u)
-    share = share_factory(state=ShareState.SHARED, shared_by=u)
+def test_share_items_already_shared(share_populated):
+    share = share_populated
+    share.state = ShareState.SHARED
+    share.save()
+
+    user = share.shared_by
+    request = MockPostRequest(user=user)
     response = share_items(request, share.id)
     assert response.status_code == 302
-    assert response.url == f'/sharing/share-log/{share.id}/'
+    assert response.url == reverse('share-log-item', kwargs={'id': share.id})
 
 
 @pytest.mark.django_db
-def test_share_items_new_form(user_factory, share_factory):
-    u = user_factory()
-    share = share_factory(shared_by=u)
+def test_share_items_new_form(share_populated):
+    share = share_populated
+    user = share.shared_by
     share.state = ShareState.INITIAL
-    request = MockGetRequest(user=u, args={'id': share.id})
+    request = MockGetRequest(user=user, args={'id': share.id})
 
     response = share_items(request, share.id, email_list=mock_email_list)
     content = response.content.decode('utf-8')
 
     assert response.status_code == 200
     assert f'{share.id}' in content
-    assert f'{u.id}' in content
-    assert f'{u.email}' in content
+    assert f'{user.id}' in content
+    assert f'{user.email}' in content
 
 
 @pytest.mark.django_db
-def test_share_items_share_action(user_factory, share_factory):
-    u = user_factory()
-    s = share_factory(shared_by=u)
+def test_share_items_share_action(share_populated):
+    share = share_populated
+    user = share.shared_by
+    mem.mail_info = share.view()
 
     def validator(r):
         assert r == 'ok'
 
-    def mock_share_items(user, share, data, emailer=lambda *args: None):
-        assert user.id == u.id
-        assert share.id == s.id
-        assert data['from_address'] == u.email
-        assert data['from_id'] == u.id
+    def mock_share_items(user, share, data, emailer):
+        assert user.id == user.id
+        assert share.id == share.id
+        assert data['from_address'] == user.email
+        assert data['from_id'] == user.id
+        with patch(
+            'emailer.views.send_email.EmailMultiAlternatives', new=mem.MockEmailer
+        ) as mock_mailer:
+            emailer(
+                mem.mail_info,
+                'fake_template',
+                'fake_template',
+                thumbnailer=mem.mock_thumbnailer,
+                renderer=mem.mock_renderer,
+            )
         return 'ok'
 
-    validate_share_items_action(u, s, 'share', validator, share_items_function=mock_share_items)
+    validate_share_items_action(share, 'share', validator, share_items_function=mock_share_items)
 
 
 @pytest.mark.django_db
-def test_share_items_draft_action(user_factory, share_factory):
-    u = user_factory()
-    s = share_factory(shared_by=u)
+def test_share_items_draft_action(share_populated):
+    share = share_populated
 
     def validator(r):
-        share = Share.objects.get(pk=s.id)
-        assert share.state == ShareState.DRAFT
+        user = share.shared_by
+        s = Share.objects.get(pk=share.id)
+        assert s.state == ShareState.DRAFT
         assert r.status_code == 302
-        assert r.url == reverse('collections-view', kwargs={'owner_id': u.id})
+        assert r.url == reverse('collections-view', kwargs={'owner_id': user.id})
 
-    validate_share_items_action(u, s, 'draft', validator)
+    validate_share_items_action(share, 'draft', validator)
 
 
 @pytest.mark.django_db
-def test_share_items_cancel_action(user_factory, share_factory):
-    u = user_factory()
-    s = share_factory(shared_by=u)
+def test_share_items_cancel_action(share_populated):
+    share = share_populated
+    user = share.shared_by
 
     def validator(r):
         with pytest.raises(ObjectDoesNotExist):
-            share = Share.objects.get(pk=s.id)
+            Share.objects.get(pk=share.id)
         assert r.status_code == 302
         assert r.url == reverse('share-log')
 
-    validate_share_items_action(u, s, 'cancel', validator)
+    validate_share_items_action(share, 'cancel', validator)
 
 
 @pytest.mark.django_db
-def test_share_items_invalid_action(user_factory, share_factory):
-    u = user_factory()
-    s = share_factory(shared_by=u)
+def test_share_items_invalid_action(share_populated):
+    share = share_populated
 
     def validator(r):
         assert r.status_code == 400
 
-    validate_share_items_action(u, s, 'foobar', validator)
+    validate_share_items_action(share, 'foobar', validator)
 
 
-def validate_share_items_action(u, s, action, validator, share_items_function=lambda *args: None):
+def validate_share_items_action(s, action, validator, share_items_function=lambda *args: None):
+    u = s.shared_by
     s.state = ShareState.INITIAL
     post_data = {
         'id': s.id,
@@ -129,9 +145,9 @@ def validate_share_items_action(u, s, action, validator, share_items_function=la
 @pytest.mark.django_db
 def test_default_email_list(user_factory, audience_factory):
     u = user_factory()
-    a_1 = audience_factory(email='aaa@example.com', shared_by=u)
+    a_1 = audience_factory(email='ccc@example.com', shared_by=u)
     a_2 = audience_factory(email='bbb@example.com', shared_by=u)
-    a_3 = audience_factory(email='ccc@example.com', shared_by=u)
+    a_3 = audience_factory(email='aaa@example.com', shared_by=u)
     a_4 = audience_factory(email='ddd@example.com', shared_by=u, unsubscribed=True)
 
     emails = default_email_list(u.id)
@@ -165,27 +181,13 @@ def test_do_share_items_missing_shared_items(user_factory, share_factory):
 
 
 @pytest.mark.django_db
-def test_do_share_items(
-    user_factory, audience_factory, share_factory, media_item_factory, date_dimension_factory
-):
-    u = user_factory()
-
-    d_a = date(1950, 9, 11)
-    d_1 = date_dimension_factory(from_date=d_a)
-    m_1 = media_item_factory(owner=u, create_day=d_1)
-
-    d_b = date(1950, 9, 12)
-    d_2 = date_dimension_factory(from_date=d_b)
-    m_2 = media_item_factory(owner=u, create_day=d_2)
-
-    a_1 = audience_factory(email='aaa@example.com', shared_by=u)
-    a_2 = audience_factory(email='bbb@example.com', shared_by=u)
-
-    s = share_factory(shared_by=u, shared_to=[a_1, a_2], shared=[m_1, m_2])
+def test_do_share_items(share_populated):
+    share = share_populated
+    user = share.shared_by
 
     data = {
-        'from_id': u.id,
-        'to_address': [a_1.email, a_2.email],
+        'from_id': user.id,
+        'to_address': [a.email for a in share.shared_to.all()],
         'subject_line': 'fake subject',
         'share_message': 'fake message',
     }
@@ -193,19 +195,19 @@ def test_do_share_items(
     def mock_mailer(mail_info, text_tmpl, html_tmpl):
         assert mail_info['created'] is not None
         assert mail_info['modified'] is not None
-        assert len(mail_info['to']) == 2
-        assert mail_info['owner_id'] == u.id
-        assert mail_info['shared_by'] == u.name()
-        assert mail_info['from'] == u.email
+        assert len(mail_info['to']) == 5
+        assert mail_info['owner_id'] == user.id
+        assert mail_info['shared_by'] == user.name()
+        assert mail_info['from'] == user.email
         assert mail_info['subject'] == 'fake subject'
         assert mail_info['message'] == 'fake message'
         assert mail_info['shared_on'] is not None
         assert mail_info['state'] == ShareState.INITIAL
-        assert len(mail_info['shared']) == 2
-        assert mail_info['shared_count'] == 2
-        assert mail_info['to_count'] == 2
+        assert len(mail_info['shared']) == 5
+        assert mail_info['shared_count'] == share.shared_count()
+        assert mail_info['to_count'] == share.to_count()
 
-    response = do_share_items(u, s, data, emailer=mock_mailer)
+    response = do_share_items(user, share, data, emailer=mock_mailer)
     assert response.status_code == 302
-    assert response.url == reverse('share-log-item', kwargs={'id': s.id})
-    assert s.state == ShareState.SHARED
+    assert response.url == reverse('share-log-item', kwargs={'id': share.id})
+    assert share.state == ShareState.SHARED

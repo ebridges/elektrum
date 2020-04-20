@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- [#77] Fix for bug in sharing.
 
 ## 0.41 (2020-04-19)
 

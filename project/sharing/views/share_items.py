@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 
 from base.views.errors import exceptions_to_web_response, BadRequestException
-from emailer.views import send_email
+from emailer.views.send_email import send_email
 from sharing.models import Share, Audience, ShareState
 from sharing.forms import ShareForm
 from sharing.views.common import do_delete_share
@@ -70,12 +70,12 @@ def share_items(
         return redirect(url)
 
     if request.method == 'POST':
-        action = request.POST['action']
         form = ShareForm(
             request.POST, initial={'from_id': request.user.id, 'from_address': request.user.email}
         )
 
         if form.is_valid():
+            action = request.POST['action']
             if action == 'share':
                 info(f'sharing action: {action}')
                 return share_items(request.user, share, form.cleaned_data, emailer=send_email)
