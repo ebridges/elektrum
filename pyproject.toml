@@ -9,7 +9,7 @@ target-version = [ "py37",]
 
 [tool.poetry]
 name = "elektrum"
-version = "0.44.dev0"
+version = "0.44"
 description = "Media archiving & management system."
 authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
 readme = "README.md"
