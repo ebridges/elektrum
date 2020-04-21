@@ -1,7 +1,10 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-import ssl
-import os
-import sys
+from ssl import wrap_socket
+from os import chdir
+from sys import argv
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+from subprocess import run, DEVNULL
 
 # generate self signed certificate:
 #   `openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes`
@@ -9,14 +12,40 @@ import sys
 # in chrome allow self-signed certs on localhost
 #   `chrome://flags/#allow-insecure-localhost`
 
-certfile = os.path.join(os.getcwd(), 'server.pem')
+DEFAULT_HOST = 'localhost'
+DEFAULT_PORT = 9443
+DEFAULT_EXPIRY_DAYS = '365'
 
-if len(sys.argv) > 1:
-    web_dir = os.path.join(os.getcwd(), sys.argv[1])
-    os.chdir(web_dir)
 
-httpd = HTTPServer(('localhost', 9443), SimpleHTTPRequestHandler)
+def generate_pem(pemfile):
+    subject = f'/C=US/ST=NY/L=New York/O=Elektrum/OU=Engineering/CN={DEFAULT_HOST}'
+    command = [
+        'openssl',
+        'req',
+        '-new',
+        '-x509',
+        '-keyout',
+        pemfile,
+        '-out',
+        pemfile,
+        '-subj',
+        subject,
+        '-days',
+        DEFAULT_EXPIRY_DAYS,
+        '-nodes',
+    ]
+    result = run(command, stdout=DEVNULL, stderr=DEVNULL)
+    result.check_returncode()
 
-httpd.socket = ssl.wrap_socket(httpd.socket, certfile=certfile, server_side=True)
 
-httpd.serve_forever()
+if len(argv) > 1:
+    chdir(argv[1])
+
+with NamedTemporaryFile(suffix='.pem') as tmp:
+    generate_pem(tmp.name)
+    print(
+        f'Starting HTTPS server at https://{DEFAULT_HOST}:{DEFAULT_PORT} using cert at {tmp.name}'
+    )
+    httpd = HTTPServer((DEFAULT_HOST, DEFAULT_PORT), SimpleHTTPRequestHandler)
+    httpd.socket = wrap_socket(httpd.socket, certfile=tmp.name, server_side=True)
+    httpd.serve_forever()

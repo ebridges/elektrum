@@ -5,20 +5,14 @@
 
 {% block loggedout_content %}
 
-{% blocktrans with site.name as site_name %}In order to access {{ site_name }} you can sign up or log in with your
-Google credentials, or create an account an log in with those credentials.{% endblocktrans %}
+<p class="subtitle">
+{% blocktrans %}Sign up or Log in{% endblocktrans %}
+</p>
 
-{% get_providers as socialaccount_providers %}
-{% if socialaccount_providers %}
-<h3>Authenticate via Google</h3>
 <div class="social-form">
-  {% blocktrans %}Connect via Google:{% endblocktrans %}
-  <ul>
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
+  <a title="Google" class="socialaccount_provider google" href="{% provider_login_url 'google' scope='profile,email' auth_params='access_type=online' process='login' %}"><span style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; ">Sign in with Google <img style="vertical-align: middle;" width="32" height="32" src="{% static 'img/google-signin.svg' %}"></span></a>
   {% include "socialaccount/snippets/login_extra.html" %}
 </div>
-{% endif %}
 
 <hr size="1" />
 

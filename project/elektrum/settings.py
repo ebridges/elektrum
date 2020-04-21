@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'media_items',
     'date_dimension',
     'sharing',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
 ]
 
 ROOT_URLCONF = 'elektrum.urls'
@@ -197,6 +199,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
 EMAIL_FILE_PATH = './sent_emails'
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {'SCOPE': ['profile', 'email'], 'AUTH_PARAMS': {'access_type': 'online'}}
+}
+
 TEST_RUNNER = 'elektrum.test_runner.PytestTestRunner'
 
 LOGGING = {
@@ -215,5 +221,6 @@ LOGGING = {
         'selenium.webdriver.remote.remote_connection': {'handlers': ['console'], 'level': 'INFO'},
         'urllib3.connectionpool': {'handlers': ['console'], 'level': 'INFO'},
         '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        #'django.db.backends': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
 }
