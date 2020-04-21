@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Dev module was unable to be run in a non-local env.
 
 ## 0.43 (2020-04-21)
 

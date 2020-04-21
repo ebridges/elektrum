@@ -66,8 +66,11 @@ INSTALLED_APPS = [
     'media_items',
     'date_dimension',
     'sharing',
-    'django_extensions',
 ]
+
+if os.environ.get('OPERATING_ENV') == 'local':
+    INSTALLED_APPS.append('django_extensions')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
