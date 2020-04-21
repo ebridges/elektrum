@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'media_items',
     'date_dimension',
     'sharing',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
