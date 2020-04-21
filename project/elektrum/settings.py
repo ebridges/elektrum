@@ -199,6 +199,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
 EMAIL_FILE_PATH = './sent_emails'
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {'SCOPE': ['profile', 'email'], 'AUTH_PARAMS': {'access_type': 'online'}}
+}
+
 TEST_RUNNER = 'elektrum.test_runner.PytestTestRunner'
 
 LOGGING = {
