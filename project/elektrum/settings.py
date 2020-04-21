@@ -221,5 +221,6 @@ LOGGING = {
         'selenium.webdriver.remote.remote_connection': {'handlers': ['console'], 'level': 'INFO'},
         'urllib3.connectionpool': {'handlers': ['console'], 'level': 'INFO'},
         '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        #'django.db.backends': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
 }
