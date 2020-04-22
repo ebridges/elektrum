@@ -35,20 +35,23 @@ release = ["twine"]
 test = ["pytest"]
 
 [[package]]
-category = "main"
-description = "Wrap a WSGI application in an AWS Lambda handler function for running on API Gateway or an ALB."
-name = "apig-wsgi"
-optional = false
-python-versions = ">=3.5"
-version = "2.6.0"
-
-[[package]]
 category = "dev"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
 optional = false
 python-versions = "*"
 version = "1.4.3"
+
+[[package]]
+category = "main"
+description = "ASGI specs, helper code, and adapters"
+name = "asgiref"
+optional = false
+python-versions = ">=3.5"
+version = "3.2.7"
+
+[package.extras]
+tests = ["pytest (>=4.3.0,<4.4.0)", "pytest-asyncio (>=0.10.0,<0.11.0)"]
 
 [[package]]
 category = "dev"
@@ -153,10 +156,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = false
 python-versions = "*"
-version = "1.12.42"
+version = "1.12.43"
 
 [package.dependencies]
-botocore = ">=1.15.42,<1.16.0"
+botocore = ">=1.15.43,<1.16.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -166,7 +169,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = false
 python-versions = "*"
-version = "1.15.42"
+version = "1.15.43"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -277,12 +280,13 @@ category = "main"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 name = "django"
 optional = false
-python-versions = ">=3.5"
-version = "2.2.12"
+python-versions = ">=3.6"
+version = "3.0.5"
 
 [package.dependencies]
+asgiref = ">=3.2,<4.0"
 pytz = "*"
-sqlparse = "*"
+sqlparse = ">=0.2.2"
 
 [package.extras]
 argon2 = ["argon2-cffi (>=16.1.0)"]
@@ -294,10 +298,10 @@ description = "Integrated set of Django applications addressing authentication, 
 name = "django-allauth"
 optional = false
 python-versions = "*"
-version = "0.40.0"
+version = "0.41.0"
 
 [package.dependencies]
-Django = ">=1.11"
+Django = ">=2.0"
 python3-openid = ">=3.0.8"
 requests = "*"
 requests-oauthlib = ">=0.3.0"
@@ -331,7 +335,7 @@ description = "An SSL-enabled development server for Django"
 name = "django-sslserver"
 optional = false
 python-versions = "*"
-version = "0.21"
+version = "0.22"
 
 [package.dependencies]
 Django = ">=1.8"
@@ -355,6 +359,10 @@ google = ["google-cloud-storage (>=1.15.0)"]
 libcloud = ["apache-libcloud"]
 sftp = ["paramiko"]
 
+[package.source]
+reference = "14ab003d8738fcca507c31ca26968dc6ec6e08e4"
+type = "git"
+url = 'https://github.com/ebridges/django-storages.git'
 [[package]]
 category = "main"
 description = "Web APIs for Django, made easy."
@@ -1222,7 +1230,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "7410b1fb386406ff3548bdeec80b3066ff932c8d9904b5c7298955e5467f2710"
+content-hash = "88538918fd030308049a92f3f0be8bc04beb236030101ed857d0c21696b7078c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1230,13 +1238,13 @@ ansible = []
 ansible-vault = [
     {file = "ansible-vault-1.2.0.tar.gz", hash = "sha256:984c5fe1a875d55669c9c167fd4265cf5c6446de4a6a478e0a057a4d43e6608c"},
 ]
-apig-wsgi = [
-    {file = "apig-wsgi-2.6.0.tar.gz", hash = "sha256:0f02ff09a6ab17a9ea54ed8d67fd26c21f4f79c7e68313b781333a426d6a7aed"},
-    {file = "apig_wsgi-2.6.0-py3-none-any.whl", hash = "sha256:3181aa9c4c7020a04a8134e2ce8023c4ebfa2db75d0087fbbc586cfcb3325e34"},
-]
 appdirs = [
     {file = "appdirs-1.4.3-py2.py3-none-any.whl", hash = "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"},
     {file = "appdirs-1.4.3.tar.gz", hash = "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92"},
+]
+asgiref = [
+    {file = "asgiref-3.2.7-py2.py3-none-any.whl", hash = "sha256:9ca8b952a0a9afa61d30aa6d3d9b570bb3fd6bafcf7ec9e6bed43b936133db1c"},
+    {file = "asgiref-3.2.7.tar.gz", hash = "sha256:8036f90603c54e93521e5777b2b9a39ba1bad05773fcf2d208f0299d1df58ce5"},
 ]
 "aspy.yaml" = [
     {file = "aspy.yaml-1.3.0-py2.py3-none-any.whl", hash = "sha256:463372c043f70160a9ec950c3f1e4c3a82db5fca01d334b6bc89c7164d744bdc"},
@@ -1269,12 +1277,12 @@ boto = [
     {file = "boto-2.49.0.tar.gz", hash = "sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a"},
 ]
 boto3 = [
-    {file = "boto3-1.12.42-py2.py3-none-any.whl", hash = "sha256:c205c9d69beb43f1dee6f8c30029a418afe1f82fc52a254d9f3b5ab24ee5dd00"},
-    {file = "boto3-1.12.42.tar.gz", hash = "sha256:bd005143eadea91dcba536caffcdd19d9a4dbefa7f59ddd503ef0ef2e5079c36"},
+    {file = "boto3-1.12.43-py2.py3-none-any.whl", hash = "sha256:bb0962faea24242a3105f6341537f9e19ee45aa07a9b62a6ffa274ada33280df"},
+    {file = "boto3-1.12.43.tar.gz", hash = "sha256:1a6a3d95d20cacd677e2af5cbff7027abea35b78f1b8126388ef7fa517655cfe"},
 ]
 botocore = [
-    {file = "botocore-1.15.42-py2.py3-none-any.whl", hash = "sha256:1b7730de543a751c2491f1510688f3c34a8b9669998d8b88f8facf6c3be3c790"},
-    {file = "botocore-1.15.42.tar.gz", hash = "sha256:2ce77c2b11253b64a3d7ec0aa696c064d6ed83c32e6288fc2d59f485f8119828"},
+    {file = "botocore-1.15.43-py2.py3-none-any.whl", hash = "sha256:3b315934b20d7e4e3398a74fd90ea73622e0c1f609942ae0209506a041ae257f"},
+    {file = "botocore-1.15.43.tar.gz", hash = "sha256:9721e7b413e3b1b2b7670940e89d0088d1b83bd54cae1ccfe7305eb2e9361c17"},
 ]
 certifi = [
     {file = "certifi-2020.4.5.1-py2.py3-none-any.whl", hash = "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304"},
@@ -1389,11 +1397,11 @@ distlib = [
     {file = "distlib-0.3.0.zip", hash = "sha256:2e166e231a26b36d6dfe35a48c4464346620f8645ed0ace01ee31822b288de21"},
 ]
 django = [
-    {file = "Django-2.2.12-py3-none-any.whl", hash = "sha256:6ecd229e1815d4fc5240fc98f1cca78c41e7a8cd3e3f2eefadc4735031077916"},
-    {file = "Django-2.2.12.tar.gz", hash = "sha256:69897097095f336d5aeef45b4103dceae51c00afa6d3ae198a2a18e519791b7a"},
+    {file = "Django-3.0.5-py3-none-any.whl", hash = "sha256:642d8eceab321ca743ae71e0f985ff8fdca59f07aab3a9fb362c617d23e33a76"},
+    {file = "Django-3.0.5.tar.gz", hash = "sha256:d4666c2edefa38c5ede0ec1655424c56dc47ceb04b6d8d62a7eac09db89545c1"},
 ]
 django-allauth = [
-    {file = "django-allauth-0.40.0.tar.gz", hash = "sha256:6a189fc4d3ee23596c3fd6e9f49c59b5b15618980118171a50675dd6a27cc589"},
+    {file = "django-allauth-0.41.0.tar.gz", hash = "sha256:7ab91485b80d231da191d5c7999ba93170ef1bf14ab6487d886598a1ad03e1d8"},
 ]
 django-amazon-ses = [
     {file = "django-amazon-ses-3.0.2.tar.gz", hash = "sha256:f39503d5d16c7788b0ac45d7781100074ff3a19858e5c754031cd2281c7e4658"},
@@ -1404,12 +1412,9 @@ django-extensions = [
     {file = "django_extensions-2.2.9-py2.py3-none-any.whl", hash = "sha256:b19182d101a441fe001c5753553a901e2ef3ff60e8fbbe38881eb4a61fdd17c4"},
 ]
 django-sslserver = [
-    {file = "django_sslserver-0.21-py3-none-any.whl", hash = "sha256:67af769be32653ab55df60212e6f17be4ea972b678e0a17cd680cd5e66c006db"},
+    {file = "django_sslserver-0.22-py3-none-any.whl", hash = "sha256:c598a363d2ccdc2421c08ddb3d8b0973f80e8e47a3a5b74e4a2896f21c2947c5"},
 ]
-django-storages = [
-    {file = "django-storages-1.9.1.tar.gz", hash = "sha256:a59e9923cbce7068792f75344ed7727021ee4ac20f227cf17297d0d03d141e91"},
-    {file = "django_storages-1.9.1-py2.py3-none-any.whl", hash = "sha256:3103991c2ee8cef8a2ff096709973ffe7106183d211a79f22cf855f33533d924"},
-]
+django-storages = []
 djangorestframework = [
     {file = "djangorestframework-3.11.0-py3-none-any.whl", hash = "sha256:05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4"},
     {file = "djangorestframework-3.11.0.tar.gz", hash = "sha256:e782087823c47a26826ee5b6fa0c542968219263fb3976ec3c31edab23a4001f"},
