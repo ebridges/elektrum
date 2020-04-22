@@ -359,6 +359,10 @@ google = ["google-cloud-storage (>=1.15.0)"]
 libcloud = ["apache-libcloud"]
 sftp = ["paramiko"]
 
+[package.source]
+reference = "14ab003d8738fcca507c31ca26968dc6ec6e08e4"
+type = "git"
+url = 'https://github.com/ebridges/django-storages.git'
 [[package]]
 category = "main"
 description = "Web APIs for Django, made easy."
@@ -1226,7 +1230,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "0179b1471ee07eee1d6e5a171f889745830cf6cad277f2cfee6edd597bc66381"
+content-hash = "88538918fd030308049a92f3f0be8bc04beb236030101ed857d0c21696b7078c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1410,10 +1414,7 @@ django-extensions = [
 django-sslserver = [
     {file = "django_sslserver-0.22-py3-none-any.whl", hash = "sha256:c598a363d2ccdc2421c08ddb3d8b0973f80e8e47a3a5b74e4a2896f21c2947c5"},
 ]
-django-storages = [
-    {file = "django-storages-1.9.1.tar.gz", hash = "sha256:a59e9923cbce7068792f75344ed7727021ee4ac20f227cf17297d0d03d141e91"},
-    {file = "django_storages-1.9.1-py2.py3-none-any.whl", hash = "sha256:3103991c2ee8cef8a2ff096709973ffe7106183d211a79f22cf855f33533d924"},
-]
+django-storages = []
 djangorestframework = [
     {file = "djangorestframework-3.11.0-py3-none-any.whl", hash = "sha256:05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4"},
     {file = "djangorestframework-3.11.0.tar.gz", hash = "sha256:e782087823c47a26826ee5b6fa0c542968219263fb3976ec3c31edab23a4001f"},
