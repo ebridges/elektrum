@@ -40,3 +40,8 @@ vpc_security_groups:
         ports:
           - 22
         rule_desc: "SSH access from Home"
+      - proto: tcp
+        cidr_ip: "{{ home_ip }}/32"
+        ports:
+          - 5432
+        rule_desc: "PSQL access from Home"
