@@ -27,7 +27,8 @@
   route53:
       state: present
       zone: '{{ https_domain_name }}'
-      record: "{{ item.dn }}"
+      record: "_dmarc.{{ https_domain_name }}"
       type: TXT
       ttl: '3600'
+      overwrite: True
       value: '"v=DMARC1; p=quarantine; rua=mailto:{{dmarc_report_address}}; pct=90; sp=none"'

@@ -1,11 +1,31 @@
 ---
-- name: obtain acm facts for "{{ https_domain_name }}"
-  aws_acm_facts:
-    domain_name: "{{ https_domain_name }}"
+- name: obtain acm facts for "{{ service_name }}-{{ operating_env }}"
+  aws_acm_info:
   register: acm_facts
 
-- debug: var=acm_facts
 
 - name: set ARN of HTTPS certificate as fact
   set_fact:
-     https_certificate_arn: "{{ acm_facts.certificates[0].certificate_arn }}"
+     https_certificate_arn: "{{ acm_facts.certificates | json_query(query) | join('') }}"
+  vars:
+    query: "[? tags.Name==`{{ service_name }}-certificate`].certificate_arn"
+
+- debug: var=https_certificate_arn
+
+
+- name: set ARN for "{{ service_name }}-{{ operating_env }}-vpn"
+  set_fact:
+     vpn_certificate_arn: "{{ acm_facts.certificates | json_query(query) | join('') }}"
+  vars:
+    query: "[? tags.Name==`{{ service_name }}-{{ operating_env }}-vpn`].certificate_arn"
+
+- debug: var=vpn_certificate_arn
+
+
+- name: set ARN of "{{ service_name }}-ca as fact
+  set_fact:
+     vpn_client_ca_certificate_arn: "{{ acm_facts.certificates | json_query(query) | join('') }}"
+  vars:
+    query: "[? tags.Name==`{{ service_name }}-ca`].certificate_arn"
+
+- debug: var=vpn_client_ca_certificate_arn

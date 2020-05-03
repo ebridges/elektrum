@@ -30,6 +30,10 @@ DB_PASSWORD='{{ rds_master_password }}'
 ## Network configuration
 VPC_PRIVATE_SUBNET_IDS='{{ private_subnet_ids|join(',') }}'
 VPC_NAT_SECURITY_GROUP_IDS='{{ nat_security_group_id }}'
+VPC_PUBLIC_SUBNET_IDS='{{ public_subnet_ids|join(',') }}'
+VPC_ID='{{ vpc_id }}'
+VPN_SERVER_CERTIFICATE_ARN='{{ vpn_certificate_arn }}'
+VPN_CLIENT_CA_CERTIFICATE_ARN='{{ vpn_client_ca_certificate_arn }}'
 
 ## S3 Buckets
 MEDIA_UPLOAD_BUCKET_NAME='{{ media_upload_bucket_name }}'
