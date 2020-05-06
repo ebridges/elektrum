@@ -22,6 +22,7 @@ dmarc_report_address: "dmarc-reports@eqbridges.com"
 
 # S3 Facts
 media_upload_bucket_name: "{{service_name}}-{{ operating_env }}-media"
+media_thumbnail_bucket_name: "{{service_name}}-{{ operating_env }}-media-thumbnails"
 media_processor_artifact_bucket_name: "{{service_name}}-{{ operating_env }}-archive"
 static_files_bucket_name: "{{service_name}}-{{ operating_env }}-static"
 
