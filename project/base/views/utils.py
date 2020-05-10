@@ -12,3 +12,13 @@ def assert_owner_id(owner_id, user_id):
 
 def media_url(path, scheme='https'):
     return '%s://%s/%s' % (scheme, environ.get('MEDIA_STORAGE_CNAME'), path)
+
+
+def thumbnail_url(path, scheme='https'):
+    return '%s://%s/%s/%s/%s' % (
+        scheme,
+        environ.get('THUMBNAIL_DOMAIN_NAME'),
+        DEFAULT_THUMBNAIL_W,
+        DEFAULT_THUMBNAIL_H,
+        path,
+    )

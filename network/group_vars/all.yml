@@ -16,6 +16,7 @@ config_info: "../etc/env/{{operating_env}}.env"
 # Domain names
 media_cname: "media.{{application_domain_name}}"
 static_cname: "static.{{application_domain_name}}"
+thumbnail_cname: "thumbnail.{{application_domain_name}}"
 
 # Email Settings
 dmarc_report_address: "dmarc-reports@eqbridges.com"
