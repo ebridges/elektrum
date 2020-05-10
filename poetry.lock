@@ -35,6 +35,14 @@ release = ["twine"]
 test = ["pytest"]
 
 [[package]]
+category = "main"
+description = "Wrap a WSGI application in an AWS Lambda handler function for running on API Gateway or an ALB."
+name = "apig-wsgi"
+optional = false
+python-versions = ">=3.5"
+version = "2.6.0"
+
+[[package]]
 category = "dev"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
@@ -360,6 +368,7 @@ sftp = ["paramiko"]
 reference = "14ab003d8738fcca507c31ca26968dc6ec6e08e4"
 type = "git"
 url = 'https://github.com/ebridges/django-storages.git'
+
 [[package]]
 category = "main"
 description = "Web APIs for Django, made easy."
@@ -1237,13 +1246,17 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "88538918fd030308049a92f3f0be8bc04beb236030101ed857d0c21696b7078c"
+content-hash = "c3283104bcc15a953862568c2be54d6ddfe046f39a5235d3ea1ca3c9d5731f5d"
 python-versions = "^3.7"
 
 [metadata.files]
 ansible = []
 ansible-vault = [
     {file = "ansible-vault-1.2.0.tar.gz", hash = "sha256:984c5fe1a875d55669c9c167fd4265cf5c6446de4a6a478e0a057a4d43e6608c"},
+]
+apig-wsgi = [
+    {file = "apig-wsgi-2.6.0.tar.gz", hash = "sha256:0f02ff09a6ab17a9ea54ed8d67fd26c21f4f79c7e68313b781333a426d6a7aed"},
+    {file = "apig_wsgi-2.6.0-py3-none-any.whl", hash = "sha256:3181aa9c4c7020a04a8134e2ce8023c4ebfa2db75d0087fbbc586cfcb3325e34"},
 ]
 appdirs = [
     {file = "appdirs-1.4.3-py2.py3-none-any.whl", hash = "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"},
