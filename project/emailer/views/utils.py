@@ -25,24 +25,14 @@ def render_template(template, context):
 
 
 def download_and_encode_thumbnails(owner_id, media_items):
-    if environ['ENVIRONMENT'] == 'local':  # pragma: no cover
-        for media_item in media_items:
-            path = media_item['file_path'].replace('/', '%2f')
-            url = f'http://localhost:8182/iiif/2/{path}/square/pct:33/0/default.jpg'
-            with tempfile.NamedTemporaryFile() as tmp:
-                with urllib.request.urlopen(url) as response, open(tmp.name, 'wb') as out:
-                    shutil.copyfileobj(response, out)
-                with open(tmp.name, 'rb') as file:
-                    init_mime_image(file.read(), media_item)
-    else:
-        for media_item in media_items:
-            path = media_item['file_path']
-            url = thumbnail_url(path)
-            with tempfile.NamedTemporaryFile() as tmp:
-                with urllib.request.urlopen(url) as response, open(tmp.name, 'wb') as out:
-                    shutil.copyfileobj(response, out)
-                with open(tmp.name, 'rb') as file:
-                    init_mime_image(file.read(), media_item)
+    for media_item in media_items:
+        path = media_item['file_path']
+        url = thumbnail_url(path)
+        with tempfile.NamedTemporaryFile() as tmp:
+            with urllib.request.urlopen(url) as response, open(tmp.name, 'wb') as out:
+                shutil.copyfileobj(response, out)
+            with open(tmp.name, 'rb') as file:
+                init_mime_image(file.read(), media_item)
 
 
 def init_mime_image(bytes, media_item):

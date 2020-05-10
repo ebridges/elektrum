@@ -15,10 +15,14 @@ def media_url(path, scheme='https'):
 
 
 def thumbnail_url(path, scheme='https'):
-    return '%s://%s/%s/%s/%s' % (
-        scheme,
-        environ.get('THUMBNAIL_DOMAIN_NAME'),
-        DEFAULT_THUMBNAIL_W,
-        DEFAULT_THUMBNAIL_H,
-        path,
-    )
+    if environ['ENVIRONMENT'] == 'local':
+        path = path.replace('/', '%2f')
+        return f'http://localhost:8182/iiif/2/{path}/square/{DEFAULT_THUMBNAIL_W},{DEFAULT_THUMBNAIL_H}/0/default.jpg'
+    else:
+        return '%s://%s/%s/%s/%s' % (
+            scheme,
+            environ.get('THUMBNAIL_DOMAIN_NAME'),
+            DEFAULT_THUMBNAIL_W,
+            DEFAULT_THUMBNAIL_H,
+            path,
+        )
