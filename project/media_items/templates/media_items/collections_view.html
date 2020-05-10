@@ -13,7 +13,7 @@
   <div class="media_item">
     <a class="media_item_link" href="{% url 'albums-view' user.id info.year %}">
       <figure>
-        <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ thumbnail_width }}" height="{{ thumbnail_height }}"></div>
+        <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ THUMBNAIL_WIDTH }}" height="{{ THUMBNAIL_HEIGHT }}"></div>
         <figcaption>
           &nbsp;&nbsp;&nbsp;{{ info.year }}
         </figcaption>
