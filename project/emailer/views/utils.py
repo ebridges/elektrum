@@ -13,8 +13,9 @@ from base64 import b64encode
 from django.template.loader import get_template
 from django.template import Context
 
+from base.views.utils import thumbnail_url
 
-THUMBNAIL_DIMS = 222, 222
+
 DEFAULT_FROM_ADDRESS = 'postmaster@%s' % environ['APPLICATION_DOMAIN_NAME']
 
 
@@ -34,29 +35,14 @@ def download_and_encode_thumbnails(owner_id, media_items, dims):
                 with open(tmp.name, 'rb') as file:
                     init_mime_image(file.read(), media_item)
     else:
-        bucket = environ['MEDIA_UPLOAD_BUCKET_NAME']
         for media_item in media_items:
-            image_id = media_item['item_id']
-            ext = media_item['media_ext']
-            key = f'{owner_id}/{image_id}.{ext}'
-            with NamedTemporaryFile(suffix=f'.{ext}') as tmp:
-                get_image_from_s3(bucket, key, tmp.name)
+            path = media_item['file_path']
+            url = thumbnail_url(path)
+            with tempfile.NamedTemporaryFile() as tmp:
+                with urllib.request.urlopen(url) as response, open(tmp.name, 'wb') as out:
+                    shutil.copyfileobj(response, out)
                 with open(tmp.name, 'rb') as file:
-                    debug(f'creating thumbnail with dimensions: {dims}')
-                    im = Image.open(file.name)
-                    nim = im.resize(dims)
-                    nim.save(file.name)
-                with open(tmp.name, 'rb') as file:
-                    debug('encoding thumbnail as a MIMEImage')
                     init_mime_image(file.read(), media_item)
-
-
-def get_image_from_s3(bucket, key, tempfile):
-    debug(f'getting image from bucket with key: {bucket}::{key}')
-    s3 = resource('s3')
-    b = s3.Bucket(bucket)
-    b.download_file(key, tempfile)
-    debug(f'image downloaded from s3 and stored at: {tempfile}')
 
 
 def init_mime_image(bytes, media_item):
