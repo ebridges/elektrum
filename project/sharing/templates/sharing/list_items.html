@@ -34,7 +34,7 @@
     <div class="media_item">
       <a class="media_item_link" onclick="toggleCheckbox('{{ info.item_id }}')" href="#">
         <figure>
-          <div class="media_item_thumbnail"></div>
+          <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ thumbnail_width }}" height="{{ thumbnail_height }}"></div>
           <figcaption>
             &nbsp;&nbsp;<input type="checkbox" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
           </figcaption>
@@ -47,8 +47,4 @@
   <br/>
   <button id="share-media" type="submit" name="share">Share selected items.</button>
 </form>
-{% endblock %}
-
-{% block local_endjs %}
-{% include "thumbnail_js.html" %}
 {% endblock %}
