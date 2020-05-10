@@ -32,6 +32,6 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
     media_items = MediaItem.objects.raw(query)
     data = []
     for mi in media_items:
-        data.append({'year': int(str(mi.create_day_id)[:4]), 'url': media_url(mi.file_path)})
+        data.append(mi.view())
 
     return render(request, template_name, {'objects': data})
