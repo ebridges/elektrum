@@ -20,5 +20,5 @@ repos:
       - id: detect-private-key
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
-      - id: pretty-format-json
+#      - id: pretty-format-json
       - id: trailing-whitespace

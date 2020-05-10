@@ -1,3 +1,33 @@
+- name: Create bucket for thumbnails
+  s3_bucket:
+    name: "{{ media_thumbnail_bucket_name }}"
+    policy: "{{ lookup('template','s3-media_thumbnail_bucket_name-policy.json') }}"
+    tags:
+      Service: "{{ service_name }}"
+      Name: "{{ media_thumbnail_bucket_name }}-bucket"
+      Environment: "{{ operating_env }}"
+
+- name: Add CORS configuration for thumbnails bucket
+  aws_s3_cors:
+    name: "{{ media_thumbnail_bucket_name }}"
+    state: present
+    rules:
+      - allowed_origins:
+          - 'https://127.0.0.1:8000'
+          - 'https://{{thumbnail_cname}}'
+          - 'https://{{application_domain_name}}'
+        allowed_methods:
+          - GET
+          - PUT
+          - POST
+          - DELETE
+        allowed_headers:
+          - '*'
+      - allowed_origins:
+          - '*'
+        allowed_methods:
+          - GET
+
 - name: Create bucket for uploading media
   s3_bucket:
     name: "{{ media_upload_bucket_name }}"

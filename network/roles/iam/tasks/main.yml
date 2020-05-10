@@ -95,8 +95,19 @@
       Statement:
         - Sid: Created20200209
           Effect: Allow
-          Action: s3:PutObject
+          Action:
+          - s3:PutObject
+          - s3:GetObject
           Resource: "arn:aws:s3:::{{ media_upload_bucket_name }}/*"
+        - Sid: Created20200210
+          Effect: Allow
+          Action:
+          - s3:PutObject
+          - s3:GetObject
+          - s3:ListBucket
+          Resource:
+          - "arn:aws:s3:::{{ media_thumbnail_bucket_name }}"
+          - "arn:aws:s3:::{{ media_thumbnail_bucket_name }}/*"
     state: present
 
 - name: set lambda execution role arn as fact
