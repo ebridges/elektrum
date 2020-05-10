@@ -9,7 +9,8 @@ import pytest
 from PIL import Image
 
 import emailer
-from emailer.views.utils import download_and_encode_thumbnails, THUMBNAIL_DIMS
+from emailer.views.utils import download_and_encode_thumbnails
+from base.views.utils import DEFAULT_THUMBNAIL_W, DEFAULT_THUMBNAIL_H
 
 
 SAMPLE_IMAGE = 'project/emailer/tests/resources/mountains.jpg'
@@ -50,7 +51,7 @@ def test_download_and_encode_thumbnails(
 
     monkeypatch.setattr(emailer.views.utils, 'get_image_from_s3', mock_copy_from_s3)
 
-    download_and_encode_thumbnails(u.id, media_items, THUMBNAIL_DIMS)
+    download_and_encode_thumbnails(u.id, media_items)
 
     for mi in media_items:
         content_id = str(mi['content_id'])
@@ -62,7 +63,8 @@ def test_download_and_encode_thumbnails(
         assert mime_image
         ext = mi['media_ext']
         assert ext
-        assert_image_dims(mime_image, ext, THUMBNAIL_DIMS)
+        dims = DEFAULT_THUMBNAIL_W, DEFAULT_THUMBNAIL_H
+        assert_image_dims(mime_image, ext, dims)
 
 
 def assert_image_dims(mime_image, ext, dims):

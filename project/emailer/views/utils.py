@@ -24,7 +24,7 @@ def render_template(template, context):
     return tmpl.render(context)
 
 
-def download_and_encode_thumbnails(owner_id, media_items, dims):
+def download_and_encode_thumbnails(owner_id, media_items):
     if environ['ENVIRONMENT'] == 'local':  # pragma: no cover
         for media_item in media_items:
             path = media_item['file_path'].replace('/', '%2f')
