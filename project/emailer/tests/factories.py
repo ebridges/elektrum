@@ -1,5 +1,7 @@
 from datetime import date
 
+import pytest
+
 from date_dimension.tests.factories import DateDimensionFactory
 from emailer.views.utils import DEFAULT_FROM_ADDRESS
 from media_items.tests.factories import MediaItemFactory
