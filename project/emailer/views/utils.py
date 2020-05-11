@@ -13,8 +13,6 @@ from base64 import b64encode
 from django.template.loader import get_template
 from django.template import Context
 
-from base.views.utils import thumbnail_url
-
 
 DEFAULT_FROM_ADDRESS = 'postmaster@%s' % environ['APPLICATION_DOMAIN_NAME']
 
@@ -27,7 +25,7 @@ def render_template(template, context):
 def download_and_encode_thumbnails(owner_id, media_items):
     for media_item in media_items:
         path = media_item['file_path']
-        url = thumbnail_url(path)
+        url = media_item['thumbnail_url']
         with tempfile.NamedTemporaryFile() as tmp:
             with urllib.request.urlopen(url) as response, open(tmp.name, 'wb') as out:
                 shutil.copyfileobj(response, out)
@@ -36,9 +34,8 @@ def download_and_encode_thumbnails(owner_id, media_items):
 
 
 def init_mime_image(bytes, media_item):
-    content_location = 'https://%s/%s' % (environ['MEDIA_STORAGE_CNAME'], media_item['file_path'])
     image = MIMEImage(bytes, name=media_item['basename'])
     image.add_header('Content-ID', '<%s>' % media_item['item_id'])
-    image.add_header('Content-Location', content_location)
+    image.add_header('Content-Location', media_item['media_item_url'])
     media_item['content_id'] = media_item['item_id']
     media_item['encoded'] = image
