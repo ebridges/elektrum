@@ -1,4 +1,17 @@
+from datetime import date
+
+from date_dimension.tests.factories import DateDimensionFactory
 from emailer.views.utils import DEFAULT_FROM_ADDRESS
+from media_items.tests.factories import MediaItemFactory
+
+
+@pytest.fixture
+def media_items(custom_user, count_shared=5, count_shared_to=5):
+    date_dimension = DateDimensionFactory(from_date=date(1950, 9, 11))
+    media_items = MediaItemFactory.create_batch(
+        size=count_shared, owner=custom_user, create_day=date_dimension
+    )
+    return media_items
 
 
 class MockEmailerManager:
