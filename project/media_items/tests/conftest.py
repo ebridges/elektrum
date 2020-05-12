@@ -1,5 +1,3 @@
-from datetime import date
-
 from users.tests.factories import *
 from media_items.tests.factories import *
 from date_dimension.tests.factories import *
@@ -10,15 +8,6 @@ from tempfile import TemporaryDirectory
 
 from assertpy import assert_that
 from os import getenv
-
-
-@pytest.fixture
-def media_items(custom_user, count_shared=5, count_shared_to=5):
-    date_dimension = DateDimensionFactory(from_date=date(1950, 9, 11))
-    media_items = MediaItemFactory.create_batch(
-        size=count_shared, owner=custom_user, create_day=date_dimension
-    )
-    return media_items
 
 
 @pytest.fixture(name='img')
