@@ -7,7 +7,7 @@ import pytest
 from tempfile import TemporaryDirectory
 
 from assertpy import assert_that
-from os import getenv
+from os import getenv, environ
 
 
 @pytest.fixture(name='img')
@@ -55,7 +55,7 @@ def get_db_connect_info(live_server, monkeypatch):
 
     # used by image processor
     if getenv('DB_USERNAME'):
-        del os.environ['DB_USERNAME']  # force processor into 'test' db mode
+        del environ['DB_USERNAME']  # force processor into 'test' db mode
 
     db_url = 'jdbc:sqlite:%s' % database_name
     monkeypatch.setenv('DB_JDBC_URL', db_url)
