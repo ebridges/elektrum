@@ -54,7 +54,7 @@
           {% for info in share.shared %}
           <span class="media_item">
             <figure>
-              <div class="media_item_thumbnail"></div>
+              <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ THUMBNAIL_WIDTH }}" height="{{ THUMBNAIL_HEIGHT }}"></div>
               <figcaption>
                 &nbsp;&nbsp;{{ info.title }}
               </figcaption>
@@ -67,8 +67,4 @@
   </tbody>
 </table>
 <span style="visibility: hidden;">{{ share.id }}</span>
-{% endblock %}
-
-{% block local_endjs %}
-{% include "thumbnail_js.html" %}
 {% endblock %}

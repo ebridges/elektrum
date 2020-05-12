@@ -6,7 +6,6 @@ from django.core.mail import EmailMultiAlternatives
 from emailer.views.utils import (
     download_and_encode_thumbnails,
     render_template,
-    THUMBNAIL_DIMS,
     DEFAULT_FROM_ADDRESS,
 )
 
@@ -20,7 +19,7 @@ def send_email(
 ):
     info(f'send_email(%s, %s)' % (mail_info['shared_by'], mail_info['to']))
 
-    thumbnailer(mail_info['owner_id'], mail_info['shared'], dims=THUMBNAIL_DIMS)
+    thumbnailer(mail_info['owner_id'], mail_info['shared'])
     attachments = [item['encoded'] for item in mail_info['shared']]
     info('thumbnails downloaded and encoded as attachments')
 

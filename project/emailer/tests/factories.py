@@ -8,7 +8,7 @@ class MockEmailerManager:
     mock_rendered_template = 'mock rendered template'
 
     @staticmethod
-    def mock_thumbnailer(owner_id, media_items, dims):
+    def mock_thumbnailer(owner_id, media_items):
         for media_item in media_items:
             media_item['encoded'] = 'mock_mime_image'
 

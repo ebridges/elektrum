@@ -26,7 +26,7 @@
           <div class="media_item">
             <a class="media_item_link" href="#">
               <figure>
-                <div class="media_item_thumbnail"></div>
+                <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ THUMBNAIL_WIDTH }}" height="{{ THUMBNAIL_HEIGHT }}"></div>
                 <figcaption>
                   &nbsp;&nbsp;<input type="hidden" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
                 </figcaption>
@@ -50,8 +50,4 @@
   </tfoot>
 </table>
 </form>
-{% endblock %}
-
-{% block local_endjs %}
-{% include "thumbnail_js.html" %}
 {% endblock %}

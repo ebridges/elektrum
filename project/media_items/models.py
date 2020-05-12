@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 
 from base.models import BaseModel, DateTimeNoTZField
 from date_dimension.models import DateDimension
-from base.views.utils import media_url
+from base.views.utils import media_url, thumbnail_url
 
 
 @deconstructible
@@ -203,6 +203,7 @@ class MediaItem(BaseModel):
             'file_name': self.create_day_id,
             'url': media_url(self.file_path),
             'media_item_url': media_url(self.file_path),
+            'thumbnail_url': thumbnail_url(self.file_path),
             'file_path': self.file_path,
             'title': self.create_date,
             'collection_year': self.create_day.year,

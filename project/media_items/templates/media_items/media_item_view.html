@@ -1,5 +1,11 @@
 {% extends 'base_protected.html' %}
+{% load static %}
 {% load i18n %}
+
+{% block local_js %}
+<script type="text/javascript" src="{% static 'js/load-image.all.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/media_item.js' %}"></script>
+{% endblock %}
 
 {% block title %}Media Item{% endblock %}
 {% block nav_block %}

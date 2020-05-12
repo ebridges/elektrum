@@ -3,7 +3,7 @@
 
 {% block nav_block %}
 <h2 class='subtitle'>
-&nbsp;
+  <span class="nav-home-icon">&#x2302;</span>
 </h2>
 {% endblock %}
 
@@ -13,7 +13,7 @@
   <div class="media_item">
     <a class="media_item_link" href="{% url 'albums-view' user.id info.year %}">
       <figure>
-        <div class="media_item_thumbnail"></div>
+        <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ THUMBNAIL_WIDTH }}" height="{{ THUMBNAIL_HEIGHT }}"></div>
         <figcaption>
           &nbsp;&nbsp;&nbsp;{{ info.year }}
         </figcaption>
@@ -22,8 +22,4 @@
   </div>
   {% endfor %}
 </div>
-{% endblock %}
-
-{% block local_endjs %}
-{% include "thumbnail_js.html" %}
 {% endblock %}

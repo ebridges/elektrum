@@ -16,12 +16,14 @@ config_info: "../etc/env/{{operating_env}}.env"
 # Domain names
 media_cname: "media.{{application_domain_name}}"
 static_cname: "static.{{application_domain_name}}"
+thumbnail_cname: "thumbnails.{{application_domain_name}}"
 
 # Email Settings
 dmarc_report_address: "dmarc-reports@eqbridges.com"
 
 # S3 Facts
 media_upload_bucket_name: "{{service_name}}-{{ operating_env }}-media"
+media_thumbnail_bucket_name: "{{service_name}}-{{ operating_env }}-media-thumbnails"
 media_processor_artifact_bucket_name: "{{service_name}}-{{ operating_env }}-archive"
 static_files_bucket_name: "{{service_name}}-{{ operating_env }}-static"
 
