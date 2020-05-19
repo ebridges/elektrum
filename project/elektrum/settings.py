@@ -231,3 +231,4 @@ LOGGING = {
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SECURE_REFERRER_POLICY = ['origin-when-cross-origin', 'same-origin', 'strict-origin', 'origin']
