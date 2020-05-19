@@ -227,3 +227,5 @@ LOGGING = {
         #'django.db.backends': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
 }
+
+SECURE_SSL_REDIRECT = True
