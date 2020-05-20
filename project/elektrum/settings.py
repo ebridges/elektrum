@@ -140,6 +140,7 @@ else:
             'PORT': os.getenv('DB_PORT_NUM'),
         }
     }
+CONN_MAX_AGE = 60
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
