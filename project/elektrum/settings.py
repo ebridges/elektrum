@@ -201,6 +201,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
 EMAIL_FILE_PATH = './sent_emails'
+DEFAULT_FROM_EMAIL = 'postmaster@%s' % os.getenv('APPLICATION_DOMAIN_NAME')
+SERVER_EMAIL = 'admin@%s' % os.getenv('APPLICATION_DOMAIN_NAME')
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {'SCOPE': ['profile', 'email'], 'AUTH_PARAMS': {'access_type': 'online'}}
