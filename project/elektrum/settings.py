@@ -28,7 +28,7 @@ load_dotenv(env_file)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get('DJANGO_DEBUG_ENABLED') else False
+DEBUG = True if 'DJANGO_DEBUG_ENABLED' in os.environ else False
 
 allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS')
 ALLOWED_HOSTS = allowed_hosts.split(',')
@@ -213,13 +213,14 @@ TEST_RUNNER = 'elektrum.test_runner.PytestTestRunner'
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {'format': '[{levelname}] [{asctime}] [{name}] {message}', 'style': '{'}
     },
     'handlers': {
         'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose', 'level': 'DEBUG'}
     },
+    'root': {'handlers': ['console'], 'level': 'WARNING'},
     'loggers': {
         'elektrum': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
         'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
