@@ -211,6 +211,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 TEST_RUNNER = 'elektrum.test_runner.PytestTestRunner'
 
+DJANGO_LOGGING_LEVEL = os.getenv('DJANGO_LOG_LEVEL', 'INFO')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -223,12 +224,11 @@ LOGGING = {
     'root': {'handlers': ['console'], 'level': 'WARNING'},
     'loggers': {
         'elektrum': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
-        'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
+        'django': {'handlers': ['console'], 'level': DJANGO_LOGGING_LEVEL, 'propagate': False},
         'django.utils.autoreload': {'handlers': ['console'], 'level': 'WARNING'},
         'selenium.webdriver.remote.remote_connection': {'handlers': ['console'], 'level': 'INFO'},
         'urllib3.connectionpool': {'handlers': ['console'], 'level': 'INFO'},
         '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
-        #'django.db.backends': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
 }
 
