@@ -4,7 +4,7 @@ from django.conf import settings
 from django.shortcuts import render
 
 from base.views.errors import exceptions_to_web_response
-from base.views.utils import assert_owner_id
+from base.views.utils import assert_owner_id, format_sql
 from media_items.models import MediaItem
 
 
@@ -16,11 +16,13 @@ def media_list_view(
 
     yyyymmdd = int(re.sub('-', '', date))
     media_items = MediaItem.objects.raw(
-        '''select m.*
+        format_sql(
+            '''select m.*
             from media_item m
             where m.create_day_id = %d
             order by m.create_date'''
-        % yyyymmdd
+            % yyyymmdd
+        )
     )
 
     data = []
