@@ -46,6 +46,11 @@ function publish_release() {
         result=$(publish_release.py -v ${tag_name} -r "${release_name}" )
 
         log result
+
+        org_name="${SERVICE_NAME}"
+        prg_name="${SERVICE_NAME}-service"
+        release_url=f'https://github.com/ebridges/elektrum/releases/tag/{tag_name}'
+        sentry-cli releases new --finalize --org "${org_name}" --project "${prg_name}" --url "${release_url}" "${release_name}"
     else
         log "Release cancelled when publishing."
         exit 1
@@ -188,5 +193,8 @@ if [ -z "${OPERATING_ENV}" ];
 then
     usage $0
 fi
+
+# among other things, incorporate SENTRY_AUTH_TOKEN in env
+source etc/env/${OPERATING_ENV}.env
 
 main
