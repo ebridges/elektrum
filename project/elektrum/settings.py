@@ -14,12 +14,15 @@ import os
 import sys
 from elektrum.env_util import locate_env_file, resolve_version
 from dotenv import load_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env_file = locate_env_file(BASE_DIR)
 load_dotenv(env_file)
+OPERATING_ENV = os.environ['ENVIRONMENT']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -39,7 +42,7 @@ if os.path.isfile(version_file):
     with open(version_file) as v_file:
         v = v_file.read()
         APP_VERSION_NUMBER = v.strip()
-print('Running Elektrum v%s' % APP_VERSION_NUMBER)
+print('Running Elektrum (%s) v%s' % (OPERATING_ENV, APP_VERSION_NUMBER))
 
 # Application definition
 
@@ -240,3 +243,15 @@ SECURE_REFERRER_POLICY = ['origin-when-cross-origin', 'same-origin', 'strict-ori
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+
+
+sentry_sdk.init(
+    dsn='https://80cf5293784d494c97184d00979fa4b2@o397351.ingest.sentry.io/5251733',
+    integrations=[DjangoIntegration()],
+    release=f'elektrum/{OPERATING_ENV}@{APP_VERSION_NUMBER}',
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=False,
+    traces_sample_rate=0.25,
+    _experiments={'auto_enabling_integrations': True},
+)

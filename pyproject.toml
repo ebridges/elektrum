@@ -32,6 +32,7 @@ python-dotenv = "^0.10.3"
 pillow = "^7.1.1"
 django-amazon-ses = "^3.0.2"
 apig_wsgi = "^2.6.0"
+sentry-sdk = "^0.14.4"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.3.1"
