@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load request_id %}
 <html>
 
 <head>
@@ -142,7 +143,7 @@
               <li><a href="{% url 'account_logout' %}">Logout</a></li>
             </ul>
             <footer>
-              {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br />{{APP_DB_HOST}}
+              {{APP_NAME}}/{{APP_VERSION_NUMBER}}<br />{{APP_DB_HOST}}<br />{% request_id %}
             </footer>
           </div>
         </div>

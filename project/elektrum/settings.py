@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'media_items',
     'date_dimension',
     'sharing',
+    'request_id',
 ]
 
 if os.environ.get('OPERATING_ENV') == 'local':
@@ -76,6 +77,7 @@ if os.environ.get('OPERATING_ENV') == 'local':
 
 
 MIDDLEWARE = [
+    'request_id.middleware.RequestIdMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -219,11 +221,20 @@ DJANGO_LOGGING_LEVEL = os.getenv('DJANGO_LOG_LEVEL', 'INFO')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {'request_id': {'()': 'request_id.logging.RequestIdFilter'}},
     'formatters': {
-        'verbose': {'format': '[{levelname}] [{asctime}] [{name}] {message}', 'style': '{'}
+        'verbose': {
+            'format': '[{levelname}] [{request_id}] [{name}] [{asctime}] {message}',
+            'style': '{',
+        }
     },
     'handlers': {
-        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose', 'level': 'DEBUG'}
+        'console': {
+            'filters': ['request_id'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'level': 'DEBUG',
+        }
     },
     'root': {'handlers': ['console'], 'level': 'WARNING'},
     'loggers': {
@@ -244,6 +255,7 @@ SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+REQUEST_ID_HEADER = None
 
 sentry_sdk.init(
     dsn='https://80cf5293784d494c97184d00979fa4b2@o397351.ingest.sentry.io/5251733',
@@ -252,6 +264,7 @@ sentry_sdk.init(
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=False,
-    traces_sample_rate=0.25,
+    traces_sample_rate=0.50,
+    environment=OPERATING_ENV,
     _experiments={'auto_enabling_integrations': True},
 )
