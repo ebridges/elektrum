@@ -4,7 +4,7 @@ import os
 import re
 import pytest
 
-from urllib.parse import urljoin, urlsplit, urlparse
+from urllib.parse import urljoin, urlsplit
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -53,17 +53,6 @@ def match_image_key(user_id, to_match):
         UUID_REGEX,
     )
     return re.match(pattern, to_match)
-
-
-def util_login_user(driver, live_server_url, user_email, password):
-    u = urlparse(live_server_url)
-    url = 'https://%s:%s/' % (u.hostname, u.port)
-    driver.get(url)
-    username_input = driver.find_element_by_name('login')
-    username_input.send_keys(user_email)
-    password_input = driver.find_element_by_name('password')
-    password_input.send_keys(password)
-    driver.find_element_by_xpath('//button').click()
 
 
 def trunc_file(filename):
