@@ -4,7 +4,7 @@ import os
 import re
 import pytest
 
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import urljoin, urlsplit, urlparse
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -56,7 +56,9 @@ def match_image_key(user_id, to_match):
 
 
 def util_login_user(driver, live_server_url, user_email, password):
-    driver.get(live_server_url)
+    u = urlparse(live_server_url)
+    url = 'https://%s:%s/' % (u.hostname, u.port)
+    driver.get(url)
     username_input = driver.find_element_by_name('login')
     username_input.send_keys(user_email)
     password_input = driver.find_element_by_name('password')
