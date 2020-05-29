@@ -30,7 +30,9 @@ def test_login_via_post(client, user_factory):
     :param user_factory: mock user generator
     """
     u = user_factory()
-    response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
+    response = client.post(
+        '/account/login/', {'login': u.email, 'password': USER_PASSWORD}, secure=True
+    )
     assert response.status_code == 302
     assert response.url == '/account/confirm-email/'
     user = CustomUser.objects.get(username=u.username)
@@ -48,7 +50,9 @@ def test_csrf_login_failure(client, user_factory):
     """
     u = user_factory()
     client.handler.enforce_csrf_checks = True
-    response = client.post('/account/login/', {'login': u.email, 'password': USER_PASSWORD})
+    response = client.post(
+        '/account/login/', {'login': u.email, 'password': USER_PASSWORD}, secure=True
+    )
     assert response.status_code == 403
 
 
@@ -97,6 +101,7 @@ def test_signup_flow(client, mock_email_log):
             'password1': 'abcd@1234',
             'password2': 'abcd@1234',
         },
+        secure=True,
     )
     assert response.status_code == 302
     assert response.url == '/account/confirm-email/'
@@ -141,6 +146,7 @@ def test_signup_flow_multiple(client, mock_email_log):
             'password1': 'abcd@1234',
             'password2': 'abcd@1234',
         },
+        secure=True,
     )
     assert response.status_code == 302
     assert response.url == '/account/confirm-email/'
@@ -158,6 +164,7 @@ def test_signup_flow_multiple(client, mock_email_log):
             'password1': 'abcd@1234',
             'password2': 'abcd@1234',
         },
+        secure=True,
     )
     assert response.status_code == 302
     assert response.url == '/account/confirm-email/'
