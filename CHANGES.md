@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Minor fix in format of release URL.
 
 ## 0.47 (2020-05-30)
 
