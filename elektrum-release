@@ -68,8 +68,8 @@ function push_commits() {
     read -n1 -rsp $'Press any key to push all commits for the release or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        git push --quiet
-        git push --quiet --tags
+        git push
+        git push --tags
         log "Commit push sucessful."
     else
         log "Release cancelled when pushing commits."
