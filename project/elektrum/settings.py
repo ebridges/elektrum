@@ -260,7 +260,7 @@ REQUEST_ID_HEADER = None
 sentry_sdk.init(
     dsn='https://80cf5293784d494c97184d00979fa4b2@o397351.ingest.sentry.io/5251733',
     integrations=[DjangoIntegration()],
-    release=f'elektrum/{OPERATING_ENV}@{APP_VERSION_NUMBER}',
+    release=f'{APP_VERSION_NUMBER}',
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=False,
