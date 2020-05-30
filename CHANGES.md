@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add additional metadata when publishing release to Sentry.
 
 ## 0.48 (2020-05-30)
 
