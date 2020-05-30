@@ -11,9 +11,6 @@ from logging import warn, info
 from pprint import pprint
 from json import loads
 
-import sentry_sdk
-from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
-
 import sys
 from base64 import b64decode, b64encode
 from io import BytesIO
@@ -43,11 +40,6 @@ def make_lambda_handler(wsgi_app, binary_support=False, non_binary_content_type_
     if non_binary_content_type_prefixes is None:
         non_binary_content_type_prefixes = DEFAULT_NON_BINARY_CONTENT_TYPE_PREFIXES
     non_binary_content_type_prefixes = tuple(non_binary_content_type_prefixes)
-
-    sentry_sdk.init(
-        dsn='https://80cf5293784d494c97184d00979fa4b2@o397351.ingest.sentry.io/5251733',
-        integrations=[AwsLambdaIntegration()],
-    )
 
     def handler(event, context):
         info(event)
