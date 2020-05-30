@@ -35,7 +35,7 @@ def trigger_error(request):
     '''
     Used for testing alerting
     '''
-    division_by_zero = 1 / 0
+    raise RuntimeError('Unhandled Exception')
 
 
 urlpatterns = [
