@@ -107,7 +107,7 @@ def test_signup_flow(client, mock_email_log):
     assert response.url == '/account/confirm-email/'
     confirm_url = util.assert_signup_mail(expected_email, mock_email_log)
     assert confirm_url is not None
-    confirm_response = client.post(confirm_url)
+    confirm_response = client.post(confirm_url, secure=True)
 
     expected_redirect_url = confirm_response.url
 
