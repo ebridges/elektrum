@@ -30,7 +30,7 @@ class AuthnIntegrationTests(StaticLiveServerTestCase):
         chrome_options = Options()
         chrome_options.add_argument('--headless')
         cls.driver = webdriver.Chrome(options=chrome_options)
-        cls.driver.implicitly_wait(10)
+        cls.driver.implicitly_wait(5)
 
     @classmethod
     def tearDownClass(cls):
