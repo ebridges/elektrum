@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.45 (2020-05-30)
+
 - [#86] Implement security and operational fixes in prep for deployment.
 
 ## 0.44 (2020-04-21)
