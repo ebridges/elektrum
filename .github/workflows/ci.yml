@@ -1,4 +1,4 @@
-name: Django CI
+name: elektrum-ci
 
 on:
   push:
