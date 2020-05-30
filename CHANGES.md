@@ -3,6 +3,9 @@
 ## Unreleased
 
 
+## 0.51 (2020-05-30)
+
+
 ## 0.50 (2020-05-30)
 
 - Minor fix in configuration of Org name when publishing release to Sentry.
