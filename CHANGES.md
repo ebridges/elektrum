@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 0.47 (2020-05-30)
+
 - Minor fix for publishing release to Sentry.
 
 ## 0.46 (2020-05-30)
