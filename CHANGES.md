@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Minor fixes in operational notifications.
 
 ## 0.45 (2020-05-30)
 
