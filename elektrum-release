@@ -49,7 +49,7 @@ function publish_release() {
 
         org_name="${SERVICE_NAME}"
         prg_name="${SERVICE_NAME}-service"
-        release_url=f'https://github.com/ebridges/elektrum/releases/tag/{tag_name}'
+        release_url="https://github.com/ebridges/elektrum/releases/tag/${tag_name}"
         SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} sentry-cli releases --org "${org_name}" new --finalize --project "${prg_name}" --url "${release_url}" "${release_name}"
     else
         log "Release cancelled when publishing."
