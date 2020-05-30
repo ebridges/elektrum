@@ -56,7 +56,7 @@ function publish_release() {
         sentry-cli releases new --project "${prg_name}" --url "${release_url}" "${tag_name}"
         sentry-cli releases set-commits --commit "${release_ref}" "${tag_name}"
         sentry-cli releases finalize "${tag_name}"
-        sentry-cli releases deploys "${tag_name}" new --name "${prg_name} [${ENVIRONMENT}]/${release_name}" --env "${ENVIRONMENT}"
+        sentry-cli releases deploys "${tag_name}" new --name "${prg_name}-${ENVIRONMENT}/${release_name}" --env "${ENVIRONMENT}"
     else
         log "Release cancelled when publishing."
         exit 1
