@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+- Minor fixes to configure Sentry release metadata.
 
 ## 0.51 (2020-05-30)
 
+- Minor fixes to configure Sentry release metadata.
 
 ## 0.50 (2020-05-30)
 
