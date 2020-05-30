@@ -1,4 +1,4 @@
-![Django CI](https://github.com/ebridges/elektrum/workflows/Django%20CI/badge.svg?branch=master)
+![Django CI](https://github.com/ebridges/elektrum/workflows/elektrum-ci/badge.svg?branch=master)
 
 # Elektrum
 
