@@ -1,6 +1,7 @@
 import json
 from urllib.parse import urlparse
 
+from django.test import override_settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -14,7 +15,7 @@ from users.tests.factories import UserFactory
 
 def util_login_user(driver, live_server_url, user_email, password):
     u = urlparse(live_server_url)
-    url = 'https://%s:%s/' % (u.hostname, u.port)
+    url = '%s://%s:%s/' % (u.scheme, u.hostname, u.port)
     driver.get(url)
     username_input = driver.find_element_by_name('login')
     username_input.send_keys(user_email)
@@ -23,6 +24,7 @@ def util_login_user(driver, live_server_url, user_email, password):
     driver.find_element_by_xpath('//button').click()
 
 
+@override_settings(SECURE_SSL_REDIRECT=False, SESSION_COOKIE_SECURE=False, CSRF_COOKIE_SECURE=False)
 class AuthnIntegrationTests(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
