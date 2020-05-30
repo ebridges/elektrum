@@ -26,3 +26,11 @@ def thumbnail_url(path, scheme='https'):
             DEFAULT_THUMBNAIL_H,
             path,
         )
+
+
+def format_sql(sql):
+    '''
+    Convert SQL that's written across multiple lines for legibility to a single line for better logging.
+    Replaces newlines with a single space, and then compresses multiple spaces to a single space.
+    '''
+    return ' '.join(sql.replace('\n', ' ').split())

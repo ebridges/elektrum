@@ -28,7 +28,7 @@ def test_sign_upload_request_success(authenticated_client, monkeypatch):
 @pytest.mark.django_db
 def test_sign_upload_request_logged_out(client):
     url = reverse('upload-request')
-    response = client.post(url, {})
+    response = client.post(url, {}, secure=True)
     assert response.status_code == 403
 
 

@@ -30,6 +30,14 @@ from elektrum.log import getLogger
 # accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
 # accounts/reset/done/ [name='password_reset_complete']
 
+
+def trigger_error(request):
+    '''
+    Used for testing alerting
+    '''
+    division_by_zero = 1 / 0
+
+
 urlpatterns = [
     path('', include('pages.urls')),
     # path('account/', include('users.urls')),
@@ -41,6 +49,7 @@ urlpatterns = [
     path('user/', include('users.urls')),
     path('sharing/', include('sharing.urls')),
     path('email/', include('emailer.urls')),
+    path('error/', trigger_error),  # used for testing alerting
 ]
 
 

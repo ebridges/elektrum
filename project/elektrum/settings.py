@@ -14,12 +14,15 @@ import os
 import sys
 from elektrum.env_util import locate_env_file, resolve_version
 from dotenv import load_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env_file = locate_env_file(BASE_DIR)
 load_dotenv(env_file)
+OPERATING_ENV = os.environ['ENVIRONMENT']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -28,7 +31,7 @@ load_dotenv(env_file)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get('DJANGO_DEBUG_ENABLED') else False
+DEBUG = True if 'DJANGO_DEBUG_ENABLED' in os.environ else False
 
 allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS')
 ALLOWED_HOSTS = allowed_hosts.split(',')
@@ -39,7 +42,7 @@ if os.path.isfile(version_file):
     with open(version_file) as v_file:
         v = v_file.read()
         APP_VERSION_NUMBER = v.strip()
-print('Running Elektrum v%s' % APP_VERSION_NUMBER)
+print('Running Elektrum (%s) v%s' % (OPERATING_ENV, APP_VERSION_NUMBER))
 
 # Application definition
 
@@ -66,6 +69,7 @@ INSTALLED_APPS = [
     'media_items',
     'date_dimension',
     'sharing',
+    'request_id',
 ]
 
 if os.environ.get('OPERATING_ENV') == 'local':
@@ -73,6 +77,7 @@ if os.environ.get('OPERATING_ENV') == 'local':
 
 
 MIDDLEWARE = [
+    'request_id.middleware.RequestIdMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -140,6 +145,7 @@ else:
             'PORT': os.getenv('DB_PORT_NUM'),
         }
     }
+CONN_MAX_AGE = 60
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -199,8 +205,11 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
+ADMINS = [(os.getenv('ADMIN_CONTACT_NAME'), os.getenv('ADMIN_CONTACT_EMAIL'))]
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
 EMAIL_FILE_PATH = './sent_emails'
+DEFAULT_FROM_EMAIL = 'postmaster@%s' % os.getenv('APPLICATION_DOMAIN_NAME')
+SERVER_EMAIL = 'admin@%s' % os.getenv('APPLICATION_DOMAIN_NAME')
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {'SCOPE': ['profile', 'email'], 'AUTH_PARAMS': {'access_type': 'online'}}
@@ -208,22 +217,54 @@ SOCIALACCOUNT_PROVIDERS = {
 
 TEST_RUNNER = 'elektrum.test_runner.PytestTestRunner'
 
+DJANGO_LOGGING_LEVEL = os.getenv('DJANGO_LOG_LEVEL', 'INFO')
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
+    'filters': {'request_id': {'()': 'request_id.logging.RequestIdFilter'}},
     'formatters': {
-        'verbose': {'format': '[{levelname}] [{asctime}] [{name}] {message}', 'style': '{'}
+        'verbose': {
+            'format': '[{levelname}] [{request_id}] [{name}] [{asctime}] {message}',
+            'style': '{',
+        }
     },
     'handlers': {
-        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose', 'level': 'DEBUG'}
+        'console': {
+            'filters': ['request_id'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'level': 'DEBUG',
+        }
     },
+    'root': {'handlers': ['console'], 'level': 'WARNING'},
     'loggers': {
         'elektrum': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
-        'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
+        'django': {'handlers': ['console'], 'level': DJANGO_LOGGING_LEVEL, 'propagate': False},
         'django.utils.autoreload': {'handlers': ['console'], 'level': 'WARNING'},
         'selenium.webdriver.remote.remote_connection': {'handlers': ['console'], 'level': 'INFO'},
         'urllib3.connectionpool': {'handlers': ['console'], 'level': 'INFO'},
         '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
-        #'django.db.backends': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
 }
+
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_REFERRER_POLICY = ['origin-when-cross-origin', 'same-origin', 'strict-origin', 'origin']
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+REQUEST_ID_HEADER = None
+
+sentry_sdk.init(
+    dsn='https://80cf5293784d494c97184d00979fa4b2@o397351.ingest.sentry.io/5251733',
+    integrations=[DjangoIntegration()],
+    release=f'elektrum/{OPERATING_ENV}@{APP_VERSION_NUMBER}',
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=False,
+    traces_sample_rate=0.50,
+    environment=OPERATING_ENV,
+    _experiments={'auto_enabling_integrations': True},
+)

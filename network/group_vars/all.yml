@@ -6,6 +6,8 @@ ansible_python_interpreter: python3
 
 # IP Address to allow access for SSH & PostgreSQL from:
 home_ip: 98.116.39.58
+admin_contact_name: "Edward Bridges"
+admin_contact_email: "elektrum-admin@eqbridges.com"
 
 service_name: elektrum
 

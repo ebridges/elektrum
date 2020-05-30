@@ -2,7 +2,7 @@ from django.conf import settings
 from django.shortcuts import render
 
 from base.views.errors import exceptions_to_web_response
-from base.views.utils import assert_owner_id, media_url
+from base.views.utils import assert_owner_id, media_url, format_sql
 from media_items.models import MediaItem
 
 
@@ -15,12 +15,15 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
     # equivalent in that it doesn't retrieve a random item. However it is sufficient
     # for current state of tests.
     if not settings.IN_TEST_MODE:
-        query = '''select distinct on (d.year) m.*
+        query = format_sql(
+            '''select distinct on (d.year) m.*
                    from media_item m, date_dim d
                    where m.create_day_id = d.yyyymmdd
                    order by d.year, random()'''
+        )
     else:
-        query = '''SELECT d.year, m.*
+        query = format_sql(
+            '''SELECT d.year, m.*
                    from media_item m, date_dim d
                    left JOIN date_dim dd
                    ON
@@ -28,6 +31,7 @@ def collections_view(request, owner_id, template_name='media_items/collections_v
                    where
                       dd.yyyymmdd is null
                    '''
+        )
 
     media_items = MediaItem.objects.raw(query)
     data = []

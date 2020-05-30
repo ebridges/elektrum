@@ -336,6 +336,17 @@ six = ">=1.2"
 
 [[package]]
 category = "main"
+description = "Augment each request with unique id for logging purposes"
+name = "django-request-id"
+optional = false
+python-versions = "*"
+version = "1.0.0"
+
+[package.dependencies]
+django = "*"
+
+[[package]]
+category = "main"
 description = "An SSL-enabled development server for Django"
 name = "django-sslserver"
 optional = false
@@ -1032,6 +1043,32 @@ urllib3 = "*"
 
 [[package]]
 category = "main"
+description = "Python client for Sentry (https://getsentry.com)"
+name = "sentry-sdk"
+optional = false
+python-versions = "*"
+version = "0.14.4"
+
+[package.dependencies]
+certifi = "*"
+urllib3 = ">=1.10.0"
+
+[package.extras]
+aiohttp = ["aiohttp (>=3.5)"]
+beam = ["beam (>=2.12)"]
+bottle = ["bottle (>=0.12.13)"]
+celery = ["celery (>=3)"]
+django = ["django (>=1.8)"]
+falcon = ["falcon (>=1.4)"]
+flask = ["flask (>=0.11)", "blinker (>=1.1)"]
+pyspark = ["pyspark (>=2.4.4)"]
+rq = ["rq (>=0.6)"]
+sanic = ["sanic (>=0.8)"]
+sqlalchemy = ["sqlalchemy (>=1.2)"]
+tornado = ["tornado (>=5)"]
+
+[[package]]
+category = "main"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
@@ -1246,7 +1283,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "c3283104bcc15a953862568c2be54d6ddfe046f39a5235d3ea1ca3c9d5731f5d"
+content-hash = "7ae6317b3ebedb1134c5078e1cf5e2579af16d94c2e2a8911f7065d4bba67695"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1429,6 +1466,10 @@ django-amazon-ses = [
 django-extensions = [
     {file = "django-extensions-2.2.9.tar.gz", hash = "sha256:2f81b618ba4d1b0e58603e25012e5c74f88a4b706e0022a3b21f24f0322a6ce6"},
     {file = "django_extensions-2.2.9-py2.py3-none-any.whl", hash = "sha256:b19182d101a441fe001c5753553a901e2ef3ff60e8fbbe38881eb4a61fdd17c4"},
+]
+django-request-id = [
+    {file = "django-request-id-1.0.0.tar.gz", hash = "sha256:0eb7ef17e21ff5efe5014e5b3cc6d22fc3396d4ea9d5b353bba2c43107998368"},
+    {file = "django_request_id-1.0.0-py2.py3-none-any.whl", hash = "sha256:f7f296a7c6de44193af9461c72cbdb6a12887fffe00a7dcfa0f43a4ec67e4643"},
 ]
 django-sslserver = [
     {file = "django_sslserver-0.22-py3-none-any.whl", hash = "sha256:c598a363d2ccdc2421c08ddb3d8b0973f80e8e47a3a5b74e4a2896f21c2947c5"},
@@ -1798,6 +1839,10 @@ s3transfer = [
 selenium = [
     {file = "selenium-3.141.0-py2.py3-none-any.whl", hash = "sha256:2d7131d7bc5a5b99a2d9b04aaf2612c411b03b8ca1b1ee8d3de5845a9be2cb3c"},
     {file = "selenium-3.141.0.tar.gz", hash = "sha256:deaf32b60ad91a4611b98d8002757f29e6f2c2d5fcaf202e1c9ad06d6772300d"},
+]
+sentry-sdk = [
+    {file = "sentry-sdk-0.14.4.tar.gz", hash = "sha256:0e5e947d0f7a969314aa23669a94a9712be5a688ff069ff7b9fc36c66adc160c"},
+    {file = "sentry_sdk-0.14.4-py2.py3-none-any.whl", hash = "sha256:799a8bf76b012e3030a881be00e97bc0b922ce35dde699c6537122b751d80e2c"},
 ]
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
