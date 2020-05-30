@@ -48,15 +48,15 @@ function publish_release() {
         log result
 
         export SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
-        org_name="${SERVICE_NAME}"
+        export SENTRY_ORG="${SERVICE_NAME}"
         prg_name="${SERVICE_NAME}-service"
         release_commit=$(git tag --sort=-v:refname --format='%(tag) %(*objectname)' | grep --fixed-strings ${tag_name} | awk '{ print $2 }')
         release_ref="ebridges/elektrum@${release_commit}"
         release_url="https://github.com/ebridges/elektrum/releases/tag/${tag_name}"
-        sentry-cli releases --org "${org_name}" new --project "${prg_name}" --url "${release_url}" "${tag_name}"
+        sentry-cli releases new --project "${prg_name}" --url "${release_url}" "${tag_name}"
         sentry-cli releases set-commits --commit "${release_ref}" "${tag_name}"
         sentry-cli releases finalize "${tag_name}"
-        sentry-cli releases --org "${org_name}" deploys "${tag_name}" new --name "${prg_name} [${ENVIRONMENT}]/${release_name}" --env "${ENVIRONMENT}"
+        sentry-cli releases deploys "${tag_name}" new --name "${prg_name} [${ENVIRONMENT}]/${release_name}" --env "${ENVIRONMENT}"
     else
         log "Release cancelled when publishing."
         exit 1
