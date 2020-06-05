@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from logging import debug, INFO, DEBUG, basicConfig
 import unittest
 
-from etc.build.util import slurp
+from elektrum.doit.util import slurp
 
 basicConfig(level=INFO)
 

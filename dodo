@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+set -e
+
+OPERATING_ENV=${1}
+
+if [ -z "${OPERATING_ENV}" ];
+then
+    OPERATING_ENV='development'
+else
+    shift
+fi
+
+export OPERATING_ENV
+export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools
+
+doit ${@}
