@@ -35,14 +35,25 @@ def action_config():
     ]
 
 
-def action_build_processor(version):
+def processor_version(dev=True, next=False, part=1):
+    return read_from_file('functions/processor/version.txt', dev, next, part)
+
+
+def processor_archive(version=processor_version()):
+    env = environment()
+    service = environ.get('SERVICE_NAME')
+    return f'{service}-{env}-processor-{version}.zip'
+
+
+def action_build_processor():
     env = environment()
     service = environ.get('SERVICE_NAME')
     bucket = environ.get('MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME')
+    version = processor_version()
 
     archive_folder = 'functions/processor/build/archives'
     src_archive = f'{service}-processor-{version}.zip'
-    archive = f'{service}-{env}-processor-{version}.zip'
+    archive = processor_archive(version)
 
     return [
         CmdAction(f'./gradlew -PprojVersion={version} buildZip', cwd='functions/processor'),

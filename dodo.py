@@ -13,6 +13,8 @@ from elektrum.doit.task_actions import (
     action_build_processor,
     action_set_credentials,
     environment,
+    processor_archive,
+    processor_version,
 )
 from elektrum.doit.version_info import read_from_file
 
@@ -48,14 +50,13 @@ def task_config():
     }
 
 
-def task_build_processor():
+def task_build_processor_service():
     """Builds zip artifact for processor"""
-    env = environment()
-    version = read_from_file('functions/processor/version.txt', dev=True)
-    targets = f'functions/processor/build/archives/elektrum-{env}-processor-{version}.zip'
+    archive = processor_archive()
+    targets = f'functions/processor/build/archives/{archive}'
     file_deps = [f for f in glob('functions/processor/src/main/**', recursive=True) if isfile(f)]
     file_deps.append('functions/processor/version.txt')
-    action = action_build_processor(version)
+    action = action_build_processor()
     return {
         'targets': [targets],
         'file_dep': file_deps,
