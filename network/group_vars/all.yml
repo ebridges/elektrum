@@ -46,9 +46,17 @@ nat_instance_type: t2.micro
 
 ## Lambda deployment & config
 lambda_execution_rolename: "{{service_name}}-{{operating_env}}-LambdaExecutionRole"
-photo_processor_rolename: "{{service_name}}-{{operating_env}}-PhotoProcessorRole"
-photo_processor_connection_timeout: 300
-photo_processor_memory_size: 256
+
+media_processor_lambda_name: "{{ service_name }}-{{ operating_env }}-processor"
+media_processor_lambda_handler: "cc.roja.photo.ProcessorRequestHandler"
+media_processor_description: "Processes media uploaded to {{service_name}}"
+media_processor_rolename: "{{service_name}}-{{operating_env}}-PhotoProcessorRole"
+media_processor_connection_timeout: 300
+media_processor_memory_size: 256
+media_processor_tags: "Name={{ media_processor_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
+media_processor_env: "DB_JDBC_URL=jdbc:postgresql://{{ db_endpoint_url }}:{{ db_port_number }}/{{ rds_database_name }};DB_USERNAME={{ rds_master_username }};DB_PASSWORD={{ rds_master_password }};AWS_UPLOAD_BUCKET_NAME={{ media_upload_bucket_name }}"
+media_processor_runtime: "java11"
+
 api_gateway_logging_rolename: "{{service_name}}-{{operating_env}}-APIGatewayLoggingRole"
 elektrum_service_connection_timeout: 300
 
