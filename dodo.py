@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from doit import run
+from doit.action import CmdAction
 
 from elektrum.doit.task_actions import (
     action_config,
@@ -63,4 +64,32 @@ def task_build_processor_service():
         'actions': action,
         'verbosity': 2,
         'task_dep': ['config'],
+    }
+
+
+def task_deploy_processor_service():
+    """Deploys processor as an AWS lambda function"""
+
+    archive = processor_archive()
+
+    args = {
+        'AWS_LAMBDA_NAME': environ['MEDIA_PROCESSOR_LAMBDA_NAME'],
+        'AWS_LAMBDA_DESCRIPTION': environ['MEDIA_PROCESSOR_DESCRIPTION'],
+        'AWS_LAMBDA_HANDLER': environ['MEDIA_PROCESSOR_LAMBDA_HANDLER'],
+        'AWS_LAMBDA_ARCHIVE_BUCKET': environ['MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME'],
+        'AWS_LAMBDA_ARCHIVE_KEY': archive,
+        'AWS_LAMBDA_VPC_SUBNETS': environ['MEDIA_PROCESSOR_SUBNET_IDS'],
+        'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['MEDIA_PROCESSOR_SECURITY_GROUPS'],
+        'AWS_LAMBDA_TAGS': environ['MEDIA_PROCESSOR_TAGS'],
+        'AWS_LAMBDA_ENVIRONMENT': environ['MEDIA_PROCESSOR_ENVIRONMENT'],
+        'AWS_LAMBDA_EXECUTION_ROLE_ARN': environ['MEDIA_PROCESSOR_ROLE_ARN'],
+        'AWS_LAMBDA_MEMORY_SIZE': environ['MEDIA_PROCESSOR_MEMORY_SIZE'],
+        'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['MEDIA_PROCESSOR_TIMEOUT'],
+        'AWS_LAMBDA_RUNTIME': environ['MEDIA_PROCESSOR_RUNTIME'],
+    }
+
+    return {
+        'file_deps': [f'functions/processor/build/archives/{archive}'],
+        'actions': [CmdAction('lgw lambda-deploy', env=args)],
+        'verbosity': 2,
     }
