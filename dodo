@@ -13,5 +13,6 @@ fi
 
 export OPERATING_ENV
 export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools
+export PATH=${PATH}:${VIRTUAL_ENV}/bin
 
 doit ${@}
