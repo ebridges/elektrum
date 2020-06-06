@@ -48,6 +48,7 @@ nat_instance_type: t2.micro
 lambda_execution_rolename: "{{service_name}}-{{operating_env}}-LambdaExecutionRole"
 
 media_processor_lambda_name: "{{ service_name }}-{{ operating_env }}-processor"
+media_processor_lambda_arn: "arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:{{ media_processor_lambda_name }}"
 media_processor_lambda_handler: "cc.roja.photo.ProcessorRequestHandler"
 media_processor_description: "Processes media uploaded to {{service_name}}"
 media_processor_rolename: "{{service_name}}-{{operating_env}}-MediaProcessorRole"
