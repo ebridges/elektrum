@@ -17,6 +17,10 @@ def envfile():
     return f'etc/env/{env}.env'
 
 
+def application_version(dev=True, next=False, part=1):
+    return read_from_file('functions/application/version.txt', dev, next, part)
+
+
 def processor_version(dev=True, next=False, part=1):
     return read_from_file('functions/processor/version.txt', dev, next, part)
 
