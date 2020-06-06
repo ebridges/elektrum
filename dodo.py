@@ -71,7 +71,7 @@ def task_deploy_processor_service():
     }
 
     return {
-        'file_deps': [f'functions/processor/build/archives/{archive}'],
         'actions': [CmdAction('lgw lambda-deploy', env=args)],
+        'file_dep': [f'functions/processor/build/archives/{archive}'],
         'verbosity': 2,
     }
