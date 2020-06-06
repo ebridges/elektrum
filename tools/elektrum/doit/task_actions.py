@@ -17,6 +17,16 @@ def envfile():
     return f'etc/env/{env}.env'
 
 
+def processor_version(dev=True, next=False, part=1):
+    return read_from_file('functions/processor/version.txt', dev, next, part)
+
+
+def processor_archive(version=processor_version()):
+    env = environment()
+    service = environ.get('SERVICE_NAME')
+    return f'{service}-{env}-processor-{version}.zip'
+
+
 def set_credentials(var, key):
     env = environment()
     passwd = slurp(f'network/environments/{env}-vault-password.txt')
@@ -33,16 +43,6 @@ def action_config():
             cwd='network',
         )
     ]
-
-
-def processor_version(dev=True, next=False, part=1):
-    return read_from_file('functions/processor/version.txt', dev, next, part)
-
-
-def processor_archive(version=processor_version()):
-    env = environment()
-    service = environ.get('SERVICE_NAME')
-    return f'{service}-{env}-processor-{version}.zip'
 
 
 def action_build_processor():
