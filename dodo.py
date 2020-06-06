@@ -55,6 +55,9 @@ def task_deploy_processor_service():
     archive = processor_archive()
 
     args = {
+        'PATH': environ['PATH'],
+        'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
+        'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
         'AWS_LAMBDA_NAME': environ['MEDIA_PROCESSOR_LAMBDA_NAME'],
         'AWS_LAMBDA_DESCRIPTION': environ['MEDIA_PROCESSOR_DESCRIPTION'],
         'AWS_LAMBDA_HANDLER': environ['MEDIA_PROCESSOR_LAMBDA_HANDLER'],
