@@ -12,7 +12,7 @@ def environment():
     return environ.get('OPERATING_ENV')
 
 
-def get_envfile():
+def envfile():
     env = environment()
     return f'etc/env/{env}.env'
 

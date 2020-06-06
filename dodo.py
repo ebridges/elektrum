@@ -10,7 +10,7 @@ from doit.action import CmdAction
 
 from elektrum.doit.task_actions import (
     action_config,
-    get_envfile,
+    envfile,
     action_build_processor,
     action_set_credentials,
     environment,
@@ -18,9 +18,6 @@ from elektrum.doit.task_actions import (
     processor_version,
 )
 from elektrum.doit.version_info import read_from_file
-
-
-load_dotenv(get_envfile())
 
 
 def task_set_credentials():
@@ -37,14 +34,17 @@ def task_set_credentials():
         }
 
 
+load_dotenv(envfile())
+
+
 def task_config():
     """Compile network, generate configuration"""
-    envfile = get_envfile()
+    env = envfile()
     file_deps = [f for f in glob('network/**', recursive=True) if isfile(f)]
     action = action_config()
     return {
-        'targets': [envfile],
         'task_dep': ['set_credentials'],
+        'targets': [env],
         'file_dep': file_deps,
         'actions': action,
         'verbosity': 2,
