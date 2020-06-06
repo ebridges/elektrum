@@ -57,7 +57,7 @@
         allowed_methods:
           - GET
 
-- name: Create bucket to archive photo-processor executables.
+- name: Create bucket to archive media-processor executables.
   s3_bucket:
     name: "{{ media_processor_artifact_bucket_name }}"
     tags:
