@@ -90,3 +90,24 @@ def task_config_processor_service():
         'actions': action,
         'verbosity': 2,
     }
+
+
+def task_build_application_service():
+    env = envfile()
+    application_dir = 'functions/application'
+    versionfile = f'{application_dir}/version.txt'
+    requirements = 'requirements.txt'
+    targets = ['build/lambda-bundle.zip']
+    args = {
+        'PATH': environ['PATH'],
+        'AWS_LAMBDA_ARCHIVE_ADDL_FILES': f'{env},$wkdir/.env;{versionfile},$wkdir;{requirements},$wkdir;{application_dir}/,$wkdir',
+        'AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES': 'postgresql,postgresql-devel',
+    }
+    return {
+        'targets': targets,
+        'actions': [
+            f'etc/bin/poetry2pip.py --file poetry.lock --output {requirements}',
+            CmdAction('lgw lamdba-archive --verbose', env=args),
+        ],
+        'verbosity': 2,
+    }
