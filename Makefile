@@ -4,8 +4,8 @@
 ###
 #######################################################################
 
-DZ_CODE=./project/vue-s3-dropzone/frontend
-JSLI_CODE=./project/javascript-load-image
+DZ_CODE=./project/js/vue-s3-dropzone/frontend
+JSLI_CODE=./project/js/javascript-load-image
 
 static: clean index.html load-image.all.min.js app.js app.css vendor.js manifest.js publish commit
 
