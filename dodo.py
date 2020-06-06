@@ -12,7 +12,7 @@ from elektrum.doit.task_actions import (
     action_config,
     envfile,
     action_build_processor,
-    action_set_credentials,
+    set_credentials,
     environment,
     processor_archive,
     processor_version,
@@ -20,21 +20,9 @@ from elektrum.doit.task_actions import (
 from elektrum.doit.version_info import read_from_file
 
 
-def task_set_credentials():
-    cred_vars = [
-        ('AWS_ACCESS_KEY_ID', 'aws_access_key'),
-        ('AWS_SECRET_ACCESS_KEY', 'aws_secret_key'),
-    ]
-    for var, key in cred_vars:
-        yield {
-            'name': var.lower(),
-            'actions': [(action_set_credentials, [], {'var': var, 'key': key})],
-            'uptodate': [key in environ and environ[key] is not None],
-            'verbosity': 2,
-        }
-
-
 load_dotenv(envfile())
+set_credentials('AWS_ACCESS_KEY_ID', 'aws_access_key')
+set_credentials('AWS_SECRET_ACCESS_KEY', 'aws_secret_key')
 
 
 def task_config():
@@ -42,13 +30,7 @@ def task_config():
     env = envfile()
     file_deps = [f for f in glob('network/**', recursive=True) if isfile(f)]
     action = action_config()
-    return {
-        'task_dep': ['set_credentials'],
-        'targets': [env],
-        'file_dep': file_deps,
-        'actions': action,
-        'verbosity': 2,
-    }
+    return {'targets': [env], 'file_dep': file_deps, 'actions': action, 'verbosity': 2}
 
 
 def task_build_processor_service():

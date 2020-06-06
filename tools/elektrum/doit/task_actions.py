@@ -17,7 +17,7 @@ def envfile():
     return f'etc/env/{env}.env'
 
 
-def action_set_credentials(var, key):
+def set_credentials(var, key):
     env = environment()
     passwd = slurp(f'network/environments/{env}-vault-password.txt')
     encrypted_val = get_encrypted_field(f'network/group_vars/{env}.yml', key)  # todo fix this
