@@ -5,7 +5,7 @@ from doit.action import CmdAction
 from ansible_vault import Vault
 
 from elektrum.doit.version_info import read_from_file
-from elektrum.doit.util import slurp, get_encrypted_field, decrypt_value, md5
+from elektrum.doit.util import slurp, get_encrypted_field, decrypt_value
 
 
 def environment():

@@ -1,4 +1,3 @@
-import hashlib
 from ansible.parsing.vault import VaultLib, VaultSecret
 
 VAULT_ID = 'default'
@@ -41,11 +40,3 @@ def slurp(file):
     with open(file) as f:
         v = f.readline()
         return v.strip()
-
-
-def md5(fname):
-    hash_md5 = hashlib.md5()
-    with open(fname, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b''):
-            hash_md5.update(chunk)
-    return hash_md5.hexdigest()
