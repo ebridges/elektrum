@@ -35,11 +35,11 @@ def set_credentials(var, key):
     environ[var] = decrypted_val
 
 
-def action_config():
+def action_config(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     env = environment()
     return [
         CmdAction(
-            f'ansible-playbook --inventory environments/{env} --vault-password-file environments/{env}-vault-password.txt site.yml',
+            f'ansible-playbook --tags {tags} --inventory environments/{env} --vault-password-file environments/{env}-vault-password.txt site.yml',
             cwd='network',
         )
     ]

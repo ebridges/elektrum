@@ -79,3 +79,15 @@ def task_deploy_processor_service():
         'verbosity': 2,
         'task_dep': ['build_processor_service'],
     }
+
+
+def task_config_lambda():
+    """Update lambda configuration"""
+    file_deps = [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
+    action = action_config('lam')
+    return {
+        'task_dep': ['deploy_processor_service'],
+        'file_dep': file_deps,
+        'actions': action,
+        'verbosity': 2,
+    }
