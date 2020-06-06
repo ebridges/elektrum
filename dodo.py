@@ -17,7 +17,6 @@ from elektrum.doit.task_actions import (
     processor_archive,
     processor_version,
 )
-from elektrum.doit.version_info import read_from_file
 
 
 load_dotenv(envfile())
