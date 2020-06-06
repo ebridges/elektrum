@@ -81,7 +81,7 @@ def task_deploy_processor_service():
     }
 
 
-def task_config_lambda():
+def task_config_processor_service():
     """Update lambda configuration"""
     file_deps = [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
     action = action_config('lam')
