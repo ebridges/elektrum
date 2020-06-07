@@ -108,7 +108,7 @@ def task_build_application_service():
         'targets': targets,
         'actions': [
             f'etc/bin/poetry2pip.py --file poetry.lock --output {requirements}',
-            CmdAction('lgw lamdba-archive --verbose', env=args),
+            CmdAction('lgw lambda-archive --verbose', env=args),
         ],
         'verbosity': 2,
     }
