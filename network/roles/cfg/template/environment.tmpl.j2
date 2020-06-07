@@ -54,16 +54,12 @@ MEDIA_STORAGE_CNAME='{{ media_cname }}'
 STATIC_DOMAIN_NAME='{{ static_cname }}'
 THUMBNAIL_DOMAIN_NAME='{{ thumbnail_cname }}'
 
-## API gateway configuration
-CLOUDWATCH_LOG_ROLE_ARN='{{ api_gateway_logging_role_arn }}'
-
 ## Media Processor Deployment Configuration
 MEDIA_PROCESSOR_LAMBDA_NAME='{{ media_processor_lambda_name }}'
 MEDIA_PROCESSOR_LAMBDA_ARN='{{ media_processor_lambda_arn }}'
 MEDIA_PROCESSOR_LAMBDA_HANDLER='{{ media_processor_lambda_handler }}'
 MEDIA_PROCESSOR_DESCRIPTION='{{ media_processor_description }}'
-#MEDIA_PROCESSOR_EXECUTION_ROLE_ARN='{{ lambda_execution_role_arn }}' # todo
-MEDIA_PROCESSOR_ROLE_ARN='{{ media_processor_role_arn }}' # todo
+MEDIA_PROCESSOR_EXECUTION_ROLE_ARN='{{ media_processor_role_arn }}'
 MEDIA_PROCESSOR_SUBNET_IDS='{{ media_processor_subnet_ids }}'
 MEDIA_PROCESSOR_SECURITY_GROUPS='{{ nat_security_group_id }}'
 MEDIA_PROCESSOR_MEMORY_SIZE='{{ media_processor_memory_size }}'
@@ -73,15 +69,14 @@ MEDIA_PROCESSOR_ENVIRONMENT='{{ media_processor_env }}'
 MEDIA_PROCESSOR_RUNTIME='{{ media_processor_runtime }}'
 
 ## Application Service Deployment Configuration
-APPLICATION_SERVICE_LAMBDA_NAME=
-APPLICATION_SERVICE_DESCRIPTION=
-APPLICATION_SERVICE_LAMBDA_HANDLER=''
+APPLICATION_SERVICE_LAMBDA_NAME='{{ application_service_lambda_name }}'
+APPLICATION_SERVICE_DESCRIPTION='{{ application_service_description }}'
+APPLICATION_SERVICE_LAMBDA_HANDLER='{{ application_service_lambda_handler }}'
 APPLICATION_SERVICE_ARTIFACT_BUCKET_NAME='{{ application_service_artifact_bucket_name }}'
 APPLICATION_SERVICE_SUBNET_IDS='{{ application_service_subnet_ids }}'
 APPLICATION_SERVICE_SECURITY_GROUPS='{{ nat_security_group_id }}'
-APPLICATION_SERVICE_EXECUTION_ROLE_ARN='{{ lambda_execution_role_arn }}' # todo
-APPLICATION_SERVICE_ROLE_ARN='' # todo
-APPLICATION_SERVICE_LAMBDA_INTEGRATION_ROLE='{{ api_gateway_logging_role_arn }}'
+APPLICATION_SERVICE_EXECUTION_ROLE_ARN='{{ application_service_execution_role_arn }}'
+APPLICATION_SERVICE_INTEGRATION_ROLE_ARN='{{ application_service_integration_role_arn }}'
 APPLICATION_SERVICE_API_NAME='{{ service_name }}-{{ operating_env }}-api'
 APPLICATION_SERVICE_API_DEPLOY_STAGE='{{ operating_env }}'
 APPPICATION_SERVICE_API_DOMAIN_NAME='{{ application_domain_name }}'

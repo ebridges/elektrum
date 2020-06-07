@@ -43,9 +43,9 @@
   set_fact:
     media_processor_role_arn: "{{ media_processor_role_info.iam_role.arn }}"
 
-- name: Create a role that allows API Gateway to write to Cloudwatch
+- name: Create a role that allows API Gateway for application service to write to Cloudwatch
   iam_role:
-    name: "{{ api_gateway_logging_rolename }}"
+    name: "{{ application_service_integration_rolename }}"
     managed_policy:
       - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
       - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
@@ -59,15 +59,15 @@
         Action:
         - sts:AssumeRole
     description: Allow API Gateway to write to Cloudwatch
-  register: api_gateway_logging_role_info
+  register: application_service_integration_role_info
 
 - name: set API gateway logging role arn as fact
   set_fact:
-    api_gateway_logging_role_arn: "{{ api_gateway_logging_role_info.iam_role.arn }}"
+    application_service_integration_role_arn: "{{ application_service_integration_role_info.iam_role.arn }}"
 
-- name: Create a lambda execution role
+- name: Create a lambda execution role for the application service
   iam_role:
-    name: "{{ lambda_execution_rolename }}"
+    name: "{{ application_service_execution_rolename }}"
     managed_policies:
       - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -82,13 +82,13 @@
           - lambda.amazonaws.com
         Action:
         - sts:AssumeRole
-    description: Lambda execution role
-  register: lambda_execution_role_info
+    description: Application service lambda execution role
+  register: application_service_execution_role_info
 
-- name: Ensure lambda has authorization to write to media bucket
+- name: Ensure application service lambda has authorization to write to media bucket
   iam_policy:
-    policy_name: "{{ service_name }}-{{ operating_env }}-media-put"
-    iam_name: "{{ lambda_execution_rolename }}"
+    policy_name: "{{ application_service_policy }}"
+    iam_name: "{{ application_service_execution_rolename }}"
     iam_type: role
     policy_json:
       Version: "2012-10-17"
@@ -110,6 +110,6 @@
           - "arn:aws:s3:::{{ media_thumbnail_bucket_name }}/*"
     state: present
 
-- name: set lambda execution role arn as fact
+- name: set application service lambda execution role arn as fact
   set_fact:
-    lambda_execution_role_arn: "{{ lambda_execution_role_info.iam_role.arn }}"
+    application_service_execution_role_arn: "{{ application_service_execution_role_info.iam_role.arn }}"
