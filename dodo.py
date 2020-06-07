@@ -104,6 +104,7 @@ def task_build_application_service():
     targets = ['build/lambda-bundle.zip']
     args = {
         'PATH': environ['PATH'],
+        'AWS_LAMBDA_ARCHIVE_CONTEXT_DIR': f'{application_dir}/',  # trailing slash significant for populating docker image
         'AWS_LAMBDA_ARCHIVE_ADDL_FILES': f'{env},$wkdir/.env;{versionfile},$wkdir;{requirements},$wkdir;{application_dir}/,$wkdir',
         'AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES': 'postgresql,postgresql-devel',
     }
