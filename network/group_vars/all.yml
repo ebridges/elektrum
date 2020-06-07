@@ -6,6 +6,8 @@ ansible_python_interpreter: python3
 
 # IP Address to allow access for SSH & PostgreSQL from:
 home_ip: 98.116.39.58
+
+# Admin info
 admin_contact_name: "Edward Bridges"
 admin_contact_email: "elektrum-admin@eqbridges.com"
 
@@ -13,6 +15,7 @@ service_name: elektrum
 
 aws_region: us-east-1
 
+# Used for generating the config file
 config_info: "../etc/env/{{operating_env}}.env"
 
 # Domain names
@@ -62,6 +65,7 @@ media_processor_runtime: "java11"
 media_processor_subnet_ids: "{{ private_subnet_ids|join(",") }}"
 
 
+## Lambda deployment & config for Application Service (i.e. Django app)
 application_service_lambda_name: "{{ service_name }}-{{ operating_env }}-service"
 application_service_lambda_arn: "arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:{{ application_service_lambda_name }}"
 application_service_lambda_handler: "{{ service_name }}.lambda.handler"
@@ -79,7 +83,6 @@ api_gateway_logging_rolename: "{{service_name}}-{{operating_env}}-APIGatewayLogg
 
 ## VPC Configuration
 vpc_name: "{{service_name}}-{{operating_env}}-vpc"
-
 vpc_subnets_private:
   - "{{vpc_subnets['private-01']['cidr']}}"
   - "{{vpc_subnets['private-02']['cidr']}}"
