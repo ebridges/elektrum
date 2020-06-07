@@ -5,7 +5,7 @@ from glob import glob
 from pathlib import Path
 
 from dotenv import load_dotenv
-from doit import run
+from doit import create_after
 from doit.action import CmdAction
 
 from elektrum.doit.task_actions import (
@@ -33,6 +33,7 @@ def task_config():
     return {'targets': [env], 'file_dep': file_deps, 'actions': action, 'verbosity': 2}
 
 
+@create_after(executed='config')
 def task_build_processor_service():
     """Builds zip artifact for processor"""
     archive = processor_archive()
@@ -49,6 +50,7 @@ def task_build_processor_service():
     }
 
 
+@create_after(executed='build_processor_service')
 def task_deploy_processor_service():
     """Deploys processor as an AWS lambda function"""
 
@@ -74,7 +76,7 @@ def task_deploy_processor_service():
     }
 
     return {
-        'file_dep': [f'functions/processor/build/archives/{archive}'],
+        'file_dep': [f'functions/processor/build/archives/{archive}', envfile()],
         'actions': [CmdAction('lgw lambda-deploy --verbose', env=args)],
         'verbosity': 2,
         'task_dep': ['build_processor_service'],
@@ -93,6 +95,7 @@ def task_config_processor_service():
     }
 
 
+@create_after(executed='config')
 def task_build_application_service():
     env = envfile()
     application_dir = 'functions/application'
@@ -114,6 +117,7 @@ def task_build_application_service():
     }
 
 
+@create_after(executed='build_application_service')
 def task_deploy_application_service():
     service = environ['SERVICE_NAME']
     env = environment()
@@ -143,11 +147,12 @@ def task_deploy_application_service():
         'AWS_LAMBDA_RUNTIME': environ['APPLICATION_SERVICE_RUNTIME'],
     }
     return {
-        'file_dep': ['build/lambda-bundle.zip'],
+        'file_dep': ['build/lambda-bundle.zip', envfile()],
         'actions': [
             CmdAction('lgw lambda-deploy -v --lambda-file=build/lambda-bundle.zip', env=args),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
         'verbosity': 2,
+        'task_dep': ['build_application_service'],
     }
