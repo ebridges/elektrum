@@ -86,3 +86,28 @@ APPLICATION_SERVICE_ENVIRONMENT={{ application_service_env }}
 APPLICATION_SERVICE_MEMORY_SIZE={{ application_service_memory_size }}
 APPLICATION_SERVICE_TIMEOUT={{ application_service_connection_timeout }}
 APPLICATION_SERVICE_RUNTIME={{ application_service_runtime }}
+
+## Thumbnail Service Deployment Configuration
+THUMBNAIL_SERVICE_LAMBDA_NAME='{{ thumbnail_service_lambda_name }}'
+THUMBNAIL_SERVICE_DESCRIPTION='{{ thumbnail_service_description }}'
+THUMBNAIL_SERVICE_LAMBDA_HANDLER='{{ thumbnail_service_lambda_handler }}'
+THUMBNAIL_SERVICE_ARTIFACT_BUCKET_NAME='{{ thumbnail_service_artifact_bucket_name }}'
+THUMBNAIL_SERVICE_SUBNET_IDS='{{ thumbnail_service_subnet_ids }}'
+
+THUMBNAIL_SERVICE_SECURITY_GROUPS='{{ nat_security_group_id }}'
+THUMBNAIL_SERVICE_EXECUTION_ROLE_ARN='{{ thumbnail_service_execution_role_arn }}'
+THUMBNAIL_SERVICE_INTEGRATION_ROLE_ARN='{{ thumbnail_service_integration_role_arn }}'
+
+THUMBNAIL_SERVICE_API_NAME='{{ thumbnail_service_lambda_name }}-api'
+
+THUMBNAIL_SERVICE_API_DEPLOY_STAGE='{{ operating_env }}'
+THUMBNAIL_SERVICE_API_DOMAIN_NAME='{{ thumbnail_cname }}'
+THUMBNAIL_SERVICE_HTTPS_CERT_ARN='{{ https_certificate_arn }}'
+THUMBNAIL_SERVICE_TAGS='Name={{ thumbnail_service_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}'
+THUMBNAIL_SERVICE_ENVIRONMENT={{ thumbnail_service_env }}
+THUMBNAIL_SERVICE_MEMORY_SIZE={{ thumbnail_service_memory_size }}
+THUMBNAIL_SERVICE_TIMEOUT={{ thumbnail_service_connection_timeout }}
+THUMBNAIL_SERVICE_RUNTIME={{ thumbnail_service_runtime }}
+THUMBNAIL_SERVICE_BINARY_TYPES='{{ thumbnail_service_binary_types }}'
+THUMBNAIL_SERVICE_RESPONSE_MODELS='{{ thumbnail_service_response_models }}'
+THUMBNAIL_SERVICE_API_DESCRIPTION= '{{ thumbnail_service_api_description }}'
