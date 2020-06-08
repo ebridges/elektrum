@@ -17,6 +17,7 @@ from elektrum.doit.task_actions import (
     processor_archive,
     processor_version,
     application_version,
+    ThumbnailServiceInfo,
 )
 
 
@@ -151,6 +152,68 @@ def task_deploy_application_service():
         'file_dep': ['build/lambda-bundle.zip', envfile()],
         'actions': [
             CmdAction('lgw lambda-deploy -v --lambda-file=build/lambda-bundle.zip', env=args),
+            CmdAction('lgw gw-deploy --verbose', env=args),
+            CmdAction('lgw domain-add --verbose', env=args),
+        ],
+        'verbosity': 2,
+        'task_dep': ['build_application_service'],
+    }
+
+
+@create_after(executed='config')
+def task_build_thumbnail_service():
+    i = ThumbnailServiceInfo()
+    requirements = f'{i.appdir}/requirements.txt'
+    args = {
+        'PATH': environ['PATH'],
+        'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': i.builddir,
+        'AWS_LAMBDA_ARCHIVE_BUNDLE_NAME': i.archive,
+        'AWS_LAMBDA_ARCHIVE_CONTEXT_DIR': f'{i.appdir}/',  # trailing slash significant for populating docker image
+        'AWS_LAMBDA_ARCHIVE_ADDL_FILES': 'src/,$wkdir;requirements.txt,$wkdir;version.txt,$wkdir',
+    }
+    return {
+        'targets': i.targets,
+        'actions': [
+            f'etc/bin/poetry2pip.py --file "{i.appdir}/poetry.lock" --output {requirements}',
+            CmdAction('lgw lambda-archive --verbose', env=args),
+        ],
+        'verbosity': 2,
+    }
+
+
+@create_after(executed='build_thumbnail_service')
+def task_deploy_application_service():
+    i = ThumbnailServiceInfo()
+    args = {
+        'PATH': environ['PATH'],
+        'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
+        'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
+        'AWS_LAMBDA_NAME': environ['THUMBNAIL_SERVICE_LAMBDA_NAME'],
+        'AWS_LAMBDA_DESCRIPTION': environ['THUMBNAIL_SERVICE_DESCRIPTION'],
+        'AWS_LAMBDA_HANDLER': environ['THUMBNAIL_SERVICE_LAMBDA_HANDLER'],
+        'AWS_LAMBDA_ARCHIVE_BUCKET': environ['THUMBNAIL_SERVICE_ARTIFACT_BUCKET_NAME'],
+        'AWS_LAMBDA_ARCHIVE_KEY': i.archive,
+        'AWS_LAMBDA_VPC_SUBNETS': environ['THUMBNAIL_SERVICE_SUBNET_IDS'],
+        'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['THUMBNAIL_SERVICE_SECURITY_GROUPS'],
+        'AWS_LAMBDA_EXECUTION_ROLE_ARN': environ['THUMBNAIL_SERVICE_EXECUTION_ROLE_ARN'],
+        'AWS_API_LAMBDA_INTEGRATION_ROLE': environ['THUMBNAIL_SERVICE_INTEGRATION_ROLE_ARN'],
+        'AWS_API_NAME': environ['THUMBNAIL_SERVICE_API_NAME'],
+        'AWS_API_DEPLOY_STAGE': environ['THUMBNAIL_SERVICE_API_DEPLOY_STAGE'],
+        'AWS_API_DOMAIN_NAME': environ['APPPICATION_SERVICE_API_DOMAIN_NAME'],
+        'AWS_ACM_CERTIFICATE_ARN': environ['THUMBNAIL_SERVICE_HTTPS_CERT_ARN'],
+        'AWS_LAMBDA_TAGS': environ['THUMBNAIL_SERVICE_TAGS'],
+        'AWS_LAMBDA_ENVIRONMENT': environ['THUMBNAIL_SERVICE_ENVIRONMENT'],
+        'AWS_LAMBDA_MEMORY_SIZE': environ['THUMBNAIL_SERVICE_MEMORY_SIZE'],
+        'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['THUMBNAIL_SERVICE_TIMEOUT'],
+        'AWS_LAMBDA_RUNTIME': environ['THUMBNAIL_SERVICE_RUNTIME'],
+        'AWS_API_BINARY_TYPES': environ['THUMBNAIL_SERVICE_BINARY_TYPES'],
+        'AWS_API_RESPONSE_MODELS': environ['THUMBNAIL_SERVICE_RESPONSE_MODELS'],
+        'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': i.builddir,
+    }
+    return {
+        'file_dep': ['build/lambda-bundle.zip', envfile()],
+        'actions': [
+            CmdAction(f'lgw lambda-deploy -v --lambda-file={i.builddir}/{i.archive}', env=args),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
