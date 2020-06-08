@@ -2,6 +2,12 @@
 
 set -e
 
+envs=(
+  development
+  staging
+  production
+)
+
 OPERATING_ENV=${1}
 
 if [ -z "${OPERATING_ENV}" ];
@@ -9,6 +15,11 @@ then
     OPERATING_ENV='development'
 else
     shift
+fi
+
+if ! ((envs[(Ie)$OPERATING_ENV])); then
+  printf "Usage: ${0} ENV [TASKS]\n\tENVs: [development|staging|production]\n"
+  exit 1
 fi
 
 export OPERATING_ENV
