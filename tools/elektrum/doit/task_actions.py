@@ -64,3 +64,17 @@ def action_build_processor():
         CmdAction(f'mv {archive_folder}/{src_archive} {archive_folder}/{archive}'),
         CmdAction(f'aws s3 sync {archive_folder} s3://{bucket}/ --exclude "*" --include {archive}'),
     ]
+
+
+def service():
+    return environ['SERVICE_NAME']
+
+
+class ThumbnailServiceInfo:
+    def __init__(self, dev=True, next=False, part=1):
+        self.builddir = './build-tmp'
+        self.appdir = 'functions/thumbnails'
+        self.versionfile = f'{self.appdir}/version.txt'
+        self.version = read_from_file(self.versionfile, dev, next, part)
+        self.archive = f'{service()}-{environment()}-thumbnails-{self.version}.zip'
+        self.targets = [f'{self.builddir}/{self.archive}']
