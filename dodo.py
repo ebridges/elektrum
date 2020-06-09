@@ -186,6 +186,7 @@ def task_deploy_application_service():
     i = ThumbnailServiceInfo()
     args = {
         'PATH': environ['PATH'],
+        'AWS_REGION': environ['AWS_REGION'],
         'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
         'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
         'AWS_LAMBDA_NAME': environ['THUMBNAIL_SERVICE_LAMBDA_NAME'],
