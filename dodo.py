@@ -151,7 +151,9 @@ def task_deploy_application_service():
     return {
         'file_dep': ['build/lambda-bundle.zip', envfile()],
         'actions': [
-            CmdAction('lgw lambda-deploy -v --lambda-file=build/lambda-bundle.zip', env=args),
+            CmdAction(
+                'lgw lambda-deploy --verbose --lambda-file=build/lambda-bundle.zip', env=args
+            ),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
