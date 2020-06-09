@@ -1,6 +1,6 @@
 from os import environ
 from os.path import isfile
-from sys import path
+from sys import path, stdout, stderr
 from glob import glob
 from pathlib import Path
 
@@ -20,6 +20,11 @@ from elektrum.doit.task_actions import (
     ThumbnailServiceInfo,
 )
 
+
+if not isfile(envfile()):
+    actions = action_config()
+    for action in actions:
+        action.execute(out=stdout, err=stderr)
 
 load_dotenv(envfile())
 set_credentials('AWS_ACCESS_KEY_ID', 'aws_access_key')
