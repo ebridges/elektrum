@@ -63,7 +63,7 @@ media_processor_runtime: "java11"
 media_processor_subnet_ids: "{{ private_subnet_ids|join(',') }}"
 
 ## Lambda deployment & config for Application Service (i.e. Django app)
-application_service_lambda_name: "{{ service_name }}-{{ operating_env }}-service"
+application_service_lambda_name: "{{ service_name }}-{{ operating_env }}-application"
 application_service_lambda_handler: "{{ service_name }}.lambda.handler"
 application_service_description: "{{ service_name }} application service"
 application_service_execution_rolename: "{{service_name}}-{{operating_env}}-ApplicationServiceExecutionRole"
