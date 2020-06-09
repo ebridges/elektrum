@@ -69,6 +69,7 @@ MEDIA_PROCESSOR_ENVIRONMENT='{{ media_processor_env }}'
 MEDIA_PROCESSOR_RUNTIME='{{ media_processor_runtime }}'
 
 ## Application Service Deployment Configuration
+APPLICATION_SERVICE_API_DOMAIN_NAME='{{ application_domain_name }}'
 APPLICATION_SERVICE_LAMBDA_NAME='{{ application_service_lambda_name }}'
 APPLICATION_SERVICE_DESCRIPTION='{{ application_service_description }}'
 APPLICATION_SERVICE_LAMBDA_HANDLER='{{ application_service_lambda_handler }}'
@@ -79,13 +80,13 @@ APPLICATION_SERVICE_EXECUTION_ROLE_ARN='{{ application_service_execution_role_ar
 APPLICATION_SERVICE_INTEGRATION_ROLE_ARN='{{ application_service_integration_role_arn }}'
 APPLICATION_SERVICE_API_NAME='{{ application_service_lambda_name }}-api'
 APPLICATION_SERVICE_API_DEPLOY_STAGE='{{ operating_env }}'
-APPPICATION_SERVICE_API_DOMAIN_NAME='{{ application_domain_name }}'
 APPLICATION_SERVICE_HTTPS_CERT_ARN='{{ https_certificate_arn }}'
 APPLICATION_SERVICE_TAGS='Name={{ service_name }}-{{ operating_env }};Service={{ service_name }};Environment={{ operating_env }}'
 APPLICATION_SERVICE_ENVIRONMENT={{ application_service_env }}
 APPLICATION_SERVICE_MEMORY_SIZE={{ application_service_memory_size }}
 APPLICATION_SERVICE_TIMEOUT={{ application_service_connection_timeout }}
 APPLICATION_SERVICE_RUNTIME={{ application_service_runtime }}
+APPLICATION_SERVICE_API_DESCRIPTION='{{ application_service_api_description }}'
 
 ## Thumbnail Service Deployment Configuration
 THUMBNAIL_SERVICE_LAMBDA_NAME='{{ thumbnail_service_lambda_name }}'

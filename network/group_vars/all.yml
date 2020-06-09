@@ -75,6 +75,7 @@ application_service_tags: "Name={{ application_service_lambda_name }};Service={{
 application_service_env: "DJANGO_LOG_LEVEL=INFO"
 application_service_runtime: "python3.7"
 application_service_subnet_ids: "{{ private_subnet_ids|join(',') }}"
+application_service_api_description: "Public facing API for {{ application_service_lambda_name }}"
 
 ## Lambda deployment & config for Thumbnail Service
 thumbnail_service_lambda_name: "{{ service_name }}-{{ operating_env }}-thumbnails"

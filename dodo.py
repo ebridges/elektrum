@@ -158,6 +158,7 @@ def task_deploy_application_service():
         'AWS_LAMBDA_MEMORY_SIZE': environ['APPLICATION_SERVICE_MEMORY_SIZE'],
         'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['APPLICATION_SERVICE_TIMEOUT'],
         'AWS_LAMBDA_RUNTIME': environ['APPLICATION_SERVICE_RUNTIME'],
+        'AWS_API_DESCRIPTION': environ['APPLICATION_SERVICE_API_DESCRIPTION'],
     }
     return {
         'file_dep': ['build/lambda-bundle.zip', envfile()],
