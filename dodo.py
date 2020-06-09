@@ -45,6 +45,7 @@ def task_build_processor_service():
     archive = processor_archive()
     targets = f'functions/processor/build/archives/{archive}'
     file_deps = [f for f in glob('functions/processor/src/main/**', recursive=True) if isfile(f)]
+    file_deps.append(envfile())
     file_deps.append('functions/processor/version.txt')
     action = action_build_processor()
     return {
@@ -107,6 +108,10 @@ def task_build_application_service():
     application_dir = 'functions/application'
     versionfile = f'{application_dir}/version.txt'
     requirements = f'{application_dir}/requirements.txt'
+
+    file_deps = [f for f in glob(f'{application_dir}/**', recursive=True) if isfile(f)]
+    file_deps.append(env)
+
     targets = ['build/lambda-bundle.zip']
     args = {
         'PATH': environ['PATH'],
@@ -115,6 +120,7 @@ def task_build_application_service():
         'AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES': 'postgresql,postgresql-devel',
     }
     return {
+        'file_dep': file_deps,
         'targets': targets,
         'actions': [
             f'etc/bin/poetry2pip.py --file poetry.lock --output {requirements}',
