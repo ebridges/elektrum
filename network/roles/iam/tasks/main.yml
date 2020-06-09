@@ -99,6 +99,44 @@
           - s3:PutObject
           - s3:GetObject
           Resource: "arn:aws:s3:::{{ media_upload_bucket_name }}/*"
+    state: present
+
+- name: set application service lambda execution role arn as fact
+  set_fact:
+    application_service_execution_role_arn: "{{ application_service_execution_role_info.iam_role.arn }}"
+
+- name: Create a lambda execution role for the thumbnail service
+  iam_role:
+    name: "{{ thumbnail_service_execution_rolename }}"
+    managed_policies:
+      - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+    assume_role_policy_document:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - lambda.amazonaws.com
+        Action:
+        - sts:AssumeRole
+    description: Application service lambda execution role
+  register: thumbnail_service_execution_role_info
+
+- name: Ensure thumbnail service has authorization to read from media bucket and write to thumbnail bucket.
+  iam_policy:
+    policy_name: "{{ thumbnail_service_policy }}"
+    iam_name: "{{ thumbnail_service_execution_rolename }}"
+    iam_type: role
+    policy_json:
+      Version: "2012-10-17"
+      Statement:
+        - Sid: Created20200209
+          Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource: "arn:aws:s3:::{{ media_upload_bucket_name }}/*"
         - Sid: Created20200210
           Effect: Allow
           Action:
@@ -112,4 +150,26 @@
 
 - name: set application service lambda execution role arn as fact
   set_fact:
-    application_service_execution_role_arn: "{{ application_service_execution_role_info.iam_role.arn }}"
+    thumbnail_service_execution_role_arn: "{{ thumbnail_service_execution_role_info.iam_role.arn }}"
+
+- name: Create a role that allows API Gateway for thumbnail service to write to Cloudwatch
+  iam_role:
+    name: "{{ thumbnail_service_integration_rolename }}"
+    managed_policy:
+      - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+    assume_role_policy_document:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - apigateway.amazonaws.com
+        Action:
+        - sts:AssumeRole
+    description: Allow API Gateway to write to Cloudwatch
+  register: thumbnail_service_integration_role_info
+
+- name: set API gateway logging role arn as fact
+  set_fact:
+    thumbnail_service_integration_role_arn: "{{ thumbnail_service_integration_role_info.iam_role.arn }}"

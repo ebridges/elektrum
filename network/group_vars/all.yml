@@ -76,6 +76,24 @@ application_service_env: "DJANGO_LOG_LEVEL=INFO"
 application_service_runtime: "python3.7"
 application_service_subnet_ids: "{{ private_subnet_ids|join(',') }}"
 
+## Lambda deployment & config for Thumbnail Service
+thumbnail_service_lambda_name: "{{ service_name }}-{{ operating_env }}-thumbnails"
+thumbnail_service_description: "Retrieves a key from a bucket and writes out a resized version to a cache bucket."
+thumbnail_service_lambda_handler: "thumbnailer.lambda.handler"
+thumbnail_service_artifact_bucket_name: "{{ media_thumbnail_bucket_name }}"
+thumbnail_service_subnet_ids: "{{ private_subnet_ids|join(',') }}"
+thumbnail_service_execution_rolename: "{{service_name}}-{{operating_env}}-ThumbnailServiceExecutionRole"
+thumbnail_service_integration_rolename: "{{service_name}}-{{operating_env}}-ThumbnailServiceLoggingRole"
+thumbnail_service_policy: "{{ service_name }}-{{ operating_env }}-ThumbnailServicePolicy"
+thumbnail_service_tags: "Name={{ thumbnail_service_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
+thumbnail_service_env: "MEDIA_UPLOAD_BUCKET_NAME={{media_upload_bucket_name}};MEDIA_THUMBS_BUCKET_NAME={{media_thumbs_bucket_name}}"
+thumbnail_service_api_description: "Public facing API for {{ thumbnail_service_lambda_name }}"
+thumbnail_service_memory_size: 256
+thumbnail_service_connection_timeout: 300
+thumbnail_service_runtime: "python3.7"
+thumbnail_service_binary_types: "'image/jpeg,image/png,*/*'"
+thumbnail_service_response_models: "image/jpeg=Empty;image/png=Empty"
+
 ## VPC Configuration
 vpc_name: "{{service_name}}-{{operating_env}}-vpc"
 vpc_subnets_private:
