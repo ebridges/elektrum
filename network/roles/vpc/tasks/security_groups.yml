@@ -15,7 +15,7 @@
 # register facts related to the security groups
 
 - name: look up private security group id
-  ec2_group_facts:
+  ec2_group_info:
     filters:
       "tag:Name": "{{ vpc_name }}-private-sg"
       "tag:Environment": "{{ operating_env }}"
@@ -25,7 +25,7 @@
 - debug: var=private_security_group_id
 
 - name: look up public security group id
-  ec2_group_facts:
+  ec2_group_info:
     filters:
       "tag:Name": "{{ vpc_name }}-public-sg"
       "tag:Environment": "{{ operating_env }}"
@@ -35,7 +35,7 @@
 - debug: var=public_security_group_id
 
 - name: look up nat security group id
-  ec2_group_facts:
+  ec2_group_info:
     filters:
       "tag:Name": "{{ vpc_name }}-nat-sg"
       "tag:Environment": "{{ operating_env }}"

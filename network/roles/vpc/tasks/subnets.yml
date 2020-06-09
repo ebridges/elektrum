@@ -26,7 +26,7 @@
 #   loop: "{{ vpc_facts_subnets.results }}"
 
 # register a fact with private subnet ids
-- ec2_vpc_subnet_facts:
+- ec2_vpc_subnet_info:
     filters:
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
@@ -42,7 +42,7 @@
 - debug: var=private_subnet_ids
 
 # register a fact with public subnet ids
-- ec2_vpc_subnet_facts:
+- ec2_vpc_subnet_info:
     filters:
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
