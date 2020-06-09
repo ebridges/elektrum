@@ -77,4 +77,4 @@ class ThumbnailServiceInfo:
         self.versionfile = f'{self.appdir}/version.txt'
         self.version = read_from_file(self.versionfile, dev, next, part)
         self.archive = f'{service()}-{environment()}-thumbnails-{self.version}.zip'
-        self.targets = [f'{self.builddir}/{self.archive}']
+        self.target = f'{self.builddir}/{self.archive}'

@@ -163,6 +163,8 @@ def task_deploy_application_service():
 @create_after(executed='config')
 def task_build_thumbnail_service():
     i = ThumbnailServiceInfo()
+    file_deps = [f for f in glob('functions/thumbnails/**', recursive=True) if isfile(f)]
+    file_deps.append(envfile())
     requirements = f'{i.appdir}/requirements.txt'
     args = {
         'PATH': environ['PATH'],
@@ -172,7 +174,8 @@ def task_build_thumbnail_service():
         'AWS_LAMBDA_ARCHIVE_ADDL_FILES': 'src/,$wkdir;requirements.txt,$wkdir;version.txt,$wkdir',
     }
     return {
-        'targets': i.targets,
+        'file_dep': file_deps,
+        'targets': [i.target],
         'actions': [
             f'etc/bin/poetry2pip.py --file "{i.appdir}/poetry.lock" --output {requirements}',
             CmdAction('lgw lambda-archive --verbose', env=args),
@@ -181,8 +184,7 @@ def task_build_thumbnail_service():
     }
 
 
-@create_after(executed='build_thumbnail_service')
-def task_deploy_application_service():
+def task_deploy_thumbnail_service():
     i = ThumbnailServiceInfo()
     args = {
         'PATH': environ['PATH'],
@@ -200,7 +202,7 @@ def task_deploy_application_service():
         'AWS_API_LAMBDA_INTEGRATION_ROLE': environ['THUMBNAIL_SERVICE_INTEGRATION_ROLE_ARN'],
         'AWS_API_NAME': environ['THUMBNAIL_SERVICE_API_NAME'],
         'AWS_API_DEPLOY_STAGE': environ['THUMBNAIL_SERVICE_API_DEPLOY_STAGE'],
-        'AWS_API_DOMAIN_NAME': environ['APPPICATION_SERVICE_API_DOMAIN_NAME'],
+        'AWS_API_DOMAIN_NAME': environ['THUMBNAIL_SERVICE_API_DOMAIN_NAME'],
         'AWS_ACM_CERTIFICATE_ARN': environ['THUMBNAIL_SERVICE_HTTPS_CERT_ARN'],
         'AWS_LAMBDA_TAGS': environ['THUMBNAIL_SERVICE_TAGS'],
         'AWS_LAMBDA_ENVIRONMENT': environ['THUMBNAIL_SERVICE_ENVIRONMENT'],
@@ -210,14 +212,15 @@ def task_deploy_application_service():
         'AWS_API_BINARY_TYPES': environ['THUMBNAIL_SERVICE_BINARY_TYPES'],
         'AWS_API_RESPONSE_MODELS': environ['THUMBNAIL_SERVICE_RESPONSE_MODELS'],
         'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': i.builddir,
+        'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
     }
     return {
-        'file_dep': ['build/lambda-bundle.zip', envfile()],
+        'file_dep': [i.target, envfile()],
         'actions': [
-            CmdAction(f'lgw lambda-deploy -v --lambda-file={i.builddir}/{i.archive}', env=args),
+            CmdAction(f'lgw lambda-deploy --verbose --lambda-file={i.target}', env=args),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
         'verbosity': 2,
-        'task_dep': ['build_application_service'],
+        'task_dep': ['build_thumbnail_service'],
     }
