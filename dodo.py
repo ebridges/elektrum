@@ -106,6 +106,8 @@ def task_build_application_service():
         'AWS_LAMBDA_ARCHIVE_CONTEXT_DIR': '.',  # needs to be cwd so that etc/env is availabe in docker context
         'AWS_LAMBDA_ARCHIVE_ADDL_FILES': f'{envfile()},$wkdir/.env;{i.versionfile},$wkdir;{i.requirements},$wkdir;{i.appdir}/,$wkdir',
         'AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES': 'postgresql,postgresql-devel',
+        'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': i.builddir,
+        'AWS_LAMBDA_ARCHIVE_BUNDLE_NAME': i.archive,
     }
     return {
         'file_dep': i.file_deps(),
