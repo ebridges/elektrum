@@ -57,12 +57,12 @@
         allowed_methods:
           - GET
 
-- name: Create bucket to archive media-processor executables.
+- name: Create bucket to archive binary artifacts.
   s3_bucket:
-    name: "{{ media_processor_artifact_bucket_name }}"
+    name: "{{ artifact_bucket_name }}"
     tags:
       Service: "{{ service_name }}"
-      Name: "{{ media_processor_artifact_bucket_name }}-bucket"
+      Name: "{{ artifact_bucket_name }}-bucket"
       Environment: "{{ operating_env }}"
 
 - name: Create bucket to host static files.
@@ -71,7 +71,7 @@
     policy: "{{ lookup('template','s3-static-file_bucket_name-policy.json') }}"
     tags:
       Service: "{{ service_name }}"
-      Name: "{{ media_processor_artifact_bucket_name }}-bucket"
+      Name: "{{ static_files_bucket_name }}-bucket"
       Environment: "{{ operating_env }}"
 
 - name: Add CORS configuration for static files bucket
