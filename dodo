@@ -26,4 +26,4 @@ export OPERATING_ENV
 export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools
 export PATH=${PATH}:${VIRTUAL_ENV}/bin
 
-doit ${@}
+doit --failure-verbosity=2 --process=4 --parallel-type=process ${@}
