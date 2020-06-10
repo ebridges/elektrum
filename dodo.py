@@ -150,7 +150,7 @@ def task_deploy_application_service():
     return {
         'file_dep': [i.target, envfile()],
         'actions': [
-            CmdAction(f'lgw lambda-deploy --verbose --lambda-file={i.target}', env=args),
+            CmdAction(f'lgw lambda-deploy --lambda-file={i.target}', env=args),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
