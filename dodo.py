@@ -1,30 +1,31 @@
 from os import environ
 from os.path import isfile
-from sys import path, stdout, stderr
+from sys import stdout, stderr
 from glob import glob
-from pathlib import Path
 
 from dotenv import load_dotenv
 from doit import create_after
 from doit.action import CmdAction
 
 from elektrum.doit.task_actions import (
-    action_config,
     envfile,
-    action_build_processor,
-    set_credentials,
     environment,
-    processor_archive,
-    processor_version,
-    application_version,
+    config_action,
+    set_credentials,
     ThumbnailServiceInfo,
+    ProcessorServiceInfo,
+    ApplicationServiceInfo,
 )
 
+VERBOSITY = 1
 
+
+# Hack
 if not isfile(envfile()):
-    actions = action_config()
+    actions = config_action()
     for action in actions:
         action.execute(out=stdout, err=stderr)
+
 
 load_dotenv(envfile())
 set_credentials('AWS_ACCESS_KEY_ID', 'aws_access_key')
@@ -33,36 +34,31 @@ set_credentials('AWS_SECRET_ACCESS_KEY', 'aws_secret_key')
 
 def task_config():
     """Compile network, generate configuration"""
-    env = envfile()
     file_deps = [f for f in glob('network/**', recursive=True) if isfile(f)]
-    action = action_config()
-    return {'targets': [env], 'file_dep': file_deps, 'actions': action, 'verbosity': 2}
-
-
-@create_after(executed='config')
-def task_build_processor_service():
-    """Builds zip artifact for processor"""
-    archive = processor_archive()
-    targets = f'functions/processor/build/archives/{archive}'
-    file_deps = [f for f in glob('functions/processor/src/main/**', recursive=True) if isfile(f)]
-    file_deps.append(envfile())
-    file_deps.append('functions/processor/version.txt')
-    action = action_build_processor()
+    action = config_action()
     return {
-        'targets': [targets],
+        'targets': [envfile()],
         'file_dep': file_deps,
         'actions': action,
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
+    }
+
+
+def task_build_processor_service():
+    """Builds zip artifact for processor"""
+    i = ProcessorServiceInfo()
+    return {
+        'targets': [i.target],
+        'file_dep': i.build_deps(),
+        'actions': i.build_action(),
+        'verbosity': VERBOSITY,
         'task_dep': ['config'],
     }
 
 
-@create_after(executed='build_processor_service')
 def task_deploy_processor_service():
     """Deploys processor as an AWS lambda function"""
-
-    archive = processor_archive()
-
+    i = ProcessorServiceInfo()
     args = {
         'PATH': environ['PATH'],
         'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -71,7 +67,7 @@ def task_deploy_processor_service():
         'AWS_LAMBDA_DESCRIPTION': environ['MEDIA_PROCESSOR_DESCRIPTION'],
         'AWS_LAMBDA_HANDLER': environ['MEDIA_PROCESSOR_LAMBDA_HANDLER'],
         'AWS_LAMBDA_ARCHIVE_BUCKET': environ['MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME'],
-        'AWS_LAMBDA_ARCHIVE_KEY': archive,
+        'AWS_LAMBDA_ARCHIVE_KEY': i.archive,
         'AWS_LAMBDA_VPC_SUBNETS': environ['MEDIA_PROCESSOR_SUBNET_IDS'],
         'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['MEDIA_PROCESSOR_SECURITY_GROUPS'],
         'AWS_LAMBDA_TAGS': environ['MEDIA_PROCESSOR_TAGS'],
@@ -81,61 +77,50 @@ def task_deploy_processor_service():
         'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['MEDIA_PROCESSOR_TIMEOUT'],
         'AWS_LAMBDA_RUNTIME': environ['MEDIA_PROCESSOR_RUNTIME'],
     }
-
     return {
-        'file_dep': [f'functions/processor/build/archives/{archive}', envfile()],
+        'file_dep': i.deploy_deps(),
         'actions': [CmdAction('lgw lambda-deploy --verbose', env=args)],
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
         'task_dep': ['build_processor_service'],
     }
 
 
 def task_config_processor_service():
     """Update lambda configuration"""
-    file_deps = [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
-    action = action_config('lam')
+    i = ProcessorServiceInfo()
+    action = config_action('lam')
     return {
         'task_dep': ['deploy_processor_service'],
-        'file_dep': file_deps,
+        'file_dep': i.config_deps(),
         'actions': action,
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
     }
 
 
 @create_after(executed='config')
 def task_build_application_service():
-    env = envfile()
-    application_dir = 'functions/application'
-    versionfile = f'{application_dir}/version.txt'
-    requirements = f'{application_dir}/requirements.txt'
+    i = ApplicationServiceInfo()
 
-    file_deps = [f for f in glob(f'{application_dir}/**', recursive=True) if isfile(f)]
-    file_deps.append(env)
-
-    targets = ['build/lambda-bundle.zip']
     args = {
         'PATH': environ['PATH'],
         'AWS_LAMBDA_ARCHIVE_CONTEXT_DIR': '.',  # needs to be cwd so that etc/env is availabe in docker context
-        'AWS_LAMBDA_ARCHIVE_ADDL_FILES': f'{env},$wkdir/.env;{versionfile},$wkdir;{requirements},$wkdir;{application_dir}/,$wkdir',
+        'AWS_LAMBDA_ARCHIVE_ADDL_FILES': f'{envfile()},$wkdir/.env;{i.versionfile},$wkdir;{i.requirements},$wkdir;{i.appdir}/,$wkdir',
         'AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES': 'postgresql,postgresql-devel',
     }
     return {
-        'file_dep': file_deps,
-        'targets': targets,
+        'file_dep': i.file_deps(),
+        'targets': [i.target],
         'actions': [
-            f'etc/bin/poetry2pip.py --file poetry.lock --output {requirements}',
+            f'etc/bin/poetry2pip.py --file poetry.lock --output {i.requirements}',
             CmdAction('lgw lambda-archive --verbose', env=args),
         ],
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
     }
 
 
 @create_after(executed='build_application_service')
 def task_deploy_application_service():
-    service = environ['SERVICE_NAME']
-    env = environment()
-    version = application_version()
-    archive_key = f'{service}-{env}-{version}.zip'
+    i = ApplicationServiceInfo()
     args = {
         'PATH': environ['PATH'],
         'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -144,7 +129,7 @@ def task_deploy_application_service():
         'AWS_LAMBDA_DESCRIPTION': environ['APPLICATION_SERVICE_DESCRIPTION'],
         'AWS_LAMBDA_HANDLER': environ['APPLICATION_SERVICE_LAMBDA_HANDLER'],
         'AWS_LAMBDA_ARCHIVE_BUCKET': environ['APPLICATION_SERVICE_ARTIFACT_BUCKET_NAME'],
-        'AWS_LAMBDA_ARCHIVE_KEY': archive_key,
+        'AWS_LAMBDA_ARCHIVE_KEY': i.archive,
         'AWS_LAMBDA_VPC_SUBNETS': environ['APPLICATION_SERVICE_SUBNET_IDS'],
         'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['APPLICATION_SERVICE_SECURITY_GROUPS'],
         'AWS_LAMBDA_EXECUTION_ROLE_ARN': environ['APPLICATION_SERVICE_EXECUTION_ROLE_ARN'],
@@ -161,15 +146,13 @@ def task_deploy_application_service():
         'AWS_API_DESCRIPTION': environ['APPLICATION_SERVICE_API_DESCRIPTION'],
     }
     return {
-        'file_dep': ['build/lambda-bundle.zip', envfile()],
+        'file_dep': [i.target, envfile()],
         'actions': [
-            CmdAction(
-                'lgw lambda-deploy --verbose --lambda-file=build/lambda-bundle.zip', env=args
-            ),
+            CmdAction(f'lgw lambda-deploy --verbose --lambda-file={i.target}', env=args),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
         'task_dep': ['build_application_service'],
     }
 
@@ -177,9 +160,6 @@ def task_deploy_application_service():
 @create_after(executed='config')
 def task_build_thumbnail_service():
     i = ThumbnailServiceInfo()
-    file_deps = [f for f in glob('functions/thumbnails/**', recursive=True) if isfile(f)]
-    file_deps.append(envfile())
-    requirements = f'{i.appdir}/requirements.txt'
     args = {
         'PATH': environ['PATH'],
         'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': i.builddir,
@@ -188,13 +168,13 @@ def task_build_thumbnail_service():
         'AWS_LAMBDA_ARCHIVE_ADDL_FILES': 'src/,$wkdir;requirements.txt,$wkdir;version.txt,$wkdir',
     }
     return {
-        'file_dep': file_deps,
+        'file_dep': i.build_deps(),
         'targets': [i.target],
         'actions': [
-            f'etc/bin/poetry2pip.py --file "{i.appdir}/poetry.lock" --output {requirements}',
+            f'etc/bin/poetry2pip.py --file "{i.appdir}/poetry.lock" --output {i.requirements}',
             CmdAction('lgw lambda-archive --verbose', env=args),
         ],
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
     }
 
 
@@ -229,12 +209,12 @@ def task_deploy_thumbnail_service():
         'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
     }
     return {
-        'file_dep': [i.target, envfile()],
+        'file_dep': i.deploy_deps(),
         'actions': [
             CmdAction(f'lgw lambda-deploy --verbose --lambda-file={i.target}', env=args),
             CmdAction('lgw gw-deploy --verbose', env=args),
             CmdAction('lgw domain-add --verbose', env=args),
         ],
-        'verbosity': 2,
+        'verbosity': VERBOSITY,
         'task_dep': ['build_thumbnail_service'],
     }
