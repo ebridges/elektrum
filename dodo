@@ -25,5 +25,6 @@ fi
 export OPERATING_ENV
 export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools
 export PATH=${PATH}:${VIRTUAL_ENV}/bin
+export ANSIBLE_FORCE_COLOR=1
 
 doit --failure-verbosity=2 --process=4 --parallel-type=process ${@}
