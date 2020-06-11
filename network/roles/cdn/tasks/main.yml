@@ -56,6 +56,6 @@
         ssl_support_method: sni-only
 
 - name: obtain cdn facts for application server
-  cloudfront_facts:
+  cloudfront_info:
     summary: true
   register: cdn_facts

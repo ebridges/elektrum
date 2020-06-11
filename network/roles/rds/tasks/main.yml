@@ -55,7 +55,7 @@
   retries: 20
   delay: 60
 
-- rds_instance_facts:
+- rds_instance_info:
     db_instance_identifier: "{{ rds_instance_name }}"
   register: rds
 
