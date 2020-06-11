@@ -4,7 +4,7 @@
 
 - set_fact: aws_account_id={{ caller_info.account }}
 
-- debug: var=caller_info
+- debug: var=caller_info verbosity=3
 
 - name: Add policy that allows this lambda to be invoked by the upload bucket in S3
   lambda_policy:
@@ -17,7 +17,7 @@
     source_account: "{{aws_account_id}}"
   register: lambda_policy
 
-- debug: var=lambda_policy
+- debug: var=lambda_policy verbosity=3
 
 - name: Link up image processor lambda with media upload bucket.
   s3_bucket_notification:
@@ -29,4 +29,4 @@
     lambda_function_arn: "arn:aws:lambda:{{aws_region}}:{{aws_account_id}}:function:{{ media_processor_lambda_name }}"
   register: bucket_notification
 
-- debug: var=bucket_notification
+- debug: var=bucket_notification verbosity=3

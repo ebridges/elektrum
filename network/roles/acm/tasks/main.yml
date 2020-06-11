@@ -10,7 +10,7 @@
   vars:
     query: "[? tags.Name==`{{ service_name }}-certificate`].certificate_arn"
 
-- debug: var=https_certificate_arn
+- debug: var=https_certificate_arn verbosity=3
 
 
 - name: set ARN for "{{ service_name }}-{{ operating_env }}-vpn"
@@ -19,7 +19,7 @@
   vars:
     query: "[? tags.Name==`{{ service_name }}-{{ operating_env }}-vpn`].certificate_arn"
 
-- debug: var=vpn_certificate_arn
+- debug: var=vpn_certificate_arn verbosity=3
 
 
 - name: set ARN of "{{ service_name }}-ca as fact
@@ -28,4 +28,4 @@
   vars:
     query: "[? tags.Name==`{{ service_name }}-ca`].certificate_arn"
 
-- debug: var=vpn_client_ca_certificate_arn
+- debug: var=vpn_client_ca_certificate_arn verbosity=3
