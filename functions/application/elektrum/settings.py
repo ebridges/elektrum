@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'date_dimension',
     'sharing',
     'request_id',
+    'elektrum',
 ]
 
 if os.environ.get('OPERATING_ENV') == 'local':
