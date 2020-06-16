@@ -22,9 +22,11 @@ if ! ((envs[(Ie)$OPERATING_ENV])); then
   exit 1
 fi
 
+root_dir='functions/application'
+
 export OPERATING_ENV
-export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools:$(pwd)/functions/application
+export PYTHONPATH="$(pwd)/${root_dir}:$PYTHONPATH"
 export PATH=${PATH}:${VIRTUAL_ENV}/bin
 export ANSIBLE_FORCE_COLOR=1
 
-doit --failure-verbosity=2 --process=4 --parallel-type=process ${@}
+doit --file=${root_dir}/elektrum/doit/dodo.py --dir=$(pwd) --failure-verbosity=2 --process=4 --parallel-type=process ${@}
