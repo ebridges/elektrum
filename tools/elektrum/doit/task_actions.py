@@ -4,7 +4,7 @@ from os.path import isfile
 from doit.action import CmdAction
 
 from elektrum.doit.version_info import read_from_file
-from elektrum.doit.util import slurp, get_encrypted_field, decrypt_value
+from elektrum.management.commands._util import slurp, get_encrypted_field, decrypt_value
 
 
 def service():

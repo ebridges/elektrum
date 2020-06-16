@@ -23,7 +23,7 @@ if ! ((envs[(Ie)$OPERATING_ENV])); then
 fi
 
 export OPERATING_ENV
-export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools
+export PYTHONPATH=${PYTHONPATH}:$(pwd)/tools:$(pwd)/functions/application
 export PATH=${PATH}:${VIRTUAL_ENV}/bin
 export ANSIBLE_FORCE_COLOR=1
 
