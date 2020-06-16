@@ -3,7 +3,7 @@ from glob import glob
 from os.path import isfile
 from doit.action import CmdAction
 
-from elektrum.doit.version_info import read_from_file
+from elektrum.build.version_info import read_from_file
 from elektrum.management.commands._util import slurp, get_encrypted_field, decrypt_value
 
 
@@ -87,10 +87,17 @@ class ApplicationServiceInfo(VersionInfo):
             'AWS_API_DESCRIPTION': environ['APPLICATION_SERVICE_API_DESCRIPTION'],
         }
 
-    def file_deps(self):
-        deps = [f for f in glob(f'{self.appdir}/**', recursive=True) if isfile(f)]
+    def build_deps(self):
+        included_dirs = (
+            '{base,date_dimension,elektrum,emailer,js,media_items,pages,sharing,status,users}'
+        )
+        deps = [f for f in glob(f'{self.appdir}/{included_dirs}/**', recursive=True) if isfile(f)]
         deps.append(envfile())
         deps.append(self.versionfile)
+        return deps
+
+    def static_deps(self):
+        deps = [f for f in glob(f'{self.appdir}/static/**', recursive=True) if isfile(f)]
         return deps
 
 

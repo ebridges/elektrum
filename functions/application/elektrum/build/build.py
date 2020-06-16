@@ -6,7 +6,7 @@ from glob import glob
 from dotenv import load_dotenv
 from doit.action import CmdAction
 
-from elektrum.doit.task_actions import (
+from elektrum.build.task_actions import (
     envfile,
     environment,
     config_action,
@@ -81,7 +81,7 @@ def task_config_processor_service():
 def task_build_application_service():
     i = ApplicationServiceInfo()
     return {
-        'file_dep': i.file_deps(),
+        'file_dep': i.build_deps(),
         'targets': [i.target],
         'actions': [
             f'etc/bin/poetry2pip.py --file poetry.lock --output {i.requirements}',
@@ -106,7 +106,12 @@ def task_deploy_application_service():
 
 
 def task_deploy_application_make_static():
-    return {'actions': [CmdAction('make static', cwd='functions/application')], 'verbosity': 2}
+    i = ApplicationServiceInfo()
+    return {
+        'actions': [CmdAction('make static', cwd='functions/application')],
+        'file_dep': i.static_deps(),
+        'verbosity': 2,
+    }
 
 
 def task_deploy_application_apply_migrations():
