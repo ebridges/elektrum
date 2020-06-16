@@ -105,6 +105,18 @@ def task_deploy_application_service():
     }
 
 
+def task_deploy_application_make_static():
+    return {'actions': [CmdAction('make static', cwd='functions/application')], 'verbosity': 2}
+
+
+def task_deploy_application_apply_migrations():
+    return {
+        'actions': [CmdAction('python manage.py migrate_remote', cwd='functions/application')],
+        'verbosity': 2,
+        'task_dep': ['deploy_application_service'],
+    }
+
+
 def task_build_thumbnail_service():
     i = ThumbnailServiceInfo()
     return {

@@ -4,7 +4,7 @@
 ###
 #######################################################################
 
-APPLICATION_DIR=./functions/application
+APPLICATION_DIR=.
 DZ_CODE=${APPLICATION_DIR}/js/vue-s3-dropzone/frontend
 JSLI_CODE=${APPLICATION_DIR}/js/javascript-load-image
 
