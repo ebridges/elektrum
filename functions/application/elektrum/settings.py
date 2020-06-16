@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'rest_framework.authtoken',
     'sslserver',
-    'meta',
     'base',
     'users',
     'pages',
