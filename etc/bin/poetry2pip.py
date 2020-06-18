@@ -30,7 +30,15 @@ def parse_project_file(file, include_dev_deps, excluded):
     for dep in doc['package']:
         name = dep['name']
         if dep['category'] in categories and name not in excludes:
-            deps[name] = dep['version']
+            deps[name] = [dep['version']]
+            if 'marker' in dep:
+                deps[name].append(dep['marker'])
+            if 'python-versions' in dep and dep['python-versions'] != '*':
+                pv = [x.strip() for x in dep['python-versions'].split(',')]
+                pvs = ['python-version {0}'.format(i) for i in pv]
+                pvpv = ' or '.join(pvs)
+                deps[name].append(pvpv)
+
     return deps
 
 
@@ -43,7 +51,7 @@ def app(project_file, include_dev_deps, excluded, outfile):
         out = stdout
 
     for dep in deps:
-        print('%s==%s' % (dep, deps[dep]), file=out)
+        print('%s==%s' % (dep, '; '.join(deps[dep])), file=out)
 
     if outfile:
         out.close()
