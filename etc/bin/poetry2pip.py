@@ -33,12 +33,6 @@ def parse_project_file(file, include_dev_deps, excluded):
             deps[name] = [dep['version']]
             if 'marker' in dep:
                 deps[name].append(dep['marker'])
-            if 'python-versions' in dep and dep['python-versions'] != '*':
-                pv = [x.strip() for x in dep['python-versions'].split(',')]
-                pvs = ['python_version {0}'.format(i) for i in pv]
-                pvpv = ' or '.join(pvs)
-                deps[name].append(pvpv)
-
     return deps
 
 
