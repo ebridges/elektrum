@@ -38,3 +38,5 @@ temp-requirements.txt
 # deployment
 project/test-db.sqlite3
 requirements.txt
+.doit.db
+build-tmp/

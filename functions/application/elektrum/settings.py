@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'rest_framework.authtoken',
     'sslserver',
-    'meta',
     'base',
     'users',
     'pages',
@@ -70,6 +69,7 @@ INSTALLED_APPS = [
     'date_dimension',
     'sharing',
     'request_id',
+    'elektrum',
 ]
 
 if os.environ.get('OPERATING_ENV') == 'local':

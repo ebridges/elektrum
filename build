@@ -1,0 +1,32 @@
+#!/bin/zsh
+
+set -e
+
+envs=(
+  development
+  staging
+  production
+)
+
+OPERATING_ENV=${1}
+
+if [ -z "${OPERATING_ENV}" ];
+then
+    OPERATING_ENV='development'
+else
+    shift
+fi
+
+if ! ((envs[(Ie)$OPERATING_ENV])); then
+  printf "Usage: ${0} ENV [TASKS]\n\tENVs: [development|staging|production]\n"
+  exit 1
+fi
+
+root_dir='functions/application'
+
+export OPERATING_ENV
+export PYTHONPATH="$(pwd)/${root_dir}:$PYTHONPATH"
+export PATH=${PATH}:${VIRTUAL_ENV}/bin
+export ANSIBLE_FORCE_COLOR=1
+
+doit --file=${root_dir}/elektrum/build/build.py --dir=$(pwd) --failure-verbosity=2 --process=4 ${@}

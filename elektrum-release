@@ -157,7 +157,7 @@ function tag_release() {
 }
 
 function run_unit_tests() {
-    pushd project > /dev/null 2>&1
+    pushd functions/application > /dev/null 2>&1
     python manage.py test
     result=$?
     result=0

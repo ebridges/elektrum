@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from logging import debug, INFO, DEBUG, basicConfig
 import unittest
 
+from elektrum.management.commands._util import slurp
 
 basicConfig(level=INFO)
 
@@ -43,27 +44,43 @@ def next_dev_version(version, idx=1):
     return '.'.join(parts)
 
 
-def read_version(version_file):
-    with open(version_file) as f:
-        v = f.readline()
-        return v.strip()
+def read(version_file, dev=False, next=False, part=1):
+    version = slurp(version_file)
 
-
-def app(args):
-    debug(args)
-    version = args['version']
-
-    if args['dev'] and not args['next']:
+    if dev and not next:
         return curr_dev_version(version)
 
-    if args['dev'] and args['next']:
-        return next_dev_version(version, args['part'])
+    if dev and next:
+        return next_dev_version(version, part)
 
-    if not args['dev'] and not args['next']:
+    if not dev and not next:
         return curr_version(version)
 
-    if not args['dev'] and args['next']:
-        return next_version(version, args['part'])
+    if not dev and next:
+        return next_version(version, part)
+
+
+def read(version, args):
+    return read_version(version, args['dev'], args['next'], args['part'])
+
+
+def read_from_file(version_file, dev=False, next=False, part=1):
+    version = slurp(version_file)
+    return read_version(version, dev, next, part)
+
+
+def read_version(version, dev, next, part):
+    if dev and not next:
+        return curr_dev_version(version)
+
+    if dev and next:
+        return next_dev_version(version, part)
+
+    if not dev and not next:
+        return curr_version(version)
+
+    if not dev and next:
+        return next_version(version, part)
 
 
 def main(argv):
@@ -104,112 +121,124 @@ def main(argv):
     if args.verbose:
         basicConfig(level=DEBUG)
 
-    arg_dict = vars(args)
-
-    arg_dict['version'] = read_version(args.version_file)
-
-    version = app(arg_dict)
+    version = read_from_file(args.version_file, args['dev'], args['next'], args['part'])
 
     print(version)
 
 
 # To run tests:
-#    `python -m unittest read_version.py`
+#    `python -m unittest version_info.py`
 class TestStringMethods(unittest.TestCase):
     def test_curr_dev(self):
-        args = {'version': '0.36.dev0', 'dev': True, 'next': False, 'part': 1}
+        version = '0.36.dev0'
+        args = {'dev': True, 'next': False, 'part': 1}
         expected = '0.36.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_dev(self):
-        args = {'version': '0.36.dev0', 'dev': True, 'next': True, 'part': 1}
+        version = '0.36.dev0'
+        args = {'dev': True, 'next': True, 'part': 1}
         expected = '0.37.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def text_curr(self):
+        version = '0.36.dev0'
         args = {'version': '0.36.dev0', 'dev': False, 'next': False, 'part': 1}
         expected = '0.36'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next(self):
+        version = '0.36.dev0'
         args = {'version': '0.36.dev0', 'dev': False, 'next': True, 'part': 1}
         expected = '0.37'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_curr_dev_firstpart(self):
+        version = '0.36.dev0'
         args = {'version': '0.36.dev0', 'dev': True, 'next': False, 'part': 0}
         expected = '0.36.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_dev_firstpart(self):
+        version = '0.36.dev0'
         args = {'version': '0.36.dev0', 'dev': True, 'next': True, 'part': 0}
         expected = '1.36.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def text_curr_firstpart(self):
-        args = {'version': '0.36.dev0', 'dev': False, 'next': False, 'part': 0}
+        version = '0.36.dev0'
+        args = {'dev': False, 'next': False, 'part': 0}
         expected = '0.36'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_firstpart(self):
-        args = {'version': '0.36.dev0', 'dev': False, 'next': True, 'part': 0}
+        version = '0.36.dev0'
+        args = {'dev': False, 'next': True, 'part': 0}
         expected = '1.36'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_curr_dev_nondevversion(self):
-        args = {'version': '0.36', 'dev': True, 'next': False, 'part': 1}
+        version = '0.36'
+        args = {'dev': True, 'next': False, 'part': 1}
         expected = '0.36.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_dev_nondevversion(self):
-        args = {'version': '0.36', 'dev': True, 'next': True, 'part': 1}
+        version = '0.36'
+        args = {'dev': True, 'next': True, 'part': 1}
         expected = '0.37.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def text_curr_nondevversion(self):
-        args = {'version': '0.36', 'dev': False, 'next': False, 'part': 1}
+        version = '0.36'
+        args = {'dev': False, 'next': False, 'part': 1}
         expected = '0.36'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_nondevversion(self):
-        args = {'version': '0.36', 'dev': False, 'next': True, 'part': 1}
+        version = '0.36'
+        args = {'dev': False, 'next': True, 'part': 1}
         expected = '0.37'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_curr_dev_firstpart_nondevversion(self):
-        args = {'version': '0.36', 'dev': True, 'next': False, 'part': 0}
+        version = '0.36'
+        args = {'dev': True, 'next': False, 'part': 0}
         expected = '0.36.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_dev_firstpart_nondevversion(self):
-        args = {'version': '0.36', 'dev': True, 'next': True, 'part': 0}
+        version = '0.36'
+        args = {'dev': True, 'next': True, 'part': 0}
         expected = '1.36.dev0'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def text_curr_firstpart_nondevversion(self):
-        args = {'version': '0.36', 'dev': False, 'next': False, 'part': 0}
+        version = '0.36'
+        args = {'dev': False, 'next': False, 'part': 0}
         expected = '0.36'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
     def test_next_firstpart_nondevversion(self):
-        args = {'version': '0.36', 'dev': False, 'next': True, 'part': 0}
+        version = '0.36'
+        args = {'dev': False, 'next': True, 'part': 0}
         expected = '1.36'
-        actual = app(args)
+        actual = read(version, args)
         self.assertEqual(expected, actual)
 
 

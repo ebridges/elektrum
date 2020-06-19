@@ -1,5 +1,6 @@
 import os
 import logging
+from pathlib import Path
 
 DEBUG_ENVIRONMENT_LOADING_VAR = 'ELEKTRUM_DEBUG_ENV_LOADING'
 
@@ -24,9 +25,8 @@ def locate_env_file(start_dir=os.getcwd()):
         return location
 
     # check in parent, parent etc/env directory for `$OPERATING_ENV.env`
-    location = os.path.join(
-        os.path.dirname(start_dir), 'etc/env/%s.env' % os.getenv('OPERATING_ENV', DEFAULT_ENV)
-    )
+    grandparent = Path(start_dir).parents[1]
+    location = os.path.join(grandparent, 'etc/env/%s.env' % os.getenv('OPERATING_ENV', DEFAULT_ENV))
     logger.debug('Looking for env file in %s' % location)
     if os.path.isfile(location):
         logger.info('Located env file in %s' % location)
@@ -44,7 +44,8 @@ def resolve_version(start_dir=os.getcwd()):
         logger.info('Located version file in %s' % location)
         return location
 
-    location = os.path.join(os.path.dirname(start_dir), 'version.txt')
+    grandparent = Path(start_dir).parents[1]
+    location = os.path.join(grandparent, 'version.txt')
     logger.debug('Looking for version file in %s' % location)
     if os.path.isfile(location):
         logger.info('Located version file in %s' % location)

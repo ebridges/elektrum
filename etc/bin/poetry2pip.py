@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from sys import argv, stderr, exit
+from sys import argv, stdout, exit
 from pprint import pprint
 from argparse import ArgumentParser
 
@@ -30,14 +30,25 @@ def parse_project_file(file, include_dev_deps, excluded):
     for dep in doc['package']:
         name = dep['name']
         if dep['category'] in categories and name not in excludes:
-            deps[name] = dep['version']
+            deps[name] = [dep['version']]
+            if 'marker' in dep:
+                deps[name].append(dep['marker'])
     return deps
 
 
-def app(project_file, include_dev_deps, excluded):
+def app(project_file, include_dev_deps, excluded, outfile):
     deps = parse_project_file(project_file, include_dev_deps, excluded)
+
+    if outfile:
+        out = open(outfile, 'w')
+    else:
+        out = stdout
+
     for dep in deps:
-        print('%s==%s' % (dep, deps[dep]))
+        print('%s==%s' % (dep, '; '.join(deps[dep])), file=out)
+
+    if outfile:
+        out.close()
 
 
 def main(args):
@@ -60,9 +71,10 @@ def main(args):
         nargs='?',
         help='Whether to include development dependencies.',
     )
+    parser.add_argument('-o', '--output', required=False, help='Output location, default is stdout')
     args = parser.parse_args()
 
-    app(args.file, args.dev_deps, args.exclude)
+    app(args.file, args.dev_deps, args.exclude, args.output)
 
 
 if __name__ == '__main__':

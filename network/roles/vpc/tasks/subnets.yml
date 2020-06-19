@@ -26,7 +26,7 @@
 #   loop: "{{ vpc_facts_subnets.results }}"
 
 # register a fact with private subnet ids
-- ec2_vpc_subnet_facts:
+- ec2_vpc_subnet_info:
     filters:
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
@@ -34,15 +34,15 @@
         "tag:Environment": "{{ operating_env }}"
   register: private_subnet_facts
 
-- debug: var=private_subnet_facts
+- debug: var=private_subnet_facts verbosity=3
 
 - set_fact:
     private_subnet_ids: "{{ private_subnet_facts.subnets|map(attribute='subnet_id')|list }}"
 
-- debug: var=private_subnet_ids
+- debug: var=private_subnet_ids verbosity=3
 
 # register a fact with public subnet ids
-- ec2_vpc_subnet_facts:
+- ec2_vpc_subnet_info:
     filters:
         vpc-id: "{{ vpc_id }}"
         "tag:Service": "{{ service_name }}"
@@ -50,9 +50,9 @@
         "tag:Environment": "{{ operating_env }}"
   register: public_subnet_facts
 
-- debug: var=public_subnet_facts
+- debug: var=public_subnet_facts verbosity=3
 
 - set_fact:
     public_subnet_ids: "{{ public_subnet_facts.subnets|map(attribute='subnet_id')|list }}"
 
-- debug: var=public_subnet_ids
+- debug: var=public_subnet_ids verbosity=3

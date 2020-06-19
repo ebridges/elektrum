@@ -55,11 +55,11 @@
   retries: 20
   delay: 60
 
-- rds_instance_facts:
+- rds_instance_info:
     db_instance_identifier: "{{ rds_instance_name }}"
   register: rds
 
-- debug: var=rds
+- debug: var=rds verbosity=3
 
 # - name: enable iam authentication
 #   rds_instance:
@@ -86,9 +86,9 @@
 - set_fact:
     db_endpoint_url: "{{ rds.instances[0].endpoint.address }}"
 
-- debug: var=db_endpoint_url
+- debug: var=db_endpoint_url verbosity=3
 
 - set_fact:
     db_port_number: "{{ rds.instances[0].endpoint.port }}"
 
-- debug: var=db_port_number
+- debug: var=db_port_number verbosity=3
