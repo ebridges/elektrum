@@ -3,7 +3,7 @@ from django.views import View
 from django.db import connection
 from io import StringIO
 
-from meta.management.commands import createdb
+from elektrum.management.commands import create_initial_db
 from elektrum.log import getLogger
 
 
@@ -26,7 +26,7 @@ class Ok(View):
 class DBCreate(View):
     def get(self, request=None):
         output = StringIO()
-        command = createdb.Command(stdout=output, stderr=output)
+        command = create_initial_db.Command(stdout=output, stderr=output)
         command.handle(None, None)
         result = output.getvalue()
         logger = getLogger(__name__)
