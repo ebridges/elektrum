@@ -121,7 +121,7 @@ def main(argv):
     if args.verbose:
         basicConfig(level=DEBUG)
 
-    version = read_from_file(args.version_file, args['dev'], args['next'], args['part'])
+    version = read_from_file(args.version_file, args.dev, args.next, args.part)
 
     print(version)
 
