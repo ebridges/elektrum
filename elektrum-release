@@ -107,11 +107,8 @@ function deploy_version() {
         log "Switching to tagged version ${version}"
         git checkout --quiet ${version}
 
-        log "Build & deploy processor"
-        pushd processor && make all && popd
-
         log "Deploying application"
-        ./elektrum-deploy ${OPERATING_ENV}
+        ./build ${OPERATING_ENV}
 
         log "Finished deploying application, switching back to master."
         git checkout --quiet master
