@@ -2,9 +2,6 @@
 
 ## Unreleased
 
-
-## 0.53 (2020-06-19)
-
 - Add new build/deploy script
 - Add Django Admin commnds for configuring remote system.
 
