@@ -85,10 +85,10 @@ function setup_new_version() {
 
         log "Updating project version to next dev version: ${version}."
         set_project_version.py --file pyproject.toml --version ${version}
-        echo ${version} > version.txt
+        echo ${version} > functions/application/version.txt
 
         log "Commit updates to version"
-        git add pyproject.toml version.txt
+        git add pyproject.toml functions/application/version.txt
         git commit --quiet --gpg-sign --message "Setup next development version: ${version}"
 
         log "Setup of new version ${version} sucessful."
@@ -131,14 +131,14 @@ function tag_release() {
 
         log "Update version in project to ${version}"
         set_project_version.py --file pyproject.toml --version ${version}
-        echo ${version} > version.txt
+        echo ${version} > functions/application/version.txt
 
         log "Update change log version and add a new, empty unreleased section"
         VER=${version} perl -MPOSIX -pi.bak -le '$d=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($d\)/i' CHANGES.md
         rm CHANGES.md.bak
 
         log "Commit/tag updates to version & changelog"
-        git add pyproject.toml version.txt CHANGES.md > /dev/null 2>&1
+        git add pyproject.toml functions/application/version.txt CHANGES.md > /dev/null 2>&1
         git commit --quiet --gpg-sign --message "Release version ${version}"
         git tag --force --message "v${version}" --sign "${version}" > /dev/null 2>&1
 
