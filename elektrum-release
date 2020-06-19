@@ -103,7 +103,7 @@ function deploy_version() {
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        version=$(read_version.py)
+        version=$(functions/application/elektrum/build/version_info.py --version_file=functions/application/version.txt)
 
         log "Switching to tagged version ${version}"
         git checkout --quiet ${version}
