@@ -81,7 +81,7 @@ function setup_new_version() {
     read -n1 -rsp $'Press any key to continue with new version setup or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        version=$(read_version.py --dev --next)
+        version=$(functions/application/elektrum/build/version_info.py --dev --next --version_file=functions/application/version.txt)
 
         log "Updating project version to next dev version: ${version}."
         set_project_version.py --file pyproject.toml --version ${version}
