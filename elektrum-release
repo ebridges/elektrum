@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-PATH="etc/bin:${PATH}"
+export PATH="etc/bin:${PATH}"
+export PYTHONPATH="functions/application"
 
 function usage() {
     app=$1
