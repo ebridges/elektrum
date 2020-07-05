@@ -43,15 +43,15 @@ def task_config():
     }
 
 
-def task_build_processor_service():
-    """Builds zip artifact for processor"""
+def task_download_processor_service():
+    """Downloads zip artifact for processor"""
     i = ProcessorServiceInfo()
     return {
-        'targets': [i.target],
-        'file_dep': i.build_deps(),
-        'actions': i.build_action(),
-        'verbosity': VERBOSITY,
         'task_dep': ['config'],
+        'file_dep': i.download_deps(),
+        'actions': i.download_action(),
+        'targets': [i.target],
+        'verbosity': VERBOSITY,
     }
 
 
@@ -59,10 +59,10 @@ def task_deploy_processor_service():
     """Deploys processor as an AWS lambda function"""
     i = ProcessorServiceInfo()
     return {
+        'task_dep': ['download_processor_service'],
         'file_dep': i.deploy_deps(),
-        'actions': [CmdAction('lgw lambda-deploy --verbose', env=i.deploy_args)],
+        'actions': i.deploy_action(),
         'verbosity': VERBOSITY,
-        'task_dep': ['build_processor_service'],
     }
 
 

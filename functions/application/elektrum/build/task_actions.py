@@ -1,7 +1,9 @@
-from os import environ
+from os import environ, makedirs
+from os.path import exists
 from glob import glob
 from os.path import isfile
 from doit.action import CmdAction
+from requests.api import get
 
 from elektrum.build.version_info import read_from_file
 from elektrum.management.commands._util import slurp, get_encrypted_field, decrypt_value
@@ -36,6 +38,23 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
             cwd='network',
         )
     ]
+
+
+def download_github_release(token, project, version, dest):
+    h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
+    r = get(f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}', headers=h)
+    content = r.json()
+    asset_url = content['assets'][0]['url']
+
+    h['Accept'] = 'application/octet-stream'
+    print(f'downloading from {asset_url}')
+    r = get(asset_url, headers=h, allow_redirects=True, stream=True)
+    chunk_size = 256
+    with open(dest, 'wb') as fd:
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            fd.write(chunk)
+    print(f'downloaded to {dest}')
+    return True
 
 
 class VersionInfo(object):
@@ -101,16 +120,14 @@ class ApplicationServiceInfo(VersionInfo):
         return deps
 
 
-class ProcessorServiceInfo(VersionInfo):
-    def __init__(self, dev=True, next=False, part=1):
-        self.dev = dev
-        self.next = next
-        self.part = part
-        self.builddir = './build-tmp'
-        self.appdir = 'functions/processor'
-        self.versionfile = f'{self.appdir}/version.txt'
-        self.archive = f'{service()}-{environment()}-processor-{self.version()}.zip'
-        self.target = f'{self.appdir}/build/archives/{self.archive}'
+class ProcessorServiceInfo:
+    def __init__(self):
+        self.version = '1.0.5'
+        self.name = f'{service()}-processor'
+        self.downloaddir = f'./build-tmp/{self.name}'
+        self.archive = f'{self.name}-{self.version}.zip'
+        self.target = f'{self.downloaddir}/{self.archive}'
+        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -130,30 +147,34 @@ class ProcessorServiceInfo(VersionInfo):
             'AWS_LAMBDA_RUNTIME': environ['MEDIA_PROCESSOR_RUNTIME'],
         }
 
-    def build_deps(self):
-        deps = [f for f in glob(f'{self.appdir}/src/main/**', recursive=True) if isfile(f)]
-        deps.append(envfile())
-        deps.append(self.versionfile)
-        return deps
+        if not exists(self.downloaddir):
+            makedirs(self.downloaddir)
+
+    def download_deps(self):
+        return [envfile()]
 
     def deploy_deps(self):
-        return [f'{self.appdir}/build/archives/{self.archive}', envfile()]
+        return [self.target, envfile()]
 
     def config_deps(self):
         return [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
 
-    def build_action(self):
-        bucket = environ.get('MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME')
-        archive_folder = f'{self.appdir}/build/archives'
-        src_archive = f'{service()}-processor-{self.version()}.zip'
+    def download_action(self):
+        bucket = self.deploy_args['AWS_LAMBDA_ARCHIVE_BUCKET']
 
         return [
-            CmdAction(f'./gradlew -PprojVersion={self.version()} buildZip', cwd=self.appdir),
-            CmdAction(f'mv {archive_folder}/{src_archive} {archive_folder}/{self.archive}'),
+            (
+                download_github_release,
+                [self.github_auth_token, self.name, self.version, self.target],
+                {},
+            ),
             CmdAction(
-                f'aws s3 sync {archive_folder} s3://{bucket}/ --exclude "*" --include {self.archive}'
+                f'aws s3 sync {self.downloaddir} s3://{bucket}/ --exclude "*" --include {self.archive}'
             ),
         ]
+
+    def deploy_action(self):
+        return [CmdAction('lgw lambda-deploy --verbose', env=self.deploy_args)]
 
 
 class ThumbnailServiceInfo(VersionInfo):
