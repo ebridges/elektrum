@@ -41,19 +41,23 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
 
 
 def download_github_release(token, project, version, dest):
-    h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
-    r = get(f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}', headers=h)
-    content = r.json()
-    asset_url = content['assets'][0]['url']
+    if not exists(dest):
+        h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
+        download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
+        r = get(download_url, headers=h)
+        content = r.json()
+        asset_url = content['assets'][0]['url']
 
-    h['Accept'] = 'application/octet-stream'
-    print(f'downloading from {asset_url}')
-    r = get(asset_url, headers=h, allow_redirects=True, stream=True)
-    chunk_size = 256
-    with open(dest, 'wb') as fd:
-        for chunk in r.iter_content(chunk_size=chunk_size):
-            fd.write(chunk)
-    print(f'downloaded to {dest}')
+        h['Accept'] = 'application/octet-stream'
+        print(f'Downloading from {asset_url}')
+        r = get(asset_url, headers=h, allow_redirects=True, stream=True)
+        chunk_size = 256
+        with open(dest, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                fd.write(chunk)
+        print(f'Release archive successfully downloaded to {dest}')
+    else:
+        print(f'Release archive already downloaded locally.  Remove {dest} to redownload.')
     return True
 
 
