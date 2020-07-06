@@ -128,7 +128,7 @@ class ProcessorServiceInfo:
         self.archive = f'{self.name}-{self.version}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
-        self.deploy_args = {
+        self.install_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
             'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
@@ -150,17 +150,11 @@ class ProcessorServiceInfo:
         if not exists(self.downloaddir):
             makedirs(self.downloaddir)
 
-    def download_deps(self):
+    def install_deps(self):
         return [envfile()]
 
-    def deploy_deps(self):
-        return [self.target, envfile()]
-
-    def config_deps(self):
-        return [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
-
-    def download_action(self):
-        bucket = self.deploy_args['AWS_LAMBDA_ARCHIVE_BUCKET']
+    def install_action(self):
+        bucket = self.install_args['AWS_LAMBDA_ARCHIVE_BUCKET']
 
         return [
             (
@@ -171,10 +165,19 @@ class ProcessorServiceInfo:
             CmdAction(
                 f'aws s3 sync {self.downloaddir} s3://{bucket}/ --exclude "*" --include {self.archive}'
             ),
+            CmdAction(
+                f'lgw lambda-deploy --verbose --lambda-file={self.target}', env=self.install_args
+            ),
         ]
 
-    def deploy_action(self):
-        return [CmdAction('lgw lambda-deploy --verbose', env=self.deploy_args)]
+    def install_target(self):
+        return [self.target]
+
+    def config_deps(self):
+        return [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
+
+    def config_action(self):
+        return config_action('lam')
 
 
 class ThumbnailServiceInfo(VersionInfo):

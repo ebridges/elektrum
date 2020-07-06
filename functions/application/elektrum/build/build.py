@@ -43,37 +43,25 @@ def task_config():
     }
 
 
-def task_download_processor_service():
-    """Downloads zip artifact for processor"""
+def task_install_processor_service():
+    """Download, install, & config processor as a lambda"""
     i = ProcessorServiceInfo()
     return {
         'task_dep': ['config'],
-        'file_dep': i.download_deps(),
-        'actions': i.download_action(),
-        'targets': [i.target],
-        'verbosity': VERBOSITY,
-    }
-
-
-def task_deploy_processor_service():
-    """Deploys processor as an AWS lambda function"""
-    i = ProcessorServiceInfo()
-    return {
-        'task_dep': ['download_processor_service'],
-        'file_dep': i.deploy_deps(),
-        'actions': i.deploy_action(),
-        'verbosity': VERBOSITY,
+        'file_dep': i.install_deps(),
+        'actions': i.install_action(),
+        'verbosity': 2,
+        'targets': i.install_target(),
     }
 
 
 def task_config_processor_service():
     """Update lambda configuration"""
     i = ProcessorServiceInfo()
-    action = config_action('lam')
     return {
-        'task_dep': ['deploy_processor_service'],
+        'task_dep': ['install_processor_service'],
         'file_dep': i.config_deps(),
-        'actions': action,
+        'actions': i.config_action(),
         'verbosity': VERBOSITY,
     }
 
