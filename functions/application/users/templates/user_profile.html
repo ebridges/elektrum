@@ -45,7 +45,7 @@
       -H 'Authorization: Bearer {{ token }}' \
       -X POST \
       -F 'mime_type=image/jpeg' \
-      {{ request.scheme }}://{{ request.get_host }}{{ request.port }}/{% url upload-request-api %}
+      {{ request.scheme }}://{{ request.get_host }}{{ request.port }}/{% url 'upload-request-api' %}
     </td>
   </tr>
   <tr>
