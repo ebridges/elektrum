@@ -111,10 +111,27 @@ class ApplicationServiceInfo(VersionInfo):
         }
 
     def build_deps(self):
-        included_dirs = (
-            '{base,date_dimension,elektrum,emailer,js,media_items,pages,sharing,status,users}'
-        )
-        deps = [f for f in glob(f'{self.appdir}/{included_dirs}/**', recursive=True) if isfile(f)]
+        included_dirs = [
+            'base',
+            'date_dimension',
+            'elektrum',
+            'emailer',
+            'js',
+            'media_items',
+            'pages',
+            'sharing',
+            'status',
+            'users',
+        ]
+        deps = []
+        for d in included_dirs:
+            deps.extend(
+                [
+                    f
+                    for f in glob(f'{self.appdir}/{d}/**', recursive=True)
+                    if isfile(f) and not f.endswith('.pyc')
+                ]
+            )
         deps.append(envfile())
         deps.append(self.versionfile)
         return deps
