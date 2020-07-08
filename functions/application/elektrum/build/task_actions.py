@@ -143,7 +143,7 @@ class ApplicationServiceInfo(VersionInfo):
 
 class ProcessorServiceInfo:
     def __init__(self):
-        self.version = '1.0.5'
+        self.version = '1.0.6'
         self.name = f'{service()}-processor'
         self.downloaddir = f'./build-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version}.zip'
