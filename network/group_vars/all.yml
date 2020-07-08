@@ -55,7 +55,7 @@ media_processor_description: "Processes media uploaded to {{service_name}}"
 media_processor_rolename: "{{service_name}}-{{operating_env}}-MediaProcessorRole"
 media_processor_policy: "{{ service_name }}-{{ operating_env }}-MediaProcessorPolicy"
 media_processor_connection_timeout: 300
-media_processor_memory_size: 256
+media_processor_memory_size: 512
 media_processor_tags: "Name={{ media_processor_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
 media_processor_runtime: "java11"
 media_processor_subnet_ids: "{{ private_subnet_ids|join(',') }}"
