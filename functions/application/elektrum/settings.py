@@ -258,7 +258,7 @@ SECURE_HSTS_PRELOAD = True
 REQUEST_ID_HEADER = None
 
 sentry_sdk.init(
-    dsn=os.environ['APPLICATION_SERVICE_MONITORING_DSN'],
+    dsn=os.environ.get('APPLICATION_SERVICE_MONITORING_DSN'),
     integrations=[DjangoIntegration()],
     release=f'{APP_VERSION_NUMBER}',
     # If you wish to associate users to errors (assuming you are using
