@@ -1,12 +1,16 @@
 from os import environ, makedirs
-from os.path import exists
 from glob import glob
-from os.path import isfile
+from os.path import isfile, exists
 from doit.action import CmdAction
-from requests.api import get
 
 from elektrum.build.version_info import read_from_file
-from elektrum.management.commands._util import slurp, get_encrypted_field, decrypt_value
+from elektrum.build_util import (
+    download_github_release,
+    slurp,
+    get_encrypted_field,
+    decrypt_value,
+    ELEKTRUM_PROCESSOR_VERSION,
+)
 
 
 def service():
@@ -38,27 +42,6 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
             cwd='network',
         )
     ]
-
-
-def download_github_release(token, project, version, dest):
-    if not exists(dest):
-        h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
-        download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
-        r = get(download_url, headers=h)
-        content = r.json()
-        asset_url = content['assets'][0]['url']
-
-        h['Accept'] = 'application/octet-stream'
-        print(f'Downloading from {asset_url}')
-        r = get(asset_url, headers=h, allow_redirects=True, stream=True)
-        chunk_size = 256
-        with open(dest, 'wb') as fd:
-            for chunk in r.iter_content(chunk_size=chunk_size):
-                fd.write(chunk)
-        print(f'Release archive successfully downloaded to {dest}')
-    else:
-        print(f'Release archive already downloaded locally.  Remove {dest} to redownload.')
-    return True
 
 
 class VersionInfo(object):
@@ -143,7 +126,7 @@ class ApplicationServiceInfo(VersionInfo):
 
 class ProcessorServiceInfo:
     def __init__(self):
-        self.version = '1.0.6'
+        self.version = ELEKTRUM_PROCESSOR_VERSION
         self.name = f'{service()}-processor'
         self.downloaddir = f'./build-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version}.zip'

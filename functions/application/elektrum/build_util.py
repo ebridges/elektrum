@@ -1,9 +1,34 @@
 from base64 import b64decode
+from os.path import exists
+from requests.api import get
 
 from ansible.parsing.vault import VaultLib, VaultSecret
 import boto3
 
 VAULT_ID = 'default'
+
+ELEKTRUM_PROCESSOR_VERSION = '1.0.6'
+
+
+def download_github_release(token, project, version, dest):
+    if not exists(dest):
+        h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
+        download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
+        r = get(download_url, headers=h)
+        content = r.json()
+        asset_url = content['assets'][0]['url']
+
+        h['Accept'] = 'application/octet-stream'
+        print(f'Downloading from {asset_url}')
+        r = get(asset_url, headers=h, allow_redirects=True, stream=True)
+        chunk_size = 256
+        with open(dest, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                fd.write(chunk)
+        print(f'Release archive successfully downloaded to {dest}')
+    else:
+        print(f'Release archive already downloaded locally.  Remove {dest} to redownload.')
+    return True
 
 
 def decrypt_value(passwd, encrypted_val):
