@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPERATING_ENV: ci
+      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       max-parallel: 4
       matrix:
