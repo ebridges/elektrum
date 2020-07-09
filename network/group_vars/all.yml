@@ -59,9 +59,7 @@ media_processor_memory_size: 512
 media_processor_tags: "Name={{ media_processor_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
 media_processor_runtime: "java11"
 media_processor_subnet_ids: "{{ private_subnet_ids|join(',') }}"
-media_processor_monitoring_dsn: ""
-media_processor_env: "DB_JDBC_URL=jdbc:postgresql://{{ db_endpoint_url }}:{{ db_port_number }}/{{ rds_database_name }};DB_USERNAME={{ rds_master_username }};DB_PASSWORD={{ rds_master_password }};AWS_UPLOAD_BUCKET_NAME={{ media_upload_bucket_name }};SENTRY_DSN={{media_processor_monitoring_dsn }};OPERATING_ENV={{ operating_env }}"
-
+media_processor_env: "DB_JDBC_URL=jdbc:postgresql://{{ db_endpoint_url }}:{{ db_port_number }}/{{ rds_database_name }};DB_USERNAME={{ rds_master_username }};DB_PASSWORD={{ rds_master_password }};AWS_UPLOAD_BUCKET_NAME={{ media_upload_bucket_name }};SENTRY_DSN={{ media_processor_monitoring_dsn }};OPERATING_ENV={{ operating_env }}"
 
 ## Lambda deployment & config for Application Service (i.e. Django app)
 application_service_lambda_name: "{{ service_name }}-{{ operating_env }}-application"
@@ -77,7 +75,6 @@ application_service_env: "DJANGO_LOG_LEVEL=INFO"
 application_service_runtime: "python3.7"
 application_service_subnet_ids: "{{ private_subnet_ids|join(',') }}"
 application_service_api_description: "Public facing API for {{ application_service_lambda_name }}"
-application_service_monitoring_dsn: ""
 
 ## Lambda deployment & config for Thumbnail Service
 thumbnail_service_lambda_name: "{{ service_name }}-{{ operating_env }}-thumbnails"
@@ -94,7 +91,6 @@ thumbnail_service_connection_timeout: 300
 thumbnail_service_runtime: "python3.7"
 thumbnail_service_binary_types: "image/jpeg,image/png,*/*"
 thumbnail_service_response_models: "image/jpeg=Empty;image/png=Empty"
-thumbnail_service_monitoring_dsn: ""
 thumbnail_service_env: "MEDIA_UPLOAD_BUCKET_NAME={{media_upload_bucket_name}};MEDIA_THUMBS_BUCKET_NAME={{media_thumbnail_bucket_name}};SENTRY_DSN={{ thumbnail_service_monitoring_dsn }};OPERATING_ENV={{ operating_env }}"
 
 ## VPC Configuration
