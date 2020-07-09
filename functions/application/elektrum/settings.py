@@ -257,14 +257,15 @@ SECURE_HSTS_PRELOAD = True
 
 REQUEST_ID_HEADER = None
 
-sentry_sdk.init(
-    dsn=os.environ.get('APPLICATION_SERVICE_MONITORING_DSN'),
-    integrations=[DjangoIntegration()],
-    release=f'{APP_VERSION_NUMBER}',
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=False,
-    traces_sample_rate=0.50,
-    environment=OPERATING_ENV,
-    _experiments={'auto_enabling_integrations': True},
-)
+if not IN_TEST_MODE:
+    sentry_sdk.init(
+        dsn=os.environ.get('APPLICATION_SERVICE_MONITORING_DSN'),
+        integrations=[DjangoIntegration()],
+        release=f'{APP_VERSION_NUMBER}',
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=False,
+        traces_sample_rate=0.50,
+        environment=OPERATING_ENV,
+        _experiments={'auto_enabling_integrations': True},
+    )
