@@ -9,6 +9,3 @@
 [submodule "functions/thumbnails"]
 	path = functions/thumbnails
 	url = https://github.com/ebridges/thumbnailer.git
-[submodule "functions/processor"]
-	path = functions/processor
-	url = git@github.com:ebridges/elektrum-processor.git
