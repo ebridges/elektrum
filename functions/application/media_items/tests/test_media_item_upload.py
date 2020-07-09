@@ -1,6 +1,7 @@
-import os
+from os import environ, path, makedirs
 import re
 import subprocess
+import tempfile
 from shutil import copyfile
 from glob import glob
 from urllib.parse import urlparse
@@ -14,6 +15,7 @@ from assertpy import assert_that
 from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 from base.tests.util import match_image_key
+from elektrum.build_util import download_github_release, ELEKTRUM_PROCESSOR_VERSION
 
 
 @pytest.mark.django_db
@@ -27,7 +29,7 @@ def test_sign_upload_request_success(authenticated_client, img, env):
         remote_file = mock_upload(img['local_path'], env['remote_path'], image_key)
         assert_that(remote_file).exists()
 
-        invoke_processor(image_key)
+        invoke_processor(image_key, ELEKTRUM_PROCESSOR_VERSION)
         actual = MediaItem.objects.get(file_path=image_key)
         assert_processing(img, actual)
 
@@ -85,36 +87,20 @@ def upload_request(client, img):
 
 def mock_upload(local, remote_path, image_key):
     remote_file = '%s/%s' % (remote_path.name, image_key)
-    fqpathname = os.path.dirname(remote_file)
-    os.makedirs(fqpathname)
+    fqpathname = path.dirname(remote_file)
+    makedirs(fqpathname)
     copyfile(local, remote_file)
     return remote_file
 
 
-def invoke_processor(image_key):
-    build_clean_processor()
-    run_processor(image_key)
-
-
-def build_clean_processor():
-    cwd = processor_project_dir()
-    cmd = ['./gradlew', '--quiet', 'clean', 'fatJar']
-    exec_cmd(cwd, cmd)
-
-
-def run_processor(path):
-    cwd = processor_project_dir()
-    jar = '%s/build/libs/elektrum-processor*.jar' % cwd
-    jar = next(iter(glob(jar)), None)
-    assert_that(jar).is_not_none()
-    assert_that(jar).exists()
-    cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', jar, '-f', path]
-    exec_cmd(cwd, cmd)
-
-
-def exec_cmd(cwd, cmd):
-    subprocess.run(args=cmd, cwd=cwd, stderr=subprocess.STDOUT)
-
-
-def processor_project_dir():
-    return os.path.realpath('%s/../processor' % os.getcwd())
+def invoke_processor(image_key, processor_version):
+    with tempfile.TemporaryDirectory() as tempdir:
+        download_github_release(
+            environ['GITHUB_OAUTH_TOKEN'], 'elektrum-processor', processor_version, tempdir
+        )
+        jar = '%s/elektrum-processor*.jar' % tempdir
+        jar = next(iter(glob(jar)), None)
+        assert_that(jar).is_not_none()
+        assert_that(jar).exists()
+        cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', jar, '-f', path]
+        subprocess.run(args=cmd, stderr=subprocess.STDOUT)
