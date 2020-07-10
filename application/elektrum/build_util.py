@@ -1,4 +1,5 @@
 from base64 import b64decode
+from os import stat
 from os.path import exists
 from requests.api import get
 
@@ -7,28 +8,39 @@ import boto3
 
 VAULT_ID = 'default'
 
-ELEKTRUM_PROCESSOR_VERSION = '1.0.6'
+ELEKTRUM_PROCESSOR_VERSION = '1.1.1'
 
 
-def download_github_release(token, project, version, dest):
-    if not exists(dest):
+def download_github_release(token, project, version, dest, content_type='application/zip'):
+    if exists(dest) and stat(dest).st_size > 0:
+        print(f'Release archive already downloaded locally.  Remove {dest} to redownload.')
+    else:
         h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
         download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
         r = get(download_url, headers=h)
-        content = r.json()
-        asset_url = content['assets'][0]['url']
+
+        def lookup_url(content):
+            for asset in content['assets']:
+                if asset['content_type'] == content_type:
+                    return asset['url']
+
+        asset_url = lookup_url(r.json())
 
         h['Accept'] = 'application/octet-stream'
         print(f'Downloading from {asset_url}')
-        r = get(asset_url, headers=h, allow_redirects=True, stream=True)
-        chunk_size = 256
-        with open(dest, 'wb') as fd:
-            for chunk in r.iter_content(chunk_size=chunk_size):
-                fd.write(chunk)
+        download_from_url(asset_url, dest, headers=h)
         print(f'Release archive successfully downloaded to {dest}')
-    else:
-        print(f'Release archive already downloaded locally.  Remove {dest} to redownload.')
+
+    # needed by pydoit
     return True
+
+
+def download_from_url(url, file, headers={}, allow_redirects=True, stream=True, chunk_size=256):
+    r = get(url, headers=headers, allow_redirects=allow_redirects, stream=stream)
+    with open(file, 'wb') as fd:
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            fd.write(chunk)
+    return file
 
 
 def decrypt_value(passwd, encrypted_val):
