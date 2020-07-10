@@ -96,7 +96,7 @@ def task_deploy_application_service():
 def task_deploy_application_make_static():
     i = ApplicationServiceInfo()
     return {
-        'actions': [CmdAction('make static', cwd='functions/application')],
+        'actions': [CmdAction('make static', cwd='application')],
         'file_dep': i.static_deps(),
         'verbosity': 2,
     }
@@ -104,7 +104,7 @@ def task_deploy_application_make_static():
 
 def task_deploy_application_apply_migrations():
     return {
-        'actions': [CmdAction('python manage.py migrate_remote', cwd='functions/application')],
+        'actions': [CmdAction('python manage.py migrate_remote', cwd='application')],
         'verbosity': 2,
         'task_dep': ['deploy_application_service'],
     }

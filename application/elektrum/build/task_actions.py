@@ -55,7 +55,7 @@ class ApplicationServiceInfo(VersionInfo):
         self.next = next
         self.part = part
         self.builddir = './build-tmp'
-        self.appdir = 'functions/application'
+        self.appdir = 'application'
         self.versionfile = f'{self.appdir}/version.txt'
         self.requirements = f'{self.appdir}/requirements.txt'
         self.archive = f'{service()}-{environment()}-application-{self.version()}.zip'

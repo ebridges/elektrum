@@ -22,7 +22,7 @@ if ! ((envs[(Ie)$OPERATING_ENV])); then
   exit 1
 fi
 
-root_dir='functions/application'
+root_dir='application'
 
 export OPERATING_ENV
 export PYTHONPATH="$(pwd)/${root_dir}:$PYTHONPATH"
