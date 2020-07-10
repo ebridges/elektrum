@@ -104,5 +104,5 @@ def invoke_processor(image_key, version):
         content_type = 'application/java-archive'
         download_github_release(token, 'elektrum-processor', version, temp.name, content_type)
         assert_that(temp.name).exists() and assert_that(stat(temp.name).st_size).is_positive()
-        cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', jar, '-f', path]
+        cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', temp.name, '-f', path]
         subprocess.run(args=cmd, stderr=subprocess.STDOUT)

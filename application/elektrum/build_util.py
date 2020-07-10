@@ -20,6 +20,9 @@ def download_github_release(token, project, version, dest, content_type='applica
         r = get(download_url, headers=h)
 
         def lookup_url(content):
+            from pprint import pprint
+
+            pprint(content)
             for asset in content['assets']:
                 if asset['content_type'] == content_type:
                     return asset['url']
