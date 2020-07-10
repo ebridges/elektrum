@@ -1,4 +1,4 @@
-from os import environ, path, makedirs
+from os import environ, path, makedirs, stat
 import re
 import subprocess
 import tempfile
@@ -16,8 +16,13 @@ from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 from base.tests.util import match_image_key
 from elektrum.build_util import download_github_release, ELEKTRUM_PROCESSOR_VERSION
+import sys
 
 
+@pytest.mark.skipif(
+    sys.platform == 'darwin',
+    reason='SQLite JDBC lib does not work on MacOS because its not signed.',
+)
 @pytest.mark.django_db
 def test_sign_upload_request_success(authenticated_client, img, env):
     with (env['remote_path']):
@@ -93,14 +98,11 @@ def mock_upload(local, remote_path, image_key):
     return remote_file
 
 
-def invoke_processor(image_key, processor_version):
-    with tempfile.TemporaryDirectory() as tempdir:
-        download_github_release(
-            environ['GITHUB_OAUTH_TOKEN'], 'elektrum-processor', processor_version, tempdir
-        )
-        jar = '%s/elektrum-processor*.jar' % tempdir
-        jar = next(iter(glob(jar)), None)
-        assert_that(jar).is_not_none()
-        assert_that(jar).exists()
+def invoke_processor(image_key, version):
+    with tempfile.NamedTemporaryFile(prefix='elektrum-processor', suffix=f'.jar') as temp:
+        token = environ['GITHUB_OAUTH_TOKEN']
+        content_type = 'application/java-archive'
+        download_github_release(token, 'elektrum-processor', version, temp.name, content_type)
+        assert_that(temp.name).exists() and assert_that(stat(temp.name).st_size).is_positive()
         cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', jar, '-f', path]
         subprocess.run(args=cmd, stderr=subprocess.STDOUT)
