@@ -25,7 +25,7 @@ def locate_env_file(start_dir=os.getcwd()):
         return location
 
     # check in parent, parent etc/env directory for `$OPERATING_ENV.env`
-    grandparent = Path(start_dir).parents[1]
+    grandparent = Path(start_dir).parents[0]
     location = os.path.join(grandparent, 'etc/env/%s.env' % os.getenv('OPERATING_ENV', DEFAULT_ENV))
     logger.debug('Looking for env file in %s' % location)
     if os.path.isfile(location):
