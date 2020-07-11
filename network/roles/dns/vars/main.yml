@@ -2,7 +2,7 @@
 ## queries the CNAME hosts and the CDN domain names in
 ## order to build a simplified map of cname : domain name.
 
-query: '{dn: ansible_facts.cloudfront.summary.distributions[*].Aliases[*], cdn: ansible_facts.cloudfront.summary.distributions[*].DomainName}'
+query: '{dn: cloudfront.summary.distributions[*].Aliases[*], cdn: cloudfront.summary.distributions[*].DomainName}'
 lists: '{{ cdn_facts | json_query(query) }}'
 
 # {

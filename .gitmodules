@@ -1,9 +1,9 @@
-[submodule "functions/application/js/vue-s3-dropzone"]
-	path = functions/application/js/vue-s3-dropzone
+[submodule "application/js/vue-s3-dropzone"]
+	path = application/js/vue-s3-dropzone
 	url = git@github.com:ebridges/vue-s3-dropzone.git
 
-[submodule "functions/application/js/javascript-load-image"]
-	path = functions/application/js/javascript-load-image
+[submodule "application/js/javascript-load-image"]
+	path = application/js/javascript-load-image
 	url = https://github.com/blueimp/JavaScript-Load-Image.git
 
 [submodule "functions/thumbnails"]

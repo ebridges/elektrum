@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export PATH="etc/bin:${PATH}"
-export PYTHONPATH="functions/application"
+export PYTHONPATH="application"
 
 function usage() {
     app=$1
@@ -82,14 +82,14 @@ function setup_new_version() {
     read -n1 -rsp $'Press any key to continue with new version setup or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        version=$(functions/application/elektrum/build/version_info.py --dev --next --version_file=functions/application/version.txt)
+        version=$(application/elektrum/build/version_info.py --dev --next --version_file=application/version.txt)
 
         log "Updating project version to next dev version: ${version}."
         set_project_version.py --file pyproject.toml --version ${version}
-        echo ${version} > functions/application/version.txt
+        echo ${version} > application/version.txt
 
         log "Commit updates to version"
-        git add pyproject.toml functions/application/version.txt
+        git add pyproject.toml application/version.txt
         git commit --quiet --gpg-sign --message "Setup next development version: ${version}"
 
         log "Setup of new version ${version} sucessful."
@@ -103,7 +103,7 @@ function deploy_version() {
     read -n1 -rsp $'Press any key to continue with deploy or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        version=$(functions/application/elektrum/build/version_info.py --version_file=functions/application/version.txt)
+        version=$(application/elektrum/build/version_info.py --version_file=application/version.txt)
 
         log "Switching to tagged version ${version}"
         git checkout --quiet ${version}
@@ -125,18 +125,18 @@ function tag_release() {
     read -n1 -rsp $'Press any key to continue with tagging release or Ctrl+C to exit...\n' key
 
     if [ "$key" = '' ]; then
-        version=$(functions/application/elektrum/build/version_info.py --version_file=functions/application/version.txt)
+        version=$(application/elektrum/build/version_info.py --version_file=application/version.txt)
 
         log "Update version in project to ${version}"
         set_project_version.py --file pyproject.toml --version ${version}
-        echo ${version} > functions/application/version.txt
+        echo ${version} > application/version.txt
 
         log "Update change log version and add a new, empty unreleased section"
         VER=${version} perl -MPOSIX -pi.bak -le '$d=strftime "%Y-%m-%d", localtime time; s/\#\# Unreleased/\#\# Unreleased\n\n\n\#\# $ENV{VER} \($d\)/i' CHANGES.md
         rm CHANGES.md.bak
 
         log "Commit/tag updates to version & changelog"
-        git add pyproject.toml functions/application/version.txt CHANGES.md > /dev/null 2>&1
+        git add pyproject.toml application/version.txt CHANGES.md > /dev/null 2>&1
         git commit --quiet --gpg-sign --message "Release version ${version}"
         git tag --force --message "v${version}" --sign "${version}" > /dev/null 2>&1
 
@@ -155,7 +155,7 @@ function tag_release() {
 }
 
 function run_unit_tests() {
-    pushd functions/application > /dev/null 2>&1
+    pushd application > /dev/null 2>&1
     python manage.py test
     result=$?
     result=0

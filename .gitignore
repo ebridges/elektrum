@@ -13,7 +13,6 @@ db.sqlite3
 sent_emails/
 
 # pyenv
-.python-version
 temp-requirements.txt
 
 # editor

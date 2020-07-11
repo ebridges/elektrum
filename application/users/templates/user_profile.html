@@ -1,0 +1,60 @@
+{% extends 'base_protected.html' %}
+
+{% load account %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block nav_block %}
+<h2 class='subtitle'>
+  <a href='{% url 'collections-view' user.id %}' class='subtitle_link'><span class="nav-home-icon">&#x2302;</span></a> /
+  User Profile: {% user_display user %}
+</h2>
+{% endblock %}
+
+{% block content %}
+<table class="metadata-table">
+  <colgroup>
+    <col class="metadata-table-column-one" />
+    <col class="metadata-table-column-two" />
+  </colgroup>
+  <tbody>
+    <tr><th>Member Since</td><td>{{ user.date_joined }}</td></tr>
+    <tr><th>First Name</td><td>{{ user.first_name }}</td></tr>
+    <tr><th>Last Name</td><td>{{ user.last_name }}</td></tr>
+    <tr><th>Email</td><td>{{ user.email }}</td></tr>
+    <tr><th>Username</td><td>{{ user.username }}</td></tr>
+    <tr><th>API Token</td><td>
+      {% if not token %}
+      <a href="{% url 'user-profile-token-create' owner_id=user.id %}">Generate Token</a>
+      {% else %}
+        <tt>{{ token }}</tt> <a style="text-decoration: none" href="{% url 'user-profile-token-reset' owner_id=user.id %}">&nbsp;&nbsp;[RESET TOKEN]</a>
+      {% endif %}
+    </td></tr>
+  </tbody>
+</table>
+{% if token %}
+<table class="metadata-table">
+  <tr>
+    <td colspan="2">Example:</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="white-space: pre; display: block; background-color: #eeeeee; font-family: monospace;">
+      curl \
+      --insecure \
+      --verbose \
+      -H 'Authorization: Bearer {{ token }}' \
+      -X POST \
+      -F 'mime_type=image/jpeg' \
+      {{ request.scheme }}://{{ request.get_host }}{{ request.port }}{% url 'upload-request-api' %}
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <ul>
+        <li>After running the above command, <tt>PUT</tt> your image file to the URL in the <tt>Location</tt> header as "<tt>Content Type: image/jpeg</tt>".</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+{% endif %}
+{% endblock %}

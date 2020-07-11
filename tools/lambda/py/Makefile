@@ -1,12 +1,15 @@
+include ../../../etc/env/development.env
+export
+
 function_name := TestLambda
 
 ## private-01, private-02 subnets
-vpc_private_subnet_ids := subnet-0c80b35d50028313e,subnet-0bc1c1490b0963464
+vpc_private_subnet_ids := "${MEDIA_PROCESSOR_SUBNET_IDS}"
 
 ## staging-elektrum-vpc-public-sg
-vpc_security_group_ids := sg-08499b1d7284cb6ac
+vpc_security_group_ids := "${MEDIA_PROCESSOR_SECURITY_GROUPS}"
 
-role_arn := arn:aws:iam::169122179348:role/elektrum-staging-ZappaLambdaExecutionRole
+role_arn := ${MEDIA_PROCESSOR_EXECUTION_ROLE_ARN}
 
 output := /dev/null
 

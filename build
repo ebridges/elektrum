@@ -22,11 +22,11 @@ if ! ((envs[(Ie)$OPERATING_ENV])); then
   exit 1
 fi
 
-root_dir='functions/application'
+root_dir='application'
 
 export OPERATING_ENV
 export PYTHONPATH="$(pwd)/${root_dir}:$PYTHONPATH"
 export PATH=${PATH}:${VIRTUAL_ENV}/bin
 export ANSIBLE_FORCE_COLOR=1
 
-doit --file=${root_dir}/elektrum/build/build.py --dir=$(pwd) --failure-verbosity=2 --process=4 ${@}
+doit --file=${root_dir}/elektrum/build/build.py --dir=$(pwd) --failure-verbosity=2 ${@}
