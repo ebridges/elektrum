@@ -8,7 +8,7 @@ import boto3
 
 VAULT_ID = 'default'
 
-ELEKTRUM_PROCESSOR_VERSION = '1.1.1'
+ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
 
 
 def download_github_release(token, project, version, dest, content_type='application/zip'):
