@@ -6,7 +6,7 @@ from doit.action import CmdAction
 from elektrum.build.version_info import read_from_file
 from elektrum.build_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
-ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 
 
@@ -123,10 +123,9 @@ class ApplicationServiceInfo(VersionInfo):
 
 class ProcessorServiceInfo:
     def __init__(self):
-        self.version = ELEKTRUM_PROCESSOR_VERSION
         self.name = f'{service()}-processor'
         self.downloaddir = f'./build-tmp/{self.name}'
-        self.archive = f'{self.name}-{self.version}.zip'
+        self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.install_args = {
@@ -151,6 +150,9 @@ class ProcessorServiceInfo:
         if not exists(self.downloaddir):
             makedirs(self.downloaddir)
 
+    def version(self):
+        return ELEKTRUM_PROCESSOR_VERSION[environment()]
+
     def install_deps(self):
         return [envfile()]
 
@@ -160,7 +162,7 @@ class ProcessorServiceInfo:
         return [
             (
                 download_github_release,
-                [self.github_auth_token, self.name, self.version, self.target],
+                [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
             CmdAction(

@@ -124,3 +124,8 @@ def task_deploy_thumbnail_service():
         'verbosity': 1,
         'uptodate': [result_dep('thumbnail_service_version')],
     }
+
+
+def task_processor_service_version():
+    i = ProcessorServiceInfo()
+    return {'actions': [environment, i.version], 'verbosity': 1}
