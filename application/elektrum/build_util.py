@@ -1,6 +1,8 @@
+from sys import stderr
 from base64 import b64decode
-from os import stat
-from os.path import exists
+from datetime import datetime
+from os import stat, makedirs
+from os.path import exists, dirname
 from requests.api import get
 
 from ansible.parsing.vault import VaultLib, VaultSecret
@@ -11,13 +13,24 @@ VAULT_ID = 'default'
 ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
 
 
+def now():
+    return datetime.now()
+
+
+def log(msg):
+    stderr.write(f'[{now()}] {msg}\n')
+
+
 def download_github_release(token, project, version, dest, content_type='application/zip'):
     if exists(dest) and stat(dest).st_size > 0:
-        print(f'Release archive already downloaded locally.  Remove {dest} to redownload.')
+        log(f'[WARN] Archive already downloaded. Remove [{dest}] to redownload.')
     else:
         h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
         download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
         r = get(download_url, headers=h)
+        if r.status_code != 200:
+            log(f'[ERROR] {download_url} returned {r.status_code}\n')
+            return False
 
         def lookup_url(content):
             from pprint import pprint
@@ -30,20 +43,27 @@ def download_github_release(token, project, version, dest, content_type='applica
         asset_url = lookup_url(r.json())
 
         h['Accept'] = 'application/octet-stream'
-        print(f'Downloading from {asset_url}')
+        log(f'[INFO] Downloading archive from [{asset_url}].')
         download_from_url(asset_url, dest, headers=h)
-        print(f'Release archive successfully downloaded to {dest}')
+        log(f'[INFO] Archive downloaded locally to [{dest}].')
 
     # needed by pydoit
     return True
 
 
 def download_from_url(url, file, headers={}, allow_redirects=True, stream=True, chunk_size=256):
+    ensure_dir(file)
     r = get(url, headers=headers, allow_redirects=allow_redirects, stream=stream)
     with open(file, 'wb') as fd:
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
     return file
+
+
+def ensure_dir(file):
+    dir = dirname(file)
+    if not exists(dir):
+        makedirs(dir)
 
 
 def decrypt_value(passwd, encrypted_val):
