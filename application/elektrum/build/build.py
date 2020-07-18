@@ -34,7 +34,9 @@ set_credentials('AWS_SECRET_ACCESS_KEY', 'aws_secret_key')
 
 def task_config():
     """Compile network, generate configuration"""
-    file_deps = [f for f in glob('network/**', recursive=True) if isfile(f)]
+    file_deps = [
+        f for f in glob('network/**', recursive=True) if isfile(f) and 'roles/lam' not in f
+    ]
     action = config_action()
     return {
         'targets': [envfile()],
