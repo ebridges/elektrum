@@ -4,14 +4,10 @@ from os.path import isfile, exists
 from doit.action import CmdAction
 
 from elektrum.build.version_info import read_from_file
-from elektrum.build_util import (
-    download_github_release,
-    slurp,
-    get_encrypted_field,
-    decrypt_value,
-    ELEKTRUM_PROCESSOR_VERSION,
-    ELEKTRUM_THUMBNAIL_VERSION,
-)
+from elektrum.build_util import download_github_release, slurp, get_encrypted_field, decrypt_value
+
+ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
+ELEKTRUM_THUMBNAIL_VERSION = '1.2.3'
 
 
 def service():

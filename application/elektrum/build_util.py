@@ -10,9 +10,6 @@ import boto3
 
 VAULT_ID = 'default'
 
-ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
-ELEKTRUM_THUMBNAIL_VERSION = '1.2.3'
-
 
 def now():
     return datetime.now()
