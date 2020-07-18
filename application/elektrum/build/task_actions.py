@@ -34,10 +34,11 @@ def set_credentials(var, key):
 def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     env = environment()
     return [
+        f'printf "[\e[31;1m§\e[0m] Updating configuration for targets [{tags}]\n" 1>&2',
         CmdAction(
             f'ansible-playbook --tags {tags} --inventory environments/{env} --vault-password-file environments/{env}-vault-password.txt site.yml',
             cwd='network',
-        )
+        ),
     ]
 
 
