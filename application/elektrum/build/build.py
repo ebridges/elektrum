@@ -113,7 +113,7 @@ def task_deploy_application_apply_migrations():
 
 def task_thumbnail_service_version():
     i = ThumbnailServiceInfo()
-    return {'actions': [i.version], 'verbosity': 1}
+    return {'actions': [environment, i.version], 'verbosity': 1}
 
 
 def task_deploy_thumbnail_service():

@@ -7,7 +7,7 @@ from elektrum.build.version_info import read_from_file
 from elektrum.build_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
 ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
-ELEKTRUM_THUMBNAIL_VERSION = '1.2.3'
+ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 
 
 def service():
@@ -185,7 +185,7 @@ class ThumbnailServiceInfo:
     def __init__(self):
         self.name = 'thumbnailer'
         self.builddir = f'./build-tmp/{self.name}'
-        self.archive = f'{service()}-{environment()}-thumbnails-{self.version()}.zip'
+        self.archive = f'{service()}-thumbnails-{self.version()}.zip'
         self.target = f'{self.builddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
@@ -218,7 +218,7 @@ class ThumbnailServiceInfo:
         }
 
     def version(self):
-        return ELEKTRUM_THUMBNAIL_VERSION
+        return ELEKTRUM_THUMBNAIL_VERSION[environment()]
 
     def deploy_deps(self):
         return [envfile()]
