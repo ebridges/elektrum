@@ -10,6 +10,7 @@ from elektrum.build_util import (
     get_encrypted_field,
     decrypt_value,
     ELEKTRUM_PROCESSOR_VERSION,
+    ELEKTRUM_THUMBNAIL_VERSION,
 )
 
 
@@ -184,24 +185,13 @@ class ProcessorServiceInfo:
         return config_action('lam')
 
 
-class ThumbnailServiceInfo(VersionInfo):
-    def __init__(self, dev=True, next=False, part=1):
-        self.dev = dev
-        self.next = next
-        self.part = part
-        self.builddir = './build-tmp'
-        self.appdir = 'functions/thumbnails'
-        self.versionfile = f'{self.appdir}/version.txt'
-        self.requirements = f'{self.appdir}/requirements.txt'
+class ThumbnailServiceInfo:
+    def __init__(self):
+        self.name = 'thumbnailer'
+        self.builddir = f'./build-tmp/{self.name}'
         self.archive = f'{service()}-{environment()}-thumbnails-{self.version()}.zip'
         self.target = f'{self.builddir}/{self.archive}'
-        self.build_args = {
-            'PATH': environ['PATH'],
-            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.builddir,
-            'AWS_LAMBDA_ARCHIVE_BUNDLE_NAME': self.archive,
-            'AWS_LAMBDA_ARCHIVE_CONTEXT_DIR': f'{self.appdir}/',  # trailing slash significant for populating docker image
-            'AWS_LAMBDA_ARCHIVE_ADDL_FILES': 'src/,$wkdir;requirements.txt,$wkdir;version.txt,$wkdir',
-        }
+        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],
@@ -231,11 +221,26 @@ class ThumbnailServiceInfo(VersionInfo):
             'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
         }
 
-    def build_deps(self):
-        deps = [f for f in glob(f'{self.appdir}/**', recursive=True) if isfile(f)]
-        deps.append(envfile())
-        deps.append(self.versionfile)
-        return deps
+    def version(self):
+        return ELEKTRUM_THUMBNAIL_VERSION
 
     def deploy_deps(self):
-        return [self.target, envfile()]
+        return [envfile()]
+
+    def deploy_actions(self):
+        gw_name = self.deploy_args['AWS_API_NAME']
+        dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
+        return [
+            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
+            (
+                download_github_release,
+                [self.github_auth_token, self.name, self.version(), self.target],
+                {},
+            ),
+            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] Deploying gateway [{gw_name}]\n" 1>&2',
+            CmdAction('lgw gw-deploy', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] Adding domain name [{dns_name}]\n" 1>&2',
+            CmdAction('lgw domain-add', env=self.deploy_args),
+        ]

@@ -5,6 +5,7 @@ from glob import glob
 
 from dotenv import load_dotenv
 from doit.action import CmdAction
+from doit.tools import result_dep
 
 from elektrum.build.task_actions import (
     envfile,
@@ -110,28 +111,16 @@ def task_deploy_application_apply_migrations():
     }
 
 
-def task_build_thumbnail_service():
+def task_thumbnail_service_version():
     i = ThumbnailServiceInfo()
-    return {
-        'file_dep': i.build_deps(),
-        'targets': [i.target],
-        'actions': [
-            f'etc/bin/poetry2pip.py --file "{i.appdir}/poetry.lock" --output {i.requirements}',
-            CmdAction('lgw lambda-archive --verbose', env=i.build_args),
-        ],
-        'verbosity': VERBOSITY,
-    }
+    return {'actions': [i.version], 'verbosity': 1}
 
 
 def task_deploy_thumbnail_service():
     i = ThumbnailServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
-        'actions': [
-            CmdAction(f'lgw lambda-deploy --verbose --lambda-file={i.target}', env=i.deploy_args),
-            CmdAction('lgw gw-deploy --verbose', env=i.deploy_args),
-            CmdAction('lgw domain-add --verbose', env=i.deploy_args),
-        ],
-        'verbosity': VERBOSITY,
-        'task_dep': ['build_thumbnail_service'],
+        'actions': i.deploy_actions(),
+        'verbosity': 1,
+        'uptodate': [result_dep('thumbnail_service_version')],
     }
