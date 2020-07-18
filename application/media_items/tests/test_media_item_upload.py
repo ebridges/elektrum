@@ -15,7 +15,8 @@ from assertpy import assert_that
 from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 from base.tests.util import match_image_key
-from elektrum.build_util import download_github_release, ELEKTRUM_PROCESSOR_VERSION
+from elektrum.build_util import download_github_release
+from elektrum.build.task_actions import ELEKTRUM_PROCESSOR_VERSION
 import sys
 
 
@@ -40,7 +41,8 @@ def test_sign_upload_request_success(authenticated_client, img, env):
         remote_file = mock_upload(img['local_path'], env['remote_path'], image_key)
         assert_that(remote_file).exists()
 
-        invoke_processor(image_key, ELEKTRUM_PROCESSOR_VERSION)
+        version = ELEKTRUM_PROCESSOR_VERSION['development']
+        invoke_processor(image_key, version)
         actual = MediaItem.objects.get(file_path=image_key)
         assert_processing(img, actual)
 
