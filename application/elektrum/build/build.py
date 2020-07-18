@@ -46,29 +46,6 @@ def task_config():
     }
 
 
-def task_install_processor_service():
-    """Download, install, & config processor as a lambda"""
-    i = ProcessorServiceInfo()
-    return {
-        'task_dep': ['config'],
-        'file_dep': i.install_deps(),
-        'actions': i.install_action(),
-        'verbosity': 2,
-        'targets': i.install_target(),
-    }
-
-
-def task_config_processor_service():
-    """Update lambda configuration"""
-    i = ProcessorServiceInfo()
-    return {
-        'task_dep': ['install_processor_service'],
-        'file_dep': i.config_deps(),
-        'actions': i.config_action(),
-        'verbosity': VERBOSITY,
-    }
-
-
 def task_build_application_service():
     i = ApplicationServiceInfo()
     return {
@@ -118,7 +95,7 @@ def task_thumbnail_service_version():
     return {'actions': [environment, i.version], 'verbosity': 1}
 
 
-def task_deploy_thumbnail_service():
+def task_thumbnail_service_deploy():
     i = ThumbnailServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
@@ -131,3 +108,24 @@ def task_deploy_thumbnail_service():
 def task_processor_service_version():
     i = ProcessorServiceInfo()
     return {'actions': [environment, i.version], 'verbosity': 1}
+
+
+def task_processor_service_deploy():
+    i = ProcessorServiceInfo()
+    return {
+        'file_dep': i.deploy_deps(),
+        'actions': i.deploy_actions(),
+        'verbosity': 1,
+        'uptodate': [result_dep('processor_service_version')],
+    }
+
+
+def task_processor_service_config():
+    """Update lambda configuration"""
+    i = ProcessorServiceInfo()
+    return {
+        'task_dep': ['processor_service_deploy'],
+        'file_dep': i.config_deps(),
+        'actions': i.config_action(),
+        'verbosity': VERBOSITY,
+    }

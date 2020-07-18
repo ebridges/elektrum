@@ -129,7 +129,7 @@ class ProcessorServiceInfo:
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
-        self.install_args = {
+        self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
             'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
@@ -154,28 +154,20 @@ class ProcessorServiceInfo:
     def version(self):
         return ELEKTRUM_PROCESSOR_VERSION[environment()]
 
-    def install_deps(self):
+    def deploy_deps(self):
         return [envfile()]
 
-    def install_action(self):
-        bucket = self.install_args['AWS_LAMBDA_ARCHIVE_BUCKET']
-
+    def deploy_actions(self):
         return [
+            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
-            CmdAction(
-                f'aws s3 sync {self.downloaddir} s3://{bucket}/ --exclude "*" --include {self.archive}'
-            ),
-            CmdAction(
-                f'lgw lambda-deploy --verbose --lambda-file={self.target}', env=self.install_args
-            ),
+            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
         ]
-
-    def install_target(self):
-        return [self.target]
 
     def config_deps(self):
         return [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
