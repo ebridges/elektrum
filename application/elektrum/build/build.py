@@ -20,7 +20,7 @@ from elektrum.build.task_actions import (
 VERBOSITY = 1
 
 
-# Hack
+# Hack @todo -- still needed?
 if not isfile(envfile()):
     actions = config_action()
     for action in actions:
