@@ -72,3 +72,10 @@ allow-prereleases = true
 [tool.poetry.dev-dependencies.ansible]
 git = "https://github.com/ansible/ansible.git"
 rev = "d77697e"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.55"
+tag_format = "v$version"
+version_files = ["pyproject.toml:version","version.txt"]
+changelog_file = "CHANGELOG.md"
