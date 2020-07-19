@@ -91,11 +91,13 @@ def task_deploy_application_apply_migrations():
 
 
 def task_thumbnail_service_version():
+    """Returns version of thumbnailer for current environment."""
     i = ThumbnailServiceInfo()
     return {'actions': [environment, i.version], 'verbosity': 1}
 
 
 def task_thumbnail_service_deploy():
+    """Deploys thumbnailer if version has been updated."""
     i = ThumbnailServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
@@ -106,11 +108,13 @@ def task_thumbnail_service_deploy():
 
 
 def task_processor_service_version():
+    """Returns version of processor for current environment."""
     i = ProcessorServiceInfo()
     return {'actions': [environment, i.version], 'verbosity': 1}
 
 
 def task_processor_service_deploy():
+    """Deploys processor if version has been updated."""
     i = ProcessorServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
@@ -121,7 +125,7 @@ def task_processor_service_deploy():
 
 
 def task_processor_service_config():
-    """Update lambda configuration"""
+    """Update lambda config to grant S3 bucket permission to exec processor."""
     i = ProcessorServiceInfo()
     return {
         'task_dep': ['processor_service_deploy'],
