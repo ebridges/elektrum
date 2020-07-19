@@ -179,9 +179,9 @@ class ProcessorServiceInfo:
 class ThumbnailServiceInfo:
     def __init__(self):
         self.name = 'thumbnailer'
-        self.builddir = f'./build-tmp/{self.name}'
+        self.downloaddir = f'./build-tmp/{self.name}'
         self.archive = f'{service()}-thumbnails-{self.version()}.zip'
-        self.target = f'{self.builddir}/{self.archive}'
+        self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
@@ -211,6 +211,9 @@ class ThumbnailServiceInfo:
             'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.builddir,
             'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
         }
+
+        if not exists(self.downloaddir):
+            makedirs(self.downloaddir)
 
     def version(self):
         return ELEKTRUM_THUMBNAIL_VERSION[environment()]
