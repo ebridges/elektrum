@@ -6,7 +6,7 @@ from doit.action import CmdAction
 from elektrum.build.version_info import read_from_file
 from elektrum.build_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
-ELEKTRUM_PROCESSOR_VERSION = '1.1.2'
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 
 
@@ -34,10 +34,11 @@ def set_credentials(var, key):
 def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     env = environment()
     return [
+        CmdAction(f'printf "[\e[31;1m§\e[0m] Updating configuration for targets [{tags}]\n" 1>&2'),
         CmdAction(
             f'ansible-playbook --tags {tags} --inventory environments/{env} --vault-password-file environments/{env}-vault-password.txt site.yml',
             cwd='network',
-        )
+        ),
     ]
 
 
@@ -123,13 +124,12 @@ class ApplicationServiceInfo(VersionInfo):
 
 class ProcessorServiceInfo:
     def __init__(self):
-        self.version = ELEKTRUM_PROCESSOR_VERSION
         self.name = f'{service()}-processor'
         self.downloaddir = f'./build-tmp/{self.name}'
-        self.archive = f'{self.name}-{self.version}.zip'
+        self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
-        self.install_args = {
+        self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
             'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
@@ -151,28 +151,23 @@ class ProcessorServiceInfo:
         if not exists(self.downloaddir):
             makedirs(self.downloaddir)
 
-    def install_deps(self):
+    def version(self):
+        return ELEKTRUM_PROCESSOR_VERSION[environment()]
+
+    def deploy_deps(self):
         return [envfile()]
 
-    def install_action(self):
-        bucket = self.install_args['AWS_LAMBDA_ARCHIVE_BUCKET']
-
+    def deploy_actions(self):
         return [
+            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, self.name, self.version, self.target],
+                [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
-            CmdAction(
-                f'aws s3 sync {self.downloaddir} s3://{bucket}/ --exclude "*" --include {self.archive}'
-            ),
-            CmdAction(
-                f'lgw lambda-deploy --verbose --lambda-file={self.target}', env=self.install_args
-            ),
+            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
         ]
-
-    def install_target(self):
-        return [self.target]
 
     def config_deps(self):
         return [f for f in glob('network/roles/lam/**', recursive=True) if isfile(f)]
@@ -184,9 +179,9 @@ class ProcessorServiceInfo:
 class ThumbnailServiceInfo:
     def __init__(self):
         self.name = 'thumbnailer'
-        self.builddir = f'./build-tmp/{self.name}'
+        self.downloaddir = f'./build-tmp/{self.name}'
         self.archive = f'{service()}-thumbnails-{self.version()}.zip'
-        self.target = f'{self.builddir}/{self.archive}'
+        self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
@@ -216,6 +211,9 @@ class ThumbnailServiceInfo:
             'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.builddir,
             'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
         }
+
+        if not exists(self.downloaddir):
+            makedirs(self.downloaddir)
 
     def version(self):
         return ELEKTRUM_THUMBNAIL_VERSION[environment()]
