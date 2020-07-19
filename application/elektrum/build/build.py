@@ -53,7 +53,7 @@ def task_build_application_service():
         'targets': [i.target],
         'actions': [
             f'etc/bin/poetry2pip.py --file poetry.lock --output {i.requirements}',
-            CmdAction('lgw lambda-archive --verbose', env=i.build_args),
+            CmdAction('lgw lambda-archive', env=i.build_args),
         ],
         'verbosity': VERBOSITY,
     }
@@ -65,8 +65,8 @@ def task_deploy_application_service():
         'file_dep': [i.target, envfile()],
         'actions': [
             CmdAction(f'lgw lambda-deploy --lambda-file={i.target}', env=i.deploy_args),
-            CmdAction('lgw gw-deploy --verbose', env=i.deploy_args),
-            CmdAction('lgw domain-add --verbose', env=i.deploy_args),
+            CmdAction('lgw gw-deploy', env=i.deploy_args),
+            CmdAction('lgw domain-add', env=i.deploy_args),
         ],
         'verbosity': VERBOSITY,
         'task_dep': ['build_application_service'],
