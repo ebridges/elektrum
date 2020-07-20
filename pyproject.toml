@@ -77,5 +77,5 @@ rev = "d77697e"
 name = "cz_conventional_commits"
 version = "0.0.55"
 tag_format = "v$version"
-version_files = ["pyproject.toml:version","version.txt"]
+version_files = ["pyproject.toml:version","application/version.txt"]
 changelog_file = "CHANGELOG.md"
