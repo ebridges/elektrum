@@ -9,7 +9,7 @@ target-version = [ "py37",]
 
 [tool.poetry]
 name = "elektrum"
-version = "0.0.55"
+version = "0.1.0"
 description = "Media archiving & management system."
 authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
 readme = "README.md"
@@ -75,7 +75,7 @@ rev = "d77697e"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.0.55"
+version = "0.1.0"
 tag_format = "v$version"
 version_files = ["pyproject.toml:version","application/version.txt"]
 changelog_file = "CHANGELOG.md"

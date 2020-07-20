@@ -247,3 +247,21 @@
 ## v0.0 (2018-12-08)
 
 - Nothing changed yet.
+## v0.1.0 (2020-07-20)
+
+### Fix
+
+- do not truncate release notes when gathering them
+- include recent changes in the release notes.
+- **release**: correct path to archive and initialization of version
+- additional incorrect path for version.txt
+- incorrect path for version.txt
+- workaround issue with hashes on editable deps.  pip does not allow hashes on "editable" deps (i.e. deps on repos like django-storages) cf.: https://github.com/pypa/pip/issues/4995
+
+### Refactor
+
+- convert dependencies to `dev` deps where possible
+
+### Feat
+
+- **release**: add support for automated releases
