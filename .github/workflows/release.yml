@@ -3,7 +3,7 @@ name: elektrum-release
 on:
   push:
     branches:
-      - feature/*
+      - master
 
 jobs:
   build:
