@@ -65,7 +65,10 @@ jobs:
     - name: Capture changes in this release.
       id: collect-changes
       run: |
-        echo "::set-output name=changes::$(cz changelog --incremental --file-name /dev/stdout)"
+        ch=$(cz changelog --incremental --file-name /dev/stdout)
+        ch="${ch//$'\n'/'%0A'}"
+        ch="${ch//$'\r'/'%0D'}"
+        echo "::set-output name=changes::$ch"
 
     - name: Create release
       id: create-release
