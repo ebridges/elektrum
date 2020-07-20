@@ -44,7 +44,7 @@ jobs:
     - name: Collect version number
       id: collect-version
       run: |
-        echo "::set-output name=version::$(cat version.txt | tr -d '\n')"
+        echo "::set-output name=version::$(cat application/version.txt | tr -d '\n')"
 
     - name: Build lambda archive.
       id: lambda-archive
@@ -88,6 +88,6 @@ jobs:
         # See this blog post for more info:
         # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ./build/elektrum-bundle.zip
-        asset_name: elektrum-${{ steps.collect-version.outputs.version }}.zip
+        asset_path: ./build-tmp/elektrum-application-${{ steps.collect-version.outputs.version }}.zip
+        asset_name: elektrum-application-${{ steps.collect-version.outputs.version }}.zip
         asset_content_type: application/zip
