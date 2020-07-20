@@ -50,7 +50,7 @@ jobs:
       id: lambda-archive
       env:
         AWS_LAMBDA_ARCHIVE_CONTEXT_DIR: '.'  # needs to be cwd so that etc/env is availabe in docker context
-        AWS_LAMBDA_ARCHIVE_ADDL_FILES: 'version.txt,$wkdir;requirements.txt,$wkdir;application/,$wkdir'
+        AWS_LAMBDA_ARCHIVE_ADDL_FILES: 'application/version.txt,$wkdir;requirements.txt,$wkdir;application/,$wkdir'
         AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES: 'postgresql,postgresql-devel'
         AWS_LAMBDA_ARCHIVE_BUNDLE_DIR: './build-tmp'
         AWS_LAMBDA_ARCHIVE_BUNDLE_NAME: 'elektrum-application-${{ steps.collect-version.outputs.version }}.zip'
