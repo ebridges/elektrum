@@ -62,6 +62,11 @@ jobs:
         git remote set-url origin https://elektrum-release:${{ secrets.GITHUB_TOKEN }}@github.com/ebridges/elektrum.git
         git push --follow-tags
 
+    - name: Capture changes in this release.
+      id: collect-changes
+      run: |
+        echo "::set-output name=changes::$(cz changelog --incremental --file-name /dev/stdout)"
+
     - name: Create release
       id: create-release
       uses: actions/create-release@v1
@@ -70,10 +75,7 @@ jobs:
       with:
         tag_name: "v${{ steps.collect-version.outputs.version }}"
         release_name: Release v${{ steps.collect-version.outputs.version }}
-        # body: |
-        #   Changes in this Release
-        #   - First Change
-        #   - Second Change
+        body: ${{ steps.collect-changes.outputs.changes }}
         draft: false
         prerelease: false
 
