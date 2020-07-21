@@ -45,37 +45,40 @@ def task_config():
         'verbosity': VERBOSITY,
     }
 
+
+def task_application_service_version():
+    """Returns version of application for current environment."""
     i = ApplicationServiceInfo()
+    return {'actions': [environment, i.version], 'verbosity': 1}
 
 
-def task_deploy_application_service():
+def task_application_service_deploy():
+    """Deploys the application service if the version has changed."""
     i = ApplicationServiceInfo()
     return {
-        'file_dep': [i.target, envfile()],
-        'actions': [
-            CmdAction(f'lgw lambda-deploy --lambda-file={i.target}', env=i.deploy_args),
-            CmdAction('lgw gw-deploy', env=i.deploy_args),
-            CmdAction('lgw domain-add', env=i.deploy_args),
-        ],
-        'verbosity': VERBOSITY,
-        'task_dep': ['build_application_service'],
+        'file_dep': i.deploy_deps(),
+        'actions': i.deploy_actions(),
+        'verbosity': 1,
+        'uptodate': [result_dep('application_service_version')],
     }
 
 
-def task_deploy_application_make_static():
+def task_application_service_static():
+    """Deploys static assets."""
     i = ApplicationServiceInfo()
     return {
-        'actions': [CmdAction('make static', cwd='application')],
+        'actions': i.static_actions(),
         'file_dep': i.static_deps(),
         'verbosity': 2,
     }
 
 
-def task_deploy_application_apply_migrations():
+def task_application_service_migrations():
+    """Deploys pending database migrations."""
+    i = ApplicationServiceInfo()
     return {
-        'actions': [CmdAction('python manage.py migrate_remote', cwd='application')],
+        'actions': i.migration_actions(),
         'verbosity': 2,
-        'task_dep': ['deploy_application_service'],
     }
 
 
