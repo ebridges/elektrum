@@ -45,18 +45,7 @@ def task_config():
         'verbosity': VERBOSITY,
     }
 
-
-def task_build_application_service():
     i = ApplicationServiceInfo()
-    return {
-        'file_dep': i.build_deps(),
-        'targets': [i.target],
-        'actions': [
-            f'etc/bin/poetry2pip.py --file poetry.lock --output {i.requirements}',
-            CmdAction('lgw lambda-archive', env=i.build_args),
-        ],
-        'verbosity': VERBOSITY,
-    }
 
 
 def task_deploy_application_service():
