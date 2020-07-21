@@ -97,7 +97,7 @@ def task_thumbnail_service_version():
 
 
 def task_thumbnail_service_deploy():
-    """Deploys thumbnailer if version has been updated."""
+    """Deploys the thumbnail service if the version has changed."""
     i = ThumbnailServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
@@ -114,7 +114,7 @@ def task_processor_service_version():
 
 
 def task_processor_service_deploy():
-    """Deploys processor if version has been updated."""
+    """Deploys the processor service if the version has changed."""
     i = ProcessorServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
