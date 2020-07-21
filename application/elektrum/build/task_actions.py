@@ -215,7 +215,7 @@ class ThumbnailServiceInfo:
             'AWS_LAMBDA_RUNTIME': environ['THUMBNAIL_SERVICE_RUNTIME'],
             'AWS_API_BINARY_TYPES': environ['THUMBNAIL_SERVICE_BINARY_TYPES'],
             'AWS_API_RESPONSE_MODELS': environ['THUMBNAIL_SERVICE_RESPONSE_MODELS'],
-            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.builddir,
+            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.downloaddir,
             'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
         }
 
