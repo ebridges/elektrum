@@ -166,13 +166,13 @@ class ProcessorServiceInfo:
 
     def deploy_actions(self):
         return [
-            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
         ]
 
@@ -232,16 +232,16 @@ class ThumbnailServiceInfo:
         gw_name = self.deploy_args['AWS_API_NAME']
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         return [
-            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] Deploying gateway [{gw_name}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
             CmdAction('lgw gw-deploy', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] Adding domain name [{dns_name}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
         ]

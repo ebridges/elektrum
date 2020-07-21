@@ -33,7 +33,7 @@ set_credentials('AWS_SECRET_ACCESS_KEY', 'aws_secret_key')
 
 
 def task_config():
-    """Compile network, generate configuration"""
+    """Generate configuration for given environment."""
     file_deps = [
         f for f in glob('network/**', recursive=True) if isfile(f) and 'roles/lam' not in f
     ]
@@ -117,7 +117,7 @@ def task_processor_service_deploy():
 
 
 def task_processor_service_config():
-    """Update lambda config to grant S3 bucket permission to exec processor."""
+    """Deploys lambda config to grant S3 bucket permission to exec processor."""
     i = ProcessorServiceInfo()
     return {
         'task_dep': ['processor_service_deploy'],
