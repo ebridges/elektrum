@@ -33,7 +33,7 @@ set_credentials('AWS_SECRET_ACCESS_KEY', 'aws_secret_key')
 
 
 def task_config():
-    """Compile network, generate configuration"""
+    """Generate configuration for given environment."""
     file_deps = [
         f for f in glob('network/**', recursive=True) if isfile(f) and 'roles/lam' not in f
     ]
@@ -46,47 +46,39 @@ def task_config():
     }
 
 
-def task_build_application_service():
+def task_application_service_version():
+    """Returns version of application for current environment."""
+    i = ApplicationServiceInfo()
+    return {'actions': [environment, i.version], 'verbosity': 1}
+
+
+def task_application_service_deploy():
+    """Deploys the application service if the version has changed."""
     i = ApplicationServiceInfo()
     return {
-        'file_dep': i.build_deps(),
-        'targets': [i.target],
-        'actions': [
-            f'etc/bin/poetry2pip.py --file poetry.lock --output {i.requirements}',
-            CmdAction('lgw lambda-archive', env=i.build_args),
-        ],
-        'verbosity': VERBOSITY,
+        'file_dep': i.deploy_deps(),
+        'actions': i.deploy_actions(),
+        'verbosity': 1,
+        'uptodate': [result_dep('application_service_version')],
     }
 
 
-def task_deploy_application_service():
+def task_application_service_static():
+    """Deploys static assets."""
     i = ApplicationServiceInfo()
     return {
-        'file_dep': [i.target, envfile()],
-        'actions': [
-            CmdAction(f'lgw lambda-deploy --lambda-file={i.target}', env=i.deploy_args),
-            CmdAction('lgw gw-deploy', env=i.deploy_args),
-            CmdAction('lgw domain-add', env=i.deploy_args),
-        ],
-        'verbosity': VERBOSITY,
-        'task_dep': ['build_application_service'],
-    }
-
-
-def task_deploy_application_make_static():
-    i = ApplicationServiceInfo()
-    return {
-        'actions': [CmdAction('make static', cwd='application')],
+        'actions': i.static_actions(),
         'file_dep': i.static_deps(),
         'verbosity': 2,
     }
 
 
-def task_deploy_application_apply_migrations():
+def task_application_service_migrations():
+    """Deploys pending database migrations."""
+    i = ApplicationServiceInfo()
     return {
-        'actions': [CmdAction('python manage.py migrate_remote', cwd='application')],
+        'actions': i.migration_actions(),
         'verbosity': 2,
-        'task_dep': ['deploy_application_service'],
     }
 
 
@@ -97,7 +89,7 @@ def task_thumbnail_service_version():
 
 
 def task_thumbnail_service_deploy():
-    """Deploys thumbnailer if version has been updated."""
+    """Deploys the thumbnail service if the version has changed."""
     i = ThumbnailServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
@@ -114,7 +106,7 @@ def task_processor_service_version():
 
 
 def task_processor_service_deploy():
-    """Deploys processor if version has been updated."""
+    """Deploys the processor service if the version has changed."""
     i = ProcessorServiceInfo()
     return {
         'file_dep': i.deploy_deps(),
@@ -125,7 +117,7 @@ def task_processor_service_deploy():
 
 
 def task_processor_service_config():
-    """Update lambda config to grant S3 bucket permission to exec processor."""
+    """Deploys lambda config to grant S3 bucket permission to exec processor."""
     i = ProcessorServiceInfo()
     return {
         'task_dep': ['processor_service_deploy'],

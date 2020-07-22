@@ -1,11 +1,15 @@
 from os import environ, makedirs
 from glob import glob
 from os.path import isfile, exists
+from sys import stderr
+from datetime import datetime
+from zipfile import ZipFile
+
 from doit.action import CmdAction
 
-from elektrum.build.version_info import read_from_file
 from elektrum.build_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
+ELEKTRUM_APPLICATION_VERSION = {'development': '0.1.0', 'staging': '0.1.0', 'production': '0.1.0'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 
@@ -42,30 +46,13 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     ]
 
 
-class VersionInfo(object):
-    def version(self):
-        return read_from_file(self.versionfile, self.dev, self.next, self.part)
-
-
-class ApplicationServiceInfo(VersionInfo):
-    def __init__(self, dev=True, next=False, part=1):
-        self.dev = dev
-        self.next = next
-        self.part = part
-        self.builddir = './build-tmp'
-        self.appdir = 'application'
-        self.versionfile = f'{self.appdir}/version.txt'
-        self.requirements = f'{self.appdir}/requirements.txt'
-        self.archive = f'{service()}-{environment()}-application-{self.version()}.zip'
-        self.target = f'{self.builddir}/{self.archive}'
-        self.build_args = {
-            'PATH': environ['PATH'],
-            'AWS_LAMBDA_ARCHIVE_CONTEXT_DIR': '.',  # needs to be cwd so that etc/env is availabe in docker context
-            'AWS_LAMBDA_ARCHIVE_ADDL_FILES': f'{envfile()},$wkdir/.env;{self.versionfile},$wkdir;{self.requirements},$wkdir;{self.appdir}/,$wkdir',
-            'AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES': 'postgresql,postgresql-devel',
-            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.builddir,
-            'AWS_LAMBDA_ARCHIVE_BUNDLE_NAME': self.archive,
-        }
+class ApplicationServiceInfo:
+    def __init__(self):
+        self.name = f'{service()}-application'
+        self.downloaddir = f'./build-tmp/{self.name}'
+        self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
+        self.target = f'{self.downloaddir}/{self.archive}'
+        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -91,35 +78,55 @@ class ApplicationServiceInfo(VersionInfo):
             'AWS_API_DESCRIPTION': environ['APPLICATION_SERVICE_API_DESCRIPTION'],
         }
 
-    def build_deps(self):
-        included_dirs = [
-            'base',
-            'date_dimension',
-            'elektrum',
-            'emailer',
-            'js',
-            'media_items',
-            'pages',
-            'sharing',
-            'status',
-            'users',
+        if not exists(self.downloaddir):
+            makedirs(self.downloaddir)
+
+    def version(self):
+        return ELEKTRUM_APPLICATION_VERSION[environment()]
+
+    def deploy_actions(self):
+        gw_name = self.deploy_args['AWS_API_NAME']
+        dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
+        return [
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
+            (
+                download_github_release,
+                [self.github_auth_token, 'elektrum', self.version(), self.target],
+                {},
+            ),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Link archive with environment [{environment()}]\n" 1>&2',
+            (self.update_archive, [], {}),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
+            CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
+            CmdAction('lgw gw-deploy', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
+            CmdAction('lgw domain-add', env=self.deploy_args),
         ]
-        deps = []
-        for d in included_dirs:
-            deps.extend(
-                [
-                    f
-                    for f in glob(f'{self.appdir}/{d}/**', recursive=True)
-                    if isfile(f) and not f.endswith('.pyc')
-                ]
-            )
-        deps.append(envfile())
-        deps.append(self.versionfile)
-        return deps
+
+    def update_archive(self):
+        with ZipFile(self.target, 'a') as zip:
+            if not '.env' in zip.namelist():
+                stderr.write(
+                    '[%s] [INFO] Adding [%s] to [%s] as [.env]\n'
+                    % (datetime.now(), envfile(), self.target)
+                )
+                zip.write(envfile(), '.env')
+            else:
+                stderr.write('[%s] [WARN] .env exists in [%s]\n' % (datetime.now(), self.target))
+
+    def deploy_deps(self):
+        return [envfile()]
+
+    def static_actions(self):
+        return [CmdAction('make static', cwd='application')]
 
     def static_deps(self):
         deps = [f for f in glob(f'{self.appdir}/static/**', recursive=True) if isfile(f)]
         return deps
+
+    def migration_actions(self):
+        return [CmdAction('python manage.py migrate_remote', cwd='application')]
 
 
 class ProcessorServiceInfo:
@@ -159,13 +166,13 @@ class ProcessorServiceInfo:
 
     def deploy_actions(self):
         return [
-            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
         ]
 
@@ -208,7 +215,7 @@ class ThumbnailServiceInfo:
             'AWS_LAMBDA_RUNTIME': environ['THUMBNAIL_SERVICE_RUNTIME'],
             'AWS_API_BINARY_TYPES': environ['THUMBNAIL_SERVICE_BINARY_TYPES'],
             'AWS_API_RESPONSE_MODELS': environ['THUMBNAIL_SERVICE_RESPONSE_MODELS'],
-            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.builddir,
+            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.downloaddir,
             'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
         }
 
@@ -225,16 +232,16 @@ class ThumbnailServiceInfo:
         gw_name = self.deploy_args['AWS_API_NAME']
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         return [
-            f'printf "[\e[31;1m§\e[0m] Downloading version [{self.version()}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] Deploying lambda from [{self.target}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] Deploying gateway [{gw_name}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
             CmdAction('lgw gw-deploy', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] Adding domain name [{dns_name}]\n" 1>&2',
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
         ]
