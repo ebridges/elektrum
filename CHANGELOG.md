@@ -1,5 +1,19 @@
 # Elektrum Change Log
 
+## v0.2.0 (2020-07-22)
+
+### Fix
+
+- use correct name for variable.
+
+### Refactor
+
+- improve logging and comments
+
+### Feat
+
+- switch application service to deploy from a version rather than build it first.
+
 ## v0.1.0 (2020-07-20)
 
 ### Fix
