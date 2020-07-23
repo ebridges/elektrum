@@ -17,7 +17,7 @@ from elektrum.build.task_actions import (
     ApplicationServiceInfo,
 )
 
-VERBOSITY = 1
+DOIT_CONFIG = {'verbosity': 1}
 
 
 # Hack @todo -- still needed?
@@ -42,14 +42,13 @@ def task_config():
         'targets': [envfile()],
         'file_dep': file_deps,
         'actions': action,
-        'verbosity': VERBOSITY,
     }
 
 
 def task_application_service_version():
     """Returns version of application for current environment."""
     i = ApplicationServiceInfo()
-    return {'actions': [environment, i.version], 'verbosity': 1}
+    return {'actions': [environment, i.version]}
 
 
 def task_application_service_deploy():
@@ -58,7 +57,6 @@ def task_application_service_deploy():
     return {
         'file_dep': i.deploy_deps(),
         'actions': i.deploy_actions(),
-        'verbosity': 1,
         'uptodate': [result_dep('application_service_version')],
     }
 
@@ -85,7 +83,7 @@ def task_application_service_migrations():
 def task_thumbnail_service_version():
     """Returns version of thumbnailer for current environment."""
     i = ThumbnailServiceInfo()
-    return {'actions': [environment, i.version], 'verbosity': 1}
+    return {'actions': [environment, i.version]}
 
 
 def task_thumbnail_service_deploy():
@@ -94,7 +92,6 @@ def task_thumbnail_service_deploy():
     return {
         'file_dep': i.deploy_deps(),
         'actions': i.deploy_actions(),
-        'verbosity': 1,
         'uptodate': [result_dep('thumbnail_service_version')],
     }
 
@@ -102,7 +99,7 @@ def task_thumbnail_service_deploy():
 def task_processor_service_version():
     """Returns version of processor for current environment."""
     i = ProcessorServiceInfo()
-    return {'actions': [environment, i.version], 'verbosity': 1}
+    return {'actions': [environment, i.version]}
 
 
 def task_processor_service_deploy():
@@ -111,7 +108,6 @@ def task_processor_service_deploy():
     return {
         'file_dep': i.deploy_deps(),
         'actions': i.deploy_actions(),
-        'verbosity': 1,
         'uptodate': [result_dep('processor_service_version')],
     }
 
@@ -123,5 +119,4 @@ def task_processor_service_config():
         'task_dep': ['processor_service_deploy'],
         'file_dep': i.config_deps(),
         'actions': i.config_action(),
-        'verbosity': VERBOSITY,
     }
