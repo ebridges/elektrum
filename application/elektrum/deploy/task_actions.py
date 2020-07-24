@@ -9,7 +9,7 @@ from doit.action import CmdAction
 
 from elektrum.deploy_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
-ELEKTRUM_APPLICATION_VERSION = {'development': '0.1.0', 'staging': '0.1.0', 'production': '0.1.0'}
+ELEKTRUM_APPLICATION_VERSION = {'development': '0.2.1', 'staging': '0.2.1', 'production': '0.2.1'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 
