@@ -19,8 +19,8 @@ from elektrum.build.task_actions import (
 
 DOIT_CONFIG = {'verbosity': 1}
 
-
-# Hack @todo -- still needed?
+# HACK: Handles first time case where envfile does not exist,
+#       causes config tasks to be run 2x
 if not isfile(envfile()):
     actions = config_action()
     for action in actions:
