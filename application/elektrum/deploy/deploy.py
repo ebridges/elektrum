@@ -42,6 +42,7 @@ def task_config():
         'targets': [envfile()],
         'file_dep': file_deps,
         'actions': action,
+        'verbosity': 2,
     }
 
 
