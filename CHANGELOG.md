@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.4.0 (2020-07-24)
+
+### Fix
+
+- include patch to js module so that deploys of static files dont generate multiple new files even when nothing has changed.
+
 ## v0.3.0 (2020-07-24)
 
 ### Fix
