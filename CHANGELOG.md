@@ -1,5 +1,16 @@
 # Elektrum Change Log
 
+## v0.3.0 (2020-07-24)
+
+### Fix
+
+- Convert to use a versioned dep rather than a git ref.
+
+### Refactor
+
+- update references to build modules and folders
+- build scripts now only do deploying
+
 ## v0.2.0 (2020-07-22)
 
 ### Fix
