@@ -55,7 +55,7 @@ jobs:
         AWS_LAMBDA_ARCHIVE_BUNDLE_DIR: './build-tmp'
         AWS_LAMBDA_ARCHIVE_BUNDLE_NAME: 'elektrum-application-${{ steps.collect-version.outputs.version }}.zip'
       run: |
-        lgw lambda-archive --verbose
+        lgw lambda-archive
 
     - name: Push all changes back to origin.
       run: |
