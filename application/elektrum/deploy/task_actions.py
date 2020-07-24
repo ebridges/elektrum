@@ -122,7 +122,7 @@ class ApplicationServiceInfo:
         return [CmdAction('make static', cwd='application')]
 
     def static_deps(self):
-        deps = [f for f in glob(f'{self.appdir}/static/**', recursive=True) if isfile(f)]
+        deps = [f for f in glob(f'application/static/**', recursive=True) if isfile(f)]
         return deps
 
     def migration_actions(self):
