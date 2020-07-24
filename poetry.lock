@@ -40,7 +40,7 @@ description = "Wrap a WSGI application in an AWS Lambda handler function for run
 name = "apig-wsgi"
 optional = false
 python-versions = ">=3.5"
-version = "2.7.0"
+version = "2.8.0"
 
 [[package]]
 category = "dev"
@@ -137,10 +137,10 @@ description = "Universal Command Line Environment for AWS."
 name = "awscli"
 optional = false
 python-versions = "*"
-version = "1.18.100"
+version = "1.18.104"
 
 [package.dependencies]
-botocore = "1.17.23"
+botocore = "1.17.27"
 docutils = ">=0.10,<0.16"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -190,10 +190,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = false
 python-versions = "*"
-version = "1.14.23"
+version = "1.14.27"
 
 [package.dependencies]
-botocore = ">=1.17.23,<1.18.0"
+botocore = ">=1.17.27,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -203,7 +203,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = false
 python-versions = "*"
-version = "1.17.23"
+version = "1.17.27"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -572,7 +572,7 @@ description = "File identification library for Python"
 name = "identify"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "1.4.24"
+version = "1.4.25"
 
 [package.extras]
 license = ["editdistance"]
@@ -1333,7 +1333,7 @@ description = "HTTP library with thread-safe connection pooling, file post, and 
 name = "urllib3"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
-version = "1.25.9"
+version = "1.25.10"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
@@ -1354,7 +1354,7 @@ description = "Virtual Python Environment builder"
 name = "virtualenv"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "20.0.27"
+version = "20.0.28"
 
 [package.dependencies]
 appdirs = ">=1.4.3,<2"
@@ -1367,8 +1367,8 @@ python = "<3.8"
 version = ">=0.12,<2"
 
 [package.extras]
-docs = ["sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sphinx-rtd-theme (>=0.4.3)", "towncrier (>=19.9.0rc1)", "proselint (>=0.10.2)"]
-testing = ["pytest (>=4)", "coverage (>=5)", "coverage-enable-subprocess (>=1)", "pytest-xdist (>=1.31.0)", "pytest-mock (>=2)", "pytest-env (>=0.6.2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "pytest-freezegun (>=0.4.1)", "flaky (>=3)", "packaging (>=20.0)", "xonsh (>=0.9.16)"]
+docs = ["proselint (>=0.10.2)", "sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sphinx-rtd-theme (>=0.4.3)", "towncrier (>=19.9.0rc1)"]
+testing = ["coverage (>=5)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "pytest-xdist (>=1.31.0)", "packaging (>=20.0)", "xonsh (>=0.9.16)"]
 
 [[package]]
 category = "dev"
@@ -1453,8 +1453,8 @@ ansible-vault = [
     {file = "ansible-vault-1.2.0.tar.gz", hash = "sha256:984c5fe1a875d55669c9c167fd4265cf5c6446de4a6a478e0a057a4d43e6608c"},
 ]
 apig-wsgi = [
-    {file = "apig-wsgi-2.7.0.tar.gz", hash = "sha256:2e155e91e21804434b11851017d5b6647a8fb8eb7f0476f5e9446979cc7f48af"},
-    {file = "apig_wsgi-2.7.0-py3-none-any.whl", hash = "sha256:fe7be6513ddbeebf970670fd5df4cef8abcb99d5d546cdf605c532b8fce1a2da"},
+    {file = "apig-wsgi-2.8.0.tar.gz", hash = "sha256:f7499f5209b763d7966a65092484fb0fe4c37eab74b04c8dea1fcc4521185364"},
+    {file = "apig_wsgi-2.8.0-py3-none-any.whl", hash = "sha256:b19f4da87e84cf64b9739210ee5b3a9eb7c8d96117c642c502a456b070427f68"},
 ]
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
@@ -1487,8 +1487,8 @@ autopep8 = [
     {file = "autopep8-1.5.3.tar.gz", hash = "sha256:60fd8c4341bab59963dafd5d2a566e94f547e660b9b396f772afe67d8481dbf0"},
 ]
 awscli = [
-    {file = "awscli-1.18.100-py2.py3-none-any.whl", hash = "sha256:21c3001c10a42d1b94441e5ad7835118147b68940f661ea87f2324f229e84621"},
-    {file = "awscli-1.18.100.tar.gz", hash = "sha256:dcd729d846a2c725360d9fdf3f120477e4ebe053d823a0732b3f139a02b87701"},
+    {file = "awscli-1.18.104-py2.py3-none-any.whl", hash = "sha256:0f5daa719ab413af9c346d75a56d72cf5d0d3619e2d5dac97079e00f4bc5bf23"},
+    {file = "awscli-1.18.104.tar.gz", hash = "sha256:058b171cb093408b06f1c5e1477998256c88496eba0acadac81cf01291b4a1f8"},
 ]
 black = [
     {file = "black-19.10b0-py36-none-any.whl", hash = "sha256:1b30e59be925fafc1ee4565e5e08abef6b03fe455102883820fe5ee2e4734e0b"},
@@ -1499,12 +1499,12 @@ boto = [
     {file = "boto-2.49.0.tar.gz", hash = "sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a"},
 ]
 boto3 = [
-    {file = "boto3-1.14.23-py2.py3-none-any.whl", hash = "sha256:fd21bb3b15e7ab0525fe0262dc38998f13d15fdf71041d82177f411cb355e858"},
-    {file = "boto3-1.14.23.tar.gz", hash = "sha256:a31d9b2d681a0ce7db8e476879222b27455a1cc49a60e2111e0ddb47c574d127"},
+    {file = "boto3-1.14.27-py2.py3-none-any.whl", hash = "sha256:65c131b72c2a75e3cc6044e5fd6426719051b9b1f28bd026b4a5490648d13019"},
+    {file = "boto3-1.14.27.tar.gz", hash = "sha256:e1e09587763671cc07c9e6d349d93bf53a140f83947cb6cf1ec4cb9f07b0ff95"},
 ]
 botocore = [
-    {file = "botocore-1.17.23-py2.py3-none-any.whl", hash = "sha256:18a0409695fbc707a8f3f2849a93fdc629fda62efe1a5262765fd57b82fbace3"},
-    {file = "botocore-1.17.23.tar.gz", hash = "sha256:6711dac304dacb49981d722ef91bd89bd82b6bc68cf0a0890bc30573dcbb1899"},
+    {file = "botocore-1.17.27-py2.py3-none-any.whl", hash = "sha256:acd955f0315b5d17e3e8ddc2ef74d7f03c4ef37f0ceb042058637f7edfbbad4e"},
+    {file = "botocore-1.17.27.tar.gz", hash = "sha256:994a9f50e0e770c0f9ea74659f501848f7d12b22186026c219cde8a481ede298"},
 ]
 certifi = [
     {file = "certifi-2020.6.20-py2.py3-none-any.whl", hash = "sha256:8fc0819f1f30ba15bdb34cceffb9ef04d99f420f68eb75d901e9560b8749fc41"},
@@ -1697,8 +1697,8 @@ gunicorn = [
     {file = "gunicorn-19.10.0.tar.gz", hash = "sha256:f9de24e358b841567063629cd0a656b26792a41e23a24d0dcb40224fc3940081"},
 ]
 identify = [
-    {file = "identify-1.4.24-py2.py3-none-any.whl", hash = "sha256:5519601b70c831011fb425ffd214101df7639ba3980f24dc283f7675b19127b3"},
-    {file = "identify-1.4.24.tar.gz", hash = "sha256:06b4373546ae55eaaefdac54f006951dbd968fe2912846c00e565b09cfaed101"},
+    {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
+    {file = "identify-1.4.25.tar.gz", hash = "sha256:110ed090fec6bce1aabe3c72d9258a9de82207adeaa5a05cd75c635880312f9a"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -2155,15 +2155,15 @@ typed-ast = [
     {file = "typed_ast-1.4.1.tar.gz", hash = "sha256:8c8aaad94455178e3187ab22c8b01a3837f8ee50e09cf31f1ba129eb293ec30b"},
 ]
 urllib3 = [
-    {file = "urllib3-1.25.9-py2.py3-none-any.whl", hash = "sha256:88206b0eb87e6d677d424843ac5209e3fb9d0190d0ee169599165ec25e9d9115"},
-    {file = "urllib3-1.25.9.tar.gz", hash = "sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527"},
+    {file = "urllib3-1.25.10-py2.py3-none-any.whl", hash = "sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461"},
+    {file = "urllib3-1.25.10.tar.gz", hash = "sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a"},
 ]
 urwid = [
     {file = "urwid-1.2.2.tar.gz", hash = "sha256:e122e2dee122314f5626945af4dbe15bf3de9f318c552a4c0b68c1c480852d92"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.0.27-py2.py3-none-any.whl", hash = "sha256:c51f1ba727d1614ce8fd62457748b469fbedfdab2c7e5dd480c9ae3fbe1233f1"},
-    {file = "virtualenv-20.0.27.tar.gz", hash = "sha256:26cdd725a57fef4c7c22060dba4647ebd8ca377e30d1c1cf547b30a0b79c43b4"},
+    {file = "virtualenv-20.0.28-py2.py3-none-any.whl", hash = "sha256:8f582a030156282a9ee9d319984b759a232b07f86048c1d6a9e394afa44e78c8"},
+    {file = "virtualenv-20.0.28.tar.gz", hash = "sha256:688a61d7976d82b92f7906c367e83bb4b3f0af96f8f75bfcd3da95608fe8ac6c"},
 ]
 virtualenv-clone = [
     {file = "virtualenv-clone-0.5.4.tar.gz", hash = "sha256:665e48dd54c84b98b71a657acb49104c54e7652bce9c1c4f6c6976ed4c827a29"},
