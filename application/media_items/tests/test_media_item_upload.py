@@ -15,8 +15,8 @@ from assertpy import assert_that
 from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 from base.tests.util import match_image_key
-from elektrum.build_util import download_github_release
-from elektrum.build.task_actions import ELEKTRUM_PROCESSOR_VERSION
+from elektrum.deploy_util import download_github_release
+from elektrum.deploy.task_actions import ELEKTRUM_PROCESSOR_VERSION
 import sys
 
 

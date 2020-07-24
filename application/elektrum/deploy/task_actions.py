@@ -7,7 +7,7 @@ from zipfile import ZipFile
 
 from doit.action import CmdAction
 
-from elektrum.build_util import download_github_release, slurp, get_encrypted_field, decrypt_value
+from elektrum.deploy_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.1.0', 'staging': '0.1.0', 'production': '0.1.0'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
@@ -49,7 +49,7 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
 class ApplicationServiceInfo:
     def __init__(self):
         self.name = f'{service()}-application'
-        self.downloaddir = f'./build-tmp/{self.name}'
+        self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
@@ -132,7 +132,7 @@ class ApplicationServiceInfo:
 class ProcessorServiceInfo:
     def __init__(self):
         self.name = f'{service()}-processor'
-        self.downloaddir = f'./build-tmp/{self.name}'
+        self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
@@ -186,7 +186,7 @@ class ProcessorServiceInfo:
 class ThumbnailServiceInfo:
     def __init__(self):
         self.name = 'thumbnailer'
-        self.downloaddir = f'./build-tmp/{self.name}'
+        self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{service()}-thumbnails-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']

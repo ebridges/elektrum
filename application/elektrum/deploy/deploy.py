@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from doit.action import CmdAction
 from doit.tools import result_dep
 
-from elektrum.build.task_actions import (
+from elektrum.deploy.task_actions import (
     envfile,
     environment,
     config_action,
