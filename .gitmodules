@@ -5,7 +5,3 @@
 [submodule "application/js/javascript-load-image"]
 	path = application/js/javascript-load-image
 	url = https://github.com/blueimp/JavaScript-Load-Image.git
-
-[submodule "functions/thumbnails"]
-	path = functions/thumbnails
-	url = https://github.com/ebridges/thumbnailer.git
