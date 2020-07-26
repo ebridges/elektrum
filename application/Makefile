@@ -63,26 +63,24 @@ manifest.js:
 	@echo [manifest.js] SUCCESSFUL
 
 publish:
-	python ${APPLICATION_DIR}/manage.py collectstatic \
-        --noinput \
-        --pythonpath=${APPLICATION_DIR} \
-        --settings=elektrum.settings
-	@echo [publish] SUCCESSFUL
-
-commit:
-
-# if there are changes, then commit them
+# if there are changes, then publish & commit them
 	@delta=$(git diff-index --quiet HEAD -- ${APPLICATION_DIR}/static)
+	@echo "[publish] Publishing" ;
 	@if [ -z "$$delta" ]; then \
-		echo '[commit] No files need committing.' ; \
+		echo '[publish] No files need committing.' ; \
 	else \
+		python ${APPLICATION_DIR}/manage.py collectstatic \
+					--noinput \
+					--pythonpath=${APPLICATION_DIR} \
+					--settings=elektrum.settings
+		@echo [publish] SUCCESSFUL
 		git add ${APPLICATION_DIR}/static/css/app* \
 						${APPLICATION_DIR}/static/js/app* \
 						${APPLICATION_DIR}/static/js/manifest* \
 						${APPLICATION_DIR}/static/js/vendor* \
 						${APPLICATION_DIR}/static/js/load-image* && \
-		git commit --gpg-sign --message 'Static assets generated.' \
-		echo '[commit] SUCCESSFUL' ; \
+		git commit --gpg-sign --message 'chore: static assets generated.' \
+		echo '[publish] SUCCESSFUL' ; \
 	fi
 
 	@echo COMPLETED SUCCESSFULLY
