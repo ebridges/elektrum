@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.4.2 (2020-07-26)
+
+### Fix
+
+- prognosticate next version.
+
 ## v0.4.1 (2020-07-26)
 
 ### Refactor
