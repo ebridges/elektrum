@@ -9,7 +9,7 @@ from doit.action import CmdAction
 
 from elektrum.deploy_util import download_github_release, slurp, get_encrypted_field, decrypt_value
 
-ELEKTRUM_APPLICATION_VERSION = {'development': '0.3.0', 'staging': '0.3.0', 'production': '0.3.0'}
+ELEKTRUM_APPLICATION_VERSION = {'development': '0.4.0', 'staging': '0.4.0', 'production': '0.4.0'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 
@@ -122,6 +122,23 @@ class ApplicationServiceInfo:
         return [CmdAction('make static', cwd='application')]
 
     def static_deps(self):
+        deps = [f for f in glob(f'application/js/**', recursive=True) if isfile(f)]
+        return deps
+
+    def static_publish_actions(self):
+        return [
+            CmdAction(
+                'python ./manage.py collectstatic --noinput --pythonpath=. --settings=elektrum.settings',
+                cwd='application',
+            ),
+            CmdAction(
+                'git add ./css/app* ./js/app* ./js/manifest* ./js/vendor* ./js/load-image*',
+                cwd='application/static',
+            ),
+            CmdAction('git commit --gpg-sign --message "chore: static assets generated."'),
+        ]
+
+    def static_publish_deps(self):
         deps = [f for f in glob(f'application/static/**', recursive=True) if isfile(f)]
         return deps
 

@@ -50,94 +50,94 @@
 
 - **release**: add support for automated releases
 
-## v0.53 (2020-06-19)
+## v0.0.53 (2020-06-19)
 
 - Add new build/deploy script
 - Add Django Admin commnds for configuring remote system.
 
-## v0.52 (2020-05-30)
+## v0.0.52 (2020-05-30)
 
 - Minor fixes to configure Sentry release metadata.
 
-## v0.51 (2020-05-30)
+## v0.0.51 (2020-05-30)
 
 - Minor fixes to configure Sentry release metadata.
 
-## v0.50 (2020-05-30)
+## v0.0.50 (2020-05-30)
 
 - Minor fix in configuration of Org name when publishing release to Sentry.
 
-## v0.49 (2020-05-30)
+## v0.0.49 (2020-05-30)
 
 - Add additional metadata when publishing release to Sentry.
 
-## v0.48 (2020-05-30)
+## v0.0.48 (2020-05-30)
 
 - Minor fix in format of release URL.
 
-## v0.47 (2020-05-30)
+## v0.0.47 (2020-05-30)
 
 - Minor fix for publishing release to Sentry.
 
-## v0.46 (2020-05-30)
+## v0.0.46 (2020-05-30)
 
 - Minor fixes in operational notifications.
 
-## v0.45 (2020-05-30)
+## v0.0.45 (2020-05-30)
 
 - [#86] Implement security and operational fixes in prep for deployment.
 
-## v0.44 (2020-04-21)
+## v0.0.44 (2020-04-21)
 
 - Dev module was unable to be run in a non-local env.
 
-## v0.43 (2020-04-21)
+## v0.0.43 (2020-04-21)
 
 - [#77] Fix for bug in sharing.
 
-## v0.42 (2020-04-20)
+## v0.0.42 (2020-04-20)
 
 
-## v0.41 (2020-04-19)
+## v0.0.41 (2020-04-19)
 
 - Add capability to share one or more images from a given album.
 - Integrate with Github CI
 
-## v0.40 (2020-02-01)
+## v0.0.40 (2020-02-01)
 
 - Misc cleanup and consolidation.
 
-## v0.39 (2020-02-01)
+## v0.0.39 (2020-02-01)
 
 - Completed migration from Bitbucket to GitHub, including issues.
 - Consolidated documentation from bitbucket wiki.
 - Fix for 'Access Denied' error when uploading images.
 
-## v0.38 (2020-01-05)
+## v0.0.38 (2020-01-05)
 
 - When app is released publish changelog to GitHub as a release.
 
-## v0.37 (2020-01-05)
+## v0.0.37 (2020-01-05)
 
 - Rewrite of `elektrum-deploy` script.
 
-## v0.36 (2019-12-15)
+## v0.0.36 (2019-12-15)
 
 - Rewrite of `elektrum-release` script.
 
-## v0.35 (2019-12-11)
+## v0.0.35 (2019-12-11)
 
 - Introduce automated increment of pyproject version number from version.txt.
 
-## v0.34 (2019-12-10)
+## v0.0.34 (2019-12-10)
 
 - [#63] Replace Zappa with LGW for deployment.
 
-## v0.33 (2019-10-22)
+## v0.0.33 (2019-10-22)
 
 - [#62] Add API for uploading via CLI.
 
-## v0.32 (2019-09-20)
+## v0.0.32 (2019-09-20)
 
 - [#57] Implement media upload via web browser.
 - [#58] Automate provisioning of different environments.
@@ -145,43 +145,43 @@
 - [#61] Fix "Forbidden" error when uploading images.
 - Upgrade all dependencies.
 
-## v0.31 (2019-07-25)
+## v0.0.31 (2019-07-25)
 
 - [#50] Refactor network into separate, but identical environments.
 - [#38] Multistage deployment environments
 - [#43] Provide capability to reset a release to previous version.
 
-## v0.30 (2019-06-28)
+## v0.0.30 (2019-06-28)
 
 - [#48] Minimize dependency on ELEKTRON_ENV environment variable.
 
-## v0.29 (2019-06-27)
+## v0.0.29 (2019-06-27)
 
 - [#45] Switch from Elastic Beanstalk to use Zappa for deployment as a Lambda.
 - [#49] Configuration of a NAT instance to allow for DB access from a Lambda.
 
-## v0.28 (2019-05-27)
+## v0.0.28 (2019-05-27)
 
 - [#41] Improve robustness of photo processor deployment.
 
-## v0.27 (2019-05-27)
+## v0.0.27 (2019-05-27)
 
 - [#36] Eliminate requirement to include create date when requesting image upload.
 - [#37] Views and model for date-based views of media (collections, albums, items).
 - [#10] Configure CDN, HTTPS, and bucket setup.
 - [#40] Populate the date dimension table with a default range from 1/1/1970-12/31/2050.
 
-## v0.26 (2019-04-30)
+## v0.0.26 (2019-04-30)
 
 - [#35] Upload lambda binary to S3 before deploy.
 
 
-## v0.25 (2019-04-29)
+## v0.0.25 (2019-04-29)
 
 - [#34] Deploy versioned lambda function for the image processor.
 
 
-## v0.24 (2019-04-29)
+## v0.0.24 (2019-04-29)
 
 - [#24] Enhance internal structure of templates to handle showing authenticated content.
 - [#25] Simplify signup/login UX by putting both forms on the home page, rather than two separate pages.
@@ -193,12 +193,12 @@
 - Testing of upload signing, upload processing.
 - Switch to use Poetry for dependency management.
 
-## v0.23 (2019-01-15)
+## v0.0.23 (2019-01-15)
 
 - [#20] Enhance user profile by adding profile image url.
 - [#12] Change model to use a UUID for primary key.
 
-## v0.22 (2019-01-12)
+## v0.0.22 (2019-01-12)
 
 - [#15]: Configure mandatory email confirmation for new accounts.
 - [#16]: Default email backend will print the message to console.
@@ -207,93 +207,93 @@
 - [#18]: Make username a required field when signing up.
 - [#19]: Update tests to provide username.
 
-## v0.21 (2019-01-08)
+## v0.0.21 (2019-01-08)
 
 - Add a couple of unit tests.
 
-## v0.20 (2019-01-06)
+## v0.0.20 (2019-01-06)
 
 - [#4]: Implement Google signup/authentication.
 - [#13]: Fix issue where Google signups caused "duplicate username" issue.
 
-## v0.19 (2019-01-05)
+## v0.0.19 (2019-01-05)
 
 - Recreate environment to test logging & https config files.
 
-## v0.18 (2019-01-05)
+## v0.0.18 (2019-01-05)
 
 - Configure HTTPS.
 
-## v0.17 (2019-01-05)
+## v0.0.17 (2019-01-05)
 
 - Clean test.
 
-## v0.16 (2019-01-05)
+## v0.0.16 (2019-01-05)
 
 - Clean test.
 
-## v0.15 (2019-01-05)
+## v0.0.15 (2019-01-05)
 
 - [#9]: Introduce multi-container config in order to address underlying issues that prevented access to staging DB.
 
-## v0.14 (2018-12-20)
+## v0.0.14 (2018-12-20)
 
 - Configured app to use PostgreSQL across multiple environments.
 
-## v0.13 (2018-12-16)
+## v0.0.13 (2018-12-16)
 
 - Add a single selenium-based integration test to provide basis for further tests.
 
-## v0.12 (2018-12-16)
+## v0.0.12 (2018-12-16)
 
 - Require an email address & first/last names for login, ignoring username field; require unit tests to run and succeed before deploying.
 
-## v0.11 (2018-12-14)
+## v0.0.11 (2018-12-14)
 
 - Ensure the app is on the tag so that `version.txt` has a non-`dev` version number.
 
-## v0.10 (2018-12-14)
+## v0.0.10 (2018-12-14)
 
 - Misc fixes around version number.
 
-## v0.9 (2018-12-14)
+## v0.0.9 (2018-12-14)
 
 - [#1]: Add a library to proxy static files in-app, resolving issue where static files were 404 on beanstalk.
 - [#2]: After the previous fix it turned out that files were not available to nginx, leading to 404 errors -- explaining the need for a volume LoL.  Also, to better determine what version is running add some logic to rebuild the image each deploy and version it.
 
-## v0.8 (2018-12-14)
+## v0.0.8 (2018-12-14)
 
 - Fix bug in condition check in deploy script.
 
-## v0.7 (2018-12-12)
+## v0.0.7 (2018-12-12)
 
 - Add test to confirm static files are configured properly.
 
-## v0.6 (2018-12-12)
+## v0.0.6 (2018-12-12)
 
 - Correct a bunch of misc errors with running container, document it better, and fail releases if container is not functioning correctly.
 
-## v0.5 (2018-12-10)
+## v0.0.5 (2018-12-10)
 
 - Organize Django project files under a subdirectory, and expose some product information to the templates so that we know what version is being displayed.
 
-## v0.4 (2018-12-09)
+## v0.0.4 (2018-12-09)
 
 - Run migrations before running server to collect static files and apply any db changes.
 
-## v0.3 (2018-12-09)
+## v0.0.3 (2018-12-09)
 
 - Pause before a deploy, and rely on defaults for release bundling.
 
-## v0.2 (2018-12-09)
+## v0.0.2 (2018-12-09)
 
 - Health checks are done direct to IP address, which is not in ALLOWED_HOSTS and causing the health check (and deploy) to fail.
 
-## v0.1 (2018-12-09)
+## v0.0.1 (2018-12-09)
 
 - Fix stray char in ALLOWED_HOSTS that caused a bad request.
 - Fix typo in app name in Dockerfile.
 
-## v0.0 (2018-12-08)
+## v0.0.0 (2018-12-08)
 
 - Nothing changed yet.
