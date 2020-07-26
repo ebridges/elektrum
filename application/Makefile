@@ -8,7 +8,7 @@ APPLICATION_DIR=.
 DZ_CODE=${APPLICATION_DIR}/js/vue-s3-dropzone/frontend
 JSLI_CODE=${APPLICATION_DIR}/js/javascript-load-image
 
-static: clean index.html load-image.all.min.js app.js app.css vendor.js manifest.js publish
+static: clean index.html load-image.all.min.js app.js app.css vendor.js manifest.js
 
 clean:
 	/bin/rm -rf ${DZ_CODE}/dist
@@ -61,26 +61,3 @@ manifest.js:
 	echo >> ${APPLICATION_DIR}/static/js/manifest.js
 	echo >> ${APPLICATION_DIR}/static/js/manifest.js.map
 	@echo [manifest.js] SUCCESSFUL
-
-publish:
-# if there are changes, then publish & commit them
-	@delta=$(git diff-index --quiet HEAD -- ${APPLICATION_DIR}/static)
-	@echo "[publish] Publishing" ;
-	@if [ -z "$$delta" ]; then \
-		echo '[publish] No files need committing.' ; \
-	else \
-		python ${APPLICATION_DIR}/manage.py collectstatic \
-					--noinput \
-					--pythonpath=${APPLICATION_DIR} \
-					--settings=elektrum.settings
-		@echo [publish] SUCCESSFUL
-		git add ${APPLICATION_DIR}/static/css/app* \
-						${APPLICATION_DIR}/static/js/app* \
-						${APPLICATION_DIR}/static/js/manifest* \
-						${APPLICATION_DIR}/static/js/vendor* \
-						${APPLICATION_DIR}/static/js/load-image* && \
-		git commit --gpg-sign --message 'chore: static assets generated.' \
-		echo '[publish] SUCCESSFUL' ; \
-	fi
-
-	@echo COMPLETED SUCCESSFULLY
