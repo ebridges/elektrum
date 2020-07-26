@@ -1,5 +1,14 @@
 # Elektrum Change Log
 
+## v0.4.1 (2020-07-26)
+
+### Refactor
+
+- remove logic for publishing static files out of Makefile, as its much more reliable in deploy script
+- update references to map files.
+- only publish and commit if files have changed
+- append newline explicitly
+
 ## v0.4.0 (2020-07-24)
 
 ### Fix
