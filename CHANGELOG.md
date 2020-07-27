@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.4.3 (2020-07-27)
+
+### Fix
+
+- wrong package name
+
 ## v0.4.2 (2020-07-26)
 
 ### Fix
