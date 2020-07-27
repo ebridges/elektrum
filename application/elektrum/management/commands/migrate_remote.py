@@ -3,7 +3,7 @@ from json import dumps
 
 from django.core.management.base import BaseCommand
 
-from elektrum.build_util import invoke
+from elektrum.deploy_util import invoke
 
 
 class Command(BaseCommand):
