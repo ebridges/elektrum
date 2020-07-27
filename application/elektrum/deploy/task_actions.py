@@ -49,6 +49,7 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
 class ApplicationServiceInfo:
     def __init__(self):
         self.name = f'{service()}-application'
+        self.repo_name = f'ebridges/{service()}'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
@@ -91,7 +92,7 @@ class ApplicationServiceInfo:
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, 'elektrum', self.version(), self.target],
+                [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Link archive with environment [{environment()}]\n" 1>&2',
@@ -155,6 +156,7 @@ class ApplicationServiceInfo:
 class ProcessorServiceInfo:
     def __init__(self):
         self.name = f'{service()}-processor'
+        self.repo_name = f'ebridges/{self.name}'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
@@ -192,7 +194,7 @@ class ProcessorServiceInfo:
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, self.name, self.version(), self.target],
+                [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
@@ -208,9 +210,10 @@ class ProcessorServiceInfo:
 
 class ThumbnailServiceInfo:
     def __init__(self):
-        self.name = 'thumbnailer'
+        self.name = f'{service()}-thumbnails'
+        self.repo_name = 'ebridges/thumbnailer'
         self.downloaddir = f'./deploy-tmp/{self.name}'
-        self.archive = f'{service()}-thumbnails-{self.version()}.zip'
+        self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
@@ -258,7 +261,7 @@ class ThumbnailServiceInfo:
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, self.name, self.version(), self.target],
+                [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',

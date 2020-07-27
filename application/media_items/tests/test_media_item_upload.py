@@ -110,7 +110,9 @@ def invoke_processor(image_key, version):
     with tempfile.NamedTemporaryFile(prefix='elektrum-processor', suffix=f'.jar') as temp:
         token = environ['GITHUB_OAUTH_TOKEN']
         content_type = 'application/java-archive'
-        download_github_release(token, 'elektrum-processor', version, temp.name, content_type)
+        download_github_release(
+            token, 'ebridges/elektrum-processor', version, temp.name, content_type
+        )
         assert_that(temp.name).exists() and assert_that(stat(temp.name).st_size).is_positive()
         cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', temp.name, '-f', path]
         subprocess.run(args=cmd, stderr=subprocess.STDOUT)

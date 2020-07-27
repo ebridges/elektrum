@@ -19,12 +19,12 @@ def log(msg):
     stderr.write(f'[{now()}] {msg}\n')
 
 
-def download_github_release(token, project, version, dest, content_type='application/zip'):
+def download_github_release(token, repo, version, dest, content_type='application/zip'):
     if exists(dest) and stat(dest).st_size > 0:
         log(f'[WARN] Archive already downloaded. Remove [{dest}] to redownload.')
     else:
         h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
-        download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
+        download_url = f'https://api.github.com/repos/{repo}/releases/tags/v{version}'
         r = get(download_url, headers=h)
         if r.status_code != 200:
             log(f'[ERROR] {download_url} returned {r.status_code}\n')
