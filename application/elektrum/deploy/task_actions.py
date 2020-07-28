@@ -16,9 +16,9 @@ from elektrum.deploy_util import (
     get_tag_commit,
 )
 
-ELEKTRUM_APPLICATION_VERSION = {'development': '0.4.3', 'staging': '0.4.3', 'production': '0.4.3'}
-ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
-ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
+ELEKTRUM_APPLICATION_VERSION = {'development': '0.5.0', 'staging': '0.5.0', 'production': '0.5.0'}
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.2.0', 'staging': '1.2.0', 'production': '1.2.0'}
+ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.3.0', 'staging': '1.3.0', 'production': '1.3.0'}
 
 
 def service():
