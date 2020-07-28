@@ -7,7 +7,14 @@ from zipfile import ZipFile
 
 from doit.action import CmdAction
 
-from elektrum.deploy_util import download_github_release, slurp, get_encrypted_field, decrypt_value
+from elektrum.deploy_util import (
+    download_github_release,
+    slurp,
+    get_encrypted_field,
+    decrypt_value,
+    publish_sentry_release,
+    get_tag_commit,
+)
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.4.3', 'staging': '0.4.3', 'production': '0.4.3'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
@@ -46,7 +53,32 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     ]
 
 
-class ApplicationServiceInfo:
+class PublishMonitoringRelease:
+    def publish_monitoring_release_action(self):
+        release_tag = f'v{self.version()}'
+        release_commit = get_tag_commit(self.github_auth_token, self.repo_name, release_tag)
+        release_name = f'Release {release_tag}'
+        release_ref = f'{self.repo_name}@{release_commit}'
+        release_url = f'https://github.com/{self.repo_name}/releases/tag/{release_tag}'
+        return (
+            (
+                publish_sentry_release,
+                [
+                    self.sentry_auth_token,
+                    service(),
+                    environment(),
+                    self.name,
+                    release_tag,
+                    release_name,
+                    release_commit,
+                    release_ref,
+                    release_url,
+                ],
+            ),
+        )
+
+
+class ApplicationServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-application'
         self.repo_name = f'ebridges/{service()}'
