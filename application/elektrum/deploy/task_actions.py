@@ -55,6 +55,7 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
 
 class PublishMonitoringRelease:
     def publish_monitoring_release_action(self):
+        sentry_auth_token = environ['SENTRY_AUTH_TOKEN']
         release_tag = f'v{self.version()}'
         release_commit = get_tag_commit(self.github_auth_token, self.repo_name, release_tag)
         release_name = f'Release {release_tag}'
