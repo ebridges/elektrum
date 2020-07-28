@@ -7,7 +7,14 @@ from zipfile import ZipFile
 
 from doit.action import CmdAction
 
-from elektrum.deploy_util import download_github_release, slurp, get_encrypted_field, decrypt_value
+from elektrum.deploy_util import (
+    download_github_release,
+    slurp,
+    get_encrypted_field,
+    decrypt_value,
+    publish_sentry_release,
+    get_tag_commit,
+)
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.4.3', 'staging': '0.4.3', 'production': '0.4.3'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.2', 'staging': '1.1.2', 'production': '1.1.2'}
@@ -46,13 +53,40 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     ]
 
 
-class ApplicationServiceInfo:
+class PublishMonitoringRelease:
+    def publish_monitoring_release_action(self):
+        release_tag = f'v{self.version()}'
+        release_commit = get_tag_commit(self.github_auth_token, self.repo_name, release_tag)
+        release_name = f'Release {release_tag}'
+        release_ref = f'{self.repo_name}@{release_commit}'
+        release_url = f'https://github.com/{self.repo_name}/releases/tag/{release_tag}'
+        return (
+            (
+                publish_sentry_release,
+                [
+                    self.sentry_auth_token,
+                    service(),
+                    environment(),
+                    self.name,
+                    release_tag,
+                    release_name,
+                    release_commit,
+                    release_ref,
+                    release_url,
+                ],
+            ),
+        )
+
+
+class ApplicationServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-application'
+        self.repo_name = f'ebridges/{service()}'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.sentry_auth_token = environ['SENTRY_AUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -87,11 +121,12 @@ class ApplicationServiceInfo:
     def deploy_actions(self):
         gw_name = self.deploy_args['AWS_API_NAME']
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
+        monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, 'elektrum', self.version(), self.target],
+                [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Link archive with environment [{environment()}]\n" 1>&2',
@@ -102,6 +137,8 @@ class ApplicationServiceInfo:
             CmdAction('lgw gw-deploy', env=self.deploy_args),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            monitoring_deploy_action,
         ]
 
     def update_archive(self):
@@ -152,9 +189,10 @@ class ApplicationServiceInfo:
         ]
 
 
-class ProcessorServiceInfo:
+class ProcessorServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-processor'
+        self.repo_name = f'ebridges/{self.name}'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
@@ -188,15 +226,18 @@ class ProcessorServiceInfo:
         return [envfile()]
 
     def deploy_actions(self):
+        monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, self.name, self.version(), self.target],
+                [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            monitoring_deploy_action,
         ]
 
     def config_deps(self):
@@ -206,11 +247,12 @@ class ProcessorServiceInfo:
         return config_action('lam')
 
 
-class ThumbnailServiceInfo:
+class ThumbnailServiceInfo(PublishMonitoringRelease):
     def __init__(self):
-        self.name = 'thumbnailer'
+        self.name = f'{service()}-thumbnails'
+        self.repo_name = 'ebridges/thumbnailer'
         self.downloaddir = f'./deploy-tmp/{self.name}'
-        self.archive = f'{service()}-thumbnails-{self.version()}.zip'
+        self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
@@ -254,11 +296,12 @@ class ThumbnailServiceInfo:
     def deploy_actions(self):
         gw_name = self.deploy_args['AWS_API_NAME']
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
+        monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
-                [self.github_auth_token, self.name, self.version(), self.target],
+                [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
@@ -267,4 +310,6 @@ class ThumbnailServiceInfo:
             CmdAction('lgw gw-deploy', env=self.deploy_args),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            monitoring_deploy_action,
         ]

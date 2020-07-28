@@ -4,6 +4,7 @@ from datetime import datetime
 from os import stat, makedirs
 from os.path import exists, dirname
 from requests.api import get
+from subprocess import run
 
 from ansible.parsing.vault import VaultLib, VaultSecret
 import boto3
@@ -19,12 +20,66 @@ def log(msg):
     stderr.write(f'[{now()}] {msg}\n')
 
 
-def download_github_release(token, project, version, dest, content_type='application/zip'):
+def publish_sentry_release(
+    token,
+    service_name,
+    environment,
+    project_name,
+    tag_name,
+    release_name,
+    release_commit,
+    release_ref,
+    release_url,
+):
+    def sentry_releases_cmd(args):
+        # install sentry-cli via homebrew
+        cmd = ['/usr/local/bin/sentry-cli', 'releases']
+        cmd.extend(args.split(' '))
+        from pprint import pprint
+
+        pprint(cmd)
+        return cmd
+
+    env = {
+        'SENTRY_AUTH_TOKEN': token,
+        'SENTRY_ORG': service_name,
+    }
+
+    log(f'Initiating new release: {tag_name}')
+    run(
+        sentry_releases_cmd(f'new --project {project_name} --url {release_url} {tag_name}'), env=env
+    )
+    log(f'Linking commit: {release_ref}')
+    run(sentry_releases_cmd(f'set-commits --commit {release_ref} {tag_name}'), env=env)
+    log(f'Finalizing release.')
+    run(sentry_releases_cmd(f'finalize {tag_name}'), env=env)
+    log(f'Deploying new release to environment {environment}.')
+    run(
+        sentry_releases_cmd(
+            f'deploys {tag_name} new --name {project_name}-{environment}/{tag_name} --env {environment}'
+        ),
+        env=env,
+    )
+
+
+def get_tag_commit(token, repo, tag):
+    h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
+    url = f'https://api.github.com/repos/{repo}/git/matching-refs/tags/{tag}'
+    r = get(url, headers=h)
+    if r.status_code != 200:
+        log(f'[ERROR] {url} returned {r.status_code}\n')
+        raise Exception(f'Unable to get commit for {repo}@{tag}')
+    sha = r.json()[0]['object']['sha']
+    log(f'[INFO] {tag} {sha}')
+    return sha
+
+
+def download_github_release(token, repo, version, dest, content_type='application/zip'):
     if exists(dest) and stat(dest).st_size > 0:
         log(f'[WARN] Archive already downloaded. Remove [{dest}] to redownload.')
     else:
         h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
-        download_url = f'https://api.github.com/repos/ebridges/{project}/releases/tags/v{version}'
+        download_url = f'https://api.github.com/repos/{repo}/releases/tags/v{version}'
         r = get(download_url, headers=h)
         if r.status_code != 200:
             log(f'[ERROR] {download_url} returned {r.status_code}\n')
