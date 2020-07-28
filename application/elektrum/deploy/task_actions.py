@@ -86,6 +86,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.sentry_auth_token = environ['SENTRY_AUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -120,6 +121,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
     def deploy_actions(self):
         gw_name = self.deploy_args['AWS_API_NAME']
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
+        monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
@@ -135,6 +137,8 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
             CmdAction('lgw gw-deploy', env=self.deploy_args),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            monitoring_deploy_action,
         ]
 
     def update_archive(self):
@@ -185,7 +189,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         ]
 
 
-class ProcessorServiceInfo:
+class ProcessorServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-processor'
         self.repo_name = f'ebridges/{self.name}'
@@ -222,6 +226,7 @@ class ProcessorServiceInfo:
         return [envfile()]
 
     def deploy_actions(self):
+        monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
@@ -231,6 +236,8 @@ class ProcessorServiceInfo:
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            monitoring_deploy_action,
         ]
 
     def config_deps(self):
@@ -240,7 +247,7 @@ class ProcessorServiceInfo:
         return config_action('lam')
 
 
-class ThumbnailServiceInfo:
+class ThumbnailServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-thumbnails'
         self.repo_name = 'ebridges/thumbnailer'
@@ -289,6 +296,7 @@ class ThumbnailServiceInfo:
     def deploy_actions(self):
         gw_name = self.deploy_args['AWS_API_NAME']
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
+        monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
@@ -302,4 +310,6 @@ class ThumbnailServiceInfo:
             CmdAction('lgw gw-deploy', env=self.deploy_args),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            monitoring_deploy_action,
         ]
