@@ -65,7 +65,7 @@ class PublishMonitoringRelease:
             (
                 publish_sentry_release,
                 [
-                    self.sentry_auth_token,
+                    sentry_auth_token,
                     service(),
                     environment(),
                     self.name,
@@ -87,7 +87,6 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
-        self.sentry_auth_token = environ['SENTRY_AUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
