@@ -62,20 +62,18 @@ class PublishMonitoringRelease:
         release_ref = f'{self.repo_name}@{release_commit}'
         release_url = f'https://github.com/{self.repo_name}/releases/tag/{release_tag}'
         return (
-            (
-                publish_sentry_release,
-                [
-                    sentry_auth_token,
-                    service(),
-                    environment(),
-                    self.name,
-                    release_tag,
-                    release_name,
-                    release_commit,
-                    release_ref,
-                    release_url,
-                ],
-            ),
+            publish_sentry_release,
+            [
+                sentry_auth_token,
+                service(),
+                environment(),
+                self.name,
+                release_tag,
+                release_name,
+                release_commit,
+                release_ref,
+                release_url,
+            ],
         )
 
 
