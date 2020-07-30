@@ -1,15 +1,5 @@
 # Elektrum Change Log
 
-## v0.5.0 (2020-07-28)
-
-### Feat
-
-- publish a new release to sentry whenever one of the services is deployed
-
-### Refactor
-
-- blend repo and account names when defining repo name
-
 ## v0.4.3 (2020-07-27)
 
 ### Fix
