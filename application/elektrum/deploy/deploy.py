@@ -62,32 +62,6 @@ def task_application_service_deploy():
     }
 
 
-def task_application_service_static():
-    """Deploys static assets."""
-    i = ApplicationServiceInfo()
-    return {
-        'actions': i.static_actions(),
-        'file_dep': i.static_deps(),
-        'verbosity': 2,
-    }
-
-
-def task_application_service_static_uptodate():
-    return {'actions': ['git diff-index HEAD -- application/static']}
-
-
-def task_application_service_static_publish():
-    """Deploys static assets."""
-    i = ApplicationServiceInfo()
-    return {
-        'actions': i.static_publish_actions(),
-        'file_dep': i.static_publish_deps(),
-        'uptodate': [result_dep('application_service_static_uptodate')],
-        'task_dep': ['application_service_static'],
-        'verbosity': 2,
-    }
-
-
 def task_application_service_migrations():
     """Deploys pending database migrations."""
     i = ApplicationServiceInfo()
