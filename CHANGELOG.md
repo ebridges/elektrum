@@ -1,5 +1,13 @@
 # Elektrum Change Log
 
+## v0.6.1 (2020-08-02)
+
+### Fix
+
+- remove automated static deploy, too many issues to bother with
+- provide proper datastructure for a Doit action.
+- inadvertent reference to self
+
 ## v0.6.0 (2020-07-30)
 
 ### Feat
