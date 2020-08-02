@@ -153,33 +153,6 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
     def deploy_deps(self):
         return [envfile()]
 
-    def static_actions(self):
-        return [CmdAction('make static', cwd='application')]
-
-    def static_deps(self):
-        deps = [f for f in glob(f'application/js/**', recursive=True) if isfile(f)]
-        return deps
-
-    def static_publish_actions(self):
-        return [
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Collecting & publishing static assets\n" 1>&2',
-            CmdAction(
-                'python ./manage.py collectstatic --noinput --pythonpath=. --settings=elektrum.settings',
-                cwd='application',
-            ),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding to git any files that have changed.\n" 1>&2',
-            CmdAction(
-                'git add ./css/app* ./js/app* ./js/manifest* ./js/vendor* ./js/load-image*',
-                cwd='application/static',
-            ),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Committing any changed assets.\n" 1>&2',
-            CmdAction('git commit --gpg-sign --message "chore: static assets generated."'),
-        ]
-
-    def static_publish_deps(self):
-        deps = [f for f in glob(f'application/static/**', recursive=True) if isfile(f)]
-        return deps
-
     def migration_actions(self):
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Running django migrations.\n" 1>&2',
