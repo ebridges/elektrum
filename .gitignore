@@ -39,3 +39,4 @@ project/test-db.sqlite3
 requirements.txt
 .doit.db
 deploy-tmp/
+build-tmp/
