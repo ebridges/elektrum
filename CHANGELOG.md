@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.6.2 (2020-08-06)
+
+### Fix
+
+- update component versions.
+
 ## v0.6.1 (2020-08-02)
 
 ### Fix
