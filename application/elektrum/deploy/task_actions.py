@@ -170,6 +170,7 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
+            'AWS_REGION': environ['AWS_REGION'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
             'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
             'AWS_LAMBDA_NAME': environ['MEDIA_PROCESSOR_LAMBDA_NAME'],
