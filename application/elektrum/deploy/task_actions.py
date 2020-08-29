@@ -17,7 +17,7 @@ from elektrum.deploy_util import (
 )
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.6.2', 'staging': '0.6.2', 'production': '0.6.2'}
-ELEKTRUM_PROCESSOR_VERSION = {'development': '1.2.1', 'staging': '1.2.1', 'production': '1.2.1'}
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.0.0', 'staging': '1.0.0', 'production': '1.0.0'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.4.0', 'staging': '1.4.0', 'production': '1.4.0'}
 
 
@@ -163,7 +163,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
 class ProcessorServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-processor'
-        self.repo_name = f'ebridges/{self.name}'
+        self.repo_name = f'ebridges/media-processor'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
