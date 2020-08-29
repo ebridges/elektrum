@@ -12,7 +12,7 @@
     action: lambda:InvokeFunction
     principal: s3.amazonaws.com
     function_name: "{{ media_processor_lambda_name }}"
-    statement_id: "{{ media_processor_policy }}"
+    statement_id: "{{ media_processor_execution_role_policy }}"
     source_arn: "arn:aws:s3:{{aws_region}}:{{aws_account_id}}:{{ media_upload_bucket_name }}"
     source_account: "{{aws_account_id}}"
   register: lambda_policy
@@ -26,7 +26,7 @@
     suffix: .jpg
     events: ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
     bucket_name: "{{ media_upload_bucket_name }}"
-    lambda_function_arn: "arn:aws:lambda:{{aws_region}}:{{aws_account_id}}:function:{{ media_processor_lambda_name }}"
+    lambda_function_arn: "{{ media_processor_lambda_arn }}"
   register: bucket_notification
 
 - debug: var=bucket_notification verbosity=3

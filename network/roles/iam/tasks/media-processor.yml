@@ -1,6 +1,6 @@
-- name: Create a media processor role with description
+- name: Create a media processor execution role with description
   iam_role:
-    name: "{{ media_processor_rolename }}"
+    name: "{{ media_processor_execution_rolename }}"
     managed_policy:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
     assume_role_policy_document:
@@ -12,14 +12,14 @@
           - lambda.amazonaws.com
         Action:
         - sts:AssumeRole
-    description: Media processor role
-  register: media_processor_role_info
+    description: Media processor execution role
+  register: media_processor_execution_role_info
 
 - name: Associate r/o media bucket permissions with media processor role
   iam_policy:
     iam_type: role
-    iam_name: "{{ media_processor_rolename }}"
-    policy_name: "{{ media_processor_policy }}"
+    iam_name: "{{ media_processor_execution_rolename }}"
+    policy_name: "{{ media_processor_execution_role_policy }}"
     policy_json:
       Version: '2012-10-17'
       Statement:
