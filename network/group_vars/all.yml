@@ -54,12 +54,13 @@ media_processor_lambda_handler: "cc.roja.photo.ProcessorRequestHandler"
 media_processor_description: "Processes media uploaded to {{service_name}}"
 media_processor_rolename: "{{service_name}}-{{operating_env}}-MediaProcessorRole"
 media_processor_policy: "{{ service_name }}-{{ operating_env }}-MediaProcessorPolicy"
-media_processor_connection_timeout: 300
-media_processor_memory_size: 512
+media_processor_connection_timeout: 120
+media_processor_memory_size: 256
 media_processor_tags: "Name={{ media_processor_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
 media_processor_runtime: "java11"
 media_processor_subnet_ids: "{{ private_subnet_ids|join(',') }}"
 media_processor_env: "DB_JDBC_URL=jdbc:postgresql://{{ db_endpoint_url }}:{{ db_port_number }}/{{ rds_database_name }};DB_USERNAME={{ rds_master_username }};DB_PASSWORD={{ rds_master_password }};AWS_UPLOAD_BUCKET_NAME={{ media_upload_bucket_name }};SENTRY_DSN={{ media_processor_monitoring_dsn }};OPERATING_ENV={{ operating_env }}"
+media_processor_api_description: "API for media processor"
 
 ## Lambda deployment & config for Application Service (i.e. Django app)
 application_service_lambda_name: "{{ service_name }}-{{ operating_env }}-application"
@@ -68,7 +69,7 @@ application_service_description: "{{ service_name }} application service"
 application_service_execution_rolename: "{{service_name}}-{{operating_env}}-ApplicationServiceExecutionRole"
 application_service_integration_rolename: "{{service_name}}-{{operating_env}}-ApplicationServiceLoggingRole"
 application_service_policy: "{{ service_name }}-{{ operating_env }}-ApplicationServicePolicy"
-application_service_connection_timeout: 300
+application_service_connection_timeout: 120
 application_service_memory_size: 256
 application_service_tags: "Name={{ application_service_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
 application_service_env: "DJANGO_LOG_LEVEL=INFO"
@@ -87,7 +88,7 @@ thumbnail_service_policy: "{{ service_name }}-{{ operating_env }}-ThumbnailServi
 thumbnail_service_tags: "Name={{ thumbnail_service_lambda_name }};Service={{ service_name }};Environment={{ operating_env }}"
 thumbnail_service_api_description: "Public facing API for {{ thumbnail_service_lambda_name }}"
 thumbnail_service_memory_size: 256
-thumbnail_service_connection_timeout: 300
+thumbnail_service_connection_timeout: 120
 thumbnail_service_runtime: "python3.7"
 thumbnail_service_binary_types: "image/jpeg,image/png,*/*"
 thumbnail_service_response_models: "image/jpeg=Empty;image/png=Empty"
