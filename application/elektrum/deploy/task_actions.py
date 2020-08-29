@@ -180,6 +180,7 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
             'AWS_API_LAMBDA_INTEGRATION_ROLE': environ['MEDIA_PROCESSOR_INTEGRATION_ROLE_ARN'],
             'AWS_API_NAME': environ['MEDIA_PROCESSOR_API_NAME'],
             'AWS_LAMBDA_ARCHIVE_BUCKET': environ['MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME'],
+            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.downloaddir,
             'AWS_LAMBDA_ARCHIVE_KEY': self.archive,
             'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['MEDIA_PROCESSOR_TIMEOUT'],
             'AWS_LAMBDA_DESCRIPTION': environ['MEDIA_PROCESSOR_DESCRIPTION'],
