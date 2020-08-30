@@ -41,7 +41,7 @@
 
 - name: Create a role that allows API Gateway for media processor to write to Cloudwatch
   iam_role:
-    name: "{{ media_processor_integration_role_name }}"
+    name: "{{ media_processor_integration_rolename }}"
     managed_policy:
       - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
       - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
