@@ -123,6 +123,13 @@ class MediaItem(BaseModel):
         max_length=16,
     )
 
+    focal_length = models.CharField(
+        _('focal length'),
+        help_text=_('Optional. The focal length setting used with this media item was created.'),
+        null=True,
+        max_length=16,
+    )
+
     focal_length_numerator = models.IntegerField(
         _('focal length (numerator)'),
         help_text=_(

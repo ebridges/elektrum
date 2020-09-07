@@ -17,7 +17,7 @@ from elektrum.deploy_util import (
 )
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.6.2', 'staging': '0.6.2', 'production': '0.6.2'}
-ELEKTRUM_PROCESSOR_VERSION = {'development': '1.2.1', 'staging': '1.2.1', 'production': '1.2.1'}
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.12', 'staging': '1.1.12', 'production': '1.1.12'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.4.0', 'staging': '1.4.0', 'production': '1.4.0'}
 
 
@@ -163,28 +163,36 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
 class ProcessorServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-processor'
-        self.repo_name = f'ebridges/{self.name}'
+        self.repo_name = f'ebridges/metadata-processor'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
+            'AWS_REGION': environ['AWS_REGION'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
             'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
-            'AWS_LAMBDA_NAME': environ['MEDIA_PROCESSOR_LAMBDA_NAME'],
-            'AWS_LAMBDA_DESCRIPTION': environ['MEDIA_PROCESSOR_DESCRIPTION'],
-            'AWS_LAMBDA_HANDLER': environ['MEDIA_PROCESSOR_LAMBDA_HANDLER'],
+            'AWS_ACM_CERTIFICATE_ARN': environ['MEDIA_PROCESSOR_HTTPS_CERT_ARN'],
+            'AWS_API_DEPLOY_STAGE': environ['MEDIA_PROCESSOR_API_DEPLOY_STAGE'],
+            'AWS_API_DESCRIPTION': environ['MEDIA_PROCESSOR_API_DESCRIPTION'],
+            'AWS_API_DOMAIN_NAME': environ['MEDIA_PROCESSOR_API_DOMAIN_NAME'],
+            'AWS_API_LAMBDA_INTEGRATION_ROLE': environ['MEDIA_PROCESSOR_INTEGRATION_ROLE_ARN'],
+            'AWS_API_NAME': environ['MEDIA_PROCESSOR_API_NAME'],
             'AWS_LAMBDA_ARCHIVE_BUCKET': environ['MEDIA_PROCESSOR_ARTIFACT_BUCKET_NAME'],
+            'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.downloaddir,
             'AWS_LAMBDA_ARCHIVE_KEY': self.archive,
-            'AWS_LAMBDA_VPC_SUBNETS': environ['MEDIA_PROCESSOR_SUBNET_IDS'],
-            'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['MEDIA_PROCESSOR_SECURITY_GROUPS'],
-            'AWS_LAMBDA_TAGS': environ['MEDIA_PROCESSOR_TAGS'],
+            'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['MEDIA_PROCESSOR_TIMEOUT'],
+            'AWS_LAMBDA_DESCRIPTION': environ['MEDIA_PROCESSOR_DESCRIPTION'],
             'AWS_LAMBDA_ENVIRONMENT': environ['MEDIA_PROCESSOR_ENVIRONMENT'],
             'AWS_LAMBDA_EXECUTION_ROLE_ARN': environ['MEDIA_PROCESSOR_EXECUTION_ROLE_ARN'],
+            'AWS_LAMBDA_HANDLER': environ['MEDIA_PROCESSOR_LAMBDA_HANDLER'],
             'AWS_LAMBDA_MEMORY_SIZE': environ['MEDIA_PROCESSOR_MEMORY_SIZE'],
-            'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['MEDIA_PROCESSOR_TIMEOUT'],
+            'AWS_LAMBDA_NAME': environ['MEDIA_PROCESSOR_LAMBDA_NAME'],
             'AWS_LAMBDA_RUNTIME': environ['MEDIA_PROCESSOR_RUNTIME'],
+            'AWS_LAMBDA_TAGS': environ['MEDIA_PROCESSOR_TAGS'],
+            'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['MEDIA_PROCESSOR_SECURITY_GROUPS'],
+            'AWS_LAMBDA_VPC_SUBNETS': environ['MEDIA_PROCESSOR_SUBNET_IDS'],
         }
 
         if not exists(self.downloaddir):
@@ -197,6 +205,8 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         return [envfile()]
 
     def deploy_actions(self):
+        gw_name = self.deploy_args['AWS_API_NAME']
+        dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
@@ -207,6 +217,10 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
+            CmdAction('lgw gw-deploy', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
+            CmdAction('lgw domain-add', env=self.deploy_args),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
             monitoring_deploy_action,
         ]
@@ -231,28 +245,28 @@ class ThumbnailServiceInfo(PublishMonitoringRelease):
             'AWS_REGION': environ['AWS_REGION'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
             'AWS_SECRET_ACCESS_KEY': environ['AWS_SECRET_ACCESS_KEY'],
-            'AWS_LAMBDA_NAME': environ['THUMBNAIL_SERVICE_LAMBDA_NAME'],
-            'AWS_LAMBDA_DESCRIPTION': environ['THUMBNAIL_SERVICE_DESCRIPTION'],
-            'AWS_LAMBDA_HANDLER': environ['THUMBNAIL_SERVICE_LAMBDA_HANDLER'],
-            'AWS_LAMBDA_ARCHIVE_BUCKET': environ['THUMBNAIL_SERVICE_ARTIFACT_BUCKET_NAME'],
-            'AWS_LAMBDA_ARCHIVE_KEY': self.archive,
-            'AWS_LAMBDA_VPC_SUBNETS': environ['THUMBNAIL_SERVICE_SUBNET_IDS'],
-            'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['THUMBNAIL_SERVICE_SECURITY_GROUPS'],
-            'AWS_LAMBDA_EXECUTION_ROLE_ARN': environ['THUMBNAIL_SERVICE_EXECUTION_ROLE_ARN'],
+            'AWS_ACM_CERTIFICATE_ARN': environ['THUMBNAIL_SERVICE_HTTPS_CERT_ARN'],
+            'AWS_API_BINARY_TYPES': environ['THUMBNAIL_SERVICE_BINARY_TYPES'],
+            'AWS_API_DEPLOY_STAGE': environ['THUMBNAIL_SERVICE_API_DEPLOY_STAGE'],
+            'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
+            'AWS_API_DOMAIN_NAME': environ['THUMBNAIL_SERVICE_API_DOMAIN_NAME'],
             'AWS_API_LAMBDA_INTEGRATION_ROLE': environ['THUMBNAIL_SERVICE_INTEGRATION_ROLE_ARN'],
             'AWS_API_NAME': environ['THUMBNAIL_SERVICE_API_NAME'],
-            'AWS_API_DEPLOY_STAGE': environ['THUMBNAIL_SERVICE_API_DEPLOY_STAGE'],
-            'AWS_API_DOMAIN_NAME': environ['THUMBNAIL_SERVICE_API_DOMAIN_NAME'],
-            'AWS_ACM_CERTIFICATE_ARN': environ['THUMBNAIL_SERVICE_HTTPS_CERT_ARN'],
-            'AWS_LAMBDA_TAGS': environ['THUMBNAIL_SERVICE_TAGS'],
-            'AWS_LAMBDA_ENVIRONMENT': environ['THUMBNAIL_SERVICE_ENVIRONMENT'],
-            'AWS_LAMBDA_MEMORY_SIZE': environ['THUMBNAIL_SERVICE_MEMORY_SIZE'],
-            'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['THUMBNAIL_SERVICE_TIMEOUT'],
-            'AWS_LAMBDA_RUNTIME': environ['THUMBNAIL_SERVICE_RUNTIME'],
-            'AWS_API_BINARY_TYPES': environ['THUMBNAIL_SERVICE_BINARY_TYPES'],
             'AWS_API_RESPONSE_MODELS': environ['THUMBNAIL_SERVICE_RESPONSE_MODELS'],
+            'AWS_LAMBDA_ARCHIVE_BUCKET': environ['THUMBNAIL_SERVICE_ARTIFACT_BUCKET_NAME'],
             'AWS_LAMBDA_ARCHIVE_BUNDLE_DIR': self.downloaddir,
-            'AWS_API_DESCRIPTION': environ['THUMBNAIL_SERVICE_API_DESCRIPTION'],
+            'AWS_LAMBDA_ARCHIVE_KEY': self.archive,
+            'AWS_LAMBDA_CONNECTION_TIMEOUT': environ['THUMBNAIL_SERVICE_TIMEOUT'],
+            'AWS_LAMBDA_DESCRIPTION': environ['THUMBNAIL_SERVICE_DESCRIPTION'],
+            'AWS_LAMBDA_ENVIRONMENT': environ['THUMBNAIL_SERVICE_ENVIRONMENT'],
+            'AWS_LAMBDA_EXECUTION_ROLE_ARN': environ['THUMBNAIL_SERVICE_EXECUTION_ROLE_ARN'],
+            'AWS_LAMBDA_HANDLER': environ['THUMBNAIL_SERVICE_LAMBDA_HANDLER'],
+            'AWS_LAMBDA_MEMORY_SIZE': environ['THUMBNAIL_SERVICE_MEMORY_SIZE'],
+            'AWS_LAMBDA_NAME': environ['THUMBNAIL_SERVICE_LAMBDA_NAME'],
+            'AWS_LAMBDA_RUNTIME': environ['THUMBNAIL_SERVICE_RUNTIME'],
+            'AWS_LAMBDA_TAGS': environ['THUMBNAIL_SERVICE_TAGS'],
+            'AWS_LAMBDA_VPC_SECURITY_GROUPS': environ['THUMBNAIL_SERVICE_SECURITY_GROUPS'],
+            'AWS_LAMBDA_VPC_SUBNETS': environ['THUMBNAIL_SERVICE_SUBNET_IDS'],
         }
 
         if not exists(self.downloaddir):

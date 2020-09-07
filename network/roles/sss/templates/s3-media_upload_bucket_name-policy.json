@@ -4,7 +4,7 @@
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "{{ media_processor_role_arn}}"
+                "AWS": "{{ media_processor_execution_role_arn }}"
             },
             "Action": [
                 "s3:List*",

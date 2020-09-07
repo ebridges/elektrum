@@ -1,0 +1,62 @@
+- name: Create a media processor execution role with description
+  iam_role:
+    name: "{{ media_processor_execution_rolename }}"
+    managed_policy:
+      - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+    assume_role_policy_document:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - lambda.amazonaws.com
+        Action:
+        - sts:AssumeRole
+    description: Media processor execution role
+  register: media_processor_execution_role_info
+
+- name: Associate r/o media bucket permissions with media processor role
+  iam_policy:
+    iam_type: role
+    iam_name: "{{ media_processor_execution_rolename }}"
+    policy_name: "{{ media_processor_execution_role_policy }}"
+    policy_json:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Action:
+        - s3:Get*
+        - s3:List*
+        Resource:
+        - arn:aws:s3:::{{media_upload_bucket_name}}
+        - arn:aws:s3:::{{media_upload_bucket_name}}/*
+    state: present
+  register: result
+
+- name: set media processor role arn as fact
+  set_fact:
+    media_processor_execution_role_arn: "{{ media_processor_execution_role_info.iam_role.arn }}"
+
+- name: Create a role that allows API Gateway for media processor to write to Cloudwatch
+  iam_role:
+    name: "{{ media_processor_integration_rolename }}"
+    managed_policy:
+      - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+    assume_role_policy_document:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - apigateway.amazonaws.com
+        Action:
+        - sts:AssumeRole
+    description: Allow media processor API Gateway to write to Cloudwatch
+  register: media_processor_integration_role_info
+
+- name: set media processor API gateway logging role arn as fact
+  set_fact:
+    media_processor_integration_role_arn: "{{ media_processor_integration_role_info.iam_role.arn }}"

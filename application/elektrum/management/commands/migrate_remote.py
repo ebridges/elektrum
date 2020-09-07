@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         lambda_name = environ['APPLICATION_SERVICE_LAMBDA_NAME']
 
-        migration_name = options['migration_name'] if options['migration_name'] else ''
+        migration_name = options.get('migration_name', '')
         command = f'migrate {migration_name}'.rstrip()
         payload = {'manage': {'cmd': f'{command}'}}
         payload_enc = dumps(payload).encode('utf-8')
