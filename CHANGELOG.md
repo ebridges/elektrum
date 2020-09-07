@@ -1,5 +1,22 @@
 # Elektrum Change Log
 
+## v0.7.0 (2020-09-07)
+
+### Fix
+
+- avoid key error when getting options.
+
+### Feat
+
+- new column: `focal_length` shows formatted view of value, e.g. "f/5.6"
+- integration of new metadata-processor, along with HTTP interface for it
+- switch to use new version of metadata-processor
+
+### Refactor
+
+- get all the var names straight, conforming them to the other services.
+- separate out iam config for different services to facilitate working with them.
+
 ## v0.6.2 (2020-08-06)
 
 ### Fix
