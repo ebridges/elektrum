@@ -20,7 +20,7 @@ class Command(BaseCommand):
         command = f'migrate {migration_name}'.rstrip()
         payload = {'manage': {'cmd': f'{command}'}}
         payload_enc = dumps(payload).encode('utf-8')
-
+        self.stdout.write(f'Running remote migration for [{lambda_name}] using paylod: {payload}')
         res = invoke(lambda_name, payload_enc)
 
         m = 'HTTPStatusCode: %s' % res[0]
