@@ -17,7 +17,7 @@ from elektrum.deploy_util import (
 )
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.6.2', 'staging': '0.6.2', 'production': '0.6.2'}
-ELEKTRUM_PROCESSOR_VERSION = {'development': '1.0.0', 'staging': '1.0.0', 'production': '1.0.0'}
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.12', 'staging': '1.1.12', 'production': '1.1.12'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.4.0', 'staging': '1.4.0', 'production': '1.4.0'}
 
 
@@ -163,7 +163,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
 class ProcessorServiceInfo(PublishMonitoringRelease):
     def __init__(self):
         self.name = f'{service()}-processor'
-        self.repo_name = f'ebridges/media-processor'
+        self.repo_name = f'ebridges/metadata-processor'
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
@@ -205,6 +205,8 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         return [envfile()]
 
     def deploy_actions(self):
+        gw_name = self.deploy_args['AWS_API_NAME']
+        dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
@@ -215,6 +217,10 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
             ),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
+            CmdAction('lgw gw-deploy', env=self.deploy_args),
+            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
+            CmdAction('lgw domain-add', env=self.deploy_args),
             f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
             monitoring_deploy_action,
         ]

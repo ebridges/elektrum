@@ -62,7 +62,7 @@ media_processor_tags: "Name={{ media_processor_lambda_name }};Service={{ service
 media_processor_runtime: "python3.7"
 media_processor_subnet_ids: "{{ private_subnet_ids|join(',') }}"
 media_processor_env: "DB_URL=postgresql://{{ rds_master_username }}:{{ rds_master_password }}@{{ db_endpoint_url }}:{{ db_port_number }}/{{ rds_database_name }};AWS_UPLOAD_BUCKET_NAME={{ media_upload_bucket_name }};SENTRY_DSN={{ media_processor_monitoring_dsn }};OPERATING_ENV={{ operating_env }}"
-media_processor_api_description: "API for media processor"
+media_processor_api_description: "Public facing API for {{ media_processor_lambda_name }}"
 
 ## Lambda deployment & config for Application Service (i.e. Django app)
 application_service_lambda_name: "{{ service_name }}-{{ operating_env }}-application"
