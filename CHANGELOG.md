@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.7.2 (2020-09-07)
+
+### Fix
+
+- when this flag is toggled "on" it attempts to connect to the remote db from local, causing this to fail.
+
 ## v0.7.1 (2020-09-07)
 
 ### Fix
