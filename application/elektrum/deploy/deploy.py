@@ -63,13 +63,13 @@ def task_application_service_deploy():
 
 
 # TODO Fix this
-# def task_application_service_migrations():
-#     """Deploys pending database migrations."""
-#     i = ApplicationServiceInfo()
-#     return {
-#         'actions': i.migration_actions(),
-#         'verbosity': 2,
-#     }
+def task_application_service_migrations():
+    """Deploys pending database migrations."""
+    i = ApplicationServiceInfo()
+    return {
+        'actions': i.migration_actions(),
+        'verbosity': 2,
+    }
 
 
 def task_thumbnail_service_version():
