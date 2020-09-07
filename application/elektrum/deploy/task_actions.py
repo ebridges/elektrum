@@ -16,7 +16,7 @@ from elektrum.deploy_util import (
     get_tag_commit,
 )
 
-ELEKTRUM_APPLICATION_VERSION = {'development': '0.6.2', 'staging': '0.6.2', 'production': '0.6.2'}
+ELEKTRUM_APPLICATION_VERSION = {'development': '0.7.0', 'staging': '0.7.0', 'production': '0.7.0'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.12', 'staging': '1.1.12', 'production': '1.1.12'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.4.0', 'staging': '1.4.0', 'production': '1.4.0'}
 
