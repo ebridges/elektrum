@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.7.1 (2020-09-07)
+
+### Fix
+
+- reenable db migration task
+
 ## v0.7.0 (2020-09-07)
 
 ### Fix
