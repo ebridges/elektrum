@@ -18,7 +18,7 @@ from elektrum.deploy_util import (
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.7.2', 'staging': '0.7.2', 'production': '0.7.2'}
 ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.12', 'staging': '1.1.12', 'production': '1.1.12'}
-ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.4.0', 'staging': '1.4.0', 'production': '1.4.0'}
+ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.5.0', 'staging': '1.5.0', 'production': '1.5.0'}
 
 
 def service():
