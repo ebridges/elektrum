@@ -8,7 +8,7 @@ from elektrum.deploy_util import invoke
 
 class Command(BaseCommand):
     help = 'Runs the migrate db command remotely via Lambda'
-    requires_migrations_checks = True
+    requires_migrations_checks = False
 
     def add_arguments(self, parser):
         parser.add_argument('migration_name', nargs='?', type=str)
