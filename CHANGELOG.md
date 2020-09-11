@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.8.1 (2020-09-11)
+
+### Fix
+
+- add script to upload image via api
+
 ## v0.8.0 (2020-09-11)
 
 ### Feat
