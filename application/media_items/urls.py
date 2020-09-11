@@ -6,6 +6,7 @@ from media_items.views.media_list_view import media_list_view
 from media_items.views.media_item_view import media_item_view
 from media_items.views.media_item_upload_view import media_item_upload_view
 from media_items.views.upload_request import upload_request_web, upload_request_api
+from media_items.views.media_processor_check import confirm_upload
 
 
 # noinspection PyMethodMayBeStatic
@@ -37,6 +38,7 @@ register_converter(FourDigitYearConverter, 'yyyy')
 urlpatterns = [
     path('upload-request/', upload_request_web, name='upload-request'),
     path('api/upload-request/', upload_request_api, name='upload-request-api'),
+    path('api/confirm-upload/<uuid:uid>/<uuid:iid>.<ext>', confirm_upload, name='confirm-upload'),
     path('<uuid:owner_id>/upload/', media_item_upload_view, name='media-item-upload-view'),
     path('<uuid:owner_id>/<uuid:image_id>/', media_item_view, name='media-item-view'),
     path('<uuid:owner_id>/<yyyy:year>/<yyyy-mm-dd:date>/', media_list_view, name='media-list-view'),

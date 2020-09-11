@@ -13,10 +13,10 @@ from media_items.models import MediaItem
 
 @api_view(http_method_names=['HEAD'])
 @exceptions_to_api_response
-def confirm_upload(request, owner_id, image_id, extension):
-    info(f'confirm processing completed for {owner_id}/{image_id}.{extension}')
-    validate(request, owner_id)
-    return check_exists(image_id)
+def confirm_upload(request, uid, iid, ext):
+    info(f'confirm processing completed for {uid}/{iid}.{ext}')
+    validate(request, uid)
+    return check_exists(iid)
 
 
 def check_exists(iid):
