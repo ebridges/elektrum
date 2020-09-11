@@ -12,7 +12,7 @@
     action: lambda:InvokeFunction
     principal: s3.amazonaws.com
     function_name: "{{ media_processor_lambda_name }}"
-    statement_id: "{{ media_processor_execution_role_policy }}"
+    statement_id: "{{service_name}}-{{operating_env}}-invoke"
     source_arn: "arn:aws:s3:{{aws_region}}:{{aws_account_id}}:{{ media_upload_bucket_name }}"
     source_account: "{{aws_account_id}}"
   register: lambda_policy
