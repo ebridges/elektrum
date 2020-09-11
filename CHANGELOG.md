@@ -1,5 +1,16 @@
 # Elektrum Change Log
 
+## v0.8.0 (2020-09-11)
+
+### Feat
+
+- expose endpoint for confirming upload processing success.
+- add function to validate whether or not an image exists, as a proxy for whether or not processing has completed.
+
+### Refactor
+
+- remove lint warning about wildcard import
+
 ## v0.7.2 (2020-09-07)
 
 ### Fix
