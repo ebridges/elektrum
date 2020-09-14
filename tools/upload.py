@@ -26,10 +26,10 @@ def upload(token, photo):
     info(f'Uploading photo to {key}')
     upload_photo(token, upload_url, key, photo, mime_type)
 
-    confirm(token, key)
+    confirm(token, key, photo)
 
 
-def confirm(token, key):
+def confirm(token, key, photo=None):
     confirm_url = f'{CONFIRM_ENDPOINT}/{key}'
     headers = {'Authorization': f'Bearer {token}'}
     chk_cnt = 0
@@ -43,6 +43,8 @@ def confirm(token, key):
             error('Unauthorized.')
             break
         elif chk_cnt > 60:
+            if photo:
+                print(f'ERROR:processing-not-completed:{photo}:{key}')
             warning(f'{key} has not completed processing after one minute, exiting.')
             break
         else:
@@ -62,7 +64,8 @@ def upload_photo(token, upload_url, key, photo, mime_type):
         if response.status_code == 200:
             info(f'image uploaded under key {key}')
         else:
-            error(f'Unable to upload photo: {response.text}')
+            print(f'ERROR:upload-error:{photo}:{key}')
+            error(f'Unable to upload [{photo}] under [{key}]: {response.text}')
 
 
 def upload_request(token, mime_type):
@@ -77,6 +80,7 @@ def upload_request(token, mime_type):
         key = u.path[1:]
         return upload_url, key
     else:
+        print(f'ERROR:upload-request-error:{photo}')
         error(f'Unable to request upload photo url: {response.text}')
 
 
