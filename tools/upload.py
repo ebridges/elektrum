@@ -33,6 +33,7 @@ def confirm(token, key, photo=None):
     confirm_url = f'{CONFIRM_ENDPOINT}/{key}'
     headers = {'Authorization': f'Bearer {token}'}
     chk_cnt = 0
+    sleep(2)
     while True:
         chk_cnt = chk_cnt + 1
         response = head(confirm_url, headers=headers)
