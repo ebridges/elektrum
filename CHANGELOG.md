@@ -1,5 +1,15 @@
 # Elektrum Change Log
 
+## v0.8.2 (2020-09-14)
+
+### Fix
+
+- almost all processing takes at least one second before completion, so this avoids unnecessary checks
+
+### Refactor
+
+- improve logging to include source image as well as key
+
 ## v0.8.1 (2020-09-11)
 
 ### Fix
