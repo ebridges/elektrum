@@ -1,3 +1,4 @@
+from json import dumps
 from traceback import format_exc
 from functools import wraps
 from django.http import (
@@ -51,6 +52,12 @@ def exceptions_to_api_response(view_func):
     def inner(*args, **kwargs):
         try:
             return view_func(*args, **kwargs)
+        except ValueError as e:
+            if type(e.args[0]) is dict:
+                arg = e.args[0]
+            else:
+                arg = str(e)
+            return Response(arg, status=400)
         except ForbiddenException as e:
             return Response(str(e), status=403)
         except BadRequestException as e:
