@@ -1,0 +1,43 @@
+{% extends 'base_protected.html' %}
+{% block title %}Processor Log{% endblock %}
+
+{% block nav_block %}
+<h2 class="subtitle">
+  <a href="{% url 'collections-view' user.id %}" class="subtitle_link"><span class="nav-home-icon">&#x2302;</span></a> / Processor Log
+</h2>
+{% endblock %}
+
+
+{% block content %}
+{% if processor_log_list %}
+<table class="processor-log">
+  <caption>{{ processor_log_list|length }} Processor Events</caption>
+  <thead>
+  <tr>
+    <th>Event Date</th>
+    <th>Error Code</th>
+    <th>Message</th>
+    <th>Reason</th>
+    <th>Image Key</th>
+    <th>Original Path</th>
+    <th style="text-align: center;">Delete</th>
+  </tr>
+</thead>
+<tbody>
+  {% for item in processor_log_list %}
+  <tr>
+    <td>{{ item.event_date }}</td>
+    <td>{{ item.error_code }}</td>
+    <td>{{ item.message }}</td>
+    <td><pre>{{ item.reason }}</pre></td>
+    <td>{{ item.file_path }}</td>
+    <td>{{ item.original_file_path }}</td>
+    <td style="text-align: center;"><a href="{% url 'processor-log-delete' id=item.id %}">❌</a></td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+{% else %}
+  <p>No failed processor events.</p>
+{% endif %}
+{% endblock %}
