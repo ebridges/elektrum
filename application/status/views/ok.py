@@ -1,9 +1,7 @@
 from django.http import HttpResponse
 from django.views import View
 from django.db import connection
-from io import StringIO
 
-from elektrum.management.commands import create_initial_db
 from elektrum.log import getLogger
 
 
@@ -21,16 +19,3 @@ class Ok(View):
         with connection.cursor() as cursor:
             cursor.execute('SELECT current_timestamp AS now')
             return cursor.fetchone()
-
-
-class DBCreate(View):
-    def get(self, request=None):
-        output = StringIO()
-        command = create_initial_db.Command(stdout=output, stderr=output)
-        command.handle(None, None)
-        result = output.getvalue()
-        logger = getLogger(__name__)
-        logger.info(result)
-        response = HttpResponse(result)
-        response['Content-Type'] = 'text/plain'
-        return response
