@@ -1,5 +1,15 @@
 # Elektrum Change Log
 
+## v0.9.0 (2020-09-29)
+
+### Feat
+
+- add admin screen to view upload processing errors.
+
+### Refactor
+
+- migrate views into a separate set of modules.
+
 ## v0.8.2 (2020-09-14)
 
 ### Fix
