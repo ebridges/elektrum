@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.10.0 (2021-08-20)
+
+### Feat
+
+- add link to gmaps for individual photo
+
 ## v0.9.0 (2020-09-29)
 
 ### Feat
