@@ -1,5 +1,11 @@
 # Elektrum Change Log
 
+## v0.10.1 (2021-08-20)
+
+### Fix
+
+- template formatting screwed up
+
 ## v0.10.0 (2021-08-20)
 
 ### Feat
