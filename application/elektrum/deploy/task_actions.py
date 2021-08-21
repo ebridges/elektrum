@@ -53,7 +53,35 @@ def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     ]
 
 
+def abstractmethod(method):
+    """
+    An @abstractmethod member fn decorator.
+    (put this in some library somewhere for reuse).
+
+    """
+
+    def default_abstract_method(*args, **kwargs):
+        raise NotImplementedError('call to abstract method ' + repr(method))
+
+    default_abstract_method.__name__ = method.__name__
+    return default_abstract_method
+
+
 class PublishMonitoringRelease:
+    '''
+    This is an abstract base class that takes care of
+    initializing monitoring for all child classes.
+    '''
+
+    def __init__(self):
+        self.name = ''
+        self.repo_name = ''
+        self.github_auth_token = ''
+
+    @abstractmethod
+    def version(self):
+        pass
+
     def publish_monitoring_release_action(self):
         sentry_auth_token = environ['SENTRY_AUTH_TOKEN']
         release_tag = f'v{self.version()}'
