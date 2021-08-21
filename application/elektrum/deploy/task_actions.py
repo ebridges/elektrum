@@ -45,7 +45,7 @@ def set_credentials(var, key):
 def config_action(tags='iam,vpc,rds,sss,acm,cdn,dns,ses,cfg'):
     env = environment()
     return [
-        CmdAction(f'printf "[\e[31;1m§\e[0m] Updating configuration for targets [{tags}]\n" 1>&2'),
+        CmdAction(rf'printf "[\e[31;1m§\e[0m] Updating configuration for targets [{tags}]\n" 1>&2'),
         CmdAction(
             f'ansible-playbook --tags {tags} --inventory environments/{env} --vault-password-file environments/{env}-vault-password.txt site.yml',
             cwd='network',
@@ -121,21 +121,21 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
+            rf'printf "[\\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Link archive with environment [{environment()}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Link archive with environment [{environment()}]\n" 1>&2',
             (self.update_archive, [], {}),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
             CmdAction('lgw gw-deploy', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
             monitoring_deploy_action,
         ]
 
@@ -155,7 +155,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
 
     def migration_actions(self):
         return [
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Running django migrations.\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Running django migrations.\n" 1>&2',
             CmdAction('python manage.py migrate_remote', cwd='application'),
         ]
 
@@ -209,19 +209,19 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
             CmdAction('lgw gw-deploy', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
             monitoring_deploy_action,
         ]
 
@@ -283,18 +283,18 @@ class ThumbnailServiceInfo(PublishMonitoringRelease):
         dns_name = self.deploy_args['AWS_API_DOMAIN_NAME']
         monitoring_deploy_action = self.publish_monitoring_release_action()
         return [
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Downloading version [{self.version()}]\n" 1>&2',
             (
                 download_github_release,
                 [self.github_auth_token, self.repo_name, self.version(), self.target],
                 {},
             ),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying lambda from [{self.target}]\n" 1>&2',
             CmdAction(f'lgw lambda-deploy --lambda-file={self.target}', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Deploying gateway [{gw_name}]\n" 1>&2',
             CmdAction('lgw gw-deploy', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Adding domain name [{dns_name}]\n" 1>&2',
             CmdAction('lgw domain-add', env=self.deploy_args),
-            f'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
+            rf'printf "[\e[31;1m§\e[0m] [{self.name}] Configuring monitoring for this release\n" 1>&2',
             monitoring_deploy_action,
         ]
