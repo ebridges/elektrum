@@ -14,7 +14,7 @@ description = "Media archiving & management system."
 authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
 readme = "README.md"
 homepage = "https://elektrum.photos"
-repository = "https://bitbucket.org/roja-cc/elektrum"
+repository = "https://github.com/ebridges/elektrum"
 license = "CC-BY-NC-ND-4.0"
 
 [tool.poetry.dependencies]
