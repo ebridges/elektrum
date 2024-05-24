@@ -6,12 +6,13 @@ on:
   pull_request:
     branches: [ master ]
 
+  
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
@@ -24,7 +25,7 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          echo "::add-path::${HOME}/.local/bin"
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
       - name: Cache Poetry dependencies
         uses: actions/cache@v3
@@ -39,7 +40,11 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Run Tests
+      - name: Run linter
         run: |
-          cd application
-          python manage.py test
+          poetry run black --check .
+
+      - name: Run Tests
+      run: |
+        cd application
+        python manage.py test
