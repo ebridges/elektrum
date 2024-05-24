@@ -177,14 +177,14 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 # ** Default Storage
-# The "default" storage option is used for handling uploaded media 
-# files. This is where Django will store files that users upload 
+# The "default" storage option is used for handling uploaded media
+# files. This is where Django will store files that users upload
 # through your application, such as images, documents, and other media.
 #
 # ** Staticfiles Storage
-# The "staticfiles" storage option is used for serving static files. 
-# Static files are assets like CSS, JavaScript, and images that are 
-# part of your application's codebase and do not change frequently. 
+# The "staticfiles" storage option is used for serving static files.
+# Static files are assets like CSS, JavaScript, and images that are
+# part of your application's codebase and do not change frequently.
 # These files are typically collected and served by a web server or a CDN.
 STORAGES = {
     'default': {

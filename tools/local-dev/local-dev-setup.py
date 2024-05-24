@@ -49,11 +49,11 @@ def manifest_write(mf, src, des):
 
 def needs_processing(manifest, filename):
     '''
-  `filename` needs processing when either:
-  (a): it does not exist in the manifest, or
-  (b): it exists in the manifest, but the file's chksum
-       differs from the manifest's record of the chksum
-  '''
+    `filename` needs processing when either:
+    (a): it does not exist in the manifest, or
+    (b): it exists in the manifest, but the file's chksum
+         differs from the manifest's record of the chksum
+    '''
     with open(manifest, 'r') as mf:
         for line in mf:
             if re.search(filename, line):

@@ -3,6 +3,7 @@ from django.conf import settings
 
 from base.views.utils import DEFAULT_THUMBNAIL_W, DEFAULT_THUMBNAIL_H
 
+
 # noinspection PyUnusedLocal
 def selected_settings(request):
     # return the version value as a dictionary

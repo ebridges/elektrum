@@ -25,7 +25,7 @@ def send_email(
 
     cnt = 0
     addrs = mail_info['to']
-    for (email, email_id) in addrs.items():
+    for email, email_id in addrs.items():
         mail_info['email_id'] = email_id
         text_message = renderer(body_text_tmpl, mail_info)
 

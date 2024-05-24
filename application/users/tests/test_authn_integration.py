@@ -16,7 +16,11 @@ from users.tests.factories import UserFactory
 import pytest
 
 # pytestmark = pytest.mark.skip(reason="The app only supports Google Auth. This is left behind for legacy reasons.")
-pytest.skip(reason="The app only supports Google Auth. This is left behind for legacy reasons.", allow_module_level=True)
+pytest.skip(
+    reason="The app only supports Google Auth. This is left behind for legacy reasons.",
+    allow_module_level=True,
+)
+
 
 def util_login_user(driver, live_server_url, user_email, password):
     u = urlparse(live_server_url)
