@@ -40,3 +40,4 @@ requirements.txt
 .doit.db
 deploy-tmp/
 build-tmp/
+*.code-workspace

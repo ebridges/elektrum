@@ -16,10 +16,11 @@ from elektrum.env_util import locate_env_file, resolve_version
 from dotenv import load_dotenv
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from logging import info
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+info(f'BASE_DIR: {BASE_DIR}')
 env_file = locate_env_file(BASE_DIR)
 load_dotenv(env_file)
 OPERATING_ENV = os.environ['ENVIRONMENT']
@@ -87,6 +88,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sites.middleware.CurrentSiteMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'elektrum.urls'
@@ -167,15 +169,32 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# ** Default Storage
+# The "default" storage option is used for handling uploaded media 
+# files. This is where Django will store files that users upload 
+# through your application, such as images, documents, and other media.
+#
+# ** Staticfiles Storage
+# The "staticfiles" storage option is used for serving static files. 
+# Static files are assets like CSS, JavaScript, and images that are 
+# part of your application's codebase and do not change frequently. 
+# These files are typically collected and served by a web server or a CDN.
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    },
+}
+
 AWS_STORAGE_BUCKET_NAME = os.getenv('STATIC_FILES_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('STATIC_DOMAIN_NAME')
 STATIC_URL = 'https//%s/' % AWS_S3_CUSTOM_DOMAIN
@@ -192,6 +211,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 ACCOUNT_FORMS = {'signup': 'users.forms.CustomUserCreationForm'}
+SIGNUP_FORM_CLASS = 'users.forms.CustomUserCreationForm'
 
 SITE_ID = 2
 

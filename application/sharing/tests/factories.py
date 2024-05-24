@@ -37,6 +37,14 @@ class AudienceFactory(DjangoModelFactory):
 class ShareFactory(DjangoModelFactory):
     class Meta:
         model = Share
+        # DeprecationWarning: ShareFactory._after_postgeneration 
+        # will stop saving the instance after postgeneration hooks 
+        # in the next major release.
+        # - If the save call is extraneous, set 
+        #   `skip_postgeneration_save=True`` in the ShareFactory.Meta. 
+        # - To keep saving the instance, move the save call to your 
+        #   postgeneration hooks or override _after_postgeneration.
+        skip_postgeneration_save=True
 
     id = LazyFunction(uuid4)
     subject = FuzzyText(prefix='subject.')

@@ -14,11 +14,11 @@ The `elektrum` application is a multi-tier system for hosting images and other m
 
 ## Platform Information
 
-* Python 3.7
-* Django 3.0
-* lgw 1.0.*
+* Python 3.12
+* Django 4.0
+* lgw 1.2.*
 * PostgreSQL 11
-* Ansible 2.8.2
+* Ansible 9
 
 ## Installation & Deployment
 

@@ -123,6 +123,87 @@ nav {
   padding: 0 0 5px 0;
 }
 
+/**
+Added from ChatGPT to address:
+  > RemovedInDjango50Warning: The "default.html" templates 
+  > for forms and formsets will be removed. These were proxies 
+  > to the equivalent "table.html" templates, but the new "div.html" 
+  > templates will be the default from Django 5.0. Transitional 
+  > renderers are provided to allow you to opt-in to the new output 
+  > style now.
+**/
+
+.metadata-form {
+  font-family: Inter, serif;
+  letter-spacing: .01px;
+  width: 100%;
+  max-width: 700px;
+  font-size: 15px;
+  margin: 0 auto;
+}
+
+.metadata-form .form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.metadata-form .form-row label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.metadata-form .form-row input,
+.metadata-form .form-row select,
+.metadata-form .form-row textarea {
+  font-weight: 300;
+  line-height: 22px;
+  padding: 5px;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.metadata-form .form-row small {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  font-weight: 600;
+  font-size: 12px;
+  padding: 10px 15px;
+}
+
+.media_items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.media_item {
+  width: calc(33.333% - 10px);
+  box-sizing: border-box;
+}
+
+.media_item figure {
+  margin: 0;
+}
+
+.media_item_thumbnail img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/***/
+
 .metadata-table-thumbnail-container {
   text-align: center;
   padding-top: 20px;
