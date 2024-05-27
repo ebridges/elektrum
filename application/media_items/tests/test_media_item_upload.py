@@ -32,7 +32,7 @@ import sys
 )
 @pytest.mark.django_db
 def test_sign_upload_request_success(authenticated_client, img, env):
-    with (env['remote_path']):
+    with env['remote_path']:
         c, u = authenticated_client
 
         image_key = upload_request(c, img)

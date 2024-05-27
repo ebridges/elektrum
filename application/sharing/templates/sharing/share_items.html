@@ -3,7 +3,7 @@
 
 {% block nav_block %}
 <h2 class='subtitle'>
-    <a href="{% url 'collections-view'  user.id %}"><span class="nav-home-icon">&#x2302;</span></a>
+    <a href="{% url 'collections-view' user.id %}"><span class="nav-home-icon">&#x2302;</span></a>
 </h2>
 {% endblock %}
 
@@ -11,43 +11,32 @@
 <form action="{% url 'share-items' share_id %}" method="POST">
   {% csrf_token %}
   <datalist id="default-emails">
-  {% for email in default_emails %}  <option value="{{ email }}">
+  {% for email in default_emails %}  
+    <option value="{{ email }}">
   {% endfor %}</datalist>
-  <table class="metadata-table">
-  {{ form }}
-  <tfoot>
-    <tr>
-      <th>
-        &nbsp;
-      </th>
-      <td>
-        <div id="media_items" class="media_items">
-          {% for info in objects %}
-          <div class="media_item">
-            <a class="media_item_link" href="#">
-              <figure>
-                <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ THUMBNAIL_WIDTH }}" height="{{ THUMBNAIL_HEIGHT }}"></div>
-                <figcaption>
-                  &nbsp;&nbsp;<input type="hidden" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
-                </figcaption>
-              </figure>
-            </a>
-          </div>
-          {% endfor %}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <th>
-        &nbsp;
-      </th>
-      <td>
-        <button type="submit" name="action" value="share">Share Images</button>
-        <button type="submit" name="action" value="draft">Save as Draft</button>
-        <button type="submit" name="action" value="cancel">Cancel</button><br>
-      </td>
-    </tr>
-  </tfoot>
-</table>
+  <div class="metadata-form">
+    <div class="form-row">
+      {{ form }}
+    </div>
+  </div>
+  <div id="media_items" class="media_items">
+    {% for info in objects %}
+    <div class="media_item">
+      <a class="media_item_link" href="#">
+        <figure>
+          <div class="media_item_thumbnail"><img src="{{ info.thumbnail_url }}" width="{{ THUMBNAIL_WIDTH }}" height="{{ THUMBNAIL_HEIGHT }}"></div>
+          <figcaption>
+            &nbsp;&nbsp;<input type="hidden" name="items-to-share" value="{{ info.item_id }}"/>&nbsp;{{ info.title }}
+          </figcaption>
+        </figure>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="form-actions">
+    <button type="submit" name="action" value="share">Share Images</button>
+    <button type="submit" name="action" value="draft">Save as Draft</button>
+    <button type="submit" name="action" value="cancel">Cancel</button><br>
+  </div>
 </form>
 {% endblock %}

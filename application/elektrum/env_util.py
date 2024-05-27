@@ -15,7 +15,7 @@ DEFAULT_ENV = 'local'
 
 
 def locate_env_file(start_dir=os.getcwd()):
-    logger.debug('Begin looking for environment in: %s' % start_dir)
+    logger.info('Begin looking for environment in: %s' % start_dir)
 
     # check in current directory for `.env`
     location = os.path.join(start_dir, '.env')
