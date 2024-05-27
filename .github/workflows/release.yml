@@ -5,94 +5,109 @@ on:
     branches:
       - master
 
-jobs:
-  build:
 
+jobs:
+  test:
     runs-on: ubuntu-latest
+
+    env:
+      OPERATING_ENV: ci
+      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     strategy:
-      max-parallel: 4
       matrix:
-        python-version: [3.7]
+        python-version: ['3.12']
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+      - name: Check out the code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+        
+      - name: Set up git credentials.
+        run: |
+          git config --local user.email "elektrum-release@localhost"
+          git config --local user.name "elektrum-release"
 
-    - name: Set up git credentials.
-      run: |
-        git config --local user.email "elektrum-release@localhost"
-        git config --local user.name "elektrum-release"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.local/share/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip poetry
-        poetry export --without-hashes -f requirements.txt > requirements.txt
-        poetry export --without-hashes --dev -f requirements.txt > requirements-dev.txt
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
+      - name: Install dependencies
+        run: poetry install --with dev
+        
 
-    - name: Bump version & generate changelog
-      run: |
-        cz bump --yes --changelog
+      - name: Bump version & generate changelog
+        run: |
+          cz bump --yes --changelog
 
-    - name: Collect version number
-      id: collect-version
-      run: |
-        echo "::set-output name=version::$(cat application/version.txt | tr -d '\n')"
+      - name: Collect version number
+        id: collect-version
+        run: |
+          echo "::set-output name=version::$(cat application/version.txt | tr -d '\n')"
 
-    - name: Build lambda archive.
-      id: lambda-archive
-      env:
-        AWS_LAMBDA_ARCHIVE_CONTEXT_DIR: '.'  # needs to be cwd so that etc/env is availabe in docker context
-        AWS_LAMBDA_ARCHIVE_ADDL_FILES: 'application/version.txt,$wkdir;requirements.txt,$wkdir;application/,$wkdir'
-        AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES: 'postgresql,postgresql-devel'
-        AWS_LAMBDA_ARCHIVE_BUNDLE_DIR: './build-tmp'
-        AWS_LAMBDA_ARCHIVE_BUNDLE_NAME: 'elektrum-application-${{ steps.collect-version.outputs.version }}.zip'
-      run: |
-        lgw lambda-archive
+      - name: Build lambda archive.
+        id: lambda-archive
+        env:
+          AWS_LAMBDA_ARCHIVE_CONTEXT_DIR: '.'  # needs to be cwd so that etc/env is availabe in docker context
+          AWS_LAMBDA_ARCHIVE_ADDL_FILES: 'application/version.txt,$wkdir;requirements.txt,$wkdir;application/,$wkdir'
+          AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES: 'postgresql,postgresql-devel'
+          AWS_LAMBDA_ARCHIVE_BUNDLE_DIR: './build-tmp'
+          AWS_LAMBDA_ARCHIVE_BUNDLE_NAME: 'elektrum-application-${{ steps.collect-version.outputs.version }}.zip'
+        run: |
+          lgw lambda-archive
 
-    - name: Push all changes back to origin.
-      run: |
-        git remote set-url origin https://elektrum-release:${{ secrets.GITHUB_TOKEN }}@github.com/ebridges/elektrum.git
-        git push --follow-tags
+      - name: Push all changes back to origin.
+        run: |
+          git remote set-url origin https://elektrum-release:${{ secrets.GITHUB_TOKEN }}@github.com/ebridges/elektrum.git
+          git push --follow-tags
 
-    - name: Capture changes in this release.
-      id: collect-changes
-      run: |
-        ch=$(cz changelog --incremental --file-name /dev/stdout)
-        ch="${ch//$'\n'/'%0A'}"
-        ch="${ch//$'\r'/'%0D'}"
-        echo "::set-output name=changes::$ch"
+      - name: Capture changes in this release.
+        id: collect-changes
+        run: |
+          ch=$(cz changelog --incremental --file-name /dev/stdout)
+          ch="${ch//$'\n'/'%0A'}"
+          ch="${ch//$'\r'/'%0D'}"
+          echo "::set-output name=changes::$ch"
 
-    - name: Create release
-      id: create-release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: "v${{ steps.collect-version.outputs.version }}"
-        release_name: Release v${{ steps.collect-version.outputs.version }}
-        body: ${{ steps.collect-changes.outputs.changes }}
-        draft: false
-        prerelease: false
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ steps.collect-version.outputs.version }}"
+          release_name: Release v${{ steps.collect-version.outputs.version }}
+          body: ${{ steps.collect-changes.outputs.changes }}
+          draft: false
+          prerelease: false
 
-    - name: Upload Release Asset (zipfile)
-      id: upload-release-asset-zip
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        # This pulls from the CREATE RELEASE step above, referencing it's
-        # ID to get its outputs object, which include a `upload_url`.
-        # See this blog post for more info:
-        # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ./build-tmp/elektrum-application-${{ steps.collect-version.outputs.version }}.zip
-        asset_name: elektrum-application-${{ steps.collect-version.outputs.version }}.zip
-        asset_content_type: application/zip
+      - name: Upload Release Asset (zipfile)
+        id: upload-release-asset-zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # This pulls from the CREATE RELEASE step above, referencing it's
+          # ID to get its outputs object, which include a `upload_url`.
+          # See this blog post for more info:
+          # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./build-tmp/elektrum-application-${{ steps.collect-version.outputs.version }}.zip
+          asset_name: elektrum-application-${{ steps.collect-version.outputs.version }}.zip
+          asset_content_type: application/zip
