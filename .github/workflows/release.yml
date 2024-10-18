@@ -52,6 +52,18 @@ jobs:
       - name: Install dependencies
         run: poetry install --with dev
         
+      - name: Add directory to PATH
+        run: echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
+  
+      - name: Verify new PATH
+        run: echo $PATH
+
+      - name: Print environment variables
+        run: env
+
+      - name: Print locations
+        run: |
+          echo "ls -l $(poetry env info --path)/bin"
 
       - name: Bump version & generate changelog
         run: |
