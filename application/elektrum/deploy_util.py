@@ -45,12 +45,11 @@ def publish_sentry_release(
 
     log(f'Initiating new release: {tag_name}')
     run(
-        sentry_releases_cmd(f'new --project {project_name} '
-                            f'--url {release_url} {tag_name}'), env=env
+        sentry_releases_cmd(f'new --project {project_name} ' f'--url {release_url} {tag_name}'),
+        env=env,
     )
     log(f'Linking commit: {release_ref}')
-    run(sentry_releases_cmd(f'set-commits --commit {release_ref} {tag_name}'),
-        env=env)
+    run(sentry_releases_cmd(f'set-commits --commit {release_ref} {tag_name}'), env=env)
     log('Finalizing release.')
     run(sentry_releases_cmd(f'finalize {tag_name}'), env=env)
     log(f'Deploying new release to environment {environment}.')
@@ -65,10 +64,7 @@ def publish_sentry_release(
 
 
 def get_tag_commit(token, repo, tag):
-    h = {
-            'Accept': 'application/vnd.github.v3+json',
-            'Authorization': f'token  {token}'
-        }
+    h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
     url = f'https://api.github.com/repos/{repo}/git/matching-refs/tags/{tag}'
     r = get(url, headers=h)
     if r.status_code != 200:
@@ -79,11 +75,9 @@ def get_tag_commit(token, repo, tag):
     return sha
 
 
-def download_github_release(token, repo, version, dest,
-                            content_type='application/zip'):
+def download_github_release(token, repo, version, dest, content_type='application/zip'):
     if exists(dest) and stat(dest).st_size > 0:
-        log(f'[WARN] Archive already downloaded.'
-            f'Remove [{dest}] to redownload.')
+        log(f'[WARN] Archive already downloaded.' f'Remove [{dest}] to redownload.')
     else:
         # Update Authorization to use 'Bearer' for Personal Access Tokens
         # curl -L \
@@ -96,8 +90,7 @@ def download_github_release(token, repo, version, dest,
             'Authorization': f'Bearer {token}',
             'X-GitHub-Api-Version': '2022-11-28',
         }
-        download_url = (f'https://api.github.com/repos/{repo}/releases/'
-                        f'tags/v{version}')
+        download_url = f'https://api.github.com/repos/{repo}/releases/' f'tags/v{version}'
         log(f'[INFO] headers: {h}')
         log(f'[INFO] url: {download_url}')
         r = get(download_url, headers=h)
@@ -128,11 +121,9 @@ def download_github_release(token, repo, version, dest,
     return True
 
 
-def download_from_url(url, file, headers={}, allow_redirects=True, stream=True,
-                      chunk_size=256):
+def download_from_url(url, file, headers={}, allow_redirects=True, stream=True, chunk_size=256):
     ensure_dir(file)
-    r = get(url, headers=headers, allow_redirects=allow_redirects,
-            stream=stream)
+    r = get(url, headers=headers, allow_redirects=allow_redirects, stream=stream)
     with open(file, 'wb') as fd:
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
@@ -188,8 +179,7 @@ def slurp(file):
 def invoke(lambda_name, payload):
     client = boto3.client('lambda')
     res = client.invoke(
-        FunctionName=lambda_name, InvocationType='RequestResponse',
-        LogType='Tail', Payload=payload
+        FunctionName=lambda_name, InvocationType='RequestResponse', LogType='Tail', Payload=payload
     )
     return (
         int(res['ResponseMetadata']['HTTPStatusCode']),
