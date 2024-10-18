@@ -116,6 +116,7 @@ TEMPLATES = [
         },
     }
 ]
+FORM_RENDERER = 'django.forms.renderers.DjangoDivFormRenderer'
 
 WSGI_APPLICATION = 'elektrum.wsgi.application'
 
