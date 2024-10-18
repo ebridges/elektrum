@@ -1,9 +1,7 @@
 from os import environ, path, makedirs, stat
-import re
 import subprocess
 import tempfile
 from shutil import copyfile
-from glob import glob
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -12,24 +10,12 @@ from django.shortcuts import reverse
 import pytest
 from assertpy import assert_that
 
-from users.tests.factories import USER_PASSWORD
 from media_items.models import MediaItem
 from base.tests.util import match_image_key
 from elektrum.deploy_util import download_github_release
 from elektrum.deploy.task_actions import ELEKTRUM_PROCESSOR_VERSION
-import sys
 
 
-@pytest.mark.xfail(
-    sys.platform == 'darwin',
-    reason='SQLite JDBC lib does not work on MacOS because its not signed.',
-    run=False,
-)
-@pytest.mark.xfail(
-    sys.platform == 'linux',
-    reason='GitHub Actions failing to download processor artifact.',
-    run=False,
-)
 @pytest.mark.django_db
 def test_sign_upload_request_success(authenticated_client, img, env):
     with env['remote_path']:
@@ -37,6 +23,7 @@ def test_sign_upload_request_success(authenticated_client, img, env):
 
         image_key = upload_request(c, img)
         media_id = parse_id_from_key(u.id, image_key)
+        assert_that(media_id).is_not_none()
 
         remote_file = mock_upload(img['local_path'], env['remote_path'], image_key)
         assert_that(remote_file).exists()
@@ -107,12 +94,15 @@ def mock_upload(local, remote_path, image_key):
 
 
 def invoke_processor(image_key, version):
-    with tempfile.NamedTemporaryFile(prefix='elektrum-processor', suffix=f'.jar') as temp:
-        token = environ['GITHUB_OAUTH_TOKEN']
+    assert_that(image_key).is_not_none()
+    with tempfile.NamedTemporaryFile(prefix='elektrum-processor', suffix='.jar') as temp:
+        token = environ['GITHUB_TOKEN']
+        print(f'OAUTH TOKEN: {token}')
         content_type = 'application/java-archive'
         download_github_release(
             token, 'ebridges/elektrum-processor', version, temp.name, content_type
         )
         assert_that(temp.name).exists() and assert_that(stat(temp.name).st_size).is_positive()
-        cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', temp.name, '-f', path]
+
+        cmd = ['java', '-Dlog4j.configurationFile=log4j2.xml', '-jar', temp.name, '-f', image_key]
         subprocess.run(args=cmd, stderr=subprocess.STDOUT)
