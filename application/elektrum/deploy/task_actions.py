@@ -169,7 +169,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
 
     def update_archive(self):
         with ZipFile(self.target, 'a') as zip:
-            if not '.env' in zip.namelist():
+            if '.env' not in zip.namelist():
                 stderr.write(
                     '[%s] [INFO] Adding [%s] to [%s] as [.env]\n'
                     % (datetime.now(), envfile(), self.target)
