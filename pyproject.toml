@@ -36,7 +36,6 @@ exclude = [
 
 [tool.poetry]
 name = "elektrum"
-package-mode = false
 version = "0.10.1"
 description = "Media archiving & management system."
 authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
