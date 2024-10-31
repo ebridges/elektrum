@@ -18,6 +18,8 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from logging import info
 
+DEFAULT_SITE_ID=1
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 info(f'BASE_DIR: {BASE_DIR}')
@@ -132,6 +134,7 @@ else:
 if IN_TEST_MODE:
     DATABASES = {
         'default': {
+            'NAME': 'test-database',
             'ENGINE': 'django.db.backends.sqlite3',
             'TEST': {'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3')},
         }
@@ -214,7 +217,7 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_FORMS = {'signup': 'users.forms.CustomUserCreationForm'}
 SIGNUP_FORM_CLASS = 'users.forms.CustomUserCreationForm'
 
-SITE_ID = 2
+SITE_ID = int(os.environ.get('SITE_ID', DEFAULT_SITE_ID))
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ['base.authentication.BearerTokenAuthentication']
@@ -269,7 +272,7 @@ LOGGING = {
     },
 }
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT').lower() == 'true'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_REFERRER_POLICY = ['origin-when-cross-origin', 'same-origin', 'strict-origin', 'origin']
