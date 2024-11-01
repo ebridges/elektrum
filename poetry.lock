@@ -2867,20 +2867,6 @@ MarkupSafe = ">=2.1.1"
 watchdog = ["watchdog (>=2.3)"]
 
 [[package]]
-name = "whitenoise"
-version = "6.8.2"
-description = "Radically simplified static file serving for WSGI applications"
-optional = false
-python-versions = ">=3.9"
-files = [
-    {file = "whitenoise-6.8.2-py3-none-any.whl", hash = "sha256:df12dce147a043d1956d81d288c6f0044147c6d2ab9726e5772ac50fb45d2280"},
-    {file = "whitenoise-6.8.2.tar.gz", hash = "sha256:486bd7267a375fa9650b136daaec156ac572971acc8bf99add90817a530dd1d4"},
-]
-
-[package.extras]
-brotli = ["brotli"]
-
-[[package]]
 name = "wsproto"
 version = "1.2.0"
 description = "WebSockets state-machine based protocol implementation"
@@ -2927,4 +2913,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d69108822f620beb491ce48599fe84f7fbe1d95c3a4c73b894e83e44470e1a3b"
+content-hash = "2f5fd36cc92e25cabea0b1a8270c3dc75dd5b7b08e120949c8160ec45bfbaea0"
