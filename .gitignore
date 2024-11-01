@@ -1,6 +1,7 @@
 # project related
 static/**
-etc/env/*.env
+etc/env/development.env
+etc/env/production.env
 
 # byte-compiled
 __pycache__/
