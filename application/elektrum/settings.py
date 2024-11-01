@@ -209,7 +209,7 @@ SCHEME = "https" if USE_HTTPS else "http"
 PORT = os.getenv('PORT', '80')
 
 # Construct the full URL for static files
-if PORT in ['80', '443'] :
+if PORT in ['80', '443']:
     STATIC_URL = f'{SCHEME}://{AWS_S3_CUSTOM_DOMAIN}/'
 else:
     STATIC_URL = f'{SCHEME}://{AWS_S3_CUSTOM_DOMAIN}:{PORT}/'

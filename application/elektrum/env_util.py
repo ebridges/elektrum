@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_ENV = 'local'
 
+
 def locate_env_file(start_dir=os.getcwd()):
+    env = os.getenv('OPERATING_ENV', DEFAULT_ENV)
     search_locations = []
     logger.debug('Begin looking for environment in: %s' % start_dir)
 
@@ -27,14 +29,17 @@ def locate_env_file(start_dir=os.getcwd()):
 
     # check in parent, parent etc/env directory for `$OPERATING_ENV.env`
     grandparent = Path(start_dir).parents[0]
-    location = os.path.join(grandparent, 'etc/env/%s.env' % os.getenv('OPERATING_ENV', DEFAULT_ENV))
+    location = os.path.join(grandparent, f'etc/env/{env}.env')
     logger.debug('Looking for env file in %s' % location)
     search_locations.append(location)
     if os.path.isfile(location):
         logger.debug('Located env file in %s' % location)
         return location
 
-    raise FileNotFoundError(f'Unable to locate env configuration file. Looked in: [{','.join(search_locations)}], grandparent dir: {grandparent}')
+    raise FileNotFoundError(
+        f'Unable to locate env configuration file. Looked in: '
+        f'[{",".join(search_locations)}], grandparent dir: {grandparent}'
+    )
 
 
 def resolve_version(start_dir=os.getcwd()):
@@ -56,4 +61,7 @@ def resolve_version(start_dir=os.getcwd()):
         logger.debug('Located version file in %s' % location)
         return location
 
-    raise FileNotFoundError('Unable to locate version file. Looked in: [{','.join(search_locations)}], grandparent dir: {grandparent}')
+    raise FileNotFoundError(
+        'Unable to locate version file. Looked in: [{',
+        '.join(search_locations)}], grandparent dir: {grandparent}',
+    )
