@@ -12,8 +12,8 @@ jobs:
 
     env:
       OPERATING_ENV: ci
-      ELEKTRUM_DEBUG_ENV_LOADING: 1
-      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:
