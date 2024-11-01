@@ -23,7 +23,9 @@ RUN pip install poetry \
 COPY pyproject.toml poetry.lock ./
 
 # Install Python dependencies - this only reruns if dependencies change
-RUN poetry install --no-dev
+RUN poetry install --only main
+
+RUN mkdir -p /app/application/staticfiles
 
 # Copy application code - this changes frequently
 COPY application application/

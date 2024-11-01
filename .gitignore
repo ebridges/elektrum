@@ -41,3 +41,4 @@ requirements.txt
 deploy-tmp/
 build-tmp/
 *.code-workspace
+data/
