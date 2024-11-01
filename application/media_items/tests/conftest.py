@@ -51,7 +51,7 @@ def get_db_connect_info(live_server, monkeypatch):
     monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', '0AbbbCtSAfgpoi71w8WERw8AviFYatdIV3xcPGry')
 
     # use a real github token so that we can download the current version of elektrum-processor to test against.
-    monkeypatch.setenv('GITHUB_OAUTH_TOKEN', environ['GITHUB_OAUTH_TOKEN'])
+    monkeypatch.setenv('GITHUB_TOKEN', environ['GITHUB_TOKEN'])
 
     # used by upload url request & image processor
     monkeypatch.setenv('AWS_UPLOAD_BUCKET_NAME', bucket_name)

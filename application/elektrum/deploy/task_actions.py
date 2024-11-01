@@ -112,7 +112,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
-        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.github_auth_token = environ['GITHUB_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -195,7 +195,7 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
-        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.github_auth_token = environ['GITHUB_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],
@@ -267,7 +267,7 @@ class ThumbnailServiceInfo(PublishMonitoringRelease):
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
-        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.github_auth_token = environ['GITHUB_TOKEN']
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],
