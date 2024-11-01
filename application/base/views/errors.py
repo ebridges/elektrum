@@ -33,15 +33,15 @@ def exceptions_to_web_response(view_func):
     def inner(*args, **kwargs):
         try:
             return view_func(*args, **kwargs)
-        except ForbiddenException as e:
+        except ForbiddenException:
             return HttpResponseForbidden(format_exc_html())
-        except BadRequestException as e:
+        except BadRequestException:
             return HttpResponseBadRequest(format_exc_html())
         except MethodNotAllowedException as e:
             return HttpResponseNotAllowed(str(e))
-        except Http404 as e:
+        except Http404:
             return HttpResponseNotFound(format_exc_html())
-        except Exception as e:
+        except Exception:
             return HttpResponseServerError(format_exc_html())
 
     return inner
