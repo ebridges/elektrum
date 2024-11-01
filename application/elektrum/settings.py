@@ -45,7 +45,7 @@ if os.path.isfile(version_file):
     with open(version_file) as v_file:
         v = v_file.read()
         APP_VERSION_NUMBER = v.strip()
-print(f'Running Elektrum ({OPERATING_ENV}) v{APP_VERSION_NUMBER} - PID: {os.getpid()}')
+print(f'Running Elektrum ({OPERATING_ENV}) v{APP_VERSION_NUMBER} using environment configuration: {env_file} - PID: {os.getpid()}')
 
 # Application definition
 
