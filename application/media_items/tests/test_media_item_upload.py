@@ -97,7 +97,7 @@ def invoke_processor(image_key, version):
     assert_that(image_key).is_not_none()
     with tempfile.NamedTemporaryFile(prefix='elektrum-processor', suffix='.jar') as temp:
         token = environ['GITHUB_TOKEN']
-        print(f'OAUTH TOKEN: {token}')
+
         content_type = 'application/java-archive'
         download_github_release(
             token, 'ebridges/elektrum-processor', version, temp.name, content_type
