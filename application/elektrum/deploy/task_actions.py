@@ -113,6 +113,8 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_TOKEN']
+        if not self.github_auth_token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -196,6 +198,8 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_TOKEN']
+        if not self.github_auth_token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],
@@ -268,6 +272,8 @@ class ThumbnailServiceInfo(PublishMonitoringRelease):
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
         self.github_auth_token = environ['GITHUB_TOKEN']
+        if not self.github_auth_token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],
