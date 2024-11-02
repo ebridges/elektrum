@@ -97,6 +97,8 @@ def invoke_processor(image_key, version):
     assert_that(image_key).is_not_none()
     with tempfile.NamedTemporaryFile(prefix='elektrum-processor', suffix='.jar') as temp:
         token = environ['GITHUB_TOKEN']
+        if not token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
 
         content_type = 'application/java-archive'
         download_github_release(
