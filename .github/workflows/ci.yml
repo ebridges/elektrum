@@ -1,5 +1,8 @@
 name: elektrum-ci
 
+# To test locally use this:
+# act --secret GITHUB_TOKEN=${GITHUB_TOKEN} -W .github/workflows/ci.yml
+
 on:
   push:
     branches: [ master ]
@@ -32,18 +35,26 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.in-project true
+
       - name: Cache Poetry dependencies
+        id: cache-deps
         uses: actions/cache@v3
         with:
           path: |
+            .venv
             ~/.cache/pypoetry
-            ~/.local/share/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}-${{ matrix.python }}
+            poetry.lock
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}-${{ matrix.python }}
           restore-keys: |
+            ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}-
             ${{ runner.os }}-poetry-
 
       - name: Install dependencies
-        run: poetry install
+        if: ${{ steps.cache-deps.outputs.cache-hit != 'true' }}
+        run: poetry install --no-root
 
       - name: Run linter
         run: |
