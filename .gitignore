@@ -43,3 +43,4 @@ deploy-tmp/
 build-tmp/
 *.code-workspace
 data/
+working/
