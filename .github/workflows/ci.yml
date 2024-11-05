@@ -1,7 +1,7 @@
 name: elektrum-ci
 
 # To test locally use this:
-# act --secret GITHUB_TOKEN=${GITHUB_TOKEN} -W .github/workflows/ci.yml
+# act --secret ELEKTRUM_PAT=${GITHUB_TOKEN} --insecure-secrets --reuse --verbose -W .github/workflows/ci.yml
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
 
     env:
       OPERATING_ENV: ci
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.ELEKTRUM_PAT }}
 
     strategy:
       matrix:
