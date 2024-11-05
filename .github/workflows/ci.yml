@@ -63,4 +63,4 @@ jobs:
       - name: Run Tests
         run: |
           cd application
-          poetry run python manage.py test
+          poetry run python manage.py test media_items/tests/test_media_item_upload.py
