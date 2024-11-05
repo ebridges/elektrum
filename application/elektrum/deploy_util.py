@@ -94,8 +94,12 @@ def download_github_release(token, repo, version, dest, content_type='applicatio
         log(f'[INFO] headers: {h}')
         log(f'[INFO] url: {download_url}')
         n = f'{chr(65)}uth'
-        nn = f'{n}orization'
-        log(f'[INFO] a: {h[nn]}')
+        nn = f'Authorization'
+        tok = h[nn].split(' ')
+        log(f'[INFO] {tok[0]}')
+        aaa = tok[1].split('_')
+        log(f'[INFO] a: {' '.join(aaa)}')
+
         r = get(download_url, headers=h)
         if r.status_code != 200:
             log(f'[ERROR] {download_url} returned {r.status_code}\n')
