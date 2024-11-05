@@ -6,10 +6,36 @@ build-backend = "poetry.masonry.api"
 line-length = 100
 skip-string-normalization = true
 target-version = [ "py312",]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ['E203', 'E231', 'W503', 'B023', 'E501', 'E266']
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist",
+    ".venv",
+]
 
 [tool.poetry]
 name = "elektrum"
-package-mode = false
 version = "0.10.1"
 description = "Media archiving & management system."
 authors = [ "Edward Q. Bridges <ebridges@roja.cc>",]
@@ -41,6 +67,7 @@ apig_wsgi = "2.18.0"
 sentry-sdk = "2.3.1"
 django-request-id = "1.0.0"
 django-storages = "1.14.3"
+jwt = "^1.3.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "3.2.2"
@@ -59,7 +86,6 @@ virtualenvwrapper = "6.1.0"
 assertpy = "1.1"
 jinja2 = "3.1.4"
 cryptography = "42.0.7"
-autopep8 = "2.1.1"
 logging_tree = "1.10"
 lgw = "1.2.4"
 pre-commit = "3.7.1"
@@ -71,3 +97,5 @@ commitizen = "3.27.0"
 boto3 = "1.34.112"
 ansible = "^9"
 black = "24.4.2"
+flake8 = "7.1.1"
+flake8-pyproject = "^1.2.3"

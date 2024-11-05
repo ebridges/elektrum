@@ -26,8 +26,6 @@ def publish_sentry_release(
     environment,
     project_name,
     tag_name,
-    release_name,
-    release_commit,
     release_ref,
     release_url,
 ):
@@ -47,16 +45,19 @@ def publish_sentry_release(
 
     log(f'Initiating new release: {tag_name}')
     run(
-        sentry_releases_cmd(f'new --project {project_name} --url {release_url} {tag_name}'), env=env
+        sentry_releases_cmd(f'new --project {project_name} ' f'--url {release_url} {tag_name}'),
+        env=env,
     )
     log(f'Linking commit: {release_ref}')
     run(sentry_releases_cmd(f'set-commits --commit {release_ref} {tag_name}'), env=env)
-    log(f'Finalizing release.')
+    log('Finalizing release.')
     run(sentry_releases_cmd(f'finalize {tag_name}'), env=env)
     log(f'Deploying new release to environment {environment}.')
     run(
         sentry_releases_cmd(
-            f'deploys {tag_name} new --name {project_name}-{environment}/{tag_name} --env {environment}'
+            f'deploys {tag_name} new '
+            f'--name {project_name}-{environment}/{tag_name} '
+            f'--env {environment}'
         ),
         env=env,
     )
@@ -76,10 +77,23 @@ def get_tag_commit(token, repo, tag):
 
 def download_github_release(token, repo, version, dest, content_type='application/zip'):
     if exists(dest) and stat(dest).st_size > 0:
-        log(f'[WARN] Archive already downloaded. Remove [{dest}] to redownload.')
+        log(f'[WARN] Archive already downloaded.' f'Remove [{dest}] to redownload.')
     else:
-        h = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token  {token}'}
-        download_url = f'https://api.github.com/repos/{repo}/releases/tags/v{version}'
+        # Update Authorization to use 'Bearer' for Personal Access Tokens
+        # curl -L \
+        # -H "Accept: application/vnd.github+json" \
+        # -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+        # -H "X-GitHub-Api-Version: 2022-11-28" \
+        # https://api.github.com/repos/ebridges/elektrum-processor/releases/tags/v1.2.1
+        h = {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': f'Bearer {token}',
+            'X-GitHub-Api-Version': '2022-11-28',
+        }
+        download_url = f'https://api.github.com/repos/{repo}/releases/' f'tags/v{version}'
+        log(f'[INFO] headers: {h}')
+        log(f'[INFO] url: {download_url}')
+
         r = get(download_url, headers=h)
         if r.status_code != 200:
             log(f'[ERROR] {download_url} returned {r.status_code}\n')
@@ -94,13 +108,17 @@ def download_github_release(token, repo, version, dest, content_type='applicatio
                     return asset['url']
 
         asset_url = lookup_url(r.json())
+        if not asset_url:
+            log(f'[ERROR] No matching asset found for {content_type}.')
+            return False
 
+        # Update Accept header to download the actual asset file
         h['Accept'] = 'application/octet-stream'
         log(f'[INFO] Downloading archive from [{asset_url}].')
         download_from_url(asset_url, dest, headers=h)
         log(f'[INFO] Archive downloaded locally to [{dest}].')
 
-    # needed by pydoit
+    # Return True if the file was downloaded successfully
     return True
 
 
@@ -129,14 +147,15 @@ def decrypt_value(passwd, encrypted_val):
 def get_encrypted_field(vault_file, key):
     '''
     Reads an encrypted value under `key` from the given vault file.
-    This is a workaround as `pyyaml` had issues reading encrypted entries from vault files.
+    This is a workaround as `pyyaml` had issues reading encrypted
+    entries from vault files.
     '''
     with open(vault_file) as fp:
         lines = list(fp)
         cnt = 0
         code = ''
-        for l in lines:
-            line = l.strip()
+        for line_ in lines:
+            line = line_.strip()
             if line.startswith(key):
                 cnt = cnt + 1
                 c = lines[cnt]

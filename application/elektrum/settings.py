@@ -16,11 +16,13 @@ from elektrum.env_util import locate_env_file, resolve_version
 from dotenv import load_dotenv
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-from logging import info
+from logging import debug
+
+DEFAULT_SITE_ID = 1
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-info(f'BASE_DIR: {BASE_DIR}')
+debug(f'BASE_DIR: {BASE_DIR}')
 env_file = locate_env_file(BASE_DIR)
 load_dotenv(env_file)
 OPERATING_ENV = os.environ['ENVIRONMENT']
@@ -43,7 +45,10 @@ if os.path.isfile(version_file):
     with open(version_file) as v_file:
         v = v_file.read()
         APP_VERSION_NUMBER = v.strip()
-print('Running Elektrum (%s) v%s' % (OPERATING_ENV, APP_VERSION_NUMBER))
+print(
+    f'Running Elektrum ({OPERATING_ENV}) v{APP_VERSION_NUMBER} '
+    f'using environment configuration: {env_file} - PID: {os.getpid()}'
+)
 
 # Application definition
 
@@ -116,6 +121,7 @@ TEMPLATES = [
         },
     }
 ]
+FORM_RENDERER = 'django.forms.renderers.DjangoDivFormRenderer'
 
 WSGI_APPLICATION = 'elektrum.wsgi.application'
 
@@ -131,6 +137,7 @@ else:
 if IN_TEST_MODE:
     DATABASES = {
         'default': {
+            'NAME': 'test-database',
             'ENGINE': 'django.db.backends.sqlite3',
             'TEST': {'NAME': os.path.join(BASE_DIR, 'test-db.sqlite3')},
         }
@@ -174,7 +181,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # ** Default Storage
 # The "default" storage option is used for handling uploaded media
@@ -191,14 +198,23 @@ STORAGES = {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
     'staticfiles': {
-        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        'BACKEND': os.environ.get('STORAGES_STATICFILES_BACKEND'),
     },
 }
 
+
+AWS_DEFAULT_ACL = 'public-read'
 AWS_STORAGE_BUCKET_NAME = os.getenv('STATIC_FILES_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('STATIC_DOMAIN_NAME')
-STATIC_URL = 'https//%s/' % AWS_S3_CUSTOM_DOMAIN
-AWS_DEFAULT_ACL = 'public-read'
+USE_HTTPS = os.getenv('USE_HTTPS', 'true').lower() == 'true'
+SCHEME = "https" if USE_HTTPS else "http"
+PORT = os.getenv('PORT', '80')
+
+# Construct the full URL for static files
+if PORT in ['80', '443']:
+    STATIC_URL = f'{SCHEME}://{AWS_S3_CUSTOM_DOMAIN}/'
+else:
+    STATIC_URL = f'{SCHEME}://{AWS_S3_CUSTOM_DOMAIN}:{PORT}/'
 
 LOGIN_URL = '/account/login/'  # is there a better way to do this?
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
@@ -213,7 +229,7 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_FORMS = {'signup': 'users.forms.CustomUserCreationForm'}
 SIGNUP_FORM_CLASS = 'users.forms.CustomUserCreationForm'
 
-SITE_ID = 2
+SITE_ID = int(os.environ.get('SITE_ID', DEFAULT_SITE_ID))
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ['base.authentication.BearerTokenAuthentication']
@@ -268,7 +284,7 @@ LOGGING = {
     },
 }
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'true').lower() == 'true'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_REFERRER_POLICY = ['origin-when-cross-origin', 'same-origin', 'strict-origin', 'origin']

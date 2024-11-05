@@ -17,7 +17,7 @@ from elektrum.deploy_util import (
 )
 
 ELEKTRUM_APPLICATION_VERSION = {'development': '0.7.2', 'staging': '0.7.2', 'production': '0.7.2'}
-ELEKTRUM_PROCESSOR_VERSION = {'development': '1.1.12', 'staging': '1.1.12', 'production': '1.1.12'}
+ELEKTRUM_PROCESSOR_VERSION = {'development': '1.2.3', 'staging': '1.2.3', 'production': '1.2.3'}
 ELEKTRUM_THUMBNAIL_VERSION = {'development': '1.5.0', 'staging': '1.5.0', 'production': '1.5.0'}
 
 
@@ -112,7 +112,9 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{environment()}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
-        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.github_auth_token = environ['GITHUB_TOKEN']
+        if not self.github_auth_token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_ACCESS_KEY_ID': environ['AWS_ACCESS_KEY_ID'],
@@ -169,7 +171,7 @@ class ApplicationServiceInfo(PublishMonitoringRelease):
 
     def update_archive(self):
         with ZipFile(self.target, 'a') as zip:
-            if not '.env' in zip.namelist():
+            if '.env' not in zip.namelist():
                 stderr.write(
                     '[%s] [INFO] Adding [%s] to [%s] as [.env]\n'
                     % (datetime.now(), envfile(), self.target)
@@ -195,7 +197,9 @@ class ProcessorServiceInfo(PublishMonitoringRelease):
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
-        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.github_auth_token = environ['GITHUB_TOKEN']
+        if not self.github_auth_token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],
@@ -267,7 +271,9 @@ class ThumbnailServiceInfo(PublishMonitoringRelease):
         self.downloaddir = f'./deploy-tmp/{self.name}'
         self.archive = f'{self.name}-{self.version()}.zip'
         self.target = f'{self.downloaddir}/{self.archive}'
-        self.github_auth_token = environ['GITHUB_OAUTH_TOKEN']
+        self.github_auth_token = environ['GITHUB_TOKEN']
+        if not self.github_auth_token:
+            raise ValueError('unable to locate GITHUB_TOKEN in environment')
         self.deploy_args = {
             'PATH': environ['PATH'],
             'AWS_REGION': environ['AWS_REGION'],

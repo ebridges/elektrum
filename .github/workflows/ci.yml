@@ -1,22 +1,25 @@
 name: elektrum-ci
 
+# To test locally use this:
+# act --secret ELEKTRUM_PAT=${GITHUB_TOKEN} --insecure-secrets --reuse --verbose -W .github/workflows/ci.yml
+
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  
+
 jobs:
   test:
     runs-on: ubuntu-latest
 
     env:
       OPERATING_ENV: ci
-      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.ELEKTRUM_PAT }}
 
     strategy:
       matrix:
-        python-version: ['3.12']
+        python: ['3.12']
 
     steps:
       - name: Check out the code
@@ -25,25 +28,33 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
 
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.in-project true
+
       - name: Cache Poetry dependencies
+        id: cache-deps
         uses: actions/cache@v3
         with:
           path: |
+            .venv
             ~/.cache/pypoetry
-            ~/.local/share/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}-${{ matrix.python-version }}
+            poetry.lock
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}-${{ matrix.python }}
           restore-keys: |
+            ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}-
             ${{ runner.os }}-poetry-
 
       - name: Install dependencies
-        run: poetry install
+        if: ${{ steps.cache-deps.outputs.cache-hit != 'true' }}
+        run: poetry install --no-root
 
       - name: Run linter
         run: |

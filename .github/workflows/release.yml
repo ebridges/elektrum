@@ -12,7 +12,7 @@ jobs:
 
     env:
       OPERATING_ENV: ci
-      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:
@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-        
+
       - name: Set up git credentials.
         run: |
           git config --local user.email "elektrum-release@localhost"
@@ -38,19 +38,32 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
-      - name: Cache Poetry dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pypoetry
-            ~/.local/share/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}-${{ matrix.python-version }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
+
+      # - name: Cache Poetry dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/.cache/pypoetry
+      #       ~/.local/share/pypoetry/virtualenvs
+      #     key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}-${{ matrix.python-version }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-poetry-
 
       - name: Install dependencies
         run: poetry install --with dev
-        
+
+      - name: Add directory to PATH
+        run: echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
+
+      - name: Verify new PATH
+        run: echo $PATH
+
+      - name: Print environment variables
+        run: env
+
+      - name: Print locations
+        run: |
+          echo "ls -l $(poetry env info --path)/bin"
 
       - name: Bump version & generate changelog
         run: |

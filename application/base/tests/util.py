@@ -1,21 +1,12 @@
 import email
-import json
 import os
 import re
 import pytest
 
-from urllib.parse import urljoin, urlsplit
-
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.core.management import call_command
-from django.http import QueryDict
-from django.http.request import split_domain_port, validate_host
 from django.shortcuts import reverse
-from django.test import Client, TestCase
-from django.test.html import HTMLParseError, parse_html
 
-UUID_REGEX = '[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}'
+UUID_REGEX = r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}'
 
 USER_PASSWORD = 'temporary'
 email_file_path = os.path.join(settings.BASE_DIR, 'sent_emails')
