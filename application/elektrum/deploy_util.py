@@ -93,12 +93,6 @@ def download_github_release(token, repo, version, dest, content_type='applicatio
         download_url = f'https://api.github.com/repos/{repo}/releases/' f'tags/v{version}'
         log(f'[INFO] headers: {h}')
         log(f'[INFO] url: {download_url}')
-        n = f'{chr(65)}uth'
-        nn = f'Authorization'
-        tok = h[nn].split(' ')
-        log(f'[INFO] {tok[0]}')
-        aaa = tok[1].split('_')
-        log(f'[INFO] a: {' '.join(aaa)}')
 
         r = get(download_url, headers=h)
         if r.status_code != 200:
@@ -107,7 +101,6 @@ def download_github_release(token, repo, version, dest, content_type='applicatio
 
         def lookup_url(content):
             from pprint import pprint
-
             pprint(content)
             for asset in content['assets']:
                 if asset['content_type'] == content_type:
