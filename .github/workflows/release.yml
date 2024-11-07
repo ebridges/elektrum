@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    
     env:
       OPERATING_ENV: ci
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -17,6 +17,11 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.12']
+
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
 
     steps:
       - name: Check out the code
