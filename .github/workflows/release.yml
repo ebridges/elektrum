@@ -93,13 +93,36 @@ jobs:
           docker run --rm -v "$PWD":/var/task -w /var/task \
           amazonlinux:2 \
           /bin/bash -c "
+          dnf install -y git tar gcc \
+            zlib-devel bzip2-devel readline-devel \
+            sqlite sqlite-devel openssl-devel \
+            tk-devel libffi-devel xz-devel && \
+          curl https://pyenv.run | bash && \
+            echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
+            echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
+            echo 'eval "$(pyenv init -)"' >> ~/.bashrc && \
+            source ~/.bashrc && \
+            pyenv install 3.12.4 && \
+            pyenv global 3.12.4 &&
             yum install -y python3-pip zip && \
             python3 -m venv venv && \
             source venv/bin/activate && \
             python --version && \
             pip install -r requirements.txt --target build-tmp/ && \
-            cp -r elektrum/* build-tmp/ && \
             cd build-tmp && zip -r /var/task/elektrum-application-${{ steps.collect-version.outputs.version }}.zip ."
+
+
+      # - name: Build the deployment package
+      #   run: |
+      #     docker run --rm -v "$PWD":/var/task -w /var/task \
+      #     amazonlinux:2 \
+      #     /bin/bash -c "
+      #       yum install -y python3-pip zip && \
+      #       python3 -m venv venv && \
+      #       source venv/bin/activate && \
+      #       pip install -r requirements.txt --target build-tmp/ && \
+      #       cp -r elektrum/* build-tmp/ && \
+      #       cd build-tmp && zip -r /var/task/elektrum-application-${{ steps.collect-version.outputs.version }}.zip ."
 
       # - name: Build lambda archive.
       #   id: lambda-archive
