@@ -1,5 +1,8 @@
 name: elektrum-release
 
+# To test locally use this:
+# act --secret ELEKTRUM_PAT=${GITHUB_TOKEN} --insecure-secrets --reuse --verbose -W .github/workflows/release.yml
+
 on:
   push:
     branches:
@@ -9,7 +12,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     env:
       OPERATING_ENV: ci
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -60,72 +63,75 @@ jobs:
       - name: Add directory to PATH
         run: echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
 
-      - name: Verify new PATH
-        run: echo $PATH
+      # - name: Verify new PATH
+      #   run: echo $PATH
 
-      - name: Print environment variables
-        run: env
+      # - name: Print environment variables
+      #   run: env
 
-      - name: Print locations
-        run: |
-          echo "ls -l $(poetry env info --path)/bin"
+      # - name: Print locations
+      #   run: |
+      #     echo "ls -l $(poetry env info --path)/bin"
 
-      - name: Bump version & generate changelog
-        run: |
-          cz bump --yes --changelog
+      # - name: Bump version & generate changelog
+      #   run: |
+      #     cz bump --yes --changelog
 
-      - name: Collect version number
-        id: collect-version
-        run: |
-          echo "::set-output name=version::$(cat application/version.txt | tr -d '\n')"
+      # - name: Collect version number
+      #   id: collect-version
+      #   run: |
+      #     echo "::set-output name=version::$(cat application/version.txt | tr -d '\n')"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Build lambda archive.
         id: lambda-archive
         env:
           AWS_LAMBDA_ARCHIVE_CONTEXT_DIR: '.'  # needs to be cwd so that etc/env is availabe in docker context
           AWS_LAMBDA_ARCHIVE_ADDL_FILES: 'application/version.txt,$wkdir;requirements.txt,$wkdir;application/,$wkdir'
-          AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES: 'postgresql,postgresql-devel'
+          AWS_LAMBDA_ARCHIVE_ADDL_PACKAGES: 'postgresql,postgresql-client'
           AWS_LAMBDA_ARCHIVE_BUNDLE_DIR: './build-tmp'
           AWS_LAMBDA_ARCHIVE_BUNDLE_NAME: 'elektrum-application-${{ steps.collect-version.outputs.version }}.zip'
         run: |
           lgw lambda-archive
 
-      - name: Push all changes back to origin.
-        run: |
-          git remote set-url origin https://elektrum-release:${{ secrets.GITHUB_TOKEN }}@github.com/ebridges/elektrum.git
-          git push --follow-tags
+      # - name: Push all changes back to origin.
+      #   run: |
+      #     git remote set-url origin https://elektrum-release:${{ secrets.GITHUB_TOKEN }}@github.com/ebridges/elektrum.git
+      #     git push --follow-tags
 
-      - name: Capture changes in this release.
-        id: collect-changes
-        run: |
-          ch=$(cz changelog --incremental --file-name /dev/stdout)
-          ch="${ch//$'\n'/'%0A'}"
-          ch="${ch//$'\r'/'%0D'}"
-          echo "::set-output name=changes::$ch"
+      # - name: Capture changes in this release.
+      #   id: collect-changes
+      #   run: |
+      #     ch=$(cz changelog --incremental --file-name /dev/stdout)
+      #     ch="${ch//$'\n'/'%0A'}"
+      #     ch="${ch//$'\r'/'%0D'}"
+      #     echo "::set-output name=changes::$ch"
 
-      - name: Create release
-        id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: "v${{ steps.collect-version.outputs.version }}"
-          release_name: Release v${{ steps.collect-version.outputs.version }}
-          body: ${{ steps.collect-changes.outputs.changes }}
-          draft: false
-          prerelease: false
+      # - name: Create release
+      #   id: create-release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: "v${{ steps.collect-version.outputs.version }}"
+      #     release_name: Release v${{ steps.collect-version.outputs.version }}
+      #     body: ${{ steps.collect-changes.outputs.changes }}
+      #     draft: false
+      #     prerelease: false
 
-      - name: Upload Release Asset (zipfile)
-        id: upload-release-asset-zip
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # This pulls from the CREATE RELEASE step above, referencing it's
-          # ID to get its outputs object, which include a `upload_url`.
-          # See this blog post for more info:
-          # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./build-tmp/elektrum-application-${{ steps.collect-version.outputs.version }}.zip
-          asset_name: elektrum-application-${{ steps.collect-version.outputs.version }}.zip
-          asset_content_type: application/zip
+      # - name: Upload Release Asset (zipfile)
+      #   id: upload-release-asset-zip
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     # This pulls from the CREATE RELEASE step above, referencing it's
+      #     # ID to get its outputs object, which include a `upload_url`.
+      #     # See this blog post for more info:
+      #     # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
+      #     asset_path: ./build-tmp/elektrum-application-${{ steps.collect-version.outputs.version }}.zip
+      #     asset_name: elektrum-application-${{ steps.collect-version.outputs.version }}.zip
+      #     asset_content_type: application/zip
