@@ -1331,13 +1331,13 @@ files = [
 
 [[package]]
 name = "lgw"
-version = "1.2.7"
+version = "1.2.8"
 description = "Configure an AWS Gateway in front of a Lambda function."
 optional = false
 python-versions = "<4,>=3.12"
 files = [
-    {file = "lgw-1.2.7-py3-none-any.whl", hash = "sha256:fdce47a760489c27c491ae0668a28fb176ed2f5958847fc0b24b7fed8a63ff7e"},
-    {file = "lgw-1.2.7.tar.gz", hash = "sha256:474b1dfe7b552c83596a1c22d97a120fba0901a7b0ef90e47ed313ab9961bd49"},
+    {file = "lgw-1.2.8-py3-none-any.whl", hash = "sha256:5700499529b4d20e3966e91838f4fbb5a282bd7fd3ac79fcc2b67a3c70324a48"},
+    {file = "lgw-1.2.8.tar.gz", hash = "sha256:853baddfaf4b0be135b439994567593b46e931c9caf52f0e61cdb98dff3784cd"},
 ]
 
 [package.dependencies]
@@ -2883,4 +2883,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "7e25a5cabf25ee3cff61b90a497893424638f3183017740fdefe11def845bc50"
+content-hash = "22a0b863937060b94aeb46428de7e845dbd9f1feabdf7f0c2e9adabebc3cdc10"
