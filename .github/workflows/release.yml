@@ -37,15 +37,15 @@ jobs:
           git config --local user.email "elektrum-release@localhost"
           git config --local user.name "elektrum-release"
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: ${{ matrix.python-version }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-      # - name: Install Poetry
-      #   run: |
-      #     curl -sSL https://install.python-poetry.org | python3 -
-      #     echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
       # - name: Cache Poetry dependencies
       #   uses: actions/cache@v3
